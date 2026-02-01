@@ -178,12 +178,12 @@ Design ops:
 
 ## Publishing to GitHub later
 
-When you’re ready to push to `MengTo/skills`:
+When you’re ready to push to `MengTo/Skills`:
 
 ```bash
-cd /Users/mengto/clawd/skills
+cd /Users/mengto/clawd/@MengTo/Skills
 
-git remote add origin git@github.com:MengTo/skills.git
+git remote add origin git@github.com:MengTo/Skills.git
 
 git push -u origin main
 ```

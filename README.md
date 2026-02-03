@@ -58,6 +58,10 @@ agent-skills/
     tailwindcss/
       SKILL.md
       REFERENCES.md
+    matterjs/
+      SKILL.md
+    globe-gl/
+      SKILL.md
     css-border-gradient/
       SKILL.md
     progressive-blur/
@@ -126,6 +130,18 @@ Three.js 3D scene skill:
 - scene/camera/renderer mental model
 - loaders + controls
 - performance + disposal/cleanup
+
+#### `matterjs`
+Matter.js physics skill:
+- engine/world/render setup
+- bodies and interaction patterns
+- cleanup for SPA usage
+
+#### `globe-gl`
+Globe.GL data visualization skill:
+- globe setup and textures
+- data layers (points, arcs, polygons)
+- sizing and performance tips
 
 #### `tailwindcss`
 Tailwind CSS skill:

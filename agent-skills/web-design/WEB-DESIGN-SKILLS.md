@@ -10,6 +10,8 @@ Included skills
 - `css-alpha-masking/` — horizontal or vertical edge fades with mask-image gradients
 - `progressive-blur/` — layered backdrop blur gradient from top or bottom
 - `animation-on-scroll/` — IntersectionObserver-triggered scroll-reveal animations
+- `matterjs/` — Matter.js 2D physics engine setup and patterns
+- `globe-gl/` — globe.gl 3D globe data visualization patterns
 - `vantajs/` — animated WebGL backgrounds + cleanup
 - `cobejs/` — lightweight interactive globe
 - `unicorn-studio/` — embed patterns, performance knobs, site-builder pitfalls

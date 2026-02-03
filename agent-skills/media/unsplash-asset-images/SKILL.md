@@ -1,6 +1,6 @@
 ---
 name: unsplash-asset-images
-description: Use when you need to pick high-quality Unsplash images for product/design assets (avatars, headshots, portraits, large website backgrounds, and abstract wallpapers) and output real Unsplash URLs plus practical instructions for producing the right resolutions and aspect ratios (1:1, 4:5, 3:4, 16:9, 9:16) via Unsplash source URLs or images.unsplash.com parameters.
+description: Use when you need to pick high-quality Unsplash images for product/design assets (avatars, headshots, portraits, large website backgrounds, and abstract wallpapers) and output real Unsplash URLs plus practical instructions for producing the right resolutions and aspect ratios (1:1, 4:5, 3:4, 16:9, 9:16).
 ---
 
 # Unsplash Asset Images (Avatars, Portraits, Backgrounds, Wallpapers)
@@ -12,7 +12,7 @@ For each recommendation, output:
 1) **Unsplash page URL** (canonical)
 2) Suggested **ratios + sizes** for the use case
 
-If the user wants direct image URLs, provide a `source.unsplash.com/<PHOTO_ID>/<WIDTH>x<HEIGHT>` example built from the photo ID.
+If the user wants a file, instruct them to use the **Download** button on Unsplash and then crop/resize in their design tool or image pipeline.
 
 ## License / safety (keep it simple)
 - Unsplash images are generally free to use, but **avoid Unsplash+** images unless the user explicitly wants them.
@@ -20,47 +20,13 @@ If the user wants direct image URLs, provide a `source.unsplash.com/<PHOTO_ID>/<
 
 ---
 
-## How to generate the right size + ratio
+## How to deliver the right size + ratio
 
-### A) Fastest: `source.unsplash.com` (good for prototypes)
-Use the photo id from the URL.
+1. Open the Unsplash photo page and use the **Download** button.
+2. Resize/crop to the target ratio in your design tool or image pipeline.
+3. Keep faces centered for avatars/headshots and preserve horizon for wide backgrounds.
 
-Pattern:
-```
-https://source.unsplash.com/<PHOTO_ID>/<WIDTH>x<HEIGHT>
-```
-Examples:
-- **1:1 avatar** (512×512): `…/512x512`
-- **4:5 headshot** (1200×1500): `…/1200x1500`
-- **16:9 hero background** (2400×1350): `…/2400x1350`
-- **9:16 mobile background** (1080×1920): `…/1080x1920`
-
-Notes:
-- This endpoint can change the underlying crop over time. Use it for speed, not “final” marketing assets.
-
-### B) Production: use `images.unsplash.com` (stable, controllable)
-Workflow:
-1) Open the Unsplash photo page
-2) Click **Download**
-3) Copy the `https://images.unsplash.com/photo-…` URL
-4) Apply params:
-
-Common params:
-- `w=2400` (width)
-- `h=1350` (height)
-- `fit=crop`
-- `crop=faces` (great for avatars/headshots)
-- `q=80` (quality)
-- `auto=format` (modern formats)
-
-Example template:
-```
-<images.unsplash.com/photo-…>?auto=format&fit=crop&w=1200&h=1500&q=80
-```
-
-Recommended crops:
-- **Avatars/headshots**: `crop=faces` + square / 4:5
-- **Backgrounds**: no `crop=faces`, prefer wide crops, preserve horizon
+Note: do not include Unsplash source or secondary image links; keep only the main photo page URLs.
 
 ---
 

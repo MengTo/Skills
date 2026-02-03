@@ -6,6 +6,10 @@ Included skills
 - `gsap/` — timelines, ScrollTrigger, stagger, SPA cleanup
 - `threejs/` — scene/camera/renderer, loaders, performance, disposal
 - `tailwindcss/` — utility-first patterns, responsive/state variants, dynamic class safety
+- `css-border-gradient/` — gradient border utility using a masked pseudo-element
+- `css-alpha-masking/` — horizontal or vertical edge fades with mask-image gradients
+- `progress-blur/` — layered backdrop blur gradient from top or bottom
+- `animation-on-scroll/` — IntersectionObserver-triggered scroll-reveal animations
 - `vantajs/` — animated WebGL backgrounds + cleanup
 - `cobejs/` — lightweight interactive globe
 - `unicorn-studio/` — embed patterns, performance knobs, site-builder pitfalls

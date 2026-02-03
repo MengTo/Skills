@@ -68,19 +68,20 @@ Recommended crops:
 ### 1) Avatars (1:1)
 Pick images with clean face framing + simple backgrounds.
 
-1. https://unsplash.com/photos/boys-face-close-up-photography-n4KewLKFOZw
-   - Quick (512×512): https://source.unsplash.com/n4KewLKFOZw/512x512
-2. https://unsplash.com/photos/mans-grey-and-black-shirt-ILip77SbmOE
-   - Quick (512×512): https://source.unsplash.com/ILip77SbmOE/512x512
-3. https://unsplash.com/photos/a-close-up-of-a-person-with-curly-hair-tlHKW3bCdMA
-   - Quick (512×512): https://source.unsplash.com/tlHKW3bCdMA/512x512
-4. https://unsplash.com/photos/young-woman-with-long-brown-hair-and-freckles-Pq_OWy_czq8
-   - Quick (512×512): https://source.unsplash.com/Pq_OWy_czq8/512x512
-5. https://unsplash.com/photos/a-close-up-of-a-persons-face-TpzidydAY0k
-   - Quick (512×512): https://source.unsplash.com/TpzidydAY0k/512x512
+1. https://unsplash.com/photos/man-wearing-black-shirt-aoEwuEH7YAs
+   - Quick (512×512): https://source.unsplash.com/aoEwuEH7YAs/512x512
+2. https://unsplash.com/photos/grayscale-photography-of-man-wearing-crew-neck-shirt-jmURdhtm7Ng
+   - Quick (512×512): https://source.unsplash.com/jmURdhtm7Ng/512x512
+3. https://unsplash.com/photos/grayscale-photography-of-woman-with-two-hands-on-her-face--Keh6vLM7w0
+   - Quick (512×512): https://source.unsplash.com/-Keh6vLM7w0/512x512
+4. https://unsplash.com/photos/man-in-black-crew-neck-shirt-QWa0TIUW638
+   - Quick (512×512): https://source.unsplash.com/QWa0TIUW638/512x512
+5. https://unsplash.com/photos/man-wearing-black-denim-jacket-near-building-2RFwLL-YX44
+   - Quick (512×512): https://source.unsplash.com/2RFwLL-YX44/512x512
 
 Suggested deliverables:
 - 1:1: **256×256**, **512×512**, **1024×1024**
+- If faces crop weird: use `images.unsplash.com` with `fit=crop&crop=faces` (see “Production” section).
 
 ### 2) Headshots (4:5 or 3:4)
 Aim for shoulders-up framing, neutral backgrounds, “professional but human”.

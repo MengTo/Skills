@@ -1,9 +1,9 @@
 ---
-name: progress-blur
-description: Create a layered CSS progress blur (top or bottom) using multiple backdrop-filter masks for depth and softness. Use when asked for “progress blur”, “gradient blur overlay”, or stepped blur masks that fade from an edge of the viewport.
+name: progressive-blur
+description: Create a layered CSS progressive blur (top or bottom) using multiple backdrop-filter masks for depth and softness. Use when asked for “progressive blur”, “gradient blur overlay”, or stepped blur masks that fade from an edge of the viewport.
 ---
 
-# Progress Blur Skill
+# Progressive Blur Skill
 
 ## Workflow
 1. Confirm placement (top or bottom), height, and z-index relative to UI.

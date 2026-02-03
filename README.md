@@ -60,7 +60,7 @@ agent-skills/
       REFERENCES.md
     css-border-gradient/
       SKILL.md
-    progress-blur/
+    progressive-blur/
       SKILL.md
     animation-on-scroll/
       SKILL.md
@@ -139,8 +139,8 @@ CSS gradient border utility:
 - Tailwind-friendly usage
 - quick customization knobs
 
-#### `progress-blur`
-Layered progress blur overlay:
+#### `progressive-blur`
+Layered progressive blur overlay:
 - top or bottom blur stacks
 - performance considerations
 - adjustable height and steps

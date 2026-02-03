@@ -109,9 +109,9 @@ Use these when the vibe is “human story”, not “corporate headshot”.
 2. https://unsplash.com/photos/man-wearing-a-straw-hat-and-maroon-shirt-Rd2UXAg8Zc0
    - Quick (1200×1500): https://source.unsplash.com/Rd2UXAg8Zc0/1200x1500
 3. https://unsplash.com/photos/brPuA0a0Uuk
-   - Quick (1200×1500): https://source.unsplash.com/brPuA0a0Uuk/1200x1500
+   - Base (w=2560): https://images.unsplash.com/photo-1486649567693-aaa9b2e59385?w=2560&q=80
 4. https://unsplash.com/photos/Plii16U9bOU
-   - Quick (1200×1500): https://source.unsplash.com/Plii16U9bOU/1200x1500
+   - Base (w=2560): https://images.unsplash.com/photo-1581182800629-7d90925ad072?w=2560&q=80
 5. https://unsplash.com/photos/man-leaning-on-wall-silhouette-2trSyEqR0pA
    - Quick (1200×1500): https://source.unsplash.com/2trSyEqR0pA/1200x1500
 

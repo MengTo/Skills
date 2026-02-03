@@ -1,8 +1,10 @@
 # MengTo/skills
 
-A growing library of **Clawdbot AgentSkills** — written for designers.
+A growing library of **Claude Code Skills** (Clawdbot AgentSkills) — written for designers.
 
-These skills are meant to feel like “Claude Code skills”, but tuned for **web design + prompting + shipping**:
+Built for [Aura.Build](https://aura.build).
+
+These skills are meant to feel like Claude Code skills, but tuned for **web design + prompting + shipping**:
 - practical workflows
 - checklists
 - copy/paste recipes

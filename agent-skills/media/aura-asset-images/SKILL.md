@@ -91,16 +91,11 @@ Suggested exports:
 - Feature section: 1600×900
 
 ### 4) Portraits (5)
-1. Close-up eyes behind vibrant blue petals
-   - https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/92cff667-f259-4342-a0aa-f51b804f4d5c_1600w.webp
-2. Monochrome Portrait of Woman in White Suit
-   - https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/c543a9e1-f226-4ced-80b0-feb8445a75b9_1600w.jpg
-3. Futuristic profile portrait with orange visor sunglasses
-   - https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/3487391c-84ae-4ac0-b0c5-ab8a77cba264_1600w.jpg
-4. Neon-lit Astronaut Portrait on Black Background
-   - https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/46ceb0ec-b3fa-4f16-8a70-bbd217ee77a9_1600w.jpg
-5. Neon Floral Portrait in Profile
-   - https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f4e5e7c0-8aa2-4842-adfb-8c79e58459e4_1600w.jpg
+1. https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0d868fef-f560-45ca-ab35-5dad4fc29059_3840w.webp
+2. https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/3186f9ea-5f5a-49f7-8fcf-568ad52f515e_3840w.webp
+3. https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/65695f80-23f9-46ee-8487-cbb6c93cc48b_3840w.webp
+4. https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0d063fd9-f7c1-4536-ade0-9fd133f07279_3840w.webp
+5. https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/582afef4-b810-47b8-a047-8b3597c323e1_3840w.webp
 
 Suggested exports:
 - 3:4: 1500×2000

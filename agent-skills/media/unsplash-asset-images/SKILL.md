@@ -93,9 +93,9 @@ Aim for shoulders-up framing, neutral backgrounds, “professional but human”.
 3. https://unsplash.com/photos/woman-with-blue-eyes-and-black-hair-VLJV46hPLSM
    - Quick (1200×1500): https://source.unsplash.com/VLJV46hPLSM/1200x1500
 4. https://unsplash.com/photos/woman-with-blonde-hair-and-red-lipstick-8f3yvMdkWJI
-   - Quick (1200×1500): https://source.unsplash.com/8f3yvMdkWJI/1200x1500
+   - Base (w=2560): https://images.unsplash.com/photo-1589525231707-f2de2428f59c?w=2560&q=80
 5. https://unsplash.com/photos/a-young-woman-poses-with-hands-near-her-face-bF6wuOivk2M
-   - Quick (1200×1500): https://source.unsplash.com/bF6wuOivk2M/1200x1500
+   - Base (w=2560): https://images.unsplash.com/photo-1532170579297-281918c8ae72?w=2560&q=80
 
 Suggested deliverables:
 - 4:5: **800×1000**, **1200×1500**, **1600×2000**

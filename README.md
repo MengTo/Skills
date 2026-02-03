@@ -58,6 +58,14 @@ agent-skills/
     tailwindcss/
       SKILL.md
       REFERENCES.md
+    css-border-gradient/
+      SKILL.md
+    progress-blur/
+      SKILL.md
+    animation-on-scroll/
+      SKILL.md
+    css-alpha-masking/
+      SKILL.md
     vantajs/
       SKILL.md
       REFERENCES.md
@@ -125,6 +133,30 @@ Tailwind CSS skill:
 - safe dynamic class patterns
 - component extraction + conventions
 
+#### `css-border-gradient`
+CSS gradient border utility:
+- masked pseudo-element technique
+- Tailwind-friendly usage
+- quick customization knobs
+
+#### `progress-blur`
+Layered progress blur overlay:
+- top or bottom blur stacks
+- performance considerations
+- adjustable height and steps
+
+#### `animation-on-scroll`
+Scroll-reveal animation trigger:
+- IntersectionObserver setup
+- Tailwind animation class usage
+- timing and trigger tweaks
+
+#### `css-alpha-masking`
+Alpha masking utilities:
+- horizontal or vertical edge fades
+- Safari-friendly mask-image fallback
+- inline or class usage
+
 #### `vantajs`
 Vanta.js animated background skill:
 - init/resize/destroy
@@ -176,22 +208,14 @@ Design ops:
 
 ---
 
-## Publishing to GitHub later
+## Repository
 
-When you’re ready to push to `MengTo/Skills`:
+GitHub: [MengTo/Skills](https://github.com/MengTo/Skills)
 
+Push updates:
 ```bash
 cd /Users/mengto/clawd/@MengTo/Skills
-
-git remote add origin git@github.com:MengTo/Skills.git
-
-git push -u origin main
-```
-
-If you prefer HTTPS:
-
-```bash
-git remote add origin https://github.com/MengTo/skills.git
+git push origin main
 ```
 
 ---

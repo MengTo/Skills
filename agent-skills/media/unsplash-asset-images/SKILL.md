@@ -124,15 +124,15 @@ Suggested deliverables:
 Pick wide shots with clean negative space and readable gradients.
 
 1. https://unsplash.com/photos/landscape-photography-of-mountains-twukN12EN7c
-   - Quick (2400×1350): https://source.unsplash.com/twukN12EN7c/2400x1350
+   - Base (w=2560): https://images.unsplash.com/photo-1635776063328-153b13e3c245?w=2560&q=80
 2. https://unsplash.com/photos/a-black-landscape-with-mountains-in-the-background-X93tlrlx5kI
-   - Quick (2400×1350): https://source.unsplash.com/X93tlrlx5kI/2400x1350
+   - Base (w=2560): https://images.unsplash.com/photo-1655694774003-69c69d7ee5bb?w=2560&q=80
 3. https://unsplash.com/photos/a-landscape-with-trees-and-mountains-in-the-background-96mTBTH9MEw
-   - Quick (2400×1350): https://source.unsplash.com/96mTBTH9MEw/2400x1350
+   - Base (w=2560): https://images.unsplash.com/photo-1669295384050-a1d4357bd1d7?w=2560&q=80
 4. https://unsplash.com/photos/mountains-and-a-blue-sky-create-a-picturesque-landscape-fgCR4Yj3CLs
    - Quick (2400×1350): https://source.unsplash.com/fgCR4Yj3CLs/2400x1350
 5. https://unsplash.com/photos/landscape-with-milky-way-night-sky-with-stars-on-the-mountain-long-exposure-photograph-with-grain-Vt7Se0uqEpA
-   - Quick (2400×1350): https://source.unsplash.com/Vt7Se0uqEpA/2400x1350
+   - Base (w=2560): https://images.unsplash.com/photo-1508615121316-fe792af62a63?w=2560&q=80
 
 Suggested deliverables:
 - Desktop hero: **1920×1080**, **2400×1350**, **2880×1620**
@@ -142,14 +142,12 @@ Suggested deliverables:
 Use when you need “brand-safe”, non-specific visuals.
 
 1. https://unsplash.com/photos/an-abstract-purple-background-with-a-black-background-5Q9Gf0WSyLk
-   - Desktop (2880×1800): https://source.unsplash.com/5Q9Gf0WSyLk/2880x1800
-   - Mobile (1080×1920): https://source.unsplash.com/5Q9Gf0WSyLk/1080x1920
+   - Base (w=2560): https://images.unsplash.com/photo-1644426358812-879f02d1d867?w=2560&q=80
 2. https://unsplash.com/photos/abstract-layered-shapes-with-a-gradient-orange-color-5q4zsTaVN4I
    - Desktop: https://source.unsplash.com/5q4zsTaVN4I/2880x1800
    - Mobile: https://source.unsplash.com/5q4zsTaVN4I/1080x1920
 3. https://unsplash.com/photos/abstract-organic-shapes-with-blue-and-yellow-gradients-c0B1HYG6ZK4
-   - Desktop: https://source.unsplash.com/c0B1HYG6ZK4/2880x1800
-   - Mobile: https://source.unsplash.com/c0B1HYG6ZK4/1080x1920
+   - Base (w=2560): https://images.unsplash.com/photo-1635776062360-af423602aff3?w=2560&q=80
 4. https://unsplash.com/photos/blue-waves-form-a-soft-abstract-gradient-dYksH3vHorc
    - Desktop: https://source.unsplash.com/dYksH3vHorc/2880x1800
    - Mobile: https://source.unsplash.com/dYksH3vHorc/1080x1920

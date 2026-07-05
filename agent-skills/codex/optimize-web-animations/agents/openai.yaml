@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Performance Audit"
+  short_description: "Audit motion and leak risks"
+  default_prompt: "Use $optimize-web-animations to profile a page for offscreen animation work, memory leak risks, and long-session slowdowns."

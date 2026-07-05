@@ -1,0 +1,4 @@
+interface:
+  display_name: "Performance Profiling"
+  short_description: "Profile Apple app performance issues"
+  default_prompt: "Use $performance-profiling to diagnose a slow or memory-heavy Apple app."

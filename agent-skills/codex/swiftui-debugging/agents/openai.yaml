@@ -1,0 +1,4 @@
+interface:
+  display_name: "SwiftUI Debugging"
+  short_description: "Diagnose SwiftUI rendering performance"
+  default_prompt: "Use $swiftui-debugging to diagnose a SwiftUI view that keeps re-rendering or scrolling slowly."

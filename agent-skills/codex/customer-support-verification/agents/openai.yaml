@@ -1,0 +1,4 @@
+interface:
+  display_name: "Customer Support Verification"
+  short_description: "Verify customer support handoffs against runbook guardrails."
+  default_prompt: "Verify this customer support handoff against the local runbook and approval-gated support checklist."

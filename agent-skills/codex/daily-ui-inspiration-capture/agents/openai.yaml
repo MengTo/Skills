@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daily UI Inspiration Capture"
+  short_description: "Create five-reference UI inspiration article bundles"
+  default_prompt: "Use $daily-ui-inspiration-capture to run today's UI inspiration capture."

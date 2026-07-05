@@ -1,0 +1,4 @@
+interface:
+  display_name: "Stitched Full-Page Capture"
+  short_description: "Capture reliable full-page screenshots from lazy scroll pages."
+  default_prompt: "Use stitched viewport captures to repair or create full-page screenshots and section crops for a live page."

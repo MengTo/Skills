@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML to Interaction Prompts"
+  short_description: "Turn HTML references into prompt articles"
+  default_prompt: "Use $html-to-interaction-prompts to turn this HTML reference into a screenshot-backed interaction prompt article."

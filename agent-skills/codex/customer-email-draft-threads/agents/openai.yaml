@@ -1,0 +1,4 @@
+interface:
+  display_name: "Customer Email Draft Threads"
+  short_description: "Draft customer replies and create project threads"
+  default_prompt: "Use $customer-email-draft-threads to triage recent customer emails, save draft replies, and create project threads for each draft."

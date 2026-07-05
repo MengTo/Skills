@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Verify Explain"
+  short_description: "Audit, verify, then explain simply"
+  default_prompt: "Use $audit-verify-explain-grade-5 to audit my change, verify it, and explain the result simply."

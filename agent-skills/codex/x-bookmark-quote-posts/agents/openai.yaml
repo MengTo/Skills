@@ -1,4 +1,4 @@
 interface:
   display_name: "X Bookmark Quote Posts"
-  short_description: "Turn recent X bookmarks into personal quote-post drafts"
-  default_prompt: "Use $x-bookmark-quote-posts to draft personal quote posts from my latest X bookmarks."
+  short_description: "Turn recent X bookmarks into source-backed quote-post drafts"
+  default_prompt: "Use $x-bookmark-quote-posts to draft quote posts from my latest X bookmarks."

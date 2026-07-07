@@ -1,15 +1,28 @@
 # Agent Skills
 
-A growing library of **Claude Code Skills** (Clawdbot AgentSkills) — written for designers.
+A growing library of portable **AgentSkills** for designers using **Codex**, **Claude Code**, **Cursor**, and other AI coding agents.
 
-Portable by default: each skill should work for any user, repo, or workspace unless the user supplies project-specific context.
+These are Clawdbot-style skill folders: concise `SKILL.md` playbooks with optional references, articles, scripts, and assets. The goal is simple: turn good prompts, workflows, style systems, capture recipes, and debugging habits into versioned files an agent can load and follow.
 
-These skills are meant to feel like Claude Code skills, but tuned for **web design + prompting + shipping**:
-- practical workflows
-- checklists
-- copy/paste recipes
-- common pitfalls
-- versionable files you can reuse (not one-off chat answers)
+Portable by default. Each skill should work for any user, repo, or workspace unless the user supplies project-specific context through local agent instructions.
+
+Use these skills when you want:
+- repeatable design direction
+- procedural implementation steps
+- copy/paste snippets
+- common pitfalls and guardrails
+- reusable workflows instead of one-off chat answers
+
+---
+
+## Agent support
+
+The format is intentionally plain Markdown and folder-based.
+
+- **Codex**: load the relevant `SKILL.md` before acting. Repo behavior belongs in `AGENTS.md`; browser work in this repo should use the Codex browser.
+- **Claude Code**: reference the relevant skill from `CLAUDE.md`, copy it into a Claude skills setup, or open the `SKILL.md` directly as working context.
+- **Cursor**: point Cursor rules or chat context at the specific skill folder. Keep reusable snippets, constraints, and defaults easy to paste.
+- **Other agents**: use the same contract: read the narrowest matching skill first, then follow its steps and linked references.
 
 ---
 
@@ -33,12 +46,25 @@ Screenshots and examples carry:
 - layout rhythm
 - icon style
 
+### 4) Skills are operating procedures
+Good skills tell the agent exactly when to use them, what to do first, what defaults to apply, and what mistakes to avoid.
+
 ---
 
 ## Repo structure
 
 ```txt
 agent-skills/
+  codex/
+    audit-verify-explain-grade-5/
+      SKILL.md
+    daily-ui-inspiration-capture/
+      SKILL.md
+  media/
+    aura-asset-images/
+      SKILL.md
+    unsplash-asset-images/
+      SKILL.md
   ui/
     design-first-ui-prompting/
       SKILL.md
@@ -83,16 +109,53 @@ agent-skills/
       REFERENCES.md
 ```
 
+Folder contract:
+
+```txt
+agent-skills/<category>/<skill-name>/
+  SKILL.md            # required: frontmatter + workflow
+  REFERENCES.md       # optional: links only
+  ARTICLE.md          # optional: long-form explanation
+  assets/             # optional: images, templates, examples
+  scripts/            # optional: helper scripts
+```
+
 Conventions:
-- `SKILL.md` is the skill (what the agent loads + follows).
-- `REFERENCES.md` is links only (keep SKILL.md lean).
+- `SKILL.md` is the skill an agent loads and follows.
+- `REFERENCES.md` is links only. Keep `SKILL.md` lean.
 - Keep skills **procedural** (steps, patterns, guardrails), not encyclopedic.
+- Prefer explicit triggers: "Use when..." beats vague descriptions.
+- Prefer defaults: durations, spacing, hierarchy, commands, and acceptance checks.
 
 ---
 
-## Current skills
+## Current library
 
-### UI
+This snapshot contains **75 skills** across four categories.
+
+Use `find agent-skills -name SKILL.md | sort` for the source of truth.
+
+### Codex workflows (10)
+
+Operational skills for repeatable Codex work:
+- `audit-verify-explain-grade-5` - audit work, verify claims, and explain results simply.
+- `customer-email-draft-threads` - draft-only Gmail support triage with per-draft project threads.
+- `customer-support-verification` - final support-work safety and evidence gate.
+- `daily-ui-inspiration-capture` - recurring UI inspiration bundles with screenshots, motion, and prompts.
+- `html-to-interaction-prompts` - turn HTML pages into screenshot-backed interaction prompt articles.
+- `optimize-web-animations` - profile and reduce animation, canvas, and WebGL performance cost.
+- `performance-profiling` - Apple platform profiling with Instruments, diagnostics, and MetricKit.
+- `stitched-full-page-capture` - reliable full-page screenshots for lazy, animated, and WebGL pages.
+- `video-to-superprompt` - analyze reference videos into detailed recreation prompts.
+- `x-bookmark-quote-posts` - turn recent X bookmarks into source-backed quote-post drafts.
+
+### Media (2)
+
+Image sourcing skills:
+- `aura-asset-images` - use Aura Assets for stock-style design and marketing imagery.
+- `unsplash-asset-images` - pick high-quality Unsplash assets by use case, crop, and ratio.
+
+### UI (1)
 
 #### `design-first-ui-prompting`
 Design-first UI prompting system:
@@ -105,92 +168,25 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Web design
+### Web design (62)
 
-#### `pricing-page`
-High-conversion SaaS pricing page skill:
-- structure (above/below fold)
-- plan design + comparison patterns
-- conversion strategies + copy templates
-- SEO/AEO checklist + FAQ schema hints
-- layout types (3-card, slider, persona split, enterprise)
+Conversion and implementation:
+- `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`
 
-#### `landing-page`
-High-conversion landing page (single-offer) skill:
-- structure + section order
-- layout types (classic, long-form, minimal, comparison)
-- conversion strategies
-- SEO/AEO guidance (when to index vs noindex)
+Motion and scroll:
+- `animation-on-scroll`, `cinematic-gsap-lenis-motion-system`, `cinematic-scroll-storytelling`, `gsap`, `gsap-scrolltrigger-storytelling`, `marquee-loop`, `masked-reveal`, `staggered-word-reveal`
 
-#### `gsap`
-GSAP animation skill:
-- timelines, staggers, ScrollTrigger
-- performance + cleanup patterns (SPA/React)
+WebGL, canvas, and 3D:
+- `background-grid-webgl`, `cobejs`, `globe-gl`, `globe-particles`, `matterjs`, `threejs`, `unicorn-studio`, `vantajs`, `webgl-3d-object`, `webgl-laser`
 
-#### `threejs`
-Three.js 3D scene skill:
-- scene/camera/renderer mental model
-- loaders + controls
-- performance + disposal/cleanup
+CSS treatments and details:
+- `beautiful-shadows`, `company-logos`, `container-lines`, `corner-diagonals`, `corner-lasers`, `css-alpha-masking`, `css-border-gradient`, `gooey-blob-system`, `number-details`, `progressive-blur`, `solar-duotone-bold`
 
-#### `matterjs`
-Matter.js physics skill:
-- engine/world/render setup
-- bodies and interaction patterns
-- cleanup for SPA usage
+Layout systems:
+- `agency-grid-layout-minimal`, `book-serif-index`, `editorial-tech`, `framed-grid-layout`, `image-first-grid-layout`, `nested-container-frames`, `split-layout-technical`, `technical-wireframe-info-layout`
 
-#### `globe-gl`
-Globe.GL data visualization skill:
-- globe setup and textures
-- data layers (points, arcs, polygons)
-- sizing and performance tips
-
-#### `tailwindcss`
-Tailwind CSS skill:
-- responsive/state variants
-- safe dynamic class patterns
-- component extraction + conventions
-
-#### `css-border-gradient`
-CSS gradient border utility:
-- masked pseudo-element technique
-- Tailwind-friendly usage
-- quick customization knobs
-
-#### `progressive-blur`
-Layered progressive blur overlay:
-- top or bottom blur stacks
-- performance considerations
-- adjustable height and steps
-
-#### `animation-on-scroll`
-Scroll-reveal animation trigger:
-- IntersectionObserver setup
-- Tailwind animation class usage
-- timing and trigger tweaks
-
-#### `css-alpha-masking`
-Alpha masking utilities:
-- horizontal or vertical edge fades
-- Safari-friendly mask-image fallback
-- inline or class usage
-
-#### `vantajs`
-Vanta.js animated background skill:
-- init/resize/destroy
-- performance + fallbacks
-
-#### `cobejs`
-cobe globe skill:
-- canvas sizing/DPR
-- markers + onRender rotation
-- resize patterns
-
-#### `unicorn-studio`
-Unicorn Studio embed skill:
-- embed patterns + attributes
-- performance knobs (scale/dpi/fps/lazyload)
-- common site-builder pitfalls
+Visual styles and page moods:
+- `atmosphere-background`, `blue-cloudy-clean-modern`, `blue-laser-clean-glass-layout`, `bright-green-tech-system-webgl`, `clean-minimal-beige-light-mode`, `dark-blue-contrasting-clean`, `dark-glass-clean-layout`, `dither-background`, `dither-laser-dark-mode`, `framed-tech-dark-border-gradient`, `funky-purple-container-tech`, `glass-dark-mode-clock`, `glass-dark-ui`, `high-contrast-skeuomorphic-clean`, `light-mode-paper-technical`, `mesh-gradient-dark-blue-clean`, `nested-container-clean-agency`, `orange-clean-paper-saas`, `skeuomorphic-ui`, `tech-green-dark-mode-modern`
 
 ---
 
@@ -206,33 +202,45 @@ Unicorn Studio embed skill:
 3) (Optional) add `REFERENCES.md`:
 - doc links only
 
-4) Commit:
+4) Test the skill contract:
+- clear trigger
+- concrete workflow
+- reusable snippets or commands
+- pitfalls and acceptance checks
+- no secrets or private client info
+
+5) Commit:
 - small commits per skill
+- clear message, usually `Add <skill-name> skill` or `Update <skill-name> skill`
 
 ---
 
-## Roadmap (next skills)
+## Writing style
 
-Web design libraries / systems:
-- Framer Motion
-- Radix UI
-- shadcn/ui
-- Next.js patterns (app router, perf, SEO)
-- Webflow / Framer template checklists
+- Write like Meng To: skimmable, practical, confident.
+- Prefer constraints and defaults.
+- Avoid fluff.
+- Keep long explanations in `ARTICLE.md`, not `SKILL.md`.
+- Keep references in `REFERENCES.md`, not the workflow.
 
-Design ops:
-- “Stylecards” (how to turn references into promptable systems)
-- “Changelog writing” (benefit-first release notes)
+---
+
+## Maintenance ideas
+
+- Keep category README files current as the library grows.
+- Add install notes for Codex, Claude Code, and Cursor once the preferred setup is stable.
+- Add lightweight validation for required frontmatter.
+- Keep imported skills portable: no secrets, no private paths, no hidden account assumptions.
 
 ---
 
 ## Repository
 
-GitHub: `<your-org>/Skills`
+GitHub: `https://github.com/MengTo/Skills`
 
 Push updates:
 ```bash
-cd <path-to-your-skills-repo>
+cd /Users/mengto/clawd/@MengTo/Skills
 git push origin main
 ```
 

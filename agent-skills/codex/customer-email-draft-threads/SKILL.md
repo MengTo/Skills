@@ -46,6 +46,7 @@ Use the detailed workflow in [references/runbook.md](references/runbook.md) when
    - The follow-up must ask the request owner whether the case is resolved yet.
    - It must briefly restate what the customer wants and what the request owner should do next.
    - It must repeat every hour until the request owner confirms the case is resolved; do not use a single delayed summary.
+   - When the request owner confirms the ticket is resolved, archive the canonical Codex support thread/chat with the thread archive tool, stop or pause unresolved follow-ups for that ticket, and report the archived thread id. Do not archive Gmail conversations as part of this cleanup.
 
 7. Report cleanly:
    - Use a markdown table with: Sender, Subject, Action, Draft Status, Risk, Next Step.

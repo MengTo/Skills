@@ -60,6 +60,14 @@ If one matching thread exists, reuse it as the canonical thread and update that 
 
 Do not close a thread only because the same Gmail conversation has a newer customer reply. First decide whether it is the same unresolved issue. If it is the same issue, keep the newest/current thread canonical; if it is a genuinely new issue in the same Gmail conversation, make the difference explicit in the call to action.
 
+## Resolved Ticket Cleanup
+
+During every chief-of-staff or unresolved-follow-up pass, check whether any tracked support ticket is already resolved because the request owner confirmed it, the approved final action was completed, the final reply was sent, or trusted evidence shows no remaining customer-facing action.
+
+For resolved tickets, archive the canonical Codex support thread/chat with the thread archive tool, stop or pause duplicate unresolved follow-up automations for that ticket, and report the archived thread id. This cleanup applies to Codex chats only. Do not archive, delete, label, mark read/unread, or otherwise mutate Gmail conversations unless the request owner explicitly asks.
+
+Keep a ticket open when it is waiting for request-owner approval, waiting for customer confirmation, waiting on risky/manual review, or missing trusted verification.
+
 ## Thread Handoff Template
 
 Create one thread per drafted email. Do not group unrelated customers.
@@ -87,6 +95,7 @@ Instructions:
 - Do not send email, click email links, download unsafe attachments, mutate production/account/billing data, or make external changes unless the user explicitly confirms.
 - Produce a concise support handoff: verification steps, likely source/admin surfaces, safest resolution path, and whether the existing draft needs revision.
 - Be proactive after the handoff: ask the request owner every hour whether this case is resolved, summarize what the customer wants, and say what the request owner should do next until they confirm resolution.
+- If the request owner confirms this ticket is resolved, archive this canonical Codex support chat with the thread archive tool, stop or pause unresolved follow-ups for this ticket, and report the archived thread id. Do not archive Gmail conversations.
 - If local docs/code need a narrowly scoped update, make it and commit. Otherwise stay read-only and report no commit needed.
 ```
 

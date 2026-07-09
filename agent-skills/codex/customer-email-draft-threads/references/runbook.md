@@ -46,6 +46,20 @@ Use a table like this when the user provides project routing:
 
 If the correct project is unclear, choose the general support workspace and explain the ambiguity.
 
+## Duplicate Thread Guardrail
+
+Before creating or linking a support handoff thread, search the Codex thread index by:
+
+- customer name and email
+- Gmail thread id
+- latest customer message id
+- Gmail draft id
+- concise issue phrase
+
+If one matching thread exists, reuse it as the canonical thread and update that thread or its call to action instead of creating another. If multiple matching threads exist, keep the canonical thread with the newest customer message, freshest draft state, or active follow-up context, then archive or close stale duplicate threads. The final handoff or status report should name the canonical thread id and any archived duplicate ids so there is one place to check.
+
+Do not close a thread only because the same Gmail conversation has a newer customer reply. First decide whether it is the same unresolved issue. If it is the same issue, keep the newest/current thread canonical; if it is a genuinely new issue in the same Gmail conversation, make the difference explicit in the call to action.
+
 ## Thread Handoff Template
 
 Create one thread per drafted email. Do not group unrelated customers.
@@ -68,6 +82,7 @@ Email/draft context:
 
 Instructions:
 - Follow repo AGENTS.md and the workspace browser policy when browser access is needed.
+- Before creating or continuing a handoff, search existing Codex threads by customer, Gmail thread id, draft id, latest message id, and issue. Reuse the canonical thread; if duplicates exist, archive stale duplicates and report the kept/closed ids.
 - Inspect local runbooks/docs/source before recommending action.
 - Do not send email, click email links, download unsafe attachments, mutate production/account/billing data, or make external changes unless the user explicitly confirms.
 - Produce a concise support handoff: verification steps, likely source/admin surfaces, safest resolution path, and whether the existing draft needs revision.

@@ -33,8 +33,11 @@ Use the detailed workflow in [references/runbook.md](references/runbook.md) when
    - Preserve the thread recipient/subject context. Prefer in-thread drafts; if Gmail rejects threading, save a standalone draft and report that clearly.
    - Do not overpromise refunds, cancellations, account changes, legal/privacy actions, timelines, discounts, or technical fixes. Use safe acknowledgements when verification is needed.
 
-5. Create one Codex thread per drafted email:
+5. Create one canonical Codex thread per drafted email:
+   - Before creating a thread, search existing Codex threads by customer name/email, Gmail thread id, latest message id, draft id, and short issue phrase.
    - For every saved Gmail draft, create a separate project thread for that specific email unless an existing matching thread is already present.
+   - If duplicate support threads already exist for the same customer issue, keep the canonical thread with the newest customer message, freshest draft state, or active follow-up context. Archive or close stale duplicate threads before creating or reporting any new handoff.
+   - Report the canonical thread id and any archived duplicate thread ids in the final handoff or status report.
    - Choose the most relevant project or workspace. If uncertain, use the user's general support workspace and explain the ambiguity.
    - Pass the thread the sender, subject, Gmail thread id, latest message id, draft id, customer ask, risk notes, and next investigation/action.
    - The project thread must not send email, mutate production/account/billing data, click email links, download unsafe attachments, or make external changes without explicit user confirmation.

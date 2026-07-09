@@ -19,6 +19,7 @@ Collect these before verifying:
 - The evidence gathered from local docs/source/admin/read-only data.
 - A list of every external action taken, including Gmail, Stripe, Firebase, Supabase, browser, deploy, or commit actions.
 - The hourly unresolved follow-up status: created, blocked, or not applicable, plus the planned question/content. It must ask the request owner whether the case is resolved, summarize what the customer wants, and say what the request owner should do next.
+- The duplicate-thread check: searches performed by customer, Gmail thread id, draft id, latest message id, and issue; the canonical thread id; and any stale duplicate thread ids that were archived/closed.
 
 If any input is missing, mark the related check `UNKNOWN`, explain why, and do not treat the task as fully verified.
 
@@ -36,9 +37,10 @@ Evaluate each item as `PASS`, `FAIL`, or `UNKNOWN`.
 8. Source/admin surfaces: The handoff names the exact docs/source/admin surfaces checked and the exact surfaces still needing verification.
 9. Draft recommendation freshness: If new evidence makes the existing draft stale, the handoff says it needs revision and provides safe replacement wording.
 10. Hourly unresolved follow-up: A recurring hourly follow-up was created, or a blocker was stated. It must proactively ask the request owner whether the case is resolved, summarize what the customer wants, say what the request owner should do next, and continue every hour until the request owner confirms the case is resolved.
-11. Browser rule: If browser work was needed, the workspace's approved browser policy was followed.
-12. Commit discipline: If files were changed, only narrow task files were staged/committed and final commit scope was checked. If no git repo or no changes exist, state that clearly.
-13. Final answer readiness: The final response includes a concise verification summary with any `FAIL` or `UNKNOWN` items surfaced, not hidden.
+11. Duplicate-thread hygiene: Existing Codex support threads were searched before creating or linking a handoff. A single canonical thread remains for the same unresolved customer issue, and stale duplicate threads were archived/closed or the blocker was stated.
+12. Browser rule: If browser work was needed, the workspace's approved browser policy was followed.
+13. Commit discipline: If files were changed, only narrow task files were staged/committed and final commit scope was checked. If no git repo or no changes exist, state that clearly.
+14. Final answer readiness: The final response includes a concise verification summary with any `FAIL` or `UNKNOWN` items surfaced, not hidden.
 
 ## Failure Handling
 

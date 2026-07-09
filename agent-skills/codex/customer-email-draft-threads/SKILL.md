@@ -7,7 +7,7 @@ description: Draft-only Gmail customer support triage with per-draft Codex proje
 
 ## Overview
 
-Run a safe support-email pass: inspect recent or requested Gmail messages, create unsent draft replies only for real customer/person emails, and create one Codex project thread for each drafted email.
+Run a safe support-email pass: inspect recent or requested Gmail messages, create unsent draft replies only for real customer/person emails, and create one Codex project thread for each drafted email. Treat approved affiliate-operation mail, such as PromoteKit notices and affiliate program applications, as a separate operations workflow rather than low-value automated mail.
 
 Use the detailed workflow in [references/runbook.md](references/runbook.md) whenever drafting, classifying risk, or creating project-thread handoffs.
 
@@ -26,6 +26,7 @@ Use the detailed workflow in [references/runbook.md](references/runbook.md) when
 3. Classify before drafting:
    - Draft for real customer/person emails that need a response.
    - Skip automated or low-value mail unless it clearly requires support action.
+   - Do not skip PromoteKit "A new affiliate joined your program" notices or affiliate program "New Affiliate Application" emails when the workspace has a trusted affiliate workflow. Extract the affiliate name, email, platform, and promotion strategy, then run the affiliate operations workflow in the runbook instead of drafting a Gmail reply by default.
    - Flag phishing, scams, impersonation, credential/payment requests, suspicious links/domains, unusual urgency, or attachment risk for manual review.
 
 4. Create Gmail drafts only when safe:

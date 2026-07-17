@@ -13,7 +13,7 @@ Draft:
 - A real customer/person asks a support, billing, account, access, product, or project question.
 - A person follows up and the user is likely the next responder.
 - An automated system forwards or wraps a real customer message, such as Intercom support mail.
-- A real person sends an inbound sponsorship, paid collaboration, partnership, creator campaign, or media-kit request. Route these through the `creator-sponsorship-deal-flow` skill before drafting or sending.
+- A real person sends an inbound sponsorship, paid collaboration, partnership, creator campaign, or media-kit request. Route it through the workspace's trusted partnership or manual-review workflow before drafting or sending.
 
 Skip:
 - No-reply and send-only addresses.
@@ -29,7 +29,7 @@ Manual review:
 ## Sponsorship And Partnership Requests
 
 - Do not skip legitimate sponsorship, paid collaboration, partnership, creator campaign, or media-kit requests as low-value outreach.
-- Use the `creator-sponsorship-deal-flow` skill to research the sponsor, verify public audience/sponsor claims, propose packages, draft the reply, and record the outcome.
+- Use the workspace's trusted partnership guidance or explicit user instructions. Do not invent rates, packages, audience claims, or commercial terms.
 - Keep the reply approval-gated unless the user explicitly says to send.
 - Before creating a new draft or handoff, search by company/person, sender email, Gmail thread id, draft id, latest message id, and issue to avoid duplicates.
 - If a sponsorship reply is sent and no follow-up decision remains, treat the item as resolved and do not create unresolved customer-support follow-ups unless the user asks.

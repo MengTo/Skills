@@ -146,16 +146,15 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **78 skills** across four categories.
+This snapshot contains **77 skills** across four categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### Codex workflows (13)
+### Codex workflows (12)
 
 Operational skills for repeatable Codex work:
 - `audit-verify-explain-grade-5` - audit work, verify claims, and explain results simply.
 - `browser-video-recording` - render polished browser screen-recording videos from scripted UI scenes.
-- `creator-sponsorship-deal-flow` - research, draft, and track creator sponsorship opportunities.
 - `customer-email-draft-threads` - draft-only Gmail support triage with per-draft project threads.
 - `customer-support-verification` - final support-work safety and evidence gate.
 - `daily-ui-inspiration-capture` - recurring UI inspiration bundles with screenshots, motion, and prompts.

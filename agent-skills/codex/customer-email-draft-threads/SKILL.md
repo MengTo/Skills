@@ -26,7 +26,7 @@ Use the detailed workflow in [references/runbook.md](references/runbook.md) when
 3. Classify before drafting:
    - Draft for real customer/person emails that need a response.
    - Skip automated or low-value mail unless it clearly requires support action.
-   - Treat inbound sponsorship, paid collaboration, partnership, creator campaign, and media-kit requests as actionable operations mail. Use the `creator-sponsorship-deal-flow` skill instead of ordinary support drafting.
+   - Treat inbound sponsorship, paid collaboration, partnership, creator campaign, and media-kit requests as actionable operations mail. Keep them approval-gated and route them through the workspace's trusted partnership or manual-review workflow instead of ordinary product-support drafting.
    - Do not skip PromoteKit "A new affiliate joined your program" notices or affiliate program "New Affiliate Application" emails when the workspace has a trusted affiliate workflow. Extract the affiliate name, email, platform, and promotion strategy, then run the affiliate operations workflow in the runbook instead of drafting a Gmail reply by default.
    - Flag phishing, scams, impersonation, credential/payment requests, suspicious links/domains, unusual urgency, or attachment risk for manual review.
 

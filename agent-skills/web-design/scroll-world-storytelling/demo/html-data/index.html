@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" data-renderer="dom-svg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An evidence-led scroll story made with semantic HTML, SVG, charts, and typography.">
+  <title>The Contract — Data &amp; Typography</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #ece7dc;
+      --ink: #171817;
+      --muted: #6e706b;
+      --line: rgba(23,24,23,.22);
+      --red: #e14c2c;
+      --blue: #1f55b6;
+      --progress: 0;
+      --value: 18;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body { margin: 0; min-width: 320px; background: var(--paper); color: var(--ink); font-family: "Arial Narrow", "Avenir Next Condensed", "Roboto Condensed", sans-serif; }
+    a { color: inherit; }
+    .topbar { position: fixed; z-index: 8; inset: 0 0 auto; min-height: 66px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; padding: 0 24px; border-bottom: 1px solid var(--line); background: rgba(236,231,220,.94); text-transform: uppercase; letter-spacing: .16em; font-size: 10px; }
+    .back { justify-self: start; text-decoration: none; }
+    .back::before { content: "←"; color: var(--red); margin-right: 10px; }
+    .mode { color: var(--muted); }
+    .count { justify-self: end; font-variant-numeric: tabular-nums; }
+    .layout { display: grid; grid-template-columns: minmax(320px, .83fr) minmax(520px, 1.17fr); }
+    .chapters { position: relative; z-index: 2; border-right: 1px solid var(--line); }
+    .chapter { min-height: 108vh; display: flex; align-items: center; padding: 14vh clamp(24px,5vw,76px); border-bottom: 1px solid var(--line); }
+    .copy { max-width: 540px; opacity: .22; transform: translateY(28px); transition: opacity .3s, transform .45s cubic-bezier(.22,1,.36,1); }
+    .chapter.is-active .copy { opacity: 1; transform: none; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; color: var(--red); text-transform: uppercase; letter-spacing: .2em; font-size: 10px; }
+    .eyebrow::before { content: ""; width: 28px; height: 2px; background: currentColor; }
+    h1,h2 { max-width: 700px; margin: 22px 0 25px; font: 400 clamp(54px,7.2vw,108px)/.82 Georgia,"Times New Roman",serif; letter-spacing: -.065em; text-wrap: balance; }
+    .copy p { max-width: 500px; margin: 0; color: #555751; font-size: clamp(17px,1.8vw,21px); line-height: 1.55; text-wrap: balance; }
+    .annotation { display: inline-block; margin-top: 28px; padding-top: 8px; border-top: 1px solid var(--ink); text-transform: uppercase; letter-spacing: .14em; font-size: 9px; }
+    .cta { display: inline-flex; align-items: center; gap: 16px; margin-top: 34px; padding: 15px 20px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); text-decoration: none; text-transform: uppercase; letter-spacing: .16em; font-size: 10px; }
+    .cta::after { content: "↗"; color: #ff8d64; font-size: 18px; }
+    .stage-column { position: relative; }
+    .stage { position: sticky; top: 0; height: 100vh; padding: 92px clamp(24px,4vw,64px) 46px; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; }
+    .stage-head { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); text-transform: uppercase; letter-spacing: .16em; font-size: 9px; }
+    .figure { display: grid; grid-template-columns: .62fr 1.38fr; align-items: end; gap: clamp(24px,4vw,64px); min-height: 0; }
+    .metric { align-self: center; }
+    .metric-value { display: flex; align-items: flex-start; font: 400 clamp(92px,12vw,196px)/.72 Georgia,"Times New Roman",serif; letter-spacing: -.09em; }
+    .metric-value span:last-child { margin: 5px 0 0 7px; font: 400 22px/1 Arial,sans-serif; letter-spacing: 0; color: var(--red); }
+    .metric-label { margin-top: 22px; color: var(--muted); text-transform: uppercase; letter-spacing: .16em; font-size: 9px; }
+    .chart { width: 100%; min-height: 280px; align-self: center; overflow: visible; }
+    .gridline { stroke: rgba(23,24,23,.14); stroke-width: 1; }
+    .axis-label { fill: #777973; font: 9px Arial,sans-serif; letter-spacing: .08em; }
+    .trend { fill: none; stroke: var(--blue); stroke-width: 4; stroke-linecap: square; stroke-linejoin: bevel; stroke-dasharray: 620; stroke-dashoffset: calc(620 - 620 * var(--progress)); }
+    .trend-shadow { fill: none; stroke: rgba(31,85,182,.14); stroke-width: 13; }
+    .point { fill: var(--paper); stroke: var(--blue); stroke-width: 3; opacity: .2; transition: opacity .2s, fill .2s; }
+    .point.is-active { fill: var(--red); stroke: var(--red); opacity: 1; }
+    .bars { display: grid; grid-template-columns: repeat(6,1fr); align-items: end; gap: 8px; height: 76px; border-bottom: 1px solid var(--ink); }
+    .bar { height: calc(var(--bar) * 1%); min-height: 2px; background: var(--ink); transform-origin: bottom; transform: scaleY(var(--shown, .05)); transition: transform .25s ease; }
+    .bar.is-active { background: var(--red); }
+    .words { position: absolute; inset: auto 0 24%; pointer-events: none; overflow: hidden; white-space: nowrap; opacity: .055; }
+    .word { display: none; font: 400 clamp(100px,17vw,260px)/.75 Georgia,serif; letter-spacing: -.08em; transform: translateX(calc(13% - var(--progress) * 18%)); }
+    .word.is-active { display: block; }
+    .foot { display: flex; align-items: end; justify-content: space-between; gap: 30px; }
+    .rail { flex: 1; height: 4px; background: rgba(23,24,23,.12); }
+    .rail i { display: block; width: calc(var(--progress) * 100%); height: 100%; background: var(--red); }
+    .legend { display: flex; gap: 18px; color: var(--muted); text-transform: uppercase; letter-spacing: .13em; font-size: 8px; }
+    .legend span::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px; background: var(--blue); }
+    .legend span:last-child::before { background: var(--red); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    :focus-visible { outline: 3px solid var(--blue); outline-offset: 5px; }
+    @media (max-width: 900px) {
+      .layout { display: block; }
+      .stage-column { position: fixed; inset: 66px 0 auto; z-index: 1; height: 42vh; background: var(--paper); border-bottom: 1px solid var(--line); }
+      .stage { height: 42vh; padding: 24px 22px 18px; }
+      .chapters { z-index: 2; margin-top: 42vh; border-right: 0; background: var(--paper); }
+      .chapter { min-height: 92vh; align-items: start; padding: 9vh 22px 12vh; }
+      .copy { padding: 24px 0; }
+      .figure { grid-template-columns: .62fr 1.38fr; gap: 18px; }
+      .metric-value { font-size: clamp(68px,20vw,120px); }
+      .chart { min-height: 180px; height: 24vh; }
+      .bars,.words,.stage-head .series { display: none; }
+    }
+    @media (max-width: 560px) {
+      .topbar { grid-template-columns: 1fr auto; padding-inline: 18px; }
+      .mode { display: none; }
+      .figure { grid-template-columns: .58fr 1.42fr; }
+      h1,h2 { font-size: clamp(49px,16vw,76px); }
+      .copy p { font-size: 16px; }
+      .metric-label { max-width: 12ch; line-height: 1.4; }
+      .legend { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .layout { display: block; }
+      .stage-column { position: relative; height: auto; inset: auto; }
+      .stage { position: relative; height: auto; min-height: 62vh; }
+      .chapters { margin: 0; background: var(--paper); }
+      .chapter { min-height: auto; padding: 72px 24px; }
+      .copy,.chapter.is-active .copy { opacity: 1; transform: none; transition: none; }
+      .bar { transform: scaleY(1); transition: none; }
+      .trend { stroke-dashoffset: 0; }
+      .words { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="../">Three modes</a>
+    <span class="mode">Mode 03 / HTML · data · type</span>
+    <span class="count"><b id="current">01</b> / 06</span>
+  </header>
+
+  <main class="layout">
+    <div class="chapters">
+      <section class="chapter is-active" id="destination"><div class="copy"><span class="eyebrow">01 / Destination</span><h1>Define arrival.</h1><p>Start with the outcome. The route becomes useful only after the destination is measurable.</p><span class="annotation">Illustrative signal / 18</span></div></section>
+      <section class="chapter" id="fence"><div class="copy"><span class="eyebrow">02 / Fence</span><h2>Limit the field.</h2><p>Rules reduce plausible wrong answers and keep the work inside the promised world.</p><span class="annotation">Illustrative signal / 31</span></div></section>
+      <section class="chapter" id="bar"><div class="copy"><span class="eyebrow">03 / Bar</span><h2>Expose the standard.</h2><p>A visible quality bar turns taste into a condition that can be checked.</p><span class="annotation">Illustrative signal / 48</span></div></section>
+      <section class="chapter" id="loop"><div class="copy"><span class="eyebrow">04 / Loop</span><h2>Close the gap.</h2><p>Every verification pass finds the largest deviation and removes it.</p><span class="annotation">Illustrative signal / 63</span></div></section>
+      <section class="chapter" id="route"><div class="copy"><span class="eyebrow">05 / Route</span><h2>Follow evidence.</h2><p>The path is no longer a guess when each turn leaves a visible trace.</p><span class="annotation">Illustrative signal / 81</span></div></section>
+      <section class="chapter" id="proof"><div class="copy"><span class="eyebrow">06 / Proof</span><h2>Show the arrival.</h2><p>The finish line is evidence: the intended story, the working page, and the verified browser state.</p><a class="cta" href="../threejs/">See the spatial mode</a></div></section>
+    </div>
+
+    <aside class="stage-column" aria-label="Illustrative evidence chart">
+      <div class="stage">
+        <div class="stage-head"><span>Evidence ledger / illustrative</span><span class="series">Series EC–06</span></div>
+        <div class="figure">
+          <div class="metric"><div class="metric-value"><span id="value">18</span><span>%</span></div><div class="metric-label">Contract clarity index</div></div>
+          <svg class="chart" viewBox="0 0 620 360" role="img" aria-labelledby="chart-title chart-desc">
+            <title id="chart-title">Illustrative contract clarity series</title>
+            <desc id="chart-desc">Six values rise from 18 to 94 across Destination, Fence, Bar, Loop, Route, and Proof.</desc>
+            <g><line class="gridline" x1="52" y1="40" x2="600" y2="40"/><line class="gridline" x1="52" y1="140" x2="600" y2="140"/><line class="gridline" x1="52" y1="240" x2="600" y2="240"/><line class="gridline" x1="52" y1="320" x2="600" y2="320"/></g>
+            <g><text class="axis-label" x="8" y="43">100</text><text class="axis-label" x="14" y="143">066</text><text class="axis-label" x="14" y="243">033</text><text class="axis-label" x="20" y="323">000</text></g>
+            <path class="trend-shadow" d="M62 270 L168 234 L274 186 L380 142 L486 88 L592 54"/>
+            <path class="trend" d="M62 270 L168 234 L274 186 L380 142 L486 88 L592 54"/>
+            <g><circle class="point is-active" cx="62" cy="270" r="7"/><circle class="point" cx="168" cy="234" r="7"/><circle class="point" cx="274" cy="186" r="7"/><circle class="point" cx="380" cy="142" r="7"/><circle class="point" cx="486" cy="88" r="7"/><circle class="point" cx="592" cy="54" r="7"/></g>
+          </svg>
+        </div>
+        <div class="foot">
+          <div class="rail" aria-hidden="true"><i></i></div>
+          <div class="legend"><span>Trajectory</span><span>Current proof</span></div>
+        </div>
+        <div class="bars" aria-hidden="true"><i class="bar is-active" style="--bar:18"></i><i class="bar" style="--bar:31"></i><i class="bar" style="--bar:48"></i><i class="bar" style="--bar:63"></i><i class="bar" style="--bar:81"></i><i class="bar" style="--bar:94"></i></div>
+        <div class="words" aria-hidden="true"><span class="word is-active">Destination</span><span class="word">Fence</span><span class="word">Bar</span><span class="word">Loop</span><span class="word">Route</span><span class="word">Proof</span></div>
+      </div>
+      <table class="sr-only">
+        <caption>Illustrative contract clarity values</caption>
+        <thead><tr><th>Chapter</th><th>Value</th></tr></thead>
+        <tbody><tr><td>Destination</td><td>18</td></tr><tr><td>Fence</td><td>31</td></tr><tr><td>Bar</td><td>48</td></tr><tr><td>Loop</td><td>63</td></tr><tr><td>Route</td><td>81</td></tr><tr><td>Proof</td><td>94</td></tr></tbody>
+      </table>
+    </aside>
+  </main>
+
+  <script>
+    (()=>{
+      const values=[18,31,48,63,81,94];
+      const chapters=[...document.querySelectorAll('.chapter')];
+      const points=[...document.querySelectorAll('.point')];
+      const bars=[...document.querySelectorAll('.bar')];
+      const words=[...document.querySelectorAll('.word')];
+      const value=document.querySelector('#value');
+      const current=document.querySelector('#current');
+      let last=-1;
+
+      function update(){
+        const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+        const progress=Math.min(1,Math.max(0,scrollY/max));
+        const index=Math.min(values.length-1,Math.floor(progress*values.length));
+        document.documentElement.style.setProperty('--progress',progress.toFixed(4));
+        value.textContent=String(values[index]).padStart(2,'0');
+        if(index!==last){
+          chapters.forEach((el,i)=>el.classList.toggle('is-active',i===index));
+          points.forEach((el,i)=>el.classList.toggle('is-active',i===index));
+          bars.forEach((el,i)=>{el.classList.toggle('is-active',i===index);el.style.setProperty('--shown',i<=index?'1':'.05');});
+          words.forEach((el,i)=>el.classList.toggle('is-active',i===index));
+          current.textContent=String(index+1).padStart(2,'0');
+          last=index;
+        }
+      }
+      addEventListener('scroll',update,{passive:true});
+      addEventListener('resize',update,{passive:true});
+      update();
+    })();
+  </script>
+</body>
+</html>

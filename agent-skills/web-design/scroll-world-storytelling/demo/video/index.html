@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A scroll-scrubbed cinematic story about defining the goal, rules, and bar.">
+  <title>The Contract — Video Scroll World</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #050608;
+      --paper: #f1eadb;
+      --muted: #aaa69b;
+      --line: rgba(241,234,219,.2);
+      --accent: #ffb33e;
+      --cyan: #69e8ff;
+      --progress: 0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--ink); color: var(--paper); }
+    body { min-width: 320px; font-family: "Arial Narrow", "Avenir Next Condensed", "Roboto Condensed", sans-serif; }
+    a { color: inherit; }
+    .stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: #050608; }
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(4,5,7,.88) 0%, rgba(4,5,7,.5) 34%, transparent 68%),
+        linear-gradient(0deg, rgba(4,5,7,.7), transparent 32%);
+      pointer-events: none;
+    }
+    video { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: saturate(.92) contrast(1.08); }
+    .grain { position: absolute; inset: -50%; opacity: .055; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E"); transform: rotate(8deg); }
+    .topbar {
+      position: fixed;
+      z-index: 5;
+      top: 0;
+      left: 0;
+      right: 0;
+      min-height: 66px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 20px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(#050608cc, transparent);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 10px;
+    }
+    .back { text-decoration: none; justify-self: start; }
+    .back::before { content: "←"; margin-right: 10px; color: var(--accent); }
+    .mode { color: var(--muted); }
+    .chapter-count { justify-self: end; font-variant-numeric: tabular-nums; }
+    .progress { position: fixed; z-index: 6; top: 65px; left: 0; right: 0; height: 2px; background: rgba(255,255,255,.08); }
+    .progress i { display: block; width: calc(var(--progress) * 100%); height: 100%; background: linear-gradient(90deg,var(--accent),var(--cyan)); box-shadow: 0 0 16px var(--accent); }
+    .route {
+      position: fixed;
+      z-index: 4;
+      top: 50%;
+      right: 24px;
+      display: grid;
+      gap: 17px;
+      transform: translateY(-50%);
+    }
+    .route a { width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(241,234,219,.45); text-indent: -999px; overflow: hidden; transition: background .25s, transform .25s; }
+    .route a[aria-current="step"] { background: var(--accent); border-color: var(--accent); transform: scale(1.35); box-shadow: 0 0 15px var(--accent); }
+    .chapters { position: relative; z-index: 2; }
+    .chapter { min-height: 118vh; display: flex; align-items: center; padding: 16vh clamp(24px, 7vw, 104px); }
+    .copy { width: min(620px, calc(100vw - 90px)); opacity: .18; transform: translateY(38px); transition: opacity .35s ease, transform .5s cubic-bezier(.22,1,.36,1); }
+    .chapter.is-active .copy { opacity: 1; transform: translateY(0); }
+    .eyebrow { display: inline-flex; align-items: center; gap: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .2em; font-size: 11px; }
+    .eyebrow::before { content: ""; width: 36px; height: 1px; background: currentColor; }
+    h1, h2 { margin: 22px 0 24px; font: 400 clamp(56px, 8.4vw, 126px)/.82 Georgia, "Times New Roman", serif; letter-spacing: -.065em; text-wrap: balance; }
+    .copy p { max-width: 520px; margin: 0; color: #c2beb4; font-size: clamp(17px, 2vw, 22px); line-height: 1.5; text-wrap: balance; }
+    .cta { display: inline-flex; align-items: center; gap: 16px; margin-top: 34px; padding: 15px 20px; border: 1px solid rgba(241,234,219,.46); text-decoration: none; text-transform: uppercase; letter-spacing: .16em; font-size: 10px; background: rgba(5,6,8,.32); backdrop-filter: blur(12px); }
+    .cta::after { content: "↗"; color: var(--accent); font-size: 18px; }
+    .scroll-cue { position: fixed; z-index: 5; left: 24px; bottom: 22px; display: flex; align-items: center; gap: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .14em; font-size: 9px; }
+    .scroll-cue::before { content: ""; width: 1px; height: 30px; background: linear-gradient(var(--paper),transparent); }
+    .fallback { display: none; }
+    :focus-visible { outline: 2px solid #d7ff66; outline-offset: 5px; }
+    @media (max-width: 680px) {
+      .topbar { grid-template-columns: 1fr auto; padding-inline: 18px; }
+      .mode { display: none; }
+      .chapter-count { grid-column: 2; }
+      .stage::after { background: linear-gradient(0deg,rgba(4,5,7,.93) 0%,rgba(4,5,7,.48) 47%,transparent 78%); }
+      video { object-position: 62% center; }
+      .chapter { align-items: end; min-height: 110vh; padding: 20vh 22px 17vh; }
+      .copy { width: calc(100vw - 62px); }
+      h1, h2 { font-size: clamp(48px, 16vw, 76px); }
+      .copy p { font-size: 16px; max-width: 38ch; }
+      .route { right: 15px; gap: 13px; }
+      .scroll-cue { left: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .stage { position: sticky; top: 0; height: 56vh; }
+      .stage::after { background: linear-gradient(0deg,rgba(4,5,7,.68),transparent); }
+      video { display: none; }
+      .fallback { display: block; width: 100%; height: 100%; object-fit: cover; }
+      .topbar, .progress, .route, .scroll-cue { position: absolute; }
+      .chapters { background: var(--ink); }
+      .chapter { min-height: auto; padding: 72px 24px; border-top: 1px solid var(--line); }
+      .copy, .chapter.is-active .copy { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" aria-hidden="true">
+    <video id="world" muted playsinline preload="auto" poster="assets/contract-flight.webp">
+      <source src="assets/contract-flight.mp4" type="video/mp4">
+    </video>
+    <img class="fallback" src="assets/contract-flight.webp" alt="">
+    <div class="grain"></div>
+  </div>
+
+  <header class="topbar">
+    <a class="back" href="../">Three modes</a>
+    <span class="mode">Mode 01 / Video scrub</span>
+    <span class="chapter-count"><b id="current">01</b> / 06</span>
+  </header>
+  <div class="progress" role="progressbar" aria-label="Story progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+  <nav class="route" aria-label="Story chapters">
+    <a href="#destination" aria-label="Destination" aria-current="step">Destination</a>
+    <a href="#fence" aria-label="Fence">Fence</a>
+    <a href="#bar" aria-label="Bar">Bar</a>
+    <a href="#loop" aria-label="Loop">Loop</a>
+    <a href="#route" aria-label="Route">Route</a>
+    <a href="#proof" aria-label="Proof">Proof</a>
+  </nav>
+
+  <main class="chapters">
+    <section class="chapter is-active" id="destination">
+      <div class="copy"><span class="eyebrow">01 / Destination</span><h1>Name the arrival.</h1><p>A strong journey begins with the outcome, not a list of turns.</p></div>
+    </section>
+    <section class="chapter" id="fence">
+      <div class="copy"><span class="eyebrow">02 / Fence</span><h2>Draw the edges.</h2><p>Rules protect the story from drifting into a beautiful wrong answer.</p></div>
+    </section>
+    <section class="chapter" id="bar">
+      <div class="copy"><span class="eyebrow">03 / Bar</span><h2>Make quality visible.</h2><p>Define what finished looks like before the first frame is made.</p></div>
+    </section>
+    <section class="chapter" id="loop">
+      <div class="copy"><span class="eyebrow">04 / Loop</span><h2>Build. Verify. Close.</h2><p>Each pass finds the largest remaining gap and removes it.</p></div>
+    </section>
+    <section class="chapter" id="route">
+      <div class="copy"><span class="eyebrow">05 / Route</span><h2>Let the path emerge.</h2><p>When the contract is precise, the camera can find its own way through.</p></div>
+    </section>
+    <section class="chapter" id="proof">
+      <div class="copy"><span class="eyebrow">06 / Proof</span><h2>Arrive with evidence.</h2><p>The landing page is complete when the story, motion, and browser all agree.</p><a class="cta" href="../html-data/">See the evidence mode</a></div>
+    </section>
+  </main>
+  <div class="scroll-cue" aria-hidden="true">Scroll to conduct</div>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const video = document.querySelector('#world');
+      const chapters = [...document.querySelectorAll('.chapter')];
+      const dots = [...document.querySelectorAll('.route a')];
+      const current = document.querySelector('#current');
+      const progressbar = document.querySelector('.progress');
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+      let duration = 8;
+      let targetTime = 0;
+      let raf = 0;
+
+      video.addEventListener('loadedmetadata', () => {
+        duration = Number.isFinite(video.duration) ? video.duration : 8;
+        update();
+      }, { once: true });
+
+      function scrub() {
+        raf = 0;
+        if (reduce.matches || video.readyState < 1) return;
+        if (Math.abs(targetTime - video.currentTime) > .015) video.currentTime = targetTime;
+      }
+
+      function update() {
+        const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+        const progress = Math.min(1, Math.max(0, scrollY / max));
+        const index = Math.min(chapters.length - 1, Math.floor(progress * chapters.length));
+        root.style.setProperty('--progress', progress.toFixed(4));
+        progressbar.setAttribute('aria-valuenow', Math.round(progress * 100));
+        targetTime = progress * Math.max(.01, duration - .04);
+        chapters.forEach((chapter, i) => chapter.classList.toggle('is-active', i === index));
+        dots.forEach((dot, i) => i === index ? dot.setAttribute('aria-current', 'step') : dot.removeAttribute('aria-current'));
+        current.textContent = String(index + 1).padStart(2, '0');
+        if (!raf && !reduce.matches) raf = requestAnimationFrame(scrub);
+      }
+
+      addEventListener('scroll', update, { passive: true });
+      addEventListener('resize', update, { passive: true });
+      reduce.addEventListener('change', update);
+      update();
+    })();
+  </script>
+</body>
+</html>

@@ -1,60 +1,65 @@
 ---
 name: scroll-world-storytelling
-description: Turn an article, case study, brand narrative, product journey, or long-form story into a cinematic scroll-scrubbed landing page where one continuous visual world advances with scroll. Use when the user asks for a scroll world, fly-through landing page, article-to-website transformation, continuous camera story, immersive scrollytelling, video-scrubbed page, connected diorama journey, or a story-led alternative to ordinary stacked landing-page sections.
+description: "Turn an article, case study, brand narrative, product journey, or long-form story into a cinematic scroll-driven landing page using one of three renderers: scrubbed video, a real-time Three.js world, or semantic HTML/SVG data and typography. Use when the user asks for a scroll world, fly-through landing page, article-to-website transformation, animated planet, data scrollytelling, video-scrubbed page, connected visual journey, or story-led alternative to ordinary stacked sections."
 ---
 
 # Scroll World Storytelling
 
-Convert source material into a clear narrative journey, art-direct one connected world, and make scroll drive its camera or timeline. Preserve the source meaning while changing the presentation from document order to visual beats.
+Turn source material into one connected journey. Scroll advances a visual world and the copy reveals the story in deliberate beats.
 
-This is more specific than ordinary scroll animation. The visitor should feel like they travel through one place or one uninterrupted take, not watch unrelated sections fade in.
+The skill has exactly three production modes. Choose one primary mode before building:
+
+1. **Video scrub** — generated or filmed footage, mapped to scroll.
+2. **Three.js world** — a real-time 3D object, place, planet, or system.
+3. **HTML / data / type** — semantic DOM, SVG charts, metrics, and kinetic typography.
+
+Do not mix modes by default. A focused renderer produces a clearer concept, smaller test surface, and more reliable fallback.
 
 ## Start with the contract
 
-Write these three blocks before building:
+Write these blocks before implementation.
 
 ### Goal
 
-State one finish line in outcome language.
-
-> Turn the supplied story into a one-page journey with 5–7 memorable beats and one final action. A first-time visitor should understand the thesis, tension, proof, and payoff without reading the source.
+> Turn the supplied story into a one-page journey with 5–7 memorable beats and one final action. A first-time visitor should understand the thesis, tension, mechanism, proof, and payoff without reading the source.
 
 ### House rules
 
 - Preserve the source thesis, sequence, facts, and caveats. Never invent proof.
-- Use one connected world, one dominant camera grammar, and one art direction.
-- Let motion carry transitions; let copy explain meaning. Do not animate every word.
-- Keep one primary CTA. Navigation and utility controls stay visually quiet.
+- Use one connected world, one dominant motion grammar, and one art direction.
+- Let motion carry transitions; let copy explain meaning.
+- Keep one primary CTA. Keep navigation and utility controls quiet.
+- Keep native, reversible document scrolling. Never hijack the wheel.
 - Never spend generation credits, publish, deploy, or replace production files without approval.
-- Keep the builder and verifier separate. Do not accept the builder's own claim that the experience is finished.
+- Keep builder and verifier separate when agents are available.
 
 ### Bar
 
-- A visitor can explain the story arc after one pass.
-- No visible jump, flash, rewind, or velocity reversal at scene seams.
+- A visitor can explain the arc after one pass.
 - Scrolling works forward, backward, slowly, and with a fast flick.
+- No visible jump, flash, or unintended reversal at a seam.
 - The page remains legible on mobile and with reduced motion.
-- Every completion claim includes evidence: real browser behavior, console state, responsive checks, and seam screenshots or frame comparisons.
+- Every completion claim includes browser, console, responsive, and asset evidence.
 
-## Inspect before inventing
+## Read the whole source
 
-1. Read the complete source, not only its headline or opening.
-2. Inspect the target repo, framework, asset pipeline, and existing page structure.
-3. Collect supplied brand assets and 2–3 visual references when available.
-4. Separate source facts from presentation ideas.
-5. Identify the one action the landing page should earn.
+1. Read the complete article or narrative.
+2. Inspect the target repo, framework, asset pipeline, and current page.
+3. Separate source facts from presentation ideas.
+4. Collect supplied brand assets and 2–3 references when available.
+5. Identify the one action the story should earn.
 
-When the source is copyrighted and the user did not provide reuse rights, paraphrase the story beats and keep quotations short. Do not fabricate testimonials, metrics, or customer claims.
+When reuse rights are unclear, paraphrase the source and keep quotations short. Never fabricate testimonials, metrics, or customer claims.
 
 ## Build the story map
 
-Reduce the source to 5–7 beats. Use this default arc:
+Reduce the source to 5–7 beats:
 
-1. **Hook** — the promise, world, or surprising thesis.
-2. **Old way** — the friction or belief the story rejects.
-3. **New rule** — the central idea that changes the route.
-4. **Mechanism** — how the system, product, or process works.
-5. **Proof** — the strongest evidence, example, or consequence.
+1. **Hook** — the promise or surprising thesis.
+2. **Old way** — the friction or belief being rejected.
+3. **New rule** — the idea that changes the route.
+4. **Mechanism** — how the system works.
+5. **Proof** — the strongest evidence.
 6. **Payoff** — the transformed end state.
 7. **Action** — one next step.
 
@@ -62,118 +67,111 @@ Create a beat ledger before code:
 
 | Field | Constraint |
 | --- | --- |
-| id | short, stable slug |
-| scene | what physically exists in the world |
+| id | short stable slug |
+| scene | what exists in the visual world |
 | eyebrow | 2–4 words |
 | headline | 3–8 words |
 | body | one sentence, ideally under 24 words |
 | evidence | exact source fact or asset |
-| camera move | one clear verb phrase |
+| motion | one clear verb phrase |
 | scroll weight | 0.7–1.8 viewport heights |
-| CTA | only on the final beat unless required earlier |
+| CTA | final beat only unless required earlier |
 
-Do not map every paragraph to a scene. Combine repeated arguments and give the strongest ideas more scroll distance.
+Combine repeated arguments. Do not turn every paragraph into a scene.
 
 ## Write the style bible
 
-Extract or define:
+Define:
 
 - Mood: three precise adjectives.
-- World metaphor: one place that can contain every beat.
+- World metaphor: one place or system that can hold every beat.
 - Palette: 4–6 named colors with one dominant field and one accent.
 - Typography: one display voice and one reading voice.
-- Material language: clay, paper, glass, architectural, photographic, mechanical, or another single system.
-- Camera grammar: forward glide, orbit, crane, lateral track, dive, or aerial hop.
+- Material language: one system such as paper, glass, clay, photographic, or mechanical.
+- Motion grammar: forward glide, orbit, crane, lateral track, dive, or staged reveal.
 - Pacing: where the story pauses and where it moves quickly.
-- Exclusions: three visual clichés or template patterns to avoid.
+- Exclusions: three visual clichés to avoid.
 
-Reuse the style preamble verbatim in every scene-generation prompt. Changing its wording between scenes creates drift even when the meaning looks similar.
+For generated media, reuse the style preamble byte-for-byte in every asset prompt.
 
-## Choose the camera architecture
+## Choose one mode
 
-### A. Continuous forward take
+| Choose | Best for | Strength | Main cost |
+| --- | --- | --- | --- |
+| Video scrub | cinematic realism, places, products, pre-rendered camera moves | exact art direction and photographic finish | heavier assets and seek tuning |
+| Three.js world | planets, objects, maps, systems, spatial interaction | real-time depth and responsive camera control | WebGL performance and fallback work |
+| HTML / data / type | reports, launches, metrics, editorial stories | accessible, crisp, lightweight, content-first | less photographic spectacle |
 
-Use for architecture, hospitality, product walkthroughs, processes, factories, campuses, and grounded worlds.
+If the story is primarily proof and numbers, prefer HTML/data. If the central metaphor is spatial and interactive, prefer Three.js. If cinematic imagery is the idea, prefer video.
 
-- Start the first leg from the approved opening still.
-- Start every later leg from the previous leg's actual rendered last frame.
-- Move expressively inside a leg, then settle into the same slow forward drift during its final second.
-- Do not force an establishing end frame that makes the camera pull backward.
-- Use no connector clips; the legs are the journey.
+## Mode 1 — Video scrub
 
-This is the safest default because position and velocity both continue across seams.
+Use [demo/video/index.html](demo/video/index.html) and [demo/video/PROMPT.md](demo/video/PROMPT.md).
 
-### B. Scene dives plus aerial connectors
+### Generate the source clip
 
-Use only when the world is intentionally map-like: miniatures, islands, diagrams, dioramas, or a god's-eye journey.
+1. Choose one continuous 6–15 second camera move. Avoid cuts.
+2. Keep important subjects near center with usable headline space.
+3. Generate a low-cost calibration clip before the final render when paid tools are used.
+4. For multi-leg journeys, start each leg from the previous leg's actual rendered last frame.
+5. Keep raw masters and record provider, model, prompt, seed, duration, aspect ratio, and rights.
 
-- Render one dive per beat.
-- Extract the dive's actual last frame.
-- Extract the next dive's actual first frame.
-- Generate the connector with those two rendered frames as its endpoints.
-- Use a very short crossfade as insurance, not as a substitute for matching frames.
+Preferred prompt shape:
 
-The connector may pull up and move to the next island. That reversal reads intentional in a miniature world and wrong in a grounded walkthrough.
+> Single continuous [camera move], no cuts. Travel through [world metaphor] from [opening] to [payoff]. [Exact scene sequence]. [Byte-identical style preamble]. Center-safe composition, quiet negative space for editorial copy, no text, no logos, no captions.
 
-### C. No-generation prototype
+Do not promise seamless connectors unless the model accepts the required start frame, or both endpoints for a connector.
 
-Use for early story approval, zero-budget demos, and interaction testing.
-
-- Build one procedural canvas, SVG, CSS, or WebGL world.
-- Map scroll progress to a deterministic camera position.
-- Keep the same beat ledger, copy, route rail, pacing, CTA, and accessibility contract.
-- Replace the prototype renderer with production media only after the journey is approved.
-
-Use [demo/index.html](demo/index.html) as the portable reference for this mode.
-
-## Plan generation and cost
-
-Before paid generation, show the user:
-
-- Number of scene stills.
-- Number and duration of video legs or connectors.
-- Desktop-only versus a separately composed 9:16 mobile chain.
-- Draft versus final render tier.
-- Estimated generation cost plus 15–20% re-roll headroom.
-- Which tool or provider will be used.
-
-Get approval before spending. Generate a cheap or short calibration still and clip first when pricing is uncertain.
-
-For production media:
-
-1. Generate all stills from one source/model with one byte-identical style preamble.
-2. Review the full contact sheet before video.
-3. Re-roll off-style stills before they contaminate the chain.
-4. Keep important subjects near the composition center with usable headroom.
-5. Generate the chosen camera architecture using local rendered frames for every handoff.
-6. Keep raw masters until final QA passes.
-
-If the chosen video model cannot accept the required start frame, or both start and end frames for connectors, it cannot promise seamless output. Choose a frame-locking model or stay in prototype mode.
-
-## Encode for scrubbing
-
-Scroll scrubbing changes video current time repeatedly. Favor seekability, consistent encodes, and small GOPs.
+### Encode for scrubbing
 
 ~~~bash
 ffmpeg -i source.mp4 -an \
-  -vf "unsharp=5:5:0.8:5:5:0.0" \
   -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p \
   -g 8 -keyint_min 8 -sc_threshold 0 \
   -movflags +faststart output.mp4
 ~~~
 
-Defaults:
+- Use one codec and encode profile across every clip.
+- Strip audio unless the experience explicitly includes it.
+- Keep small GOPs for responsive seeking.
+- Use byte-range hosting or fetch to a Blob URL before scrubbing.
+- Keep the first frame as a poster until video paints.
+- Map one normalized scroll value to `currentTime`; coalesce seeks in `requestAnimationFrame`.
+- Reduced motion uses the poster or ordered stills with ordinary document flow.
 
-- Keep the native desktop resolution; do not upscale a smaller render.
-- Strip audio.
-- Use the same codec and settings across the chain.
-- Use a 720-pixel-wide native portrait chain with a smaller GOP for approved mobile renders.
-- Load clips through byte-range-capable hosting or fetch them to Blob URLs before scrubbing.
-- Keep each first frame as a poster until the video has painted.
+## Mode 2 — Three.js world
 
-## Build the page
+Use [demo/threejs/index.html](demo/threejs/index.html) and [demo/threejs/PROMPT.md](demo/threejs/PROMPT.md).
 
-Keep content separate from the renderer:
+1. Create one scene, perspective camera, renderer, and world group.
+2. Make the hero object carry the metaphor: planet, machine, archive, constellation, city, or product.
+3. Map scroll progress to camera position, camera target, object rotation, lights, and scene states.
+4. Keep ambient motion subtle; scroll must remain the primary conductor.
+5. Cap device pixel ratio at 2 and update renderer and camera on resize.
+6. Pause continuous rendering when the page is hidden or off-screen.
+7. Dispose geometries, materials, textures, and listeners during teardown.
+8. Provide a static CSS/SVG poster when WebGL fails or reduced motion is requested.
+
+Use local, pinned Three.js files in portable demos. Do not depend on a remote CDN for the core renderer.
+
+## Mode 3 — HTML / data / type
+
+Use [demo/html-data/index.html](demo/html-data/index.html) and [demo/html-data/PROMPT.md](demo/html-data/PROMPT.md).
+
+1. Start with semantic headings, paragraphs, lists, tables, and real links.
+2. Turn the strongest evidence into one chart grammar: bars, line, range, slope, or comparison.
+3. Use inline SVG only when a DOM chart needs paths or axes; keep labels as selectable text.
+4. Drive CSS custom properties from one normalized scroll value.
+5. Animate transforms, opacity, clip paths, counters, and SVG stroke offsets.
+6. Keep chart scales truthful and expose values in accessible text or a table.
+7. Let the page remain complete and readable when JavaScript is disabled.
+8. Reduced motion removes interpolation while preserving state changes and order.
+
+This mode should not secretly become Canvas or WebGL. Its advantage is native layout, accessibility, and sharp responsive typography.
+
+## Shared page contract
+
+Keep content separate from renderer code:
 
 ~~~js
 const story = {
@@ -182,60 +180,55 @@ const story = {
   sections: [
     {
       id: "hook",
-      eyebrow: "01 / The premise",
+      eyebrow: "01 / Premise",
       title: "A destination, not a route.",
-      body: "Define arrival clearly and let the camera find the path.",
-      still: "assets/hook.webp",
-      clip: "assets/hook.mp4",
-      scroll: 1.6,
-      linger: 0.35
+      body: "Define arrival clearly and let the system find the path.",
+      evidence: null,
+      scroll: 1.4
     }
   ]
 };
 ~~~
 
-The runtime should provide:
+Every runtime needs:
 
-- A pinned full-viewport visual stage.
-- One scroll conductor that maps document progress to camera/video time.
-- Config-driven copy and route navigation.
-- Local easing or linger inside a scene without changing its first and last frame.
-- RequestAnimationFrame work only while progress is changing.
-- Seek coalescing so fast touch scrolling does not queue decoder work.
-- Lazy preloading of the current and next clips.
-- Static poster fallbacks, keyboard focus, semantic headings, and one real CTA.
-- A reduced-motion mode that shows still scenes and ordinary document flow.
-
-Avoid global scroll hijacking. The scrollbar must remain native and reversible.
+- A pinned or sticky visual stage.
+- One scroll conductor and config-driven chapters.
+- Native reversible scrolling and keyboard focus.
+- Local easing without changing scene endpoints.
+- Work that stops when settled, unless ambient motion is visibly required.
+- Lazy loading for heavy current and next assets.
+- Semantic headings, one real CTA, and visible focus.
+- A reduced-motion version with ordinary document flow.
 
 ## Verify with a fresh pass
 
-Use a separate verifier or a fresh context with the goal, rules, bar, and real output. Ask it to find the largest remaining gap, not to praise the build.
-
 Check:
 
-1. **Story** — every beat advances the thesis; no section repeats another.
-2. **Seams** — compare just before and after every handoff in both directions.
-3. **Camera** — no cross-seam velocity reversal unless it is an intentional diorama hop.
-4. **Playback** — progress changes the expected clip time; no frame-zero freeze.
-5. **Performance** — no perpetual animation loop after scroll settles.
-6. **Responsive** — verify 390, 768, 1024, and 1440 pixel widths.
-7. **Mobile** — fast flick, orientation change, safe areas, poster-to-video handoff.
-8. **Accessibility** — keyboard path, visible focus, contrast, semantic order, reduced motion.
-9. **Integrity** — every factual claim matches the source and every CTA works.
-10. **Console** — no errors or failed assets.
+1. **Story** — every beat advances the thesis.
+2. **Timing** — the right state is active at each scroll position.
+3. **Reverse** — backward scroll restores the exact prior state.
+4. **Performance** — no unnecessary work after settling; no decoder or WebGL backlog.
+5. **Responsive** — verify 390, 768, 1024, and 1440 pixel widths.
+6. **Mobile** — fast flick, orientation change, safe areas, and readable copy.
+7. **Accessibility** — semantic order, visible focus, contrast, and reduced motion.
+8. **Integrity** — every fact matches the source and the CTA works.
+9. **Console** — no errors or failed local assets.
+10. **Mode proof** — confirm the result actually uses the selected renderer.
 
-Repeat: build, verify, close the largest gap. Stop when the verifier has no material gap against the bar.
+Repeat: build, verify, close the largest gap. Stop when no material gap remains against the bar.
 
 ## Deliverables
 
 Return:
 
 - Story map and final beat ledger.
-- Style bible and generation prompts.
+- Style bible.
+- Chosen mode and why it fits.
 - Working page and reusable story configuration.
-- Local assets with source and license notes when applicable.
-- Desktop and approved mobile behavior.
-- Verification evidence and any known limitations.
+- Exact asset-generation and page prompts.
+- Local assets with source, model, and rights notes where applicable.
+- Desktop and mobile behavior.
+- Verification evidence and known limitations.
 
-Read [demo/PROMPT.md](demo/PROMPT.md) when the user wants the exact standalone demo contract or a remix prompt. Keep [REFERENCES.md](REFERENCES.md) as the external reading list.
+Start at [demo/index.html](demo/index.html) for the three-mode launcher. Keep [REFERENCES.md](REFERENCES.md) as the external reading list.

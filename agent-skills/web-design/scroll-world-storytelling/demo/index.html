@@ -1,920 +1,209 @@
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#07090d">
-  <link rel="icon" href="data:,">
-  <title>The Contract — Scroll World Storytelling</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Three production modes for turning a story into a scroll-driven landing page.">
+  <title>Scroll Worlds — Three Modes</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #07090d;
-      --paper: #f1ead9;
-      --muted: #9b9a93;
-      --line: rgba(241, 234, 217, 0.17);
-      --panel: rgba(8, 11, 16, 0.72);
-      --amber: #f1ad42;
-      --cyan: #5ee8ff;
-      --coral: #ff705d;
-      --green: #b9ef68;
-      --violet: #b39bff;
-      --white: #ffffff;
-      --display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-      --technical: "Avenir Next Condensed", "DIN Condensed", "Arial Narrow", sans-serif;
+      --ink: #090b0e;
+      --paper: #f1eadc;
+      --muted: #9d9a91;
+      --line: rgba(241, 234, 220, .16);
+      --amber: #ffb23e;
+      --cyan: #6de7ff;
+      --acid: #d6ff63;
     }
-
     * { box-sizing: border-box; }
-
-    html {
-      background: var(--bg);
-      scroll-behavior: smooth;
-    }
-
+    html { scroll-behavior: smooth; }
     body {
-      min-width: 320px;
       margin: 0;
-      overflow-x: hidden;
-      background: var(--bg);
-      color: var(--paper);
-      font-family: var(--technical);
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    button,
-    a { color: inherit; font: inherit; }
-
-    a { text-underline-offset: 0.22em; }
-
-    :focus-visible {
-      outline: 2px solid var(--cyan);
-      outline-offset: 5px;
-    }
-
-    .skip {
-      position: fixed;
-      z-index: 100;
-      top: 12px;
-      left: 12px;
-      padding: 10px 14px;
-      transform: translateY(-180%);
-      border-radius: 2px;
-      background: var(--paper);
-      color: var(--bg);
-      font-weight: 700;
-    }
-
-    .skip:focus { transform: translateY(0); }
-
-    .world-stage {
-      position: fixed;
-      z-index: 0;
-      inset: 0;
-      overflow: hidden;
+      min-width: 320px;
       background:
-        radial-gradient(circle at 50% 45%, rgba(40, 53, 74, 0.2), transparent 43%),
-        #07090d;
+        radial-gradient(circle at 85% 8%, rgba(109, 231, 255, .07), transparent 26rem),
+        var(--ink);
+      color: var(--paper);
+      font-family: "Arial Narrow", "Avenir Next Condensed", "Roboto Condensed", sans-serif;
     }
-
-    #world {
-      display: block;
-      width: 100%;
-      height: 100%;
+    a { color: inherit; }
+    .shell { width: min(1440px, 100%); margin: 0 auto; border-inline: 1px solid var(--line); }
+    .topbar {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--line);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 11px;
     }
-
-    .vignette,
-    .grain {
+    .signal { display: flex; align-items: center; gap: 10px; }
+    .signal::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--acid); box-shadow: 0 0 18px var(--acid); }
+    .hero {
+      min-height: 66vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-copy { padding: clamp(44px, 8vw, 116px) clamp(24px, 6vw, 92px); border-right: 1px solid var(--line); }
+    .kicker { color: var(--amber); letter-spacing: .18em; text-transform: uppercase; font-size: 12px; }
+    h1 {
+      max-width: 900px;
+      margin: 22px 0 24px;
+      font: 400 clamp(52px, 9vw, 138px)/.78 Georgia, "Times New Roman", serif;
+      letter-spacing: -.07em;
+    }
+    .lede { max-width: 620px; margin: 0; color: #b9b5ab; font-size: clamp(17px, 2vw, 22px); line-height: 1.5; }
+    .hero-index { display: grid; grid-template-rows: repeat(3, 1fr); }
+    .hero-index div { display: flex; align-items: flex-end; justify-content: space-between; padding: 26px; border-bottom: 1px solid var(--line); }
+    .hero-index div:last-child { border-bottom: 0; }
+    .hero-index span { color: var(--muted); letter-spacing: .14em; text-transform: uppercase; font-size: 10px; }
+    .hero-index b { font: 400 42px/1 Georgia, serif; }
+    .modes { counter-reset: modes; }
+    .mode {
+      counter-increment: modes;
+      position: relative;
+      display: grid;
+      grid-template-columns: 88px minmax(260px, .72fr) minmax(320px, 1.28fr);
+      min-height: 430px;
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .mode::after {
+      content: "";
       position: absolute;
       inset: 0;
-      pointer-events: none;
-    }
-
-    .vignette {
-      background:
-        linear-gradient(90deg, rgba(7, 9, 13, 0.68), transparent 27%, transparent 73%, rgba(7, 9, 13, 0.56)),
-        radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, 0.48));
-    }
-
-    .grain {
-      opacity: 0.12;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
-      mix-blend-mode: soft-light;
-    }
-
-    .topbar {
-      position: fixed;
-      z-index: 30;
-      top: 0;
-      right: 0;
-      left: 0;
-      display: grid;
-      grid-template-columns: 1fr minmax(160px, 30vw) auto;
-      gap: 28px;
-      align-items: center;
-      min-height: 72px;
-      padding: max(18px, env(safe-area-inset-top)) clamp(22px, 4vw, 64px) 14px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(7, 9, 13, 0.92), rgba(7, 9, 13, 0));
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .brand {
-      display: flex;
-      gap: 11px;
-      align-items: center;
-      text-decoration: none;
-    }
-
-    .brand-mark {
-      display: grid;
-      width: 19px;
-      height: 19px;
-      place-items: center;
-      border: 1px solid var(--amber);
-      border-radius: 50%;
-      box-shadow: 0 0 26px rgba(241, 173, 66, 0.38);
-    }
-
-    .brand-mark::after {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--amber);
-      content: "";
-    }
-
-    .progress-track {
-      height: 1px;
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .progress-fill {
-      width: 100%;
-      height: 100%;
-      transform: scaleX(0);
-      transform-origin: left;
-      background: linear-gradient(90deg, var(--amber), var(--cyan));
-      box-shadow: 0 0 14px var(--cyan);
-    }
-
-    .chapter-count {
-      min-width: 66px;
-      color: var(--muted);
-      text-align: right;
-    }
-
-    .chapter-count b { color: var(--paper); }
-
-    .route {
-      position: fixed;
-      z-index: 25;
-      top: 50%;
-      right: clamp(18px, 3vw, 44px);
-      display: grid;
-      gap: 13px;
-      transform: translateY(-50%);
-    }
-
-    .route a {
-      display: grid;
-      grid-template-columns: auto 26px;
-      gap: 10px;
-      align-items: center;
-      color: var(--muted);
-      font-size: 9px;
-      letter-spacing: 0.14em;
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: color 240ms ease;
-    }
-
-    .route a::after {
-      width: 26px;
-      height: 1px;
-      transform: scaleX(0.35);
-      transform-origin: right;
-      background: currentColor;
-      content: "";
-      transition: transform 240ms ease, box-shadow 240ms ease;
-    }
-
-    .route a span {
+      z-index: -1;
       opacity: 0;
-      transform: translateX(8px);
-      transition: opacity 240ms ease, transform 240ms ease;
+      transition: opacity .35s ease;
+      background: linear-gradient(110deg, rgba(255,178,62,.07), transparent 55%);
     }
-
-    .route a:hover span,
-    .route a:focus-visible span,
-    .route a[aria-current="step"] span {
-      opacity: 1;
-      transform: none;
+    .mode:hover::after, .mode:focus-visible::after { opacity: 1; }
+    .number { display: grid; place-items: start center; padding-top: 35px; color: var(--muted); border-right: 1px solid var(--line); }
+    .number::before { content: "0" counter(modes); }
+    .mode-copy { padding: clamp(36px, 5vw, 72px); border-right: 1px solid var(--line); }
+    .mode-copy h2 { margin: 14px 0 24px; font: 400 clamp(42px, 5.2vw, 82px)/.88 Georgia, serif; letter-spacing: -.055em; }
+    .mode-copy p { max-width: 430px; color: #aaa79e; font-size: 17px; line-height: 1.55; }
+    .open { display: inline-flex; gap: 14px; align-items: center; margin-top: 38px; color: var(--paper); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; }
+    .open::after { content: "↗"; font-size: 18px; transition: transform .25s ease; }
+    .mode:hover .open::after, .mode:focus-visible .open::after { transform: translate(5px,-5px); }
+    .preview { min-height: 360px; position: relative; overflow: hidden; background: #07090b; }
+    .preview::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(9,11,14,.22), transparent); pointer-events: none; }
+    .preview-video { background: radial-gradient(circle at 66% 47%, #9d4c16 0 3%, #2e170c 9%, #0b0d11 31%, #050608 66%); }
+    .preview-video .orbit, .preview-three .orbit { position: absolute; left: 66%; top: 47%; width: 44%; aspect-ratio: 1; border: 1px solid rgba(255,178,62,.42); border-radius: 50%; transform: translate(-50%,-50%) rotate(-18deg); box-shadow: 0 0 50px rgba(255,178,62,.08); }
+    .preview-video .route { position: absolute; left: 10%; right: 8%; top: 58%; height: 1px; background: linear-gradient(90deg, transparent, var(--amber), transparent); transform: rotate(-8deg); box-shadow: 0 0 20px var(--amber); }
+    .preview-video .gate { position: absolute; left: calc(16% + var(--i) * 12%); top: calc(67% - var(--i) * 5%); width: calc(42px - var(--i) * 4px); height: calc(68px - var(--i) * 7px); border: 1px solid rgba(241,234,220,.35); transform: skewY(-7deg); }
+    .preview-three { background: radial-gradient(circle at 63% 51%, #1f7088 0 4%, #0e3540 13%, #08151a 31%, #050709 61%); }
+    .preview-three .orbit { border-color: rgba(109,231,255,.46); transform: translate(-50%,-50%) rotate(24deg) scaleY(.32); box-shadow: 0 0 38px rgba(109,231,255,.12); }
+    .preview-three .orbit.two { transform: translate(-50%,-50%) rotate(-35deg) scaleY(.44); width: 56%; }
+    .preview-three .star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: var(--paper); left: calc(9% + var(--x) * 8%); top: calc(15% + var(--y) * 7%); opacity: .65; }
+    .preview-data { display: grid; grid-template-columns: .72fr 1.28fr; padding: clamp(26px, 5vw, 64px); background: #ece6d8; color: #141515; gap: 34px; }
+    .data-figure { align-self: end; }
+    .data-figure strong { display: block; font: 400 clamp(66px, 9vw, 136px)/.8 Georgia, serif; letter-spacing: -.07em; }
+    .data-figure span { color: #5d5d58; text-transform: uppercase; letter-spacing: .15em; font-size: 10px; }
+    .bars { display: flex; align-items: end; gap: 9px; border-bottom: 1px solid #777; padding-top: 30px; }
+    .bars i { flex: 1; height: calc(16% + var(--h) * 8%); min-height: 18px; background: #161819; }
+    .bars i:last-child { background: #e45b31; }
+    footer { display: flex; justify-content: space-between; gap: 20px; padding: 32px 28px 72px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; font-size: 10px; }
+    :focus-visible { outline: 2px solid var(--acid); outline-offset: -5px; }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { border-right: 0; border-bottom: 1px solid var(--line); }
+      .hero-index { grid-template-columns: repeat(3,1fr); grid-template-rows: none; }
+      .hero-index div { min-height: 112px; border-bottom: 0; border-right: 1px solid var(--line); }
+      .mode { grid-template-columns: 56px 1fr; }
+      .mode-copy { border-right: 0; }
+      .preview { grid-column: 1 / -1; min-height: 340px; border-top: 1px solid var(--line); }
     }
-
-    .route a[aria-current="step"] { color: var(--paper); }
-
-    .route a[aria-current="step"]::after {
-      transform: scaleX(1);
-      box-shadow: 0 0 12px currentColor;
+    @media (max-width: 560px) {
+      .topbar { padding-inline: 18px; }
+      .topbar span:last-child { display: none; }
+      .hero-copy { padding: 56px 22px 64px; }
+      .hero-index b { font-size: 30px; }
+      .hero-index div { padding: 16px; }
+      .mode { grid-template-columns: 44px 1fr; }
+      .mode-copy { padding: 46px 22px; }
+      .preview { min-height: 300px; }
+      .preview-data { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
     }
-
-    #story {
-      position: relative;
-      z-index: 10;
-    }
-
-    .chapter {
-      --accent: var(--amber);
-      position: relative;
-      min-height: 118svh;
-      padding: 20svh clamp(24px, 8vw, 130px) 18svh;
-    }
-
-    .chapter:nth-child(even) .copy { margin-left: auto; }
-
-    .copy {
-      position: sticky;
-      top: 23svh;
-      width: min(560px, 45vw);
-      min-height: 58svh;
-      padding: clamp(24px, 3.2vw, 48px);
-      border-left: 1px solid color-mix(in srgb, var(--accent) 78%, transparent);
-      background: linear-gradient(105deg, rgba(7, 9, 13, 0.84), rgba(7, 9, 13, 0.26) 73%, transparent);
-      opacity: 0.16;
-      transform: translateY(26px);
-      filter: blur(7px);
-      transition: opacity 520ms ease, transform 720ms cubic-bezier(.16, 1, .3, 1), filter 520ms ease;
-    }
-
-    .chapter:nth-child(even) .copy {
-      border-right: 1px solid color-mix(in srgb, var(--accent) 78%, transparent);
-      border-left: 0;
-      background: linear-gradient(255deg, rgba(7, 9, 13, 0.84), rgba(7, 9, 13, 0.26) 73%, transparent);
-      text-align: right;
-    }
-
-    .chapter.is-active .copy {
-      opacity: 1;
-      transform: none;
-      filter: none;
-    }
-
-    .eyebrow {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      margin: 0 0 clamp(36px, 6vh, 66px);
-      color: var(--accent);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.19em;
-      text-transform: uppercase;
-    }
-
-    .chapter:nth-child(even) .eyebrow { justify-content: flex-end; }
-
-    .eyebrow::before {
-      width: 34px;
-      height: 1px;
-      background: currentColor;
-      box-shadow: 0 0 12px currentColor;
-      content: "";
-    }
-
-    .copy h1,
-    .copy h2 {
-      max-width: 9.5ch;
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(52px, 7vw, 112px);
-      font-weight: 400;
-      letter-spacing: -0.065em;
-      line-height: 0.85;
-      text-wrap: balance;
-    }
-
-    .chapter:nth-child(even) h2 { margin-left: auto; }
-
-    .copy p {
-      max-width: 38ch;
-      margin: clamp(28px, 4vh, 44px) 0 0;
-      color: var(--muted);
-      font-family: var(--technical);
-      font-size: clamp(15px, 1.4vw, 19px);
-      font-weight: 500;
-      letter-spacing: 0.025em;
-      line-height: 1.55;
-    }
-
-    .chapter:nth-child(even) .copy p { margin-left: auto; }
-
-    .rule {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 18px;
-      align-items: center;
-      margin-top: 36px;
-      color: var(--paper);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .chapter:nth-child(even) .rule { grid-template-columns: 1fr auto; }
-    .chapter:nth-child(even) .rule span { order: 2; }
-
-    .rule::after {
-      height: 1px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      content: "";
-    }
-
-    .chapter:nth-child(even) .rule::after {
-      background: linear-gradient(270deg, var(--accent), transparent);
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 38px;
-    }
-
-    .chapter:nth-child(even) .actions { justify-content: flex-end; }
-
-    .primary,
-    .secondary {
-      display: inline-flex;
-      min-height: 48px;
-      align-items: center;
-      justify-content: center;
-      padding: 0 18px;
-      border: 1px solid var(--paper);
-      border-radius: 2px;
-      background: var(--paper);
-      color: var(--bg);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-decoration: none;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    .secondary {
-      background: rgba(7, 9, 13, 0.64);
-      color: var(--paper);
-    }
-
-    .primary:hover,
-    .secondary:hover { border-color: var(--cyan); }
-
-    .scroll-cue {
-      position: fixed;
-      z-index: 24;
-      bottom: max(24px, env(safe-area-inset-bottom));
-      left: 50%;
-      display: grid;
-      gap: 9px;
-      justify-items: center;
-      transform: translateX(-50%);
-      color: var(--muted);
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      transition: opacity 240ms ease;
-    }
-
-    .scroll-cue::after {
-      width: 1px;
-      height: 36px;
-      background: linear-gradient(var(--paper), transparent);
-      content: "";
-    }
-
-    .scroll-cue.is-hidden { opacity: 0; }
-
-    .no-js .copy { opacity: 1; transform: none; filter: none; }
-    .no-js .route,
-    .no-js .scroll-cue { display: none; }
-
-    noscript {
-      position: fixed;
-      z-index: 50;
-      right: 20px;
-      bottom: 20px;
-      max-width: 320px;
-      padding: 14px 16px;
-      border: 1px solid var(--line);
-      background: var(--bg);
-      color: var(--paper);
-    }
-
-    @media (max-width: 760px) {
-      .topbar {
-        grid-template-columns: 1fr 90px auto;
-        gap: 14px;
-        min-height: 62px;
-        padding-right: 18px;
-        padding-left: 18px;
-      }
-
-      .brand-text { display: none; }
-      .route { top: 84px; right: 16px; transform: none; }
-      .route a { grid-template-columns: 18px; }
-      .route a span { display: none; }
-      .route a::after { width: 18px; }
-
-      .chapter {
-        min-height: 112svh;
-        padding: 16svh 18px 12svh;
-      }
-
-      .copy,
-      .chapter:nth-child(even) .copy {
-        top: 24svh;
-        width: calc(100vw - 56px);
-        min-height: 60svh;
-        margin-right: auto;
-        margin-left: 0;
-        padding: 24px 22px 34px;
-        border: 0;
-        border-bottom: 1px solid color-mix(in srgb, var(--accent) 62%, transparent);
-        background: linear-gradient(180deg, transparent, rgba(7, 9, 13, 0.84) 24%, rgba(7, 9, 13, 0.94));
-        text-align: left;
-      }
-
-      .chapter:nth-child(even) h2,
-      .chapter:nth-child(even) .copy p { margin-left: 0; }
-      .chapter:nth-child(even) .eyebrow { justify-content: flex-start; }
-      .chapter:nth-child(even) .actions { justify-content: flex-start; }
-      .chapter:nth-child(even) .rule { grid-template-columns: auto 1fr; }
-      .chapter:nth-child(even) .rule span { order: 0; }
-      .chapter:nth-child(even) .rule::after { background: linear-gradient(90deg, var(--accent), transparent); }
-
-      .copy h1,
-      .copy h2 { font-size: clamp(52px, 16vw, 76px); }
-      .eyebrow { margin-bottom: 36px; }
-      .vignette { background: linear-gradient(180deg, rgba(7, 9, 13, 0.42), transparent 32%, rgba(7, 9, 13, 0.7)); }
-      .scroll-cue { left: 26px; transform: none; }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        transition-duration: 0.001ms !important;
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-      }
-      .grain { display: none; }
+      *, *::before, *::after { transition-duration: .001ms !important; animation-duration: .001ms !important; }
     }
   </style>
 </head>
-<body data-skill="scroll-world-storytelling">
-  <a class="skip" href="#story">Skip to the story</a>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <span class="signal">Scroll world system</span>
+      <span>One story / three renderers</span>
+    </header>
 
-  <div class="world-stage" aria-hidden="true">
-    <canvas id="world"></canvas>
-    <div class="vignette"></div>
-    <div class="grain"></div>
-  </div>
-
-  <header class="topbar">
-    <a class="brand" href="#chapter-1" aria-label="The Contract, return to chapter one">
-      <span class="brand-mark"></span>
-      <span class="brand-text">The Contract / Field Manual 01</span>
-    </a>
-    <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress"></div></div>
-    <div class="chapter-count" aria-live="polite"><b id="chapter-current">01</b> / 06</div>
-  </header>
-
-  <nav class="route" aria-label="Story chapters">
-    <a href="#chapter-1" aria-current="step"><span>Destination</span></a>
-    <a href="#chapter-2"><span>Fence</span></a>
-    <a href="#chapter-3"><span>Bar</span></a>
-    <a href="#chapter-4"><span>Loop</span></a>
-    <a href="#chapter-5"><span>Route</span></a>
-    <a href="#chapter-6"><span>Proof</span></a>
-  </nav>
-
-  <div class="scroll-cue" id="scroll-cue">Scroll to travel</div>
-
-  <main id="story">
-    <section class="chapter is-active" id="chapter-1" data-index="0" style="--accent:#f1ad42">
-      <div class="copy">
-        <p class="eyebrow">01 / Destination</p>
-        <h1>A destination, not a route.</h1>
-        <p>Define arrival with enough precision that the system can choose a better path than the one you would have prescribed.</p>
-        <div class="rule"><span>Goal before steps</span></div>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <span class="kicker">The Contract / Demo Kit</span>
+        <h1 id="page-title">Choose the world.</h1>
+        <p class="lede">The same six-beat story, translated into video, real-time 3D, and semantic data typography. Pick the renderer that strengthens the source.</p>
+      </div>
+      <div class="hero-index" aria-label="Demo summary">
+        <div><span>Modes</span><b>03</b></div>
+        <div><span>Beats</span><b>06</b></div>
+        <div><span>CTA</span><b>01</b></div>
       </div>
     </section>
 
-    <section class="chapter" id="chapter-2" data-index="1" style="--accent:#5ee8ff">
-      <div class="copy">
-        <p class="eyebrow">02 / The fence</p>
-        <h2>Rules make freedom safe.</h2>
-        <p>A short set of laws protects the work while leaving the route open: no invented proof, no silent spending, no irreversible action without a gate.</p>
-        <div class="rule"><span>Five laws, wide runway</span></div>
-      </div>
-    </section>
-
-    <section class="chapter" id="chapter-3" data-index="2" style="--accent:#ff705d">
-      <div class="copy">
-        <p class="eyebrow">03 / The bar</p>
-        <h2>Good is not measurable.</h2>
-        <p>Replace adjectives with a test: can a first-time visitor explain the story, find the action, and move through every seam without noticing it?</p>
-        <div class="rule"><span>Evidence over confidence</span></div>
-      </div>
-    </section>
-
-    <section class="chapter" id="chapter-4" data-index="3" style="--accent:#b9ef68">
-      <div class="copy">
-        <p class="eyebrow">04 / The loop</p>
-        <h2>Close the largest gap.</h2>
-        <p>Build, verify against the bar, repair the biggest failure, then repeat. Progress is a loop with a finish line, not a pile of activity.</p>
-        <div class="rule"><span>Build → verify → repair</span></div>
-      </div>
-    </section>
-
-    <section class="chapter" id="chapter-5" data-index="4" style="--accent:#b39bff">
-      <div class="copy">
-        <p class="eyebrow">05 / The route</p>
-        <h2>Spend depth where it compounds.</h2>
-        <p>Use the strongest judgment on foundations and the lighter machinery on repetition. The route is a budget, not a reflex.</p>
-        <div class="rule"><span>Route work by consequence</span></div>
-      </div>
-    </section>
-
-    <section class="chapter" id="chapter-6" data-index="5" style="--accent:#ffffff">
-      <div class="copy">
-        <p class="eyebrow">06 / Independent proof</p>
-        <h2>The builder never grades itself.</h2>
-        <p>Use a fresh verifier with the real output and one job: find what still breaks the contract. Finish when the evidence survives that pass.</p>
-        <div class="rule"><span>A skeptic with no excuses</span></div>
-        <div class="actions">
-          <a class="primary" href="./PROMPT.md">Remix this story</a>
-          <button class="secondary" id="replay" type="button">Replay journey</button>
+    <section class="modes" aria-label="Scroll world demos">
+      <a class="mode" href="video/">
+        <span class="number" aria-hidden="true"></span>
+        <div class="mode-copy">
+          <span class="kicker">Pre-rendered / cinematic</span>
+          <h2>Video<br>scrub</h2>
+          <p>Scroll seeks through a generated continuous camera move. Best when atmosphere, realism, and exact art direction are the argument.</p>
+          <span class="open">Open demo</span>
         </div>
-      </div>
+        <div class="preview preview-video" aria-hidden="true">
+          <i class="orbit"></i><i class="route"></i>
+          <i class="gate" style="--i:0"></i><i class="gate" style="--i:1"></i><i class="gate" style="--i:2"></i><i class="gate" style="--i:3"></i>
+        </div>
+      </a>
+
+      <a class="mode" href="threejs/">
+        <span class="number" aria-hidden="true"></span>
+        <div class="mode-copy">
+          <span class="kicker">Real-time / spatial</span>
+          <h2>Three.js<br>planet</h2>
+          <p>A live planet, orbital routes, atmosphere, and scroll-controlled camera. Best when the story is a place, system, or object to explore.</p>
+          <span class="open">Open demo</span>
+        </div>
+        <div class="preview preview-three" aria-hidden="true">
+          <i class="orbit"></i><i class="orbit two"></i>
+          <i class="star" style="--x:1;--y:3"></i><i class="star" style="--x:4;--y:1"></i><i class="star" style="--x:7;--y:6"></i><i class="star" style="--x:9;--y:2"></i><i class="star" style="--x:3;--y:8"></i>
+        </div>
+      </a>
+
+      <a class="mode" href="html-data/">
+        <span class="number" aria-hidden="true"></span>
+        <div class="mode-copy">
+          <span class="kicker">Semantic / evidence-led</span>
+          <h2>Data &amp;<br>type</h2>
+          <p>Native HTML, SVG charts, live values, and editorial typography. Best when proof, clarity, accessibility, and responsive precision matter most.</p>
+          <span class="open">Open demo</span>
+        </div>
+        <div class="preview preview-data" aria-hidden="true">
+          <div class="data-figure"><span>Verified arrival</span><strong>94%</strong></div>
+          <div class="bars"><i style="--h:1"></i><i style="--h:3"></i><i style="--h:5"></i><i style="--h:7"></i><i style="--h:9"></i></div>
+        </div>
+      </a>
     </section>
+
+    <footer><span>Native scroll / reversible / reduced-motion ready</span><span>Standalone HTML demos</span></footer>
   </main>
-
-  <noscript>The complete story remains readable, but the continuous camera journey needs JavaScript.</noscript>
-
-  <script>
-    (function () {
-      "use strict";
-
-      document.documentElement.classList.remove("no-js");
-
-      var canvas = document.getElementById("world");
-      var context = canvas.getContext("2d", { alpha: false });
-      var story = document.getElementById("story");
-      var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
-      var routeLinks = Array.prototype.slice.call(document.querySelectorAll(".route a"));
-      var progressFill = document.getElementById("progress");
-      var chapterCurrent = document.getElementById("chapter-current");
-      var scrollCue = document.getElementById("scroll-cue");
-      var replay = document.getElementById("replay");
-      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      var width = 0;
-      var height = 0;
-      var pixelRatio = 1;
-      var targetProgress = 0;
-      var currentProgress = 0;
-      var rafId = 0;
-      var pointerX = 0;
-      var pointerY = 0;
-      var activeIndex = 0;
-
-      var nodes = [
-        { x: -110, y: -20, z: 820, color: "#f1ad42", code: "01", form: "gate" },
-        { x: 170, y: 20, z: 2050, color: "#5ee8ff", code: "02", form: "rails" },
-        { x: -150, y: -10, z: 3280, color: "#ff705d", code: "03", form: "bar" },
-        { x: 150, y: 10, z: 4510, color: "#b9ef68", code: "04", form: "loop" },
-        { x: -120, y: 15, z: 5740, color: "#b39bff", code: "05", form: "split" },
-        { x: 0, y: -20, z: 6970, color: "#ffffff", code: "06", form: "proof" }
-      ];
-
-      var stars = [];
-      var seed = 47621;
-
-      function random() {
-        seed = (seed * 16807) % 2147483647;
-        return (seed - 1) / 2147483646;
-      }
-
-      for (var starIndex = 0; starIndex < 150; starIndex += 1) {
-        stars.push({
-          x: (random() - 0.5) * 2200,
-          y: (random() - 0.5) * 1300,
-          z: random() * 7800,
-          size: 0.45 + random() * 1.5
-        });
-      }
-
-      function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-      }
-
-      function hexToRgb(hex) {
-        var clean = hex.replace("#", "");
-        return {
-          r: parseInt(clean.slice(0, 2), 16),
-          g: parseInt(clean.slice(2, 4), 16),
-          b: parseInt(clean.slice(4, 6), 16)
-        };
-      }
-
-      function colorWithAlpha(hex, alpha) {
-        var rgb = hexToRgb(hex);
-        return "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + alpha + ")";
-      }
-
-      function resizeCanvas() {
-        var bounds = canvas.getBoundingClientRect();
-        width = Math.max(1, bounds.width);
-        height = Math.max(1, bounds.height);
-        pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = Math.round(width * pixelRatio);
-        canvas.height = Math.round(height * pixelRatio);
-        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        render(currentProgress);
-      }
-
-      function project(x, y, z, cameraZ) {
-        var depth = z - cameraZ;
-        var focal = Math.max(520, width * 0.58);
-        var scale = focal / Math.max(160, focal + depth);
-        return {
-          x: width * 0.5 + (x + pointerX * 34) * scale,
-          y: height * 0.48 + (y + pointerY * 24) * scale,
-          scale: scale,
-          depth: depth
-        };
-      }
-
-      function projectGround(x, z, cameraZ) {
-        var point = project(x, 0, z, cameraZ);
-        point.y = height * 0.5 + 430 * point.scale;
-        return point;
-      }
-
-      function drawBackground(cameraZ) {
-        var gradient = context.createRadialGradient(width * 0.5, height * 0.46, 0, width * 0.5, height * 0.46, Math.max(width, height) * 0.72);
-        gradient.addColorStop(0, "#111925");
-        gradient.addColorStop(0.38, "#090e15");
-        gradient.addColorStop(1, "#05070a");
-        context.fillStyle = gradient;
-        context.fillRect(0, 0, width, height);
-
-        if (reduceMotion) return;
-
-        for (var i = 0; i < stars.length; i += 1) {
-          var star = stars[i];
-          var wrappedZ = ((star.z - cameraZ) % 7800 + 7800) % 7800 + cameraZ;
-          var point = project(star.x, star.y, wrappedZ, cameraZ);
-          if (point.depth < 0 || point.depth > 6500) continue;
-          var alpha = clamp((1 - point.depth / 6500) * 0.58, 0.04, 0.58);
-          var size = clamp(star.size * point.scale, 0.35, 2.4);
-          context.fillStyle = "rgba(212,229,244," + alpha + ")";
-          context.fillRect(point.x, point.y, size, size);
-        }
-      }
-
-      function drawGrid(cameraZ) {
-        var horizon = height * 0.5;
-        context.save();
-        context.strokeStyle = "rgba(123,157,184,0.10)";
-        context.lineWidth = 1;
-
-        for (var lane = -4; lane <= 4; lane += 1) {
-          var nearLane = projectGround(lane * 280, cameraZ + 120, cameraZ);
-          var farLane = projectGround(lane * 280, cameraZ + 5000, cameraZ);
-          context.beginPath();
-          context.moveTo(nearLane.x, Math.max(horizon, nearLane.y));
-          context.lineTo(farLane.x, farLane.y);
-          context.stroke();
-        }
-
-        var offset = cameraZ % 300;
-        for (var depth = 200 - offset; depth < 5200; depth += 300) {
-          var left = projectGround(-1180, cameraZ + depth, cameraZ);
-          var right = projectGround(1180, cameraZ + depth, cameraZ);
-          var fade = clamp(1 - depth / 5200, 0.04, 0.7);
-          context.strokeStyle = "rgba(123,157,184," + (fade * 0.14) + ")";
-          context.beginPath();
-          context.moveTo(left.x, left.y);
-          context.lineTo(right.x, right.y);
-          context.stroke();
-        }
-        context.restore();
-      }
-
-      function drawRoute(cameraZ) {
-        context.save();
-        context.lineCap = "round";
-        context.lineJoin = "round";
-        context.lineWidth = 2;
-        context.strokeStyle = "rgba(241,234,217,0.24)";
-        context.shadowBlur = 16;
-        context.shadowColor = "rgba(94,232,255,0.26)";
-        context.beginPath();
-        var started = false;
-
-        for (var i = 0; i < nodes.length; i += 1) {
-          var nodePoint = projectGround(nodes[i].x, nodes[i].z, cameraZ);
-          if (nodePoint.depth < -420 || nodePoint.depth > 5600) continue;
-          if (!started) {
-            context.moveTo(nodePoint.x, nodePoint.y);
-            started = true;
-          } else {
-            context.lineTo(nodePoint.x, nodePoint.y);
-          }
-        }
-        context.stroke();
-        context.restore();
-      }
-
-      function drawMonolith(node, cameraZ, index) {
-        var ground = projectGround(node.x, node.z, cameraZ);
-        if (ground.depth < -430 || ground.depth > 3800) return;
-
-        var scale = ground.scale;
-        var fadeIn = clamp((3800 - ground.depth) / 1100, 0, 1);
-        var fadeOut = clamp((ground.depth + 430) / 430, 0, 1);
-        var alpha = Math.min(fadeIn, fadeOut);
-        var proximity = clamp(1 - Math.abs(index - currentProgress * (nodes.length - 1)), 0, 1);
-        var objectWidth = 150 * scale;
-        var objectHeight = (300 + proximity * 58) * scale;
-        var centerX = ground.x;
-        var bottomY = ground.y - 12 * scale;
-        var topY = bottomY - objectHeight;
-        var depthOffset = 34 * scale;
-
-        context.save();
-        context.globalAlpha = alpha;
-        context.shadowBlur = 34 * scale + proximity * 20;
-        context.shadowColor = colorWithAlpha(node.color, 0.55);
-
-        var halo = context.createRadialGradient(centerX, bottomY - objectHeight * 0.42, 0, centerX, bottomY - objectHeight * 0.42, Math.max(70, 230 * scale));
-        halo.addColorStop(0, colorWithAlpha(node.color, 0.2 + proximity * 0.12));
-        halo.addColorStop(1, colorWithAlpha(node.color, 0));
-        context.fillStyle = halo;
-        context.beginPath();
-        context.arc(centerX, bottomY - objectHeight * 0.42, Math.max(70, 230 * scale), 0, Math.PI * 2);
-        context.fill();
-
-        context.shadowBlur = 22 * scale;
-        context.fillStyle = colorWithAlpha(node.color, 0.18 + proximity * 0.12);
-        context.strokeStyle = colorWithAlpha(node.color, 0.82);
-        context.lineWidth = Math.max(1, 1.2 * scale);
-        context.beginPath();
-        context.ellipse(centerX, bottomY + 8 * scale, 210 * scale, 58 * scale, 0, 0, Math.PI * 2);
-        context.fill();
-        context.stroke();
-
-        context.fillStyle = "rgba(16,22,31,0.96)";
-        context.strokeStyle = colorWithAlpha(node.color, 0.76);
-        context.beginPath();
-        context.moveTo(centerX - objectWidth / 2, bottomY);
-        context.lineTo(centerX - objectWidth / 2, topY);
-        context.lineTo(centerX + objectWidth / 2, topY - depthOffset);
-        context.lineTo(centerX + objectWidth / 2, bottomY - depthOffset);
-        context.closePath();
-        context.fill();
-        context.stroke();
-
-        context.fillStyle = colorWithAlpha(node.color, 0.09 + proximity * 0.11);
-        context.beginPath();
-        context.moveTo(centerX + objectWidth / 2, bottomY - depthOffset);
-        context.lineTo(centerX + objectWidth / 2, topY - depthOffset);
-        context.lineTo(centerX + objectWidth / 2 + depthOffset, topY);
-        context.lineTo(centerX + objectWidth / 2 + depthOffset, bottomY);
-        context.closePath();
-        context.fill();
-        context.stroke();
-
-        context.shadowBlur = 18 * scale;
-        context.fillStyle = node.color;
-        context.fillRect(centerX - objectWidth * 0.28, topY + objectHeight * 0.24, objectWidth * 0.56, Math.max(2, 3 * scale));
-        context.fillRect(centerX - objectWidth * 0.28, topY + objectHeight * 0.54, objectWidth * 0.56, Math.max(1, 1.5 * scale));
-
-        if (node.form === "loop" || node.form === "proof") {
-          context.strokeStyle = colorWithAlpha(node.color, 0.88);
-          context.lineWidth = Math.max(1, 3 * scale);
-          context.beginPath();
-          context.arc(centerX, topY + objectHeight * 0.47, 44 * scale, 0, Math.PI * 2);
-          context.stroke();
-        }
-
-        if (node.form === "split") {
-          context.strokeStyle = colorWithAlpha(node.color, 0.9);
-          context.beginPath();
-          context.moveTo(centerX, topY + objectHeight * 0.28);
-          context.lineTo(centerX - 36 * scale, topY + objectHeight * 0.5);
-          context.lineTo(centerX, topY + objectHeight * 0.72);
-          context.moveTo(centerX, topY + objectHeight * 0.5);
-          context.lineTo(centerX + 38 * scale, topY + objectHeight * 0.34);
-          context.stroke();
-        }
-
-        context.shadowBlur = 0;
-        context.fillStyle = colorWithAlpha(node.color, 0.94);
-        context.font = "700 " + clamp(11 * scale, 8, 18) + "px Avenir Next Condensed, Arial Narrow, sans-serif";
-        context.textAlign = "center";
-        context.fillText(node.code, centerX, bottomY + 94 * scale);
-        context.restore();
-      }
-
-      function render(progress) {
-        if (!width || !height) return;
-        var lastCameraZ = nodes[nodes.length - 1].z - 520;
-        var cameraZ = progress * lastCameraZ;
-        drawBackground(cameraZ);
-        drawGrid(cameraZ);
-        drawRoute(cameraZ);
-
-        var visibleNodes = nodes.slice().sort(function (a, b) { return b.z - a.z; });
-        for (var i = 0; i < visibleNodes.length; i += 1) {
-          drawMonolith(visibleNodes[i], cameraZ, nodes.indexOf(visibleNodes[i]));
-        }
-
-        var scan = context.createLinearGradient(0, 0, 0, height);
-        scan.addColorStop(0, "rgba(94,232,255,0)");
-        scan.addColorStop(0.5, "rgba(94,232,255,0.025)");
-        scan.addColorStop(1, "rgba(94,232,255,0)");
-        context.fillStyle = scan;
-        context.fillRect(0, 0, width, height);
-      }
-
-      function setActiveChapter(index) {
-        if (index === activeIndex && chapters[index].classList.contains("is-active")) return;
-        activeIndex = index;
-        for (var i = 0; i < chapters.length; i += 1) {
-          chapters[i].classList.toggle("is-active", i === index);
-          if (i === index) routeLinks[i].setAttribute("aria-current", "step");
-          else routeLinks[i].removeAttribute("aria-current");
-        }
-        chapterCurrent.textContent = String(index + 1).padStart(2, "0");
-      }
-
-      function tick() {
-        var delta = targetProgress - currentProgress;
-        if (reduceMotion || Math.abs(delta) < 0.00008) {
-          currentProgress = targetProgress;
-          render(currentProgress);
-          rafId = 0;
-          return;
-        }
-        currentProgress += delta * 0.12;
-        render(currentProgress);
-        rafId = window.requestAnimationFrame(tick);
-      }
-
-      function startTick() {
-        if (!rafId) rafId = window.requestAnimationFrame(tick);
-      }
-
-      function updateFromScroll() {
-        var rect = story.getBoundingClientRect();
-        var distance = Math.max(1, story.offsetHeight - window.innerHeight);
-        targetProgress = clamp(-rect.top / distance, 0, 1);
-        var nextIndex = Math.min(chapters.length - 1, Math.floor(targetProgress * chapters.length));
-        setActiveChapter(nextIndex);
-        progressFill.style.transform = "scaleX(" + targetProgress + ")";
-        scrollCue.classList.toggle("is-hidden", targetProgress > 0.035);
-        startTick();
-      }
-
-      window.addEventListener("scroll", updateFromScroll, { passive: true });
-      window.addEventListener("resize", function () {
-        resizeCanvas();
-        updateFromScroll();
-      });
-
-      window.addEventListener("pointermove", function (event) {
-        if (event.pointerType === "touch" || reduceMotion) return;
-        pointerX = (event.clientX / Math.max(1, width) - 0.5) * 2;
-        pointerY = (event.clientY / Math.max(1, height) - 0.5) * 2;
-        render(currentProgress);
-      }, { passive: true });
-
-      replay.addEventListener("click", function () {
-        chapters[0].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-      });
-
-      resizeCanvas();
-      updateFromScroll();
-    }());
-  </script>
 </body>
 </html>

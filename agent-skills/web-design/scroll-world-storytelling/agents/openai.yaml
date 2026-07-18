@@ -1,4 +1,4 @@
 interface:
   display_name: "Scroll World Storytelling"
-  short_description: "Turn stories into seamless scroll worlds"
-  default_prompt: "Use $scroll-world-storytelling to turn this article or narrative into a cinematic, scroll-scrubbed landing page."
+  short_description: "Build video, 3D, or data scroll worlds"
+  default_prompt: "Use $scroll-world-storytelling to read this complete story, choose video scrub, Three.js, or HTML/data as the strongest renderer, then build and verify the scroll-driven landing page."

@@ -13,12 +13,12 @@
     .masthead b { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
     .masthead b::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
     .story { height: 310vh; position: relative; }
-    .reader { position: sticky; top: 0; min-height: 100vh; padding: 104px clamp(22px,6vw,86px) 36px; display: grid; grid-template-columns: 150px minmax(0,1fr) 180px; gap: clamp(24px,5vw,80px); align-items: center; }
+    .reader { position: sticky; top: 0; min-height: 100vh; padding: 104px clamp(22px,4vw,60px) 36px; display: grid; grid-template-columns: 120px minmax(0,1fr) 150px; gap: clamp(20px,3vw,50px); align-items: center; }
     .side { align-self: stretch; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0; color: #6a6b62; font-size: 10px; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; }
     .side strong { color: var(--ink); font-size: 11px; font-weight: 600; }
     .rail { position: relative; width: 1px; height: min(320px, 42vh); margin-top: auto; background: var(--line); }
     .rail i { display: block; width: 3px; height: 100%; margin-left: -1px; background: var(--red); transform: scaleY(var(--progress)); transform-origin: top; }
-    .passage { margin: 0; max-width: 1120px; font: 400 clamp(54px, 6.6vw, 112px)/.92 Georgia, "Times New Roman", serif; letter-spacing: -.058em; }
+    .passage { min-width: 0; margin: 0; max-width: 1040px; font: 400 clamp(50px, 5.7vw, 94px)/.92 Georgia, "Times New Roman", serif; letter-spacing: -.058em; }
     .passage em { color: var(--moss); font-style: italic; }
     .passage strong { color: var(--red); font-weight: 400; }
     [data-word] { display: inline; opacity: calc(.22 + var(--word-progress) * .78); filter: blur(calc((1 - var(--word-progress)) * 4px)); transform: translateY(calc((1 - var(--word-progress)) * .16em)); transition: color .15s linear; }

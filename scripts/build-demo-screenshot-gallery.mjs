@@ -22,11 +22,11 @@ const demos = skillFiles.map((skillFile) => {
   const slug = parts[2];
   const base = path.dirname(skillFile).replaceAll(path.sep, "/");
   const demoDirectory = path.join(root, base, "demo");
-  const screenshot = path.join(demoDirectory, "screenshot.jpg");
-  if (!existsSync(screenshot)) throw new Error("Missing screenshot: " + path.relative(root, screenshot));
+  const preview = path.join(demoDirectory, "preview.jpg");
+  if (!existsSync(preview)) throw new Error("Missing preview screenshot: " + path.relative(root, preview));
   const sourceFile = path.join(demoDirectory, "source.json");
   const source = existsSync(sourceFile) ? JSON.parse(readFileSync(sourceFile, "utf8")) : null;
-  const featureScreenshot = path.join(demoDirectory, "screenshot-feature.jpg");
+  const featureScreenshot = path.join(demoDirectory, "preview-feature.jpg");
   return { base, category, feature: existsSync(featureScreenshot), slug, source };
 });
 
@@ -70,14 +70,14 @@ for (const [category, categoryDemos] of [...categories.entries()].sort()) {
       "",
       "[Open demo](" + demo.base + "/demo/index.html) · [Prompt](" + demo.base + "/demo/PROMPT.md) · " + sourceLabel,
       "",
-      "![" + demo.slug + " screenshot](" + demo.base + "/demo/screenshot.jpg)",
+      "![" + demo.slug + " preview screenshot](" + demo.base + "/demo/preview.jpg)",
       "",
     );
     if (demo.feature) {
       lines.push(
         "#### Interaction state",
         "",
-        "![" + demo.slug + " interaction screenshot](" + demo.base + "/demo/screenshot-feature.jpg)",
+        "![" + demo.slug + " interaction preview](" + demo.base + "/demo/preview-feature.jpg)",
         "",
       );
     }
@@ -92,11 +92,11 @@ const htmlSections = [...categories.entries()].sort().map(([category, categoryDe
       ? "Neuform #1 · " + new Intl.NumberFormat("en-US").format(Number(demo.source?.design?.view_count) || 0) + " views"
       : "Local demo";
     const feature = demo.feature
-      ? '<figure class="feature"><img loading="lazy" src="' + demo.base + '/demo/screenshot-feature.jpg" alt="' + escapeHtml(demo.slug) + ' interaction state"><figcaption>Interaction state</figcaption></figure>'
+      ? '<figure class="feature"><img loading="lazy" src="' + demo.base + '/demo/preview-feature.jpg" alt="' + escapeHtml(demo.slug) + ' interaction state"><figcaption>Interaction state</figcaption></figure>'
       : "";
     return [
       '<article class="card" data-demo="' + escapeHtml(demo.slug) + '">',
-      '<a class="imageLink" href="' + demo.base + '/demo/index.html"><img loading="lazy" src="' + demo.base + '/demo/screenshot.jpg" alt="' + escapeHtml(demo.slug) + ' screenshot"></a>',
+      '<a class="imageLink" href="' + demo.base + '/demo/index.html"><img loading="lazy" src="' + demo.base + '/demo/preview.jpg" alt="' + escapeHtml(demo.slug) + ' preview screenshot"></a>',
       feature,
       '<div class="meta"><div><h3>' + escapeHtml(demo.slug) + '</h3><p>' + escapeHtml(sourceLabel) + '</p></div><div class="actions"><a href="' + demo.base + '/demo/index.html">Open demo</a><a href="' + demo.base + '/demo/PROMPT.md">Prompt</a></div></div>',
       "</article>",

@@ -901,7 +901,7 @@ const index = [
   "  demo/",
   "    index.html",
   "    PROMPT.md",
-  "    screenshot.jpg      # rendered 1280 x 720 browser capture",
+  "    preview.jpg         # rendered 1280 x 720 browser screenshot",
   "    source.json          # Neuform provenance and ranking snapshot",
   "    assets/              # only when local assets are required",
   "    input.md             # workflow skills",
@@ -910,7 +910,7 @@ const index = [
   "",
   "- Keep HTML, CSS, and JavaScript in demo/index.html.",
   "- Keep images, fonts, models, textures, and vendored files inside demo/assets/.",
-  "- Keep one rendered 1280 x 720 browser capture in demo/screenshot.jpg.",
+  "- Keep one rendered 1280 x 720 browser screenshot in demo/preview.jpg.",
   "- Use relative paths and no build step.",
   "- Keep the exact recreation prompt and a shorter remix prompt in demo/PROMPT.md.",
   "- Use fictional portable data in workflow examples.",
@@ -950,14 +950,14 @@ const index = [
   "",
   "## Demo index",
   "",
-  "| Skill | Category | Demo | Screenshot | Prompt | Source |",
+  "| Skill | Category | Demo | Preview | Prompt | Source |",
   "| --- | --- | --- | --- | --- | --- |",
   ...demos.map((demo) => {
     const base = path.dirname(demo.skillFile).replaceAll(path.sep, "/");
     const source = demo.source
       ? "[Neuform #1 · " + new Intl.NumberFormat("en-US").format(Number(demo.source?.design?.view_count) || 0) + " views](" + base + "/demo/source.json)"
       : "Local";
-    return "| " + demo.name + " | " + demo.category + " | [Open](" + base + "/demo/index.html) | [View](" + base + "/demo/screenshot.jpg) | [Prompt](" + base + "/demo/PROMPT.md) | " + source + " |";
+    return "| " + demo.name + " | " + demo.category + " | [Open](" + base + "/demo/index.html) | [Preview](" + base + "/demo/preview.jpg) | [Prompt](" + base + "/demo/PROMPT.md) | " + source + " |";
   }),
   "",
 ].join("\n");

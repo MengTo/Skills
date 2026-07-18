@@ -7,3 +7,5 @@ https://threejs.org/docs/
 https://threejs.org/manual/#en/responsive
 https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset
 https://ffmpeg.org/ffmpeg.html
+https://docs.x.ai/developers/model-capabilities/video/generation
+https://x.ai/grok/use-cases/video-generation

@@ -99,10 +99,11 @@
     .preview-video .orbit, .preview-three .orbit { position: absolute; left: 66%; top: 47%; width: 44%; aspect-ratio: 1; border: 1px solid rgba(255,178,62,.42); border-radius: 50%; transform: translate(-50%,-50%) rotate(-18deg); box-shadow: 0 0 50px rgba(255,178,62,.08); }
     .preview-video .route { position: absolute; left: 10%; right: 8%; top: 58%; height: 1px; background: linear-gradient(90deg, transparent, var(--amber), transparent); transform: rotate(-8deg); box-shadow: 0 0 20px var(--amber); }
     .preview-video .gate { position: absolute; left: calc(16% + var(--i) * 12%); top: calc(67% - var(--i) * 5%); width: calc(42px - var(--i) * 4px); height: calc(68px - var(--i) * 7px); border: 1px solid rgba(241,234,220,.35); transform: skewY(-7deg); }
-    .preview-three { background: radial-gradient(circle at 63% 51%, #1f7088 0 4%, #0e3540 13%, #08151a 31%, #050709 61%); }
-    .preview-three .orbit { border-color: rgba(109,231,255,.46); transform: translate(-50%,-50%) rotate(24deg) scaleY(.32); box-shadow: 0 0 38px rgba(109,231,255,.12); }
-    .preview-three .orbit.two { transform: translate(-50%,-50%) rotate(-35deg) scaleY(.44); width: 56%; }
-    .preview-three .star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: var(--paper); left: calc(9% + var(--x) * 8%); top: calc(15% + var(--y) * 7%); opacity: .65; }
+    .preview-three { background: radial-gradient(circle at 66% 48%, #f1eee7 0 7%, #cbc7bd 8% 22%, #e6e2da 23% 58%, #f04427 59% 61%, #d8d4cc 62%); }
+    .preview-three::after { background: linear-gradient(90deg,rgba(9,11,14,.14),transparent); }
+    .preview-three .orbit { border: 3px dotted #161616; transform: translate(-50%,-50%) rotate(24deg) scaleY(.48); box-shadow: none; }
+    .preview-three .orbit.two { border: 1px solid #f04427; transform: translate(-50%,-50%) rotate(-35deg) scaleY(.78); width: 56%; }
+    .preview-three .star { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #141414; left: calc(9% + var(--x) * 8%); top: calc(15% + var(--y) * 7%); opacity: .8; }
     .preview-data { display: grid; grid-template-columns: .72fr 1.28fr; padding: clamp(26px, 5vw, 64px); background: #ece6d8; color: #141515; gap: 34px; }
     .data-figure { align-self: end; }
     .data-figure strong { display: block; font: 400 clamp(66px, 9vw, 136px)/.8 Georgia, serif; letter-spacing: -.07em; }
@@ -178,8 +179,8 @@
         <span class="number" aria-hidden="true"></span>
         <div class="mode-copy">
           <span class="kicker">Real-time / spatial</span>
-          <h2>Three.js<br>planet</h2>
-          <p>A live planet, orbital routes, atmosphere, and scroll-controlled camera. Best when the story is a place, system, or object to explore.</p>
+          <h2>Three.js<br>studies</h2>
+          <p>One live sculptural world in signal-red, monochrome, and soft-pearl directions. Best when the story is a system or object to explore.</p>
           <span class="open">Open demo</span>
         </div>
         <div class="preview preview-three" aria-hidden="true">

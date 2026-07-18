@@ -49,6 +49,8 @@ Write these blocks before implementation.
 4. Collect supplied brand assets and 2–3 references when available.
 5. Identify the one action the story should earn.
 
+If a local daily-inspiration archive exists, inspect the latest one or two capture articles, their stills, and representative local motion files before choosing the art direction. Extract principles such as palette, hierarchy, material, composition, and motion; do not copy layouts literally or upload local reference files to an external generator without explicit approval.
+
 When reuse rights are unclear, paraphrase the source and keep quotations short. Never fabricate testimonials, metrics, or customer claims.
 
 ## Build the story map
@@ -111,10 +113,13 @@ Use [demo/video/index.html](demo/video/index.html) and [demo/video/PROMPT.md](de
 ### Generate the source clip
 
 1. Choose one continuous 6–15 second camera move. Avoid cuts.
-2. Keep important subjects near center with usable headline space.
-3. Generate a low-cost calibration clip before the final render when paid tools are used.
-4. For multi-leg journeys, start each leg from the previous leg's actual rendered last frame.
-5. Keep raw masters and record provider, model, prompt, seed, duration, aspect ratio, and rights.
+2. Write three materially different style studies before generating: change the dominant field, material language, lighting, and composition—not just the accent color.
+3. Keep important subjects near center with usable headline space.
+4. Generate a short calibration clip before the final render when paid tools are used.
+5. For multi-leg journeys, start each leg from the previous leg's actual rendered last frame.
+6. Keep raw masters and record provider, model, prompt, seed, duration, aspect ratio, and rights.
+
+When the user requests Grok Imagine, use its current video interface or API, choose Video, set the requested aspect ratio, duration, and resolution, and generate the approved style studies. Prefer 16:9, 6–10 seconds, and 720p for a first landing-page pass unless the brief requires otherwise. Never substitute a procedural placeholder and call it generated footage.
 
 Preferred prompt shape:
 
@@ -143,14 +148,16 @@ ffmpeg -i source.mp4 -an \
 
 Use [demo/threejs/index.html](demo/threejs/index.html) and [demo/threejs/PROMPT.md](demo/threejs/PROMPT.md).
 
-1. Create one scene, perspective camera, renderer, and world group.
-2. Make the hero object carry the metaphor: planet, machine, archive, constellation, city, or product.
-3. Map scroll progress to camera position, camera target, object rotation, lights, and scene states.
-4. Keep ambient motion subtle; scroll must remain the primary conductor.
-5. Cap device pixel ratio at 2 and update renderer and camera on resize.
-6. Pause continuous rendering when the page is hidden or off-screen.
-7. Dispose geometries, materials, textures, and listeners during teardown.
-8. Provide a static CSS/SVG poster when WebGL fails or reduced motion is requested.
+1. Produce three art-direction studies before committing. Each must change the field color, object material, light behavior, typography relationship, and composition—not just shader colors.
+2. Reject the generic default of a glowing blue planet in dark space unless the source specifically earns it.
+3. Create one scene, perspective camera, renderer, and world group.
+4. Make the hero object carry the metaphor: sculpture, machine, archive, constellation, city, product, or a non-literal planetary system.
+5. Map scroll progress to camera position, camera target, object rotation, lights, and scene states.
+6. Keep ambient motion subtle; scroll must remain the primary conductor.
+7. Cap device pixel ratio at 2 and update renderer and camera on resize.
+8. Pause continuous rendering when the page is hidden or off-screen.
+9. Dispose geometries, materials, textures, and listeners during teardown.
+10. Provide a static CSS/SVG poster when WebGL fails or reduced motion is requested.
 
 Use local, pinned Three.js files in portable demos. Do not depend on a remote CDN for the core renderer.
 

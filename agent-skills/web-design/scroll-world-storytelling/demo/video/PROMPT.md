@@ -1,16 +1,28 @@
-# Video Scrub Demo Prompt
+# Grok Imagine Video Scrub Demo Prompt
 
 ## Generate the source video
 
-Create one 8-second 16:9 cinematic video at 1920×1080.
+Use **Grok Imagine Video** to generate three 6-second, 16:9, 720p calibration clips. Use Video mode, one prompt per clip, and no reference-image upload unless the user explicitly approves it. Keep the camera move continuous and center-safe so each clip can be mapped to scroll.
 
-Single continuous slow forward camera move, no cuts. Fly through a near-black editorial cosmic field toward a luminous amber planet wrapped in thin cyan orbital routes. Pass a chain of six translucent technical monoliths connected by one glowing route, representing destination, fence, bar, loop, route, and proof. The structures should feel architectural and precise, with warm parchment highlights, subtle volumetric haze, restrained film grain, slow parallax, and a clear visual destination. Keep important objects center-safe and leave quiet negative space on the left for editorial copy. Premium field-manual art direction, amber and electric cyan accents, deep navy-black space, realistic light, graceful constant forward velocity. No text, no logos, no captions, no cuts, no camera reversal, no flicker.
+### Style 01 — Signal red brutalism
+
+> Six-second continuous slow forward dolly, no cuts. A monumental matte-black orbital sculpture made of concentric rings, ceramic beads, and faceted planetary discs floats above an infinite vermilion-red studio floor. Brutalist Swiss editorial art direction, hard side light, black lacquer and red powder-coated metal, restrained haze, precise constant camera velocity. Center-safe object with quiet negative space on the left for editorial copy. No text, logos, captions, camera reversal, morphing, or flicker.
+
+### Style 02 — Monochrome editorial
+
+> Six-second continuous lateral-to-forward camera move, no cuts. Travel through a warm-white gallery containing a black wireframe world, tall monolithic arcs, and six small proof nodes that align into one exact route. Monochrome editorial-report art direction, high-contrast daylight, severe grid, documentary texture, graphic shadows, thin orbital lines, constant motion. Center-safe composition with quiet negative space on the left. No text, logos, captions, camera reversal, morphing, or flicker.
+
+### Style 03 — Soft pearl sculpture
+
+> Six-second continuous slow orbit, no cuts. Move around a floating pearl-white kinetic lattice sphere made from hundreds of small ceramic beads, twisting into one Möbius planetary form above warm ivory paper. Soft sculptural product-design art direction, diffuse daylight, shallow shadows, quiet grayscale, one coral signal node, exquisite material detail, constant speed. Center-safe composition with quiet negative space on the left. No text, logos, captions, camera reversal, morphing, or flicker.
+
+Choose the strongest calibration clip, then regenerate or extend it at the final target settings if needed. Preserve the exact winning style preamble.
 
 If the provider supports a negative prompt, use:
 
 > hard cuts, jump zoom, whip pan, camera reversal, typography, labels, watermark, logo, UI, excessive particles, oversaturated neon, unstable geometry, morphing architecture, flicker
 
-Record provider, model, seed, duration, aspect ratio, and rights beside the master. Encode the approved result with a small GOP before using it for scroll seeking.
+Record provider, model, prompt, seed when exposed, duration, aspect ratio, resolution, and rights beside the master. Encode the approved result with a small GOP before using it for scroll seeking.
 
 ## Build the landing page
 

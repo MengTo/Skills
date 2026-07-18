@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reveal Hover Effect"
+  short_description: "Reveal a second image through a soft cursor spotlight"
+  default_prompt: "Use $reveal-hover-effect to build a cursor-following spotlight that reveals a second aligned image."

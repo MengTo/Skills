@@ -2,14 +2,22 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 88
+- Captured demos: 89
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
 
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
 
-## codex (12)
+## codex (13)
+
+### article-prompts-to-skills
+
+Convert an article, tutorial, or prompt pack into focused reusable AgentSkills, one independent capability per skill, with portable instructions, example prompts, working demos, preview screenshots, validation, gallery updates, and a narrow commit. Use when the user asks to turn an article's prompts, tutorial sections, design patterns, interactions, or workflow ideas into complete skills rather than leaving them as prose.
+
+[Open demo](agent-skills/codex/article-prompts-to-skills/demo/index.html) · [Skill](agent-skills/codex/article-prompts-to-skills/SKILL.md) · [Prompt](agent-skills/codex/article-prompts-to-skills/demo/PROMPT.md) · Local demo
+
+![article-prompts-to-skills preview screenshot](agent-skills/codex/article-prompts-to-skills/demo/preview.jpg)
 
 ### audit-verify-explain-grade-5
 

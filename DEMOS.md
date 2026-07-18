@@ -54,8 +54,8 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 88
-- codex: 12
+- Total: 89
+- codex: 13
 - media: 2
 - ui: 1
 - web-design: 73
@@ -64,6 +64,7 @@ Use --force only when every locally generated demo should be intentionally regen
 
 | Skill | Category | Demo | Preview | Prompt | Source |
 | --- | --- | --- | --- | --- | --- |
+| article-prompts-to-skills | codex | [Open](agent-skills/codex/article-prompts-to-skills/demo/index.html) | [Preview](agent-skills/codex/article-prompts-to-skills/demo/preview.jpg) | [Prompt](agent-skills/codex/article-prompts-to-skills/demo/PROMPT.md) | Local |
 | audit-verify-explain-grade-5 | codex | [Open](agent-skills/codex/audit-verify-explain-grade-5/demo/index.html) | [Preview](agent-skills/codex/audit-verify-explain-grade-5/demo/preview.jpg) | [Prompt](agent-skills/codex/audit-verify-explain-grade-5/demo/PROMPT.md) | Local |
 | browser-video-recording | codex | [Open](agent-skills/codex/browser-video-recording/demo/index.html) | [Preview](agent-skills/codex/browser-video-recording/demo/preview.jpg) | [Prompt](agent-skills/codex/browser-video-recording/demo/PROMPT.md) | Local |
 | customer-email-draft-threads | codex | [Open](agent-skills/codex/customer-email-draft-threads/demo/index.html) | [Preview](agent-skills/codex/customer-email-draft-threads/demo/preview.jpg) | [Prompt](agent-skills/codex/customer-email-draft-threads/demo/PROMPT.md) | Local |

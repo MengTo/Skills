@@ -1,0 +1,4 @@
+interface:
+  display_name: "Article Prompts to Skills"
+  short_description: "Package article prompts as validated skills"
+  default_prompt: "Use $article-prompts-to-skills to turn this article prompt pack into complete reusable skills with examples, demos, previews, validation, and a narrow commit."

@@ -146,6 +146,27 @@ const workflowExamples = {
       "- spoken copy checked for clipping and unintended pauses",
     ].join("\n"),
   },
+  "article-prompts-to-skills": {
+    scenario: "Turn three independent prompts from a fictional editorial article into portable skill packages.",
+    input: [
+      "# Source prompt pack",
+      "",
+      "1. A bound-aware pointer lens that reveals alternate media.",
+      "2. A keyboard-accessible chapter progress rail.",
+      "3. Focus-safe animated archive filters.",
+      "",
+      "Preserve behavior and accessibility. Remove the source page's art direction.",
+    ].join("\n"),
+    output: [
+      "# Skill-package handoff",
+      "",
+      "1. pointer-lens-reveal",
+      "2. chapter-progress-rail",
+      "3. accessible-collection-filters",
+      "",
+      "Each package includes a portable SKILL.md, three prompt levels, a working demo, browser preview, validation evidence, and a narrow commit.",
+    ].join("\n"),
+  },
   "html-to-interaction-prompts": {
     scenario: "Extract reusable interaction recipes from an existing HTML landing page.",
     input: [

@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Foundry — Article to Skill Packages</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f3f0e8;
+      --muted: #9d9a92;
+      --line: rgba(243, 240, 232, 0.13);
+      --panel: rgba(24, 25, 25, 0.86);
+      --lime: #d9ff5c;
+      --orange: #ff8d5c;
+      --violet: #a78bfa;
+      --cyan: #62e5dc;
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 85% 18%, rgba(167, 139, 250, 0.13), transparent 24rem),
+        radial-gradient(circle at 12% 90%, rgba(217, 255, 92, 0.08), transparent 28rem),
+        #0d0e0e;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+
+    .shell {
+      width: min(1440px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 30px 32px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      aspect-ratio: 1;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      color: #111;
+      background: var(--lime);
+      box-shadow: 0 0 0 6px rgba(217, 255, 92, 0.08);
+      font-weight: 900;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      letter-spacing: -0.04em;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font: 650 0.66rem/1.1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 16px var(--lime);
+    }
+
+    main {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(250px, 0.76fr) 54px minmax(520px, 1.58fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(18px);
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .counter {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font: 700 0.63rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .source-title {
+      margin: 0 0 22px;
+      max-width: 14ch;
+      font: 500 clamp(1.9rem, 3vw, 3.4rem)/0.96 Georgia, serif;
+      letter-spacing: -0.055em;
+    }
+
+    .prompt-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .prompt {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 11px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.035);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .prompt:hover { transform: translateY(-1px); }
+    .prompt[aria-pressed="true"] {
+      border-color: rgba(217, 255, 92, 0.42);
+      background: rgba(217, 255, 92, 0.075);
+    }
+
+    .prompt:focus-visible,
+    .skill-card:focus-visible {
+      outline: 2px solid var(--lime);
+      outline-offset: 3px;
+    }
+
+    .num {
+      width: 34px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font: 700 0.67rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .prompt strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 0.82rem;
+    }
+
+    .prompt small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.67rem;
+      line-height: 1.35;
+    }
+
+    .arrow { color: var(--muted); }
+
+    .boundary {
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-left: 2px solid var(--orange);
+      color: #c9c5bc;
+      background: rgba(255, 141, 92, 0.055);
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    .transform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .transform::before {
+      content: "";
+      position: absolute;
+      inset: 0 50%;
+      width: 1px;
+      background: linear-gradient(transparent, var(--line) 15%, var(--line) 85%, transparent);
+    }
+
+    .transform-mark {
+      z-index: 1;
+      width: 46px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(217, 255, 92, 0.35);
+      border-radius: 50%;
+      color: var(--lime);
+      background: #111212;
+      box-shadow: 0 0 0 8px #0d0e0e;
+      font-size: 1.1rem;
+    }
+
+    .output-panel {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 14px;
+    }
+
+    .output-intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .output-intro h2 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2vw, 2.15rem);
+      letter-spacing: -0.055em;
+    }
+
+    .rule {
+      color: var(--lime);
+      font: 700 0.66rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-align: right;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .skill-card {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+    }
+
+    .skill-card:hover { transform: translateY(-2px); }
+    .skill-card[aria-selected="true"] {
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+
+    .skill-card::before {
+      content: "";
+      display: block;
+      width: 25px;
+      height: 3px;
+      margin-bottom: 14px;
+      border-radius: 99px;
+      background: var(--accent);
+    }
+
+    .skill-card:nth-child(1) { --accent: var(--orange); }
+    .skill-card:nth-child(2) { --accent: var(--violet); }
+    .skill-card:nth-child(3) { --accent: var(--cyan); }
+
+    .skill-card strong {
+      display: block;
+      min-height: 2.5em;
+      font: 700 0.78rem/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .skill-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.66rem;
+      line-height: 1.4;
+    }
+
+    .detail {
+      min-height: 0;
+      padding: 17px 18px;
+      border-radius: 17px;
+      color: #24241f;
+      background: #ece9df;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(190px, 0.63fr);
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    .detail h3 {
+      margin: 2px 0 10px;
+      font: 650 clamp(1.25rem, 1.8vw, 1.8rem)/1 Georgia, serif;
+      letter-spacing: -0.035em;
+    }
+
+    .path {
+      display: inline-flex;
+      padding: 5px 8px;
+      border-radius: 7px;
+      color: #4a4943;
+      background: rgba(0, 0, 0, 0.055);
+      font: 700 0.59rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .detail-copy {
+      margin: 0;
+      max-width: 60ch;
+      color: #5b5952;
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
+    .prompt-box {
+      margin-top: 13px;
+      padding: 11px 12px;
+      border: 1px solid rgba(0, 0, 0, 0.09);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.42);
+      font: 600 0.64rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .checks {
+      align-self: stretch;
+      padding-left: 18px;
+      border-left: 1px solid rgba(0, 0, 0, 0.11);
+    }
+
+    .checks h4 {
+      margin: 4px 0 10px;
+      color: #77746b;
+      font: 800 0.58rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .checks ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .checks li {
+      display: flex;
+      gap: 8px;
+      color: #4f4d47;
+      font-size: 0.66rem;
+      line-height: 1.3;
+    }
+
+    .checks li::before {
+      content: "✓";
+      color: #607c00;
+      font-weight: 900;
+    }
+
+    .footer-note {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+      font: 650 0.6rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    @media (max-width: 980px) {
+      .shell { padding: 22px; }
+      main { grid-template-columns: 0.82fr 38px 1.35fr; }
+      .detail { grid-template-columns: 1fr; }
+      .checks { padding: 13px 0 0; border-left: 0; border-top: 1px solid rgba(0,0,0,.11); }
+    }
+
+    @media (max-width: 760px) {
+      .shell { padding: 18px 14px 24px; }
+      header { align-items: flex-start; }
+      .status { display: none; }
+      main { grid-template-columns: 1fr; }
+      .transform { min-height: 32px; }
+      .transform::before { inset: 50% 0; width: auto; height: 1px; }
+      .transform-mark { transform: rotate(90deg); }
+      .skill-grid { grid-template-columns: 1fr; }
+      .skill-card { display: grid; grid-template-columns: 28px minmax(0, 1fr); column-gap: 9px; }
+      .skill-card::before { grid-row: 1 / 3; width: 3px; height: 100%; margin: 0; }
+      .skill-card strong { min-height: 0; }
+      .skill-card span { margin-top: 4px; }
+      .output-intro { align-items: flex-start; }
+      .rule { max-width: 13ch; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">F</div>
+        <div>
+          <p class="eyebrow">Article transformation system</p>
+          <h1>Prompt Foundry</h1>
+        </div>
+      </div>
+      <div class="status">Source mapped · boundaries checked · proof required</div>
+    </header>
+
+    <main>
+      <section class="panel source-panel" aria-labelledby="source-title">
+        <div class="panel-head">
+          <p class="eyebrow">01 / source article</p>
+          <span class="counter">3 prompts</span>
+        </div>
+        <h2 class="source-title" id="source-title">Small interactions for a living archive.</h2>
+
+        <div class="prompt-list" aria-label="Source prompts">
+          <button class="prompt" type="button" data-skill="lens" aria-pressed="true">
+            <span class="num">01</span>
+            <span><strong>Pointer lens</strong><small>Reveal an alternate treatment inside the media bounds.</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="prompt" type="button" data-skill="rail" aria-pressed="false">
+            <span class="num">02</span>
+            <span><strong>Reading rail</strong><small>Track five chapters and provide direct navigation.</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="prompt" type="button" data-skill="filters" aria-pressed="false">
+            <span class="num">03</span>
+            <span><strong>Archive filters</strong><small>Filter stories without losing focus or context.</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </button>
+        </div>
+
+        <div class="boundary"><strong>Boundary:</strong> preserve behavior, inputs, and accessibility. Remove the source page's title, typography, palette, and layout.</div>
+      </section>
+
+      <div class="transform" aria-hidden="true"><div class="transform-mark">→</div></div>
+
+      <section class="panel output-panel" aria-labelledby="output-title">
+        <div class="output-intro">
+          <div>
+            <p class="eyebrow">02 / portable output</p>
+            <h2 id="output-title">Three focused skill packages</h2>
+          </div>
+          <div class="rule">One independent<br>capability per skill</div>
+        </div>
+
+        <div class="skill-grid" role="tablist" aria-label="Proposed skills">
+          <button class="skill-card" id="tab-lens" type="button" role="tab" data-skill="lens" aria-controls="skill-detail" aria-selected="true">
+            <strong>pointer-lens-reveal</strong>
+            <span>Bound-aware image comparison</span>
+          </button>
+          <button class="skill-card" id="tab-rail" type="button" role="tab" data-skill="rail" aria-controls="skill-detail" aria-selected="false">
+            <strong>chapter-progress-rail</strong>
+            <span>Chapter-aware page navigation</span>
+          </button>
+          <button class="skill-card" id="tab-filters" type="button" role="tab" data-skill="filters" aria-controls="skill-detail" aria-selected="false">
+            <strong>accessible-collection-filters</strong>
+            <span>Focus-safe collection filtering</span>
+          </button>
+        </div>
+
+        <div class="detail" id="skill-detail" role="tabpanel" aria-labelledby="tab-lens" tabindex="0">
+          <div>
+            <span class="path" id="detail-path">web-design / pointer-lens-reveal</span>
+            <h3 id="detail-title">Reveal a second image through a bounded lens.</h3>
+            <p class="detail-copy" id="detail-copy">Keep pointer and touch parity, media-bound clamping, keyboard comparison controls, and a static reduced-motion fallback. Remove the archive's art direction.</p>
+            <div class="prompt-box" id="detail-prompt">Use $pointer-lens-reveal to reveal an alternate product finish inside a pointer-following lens.</div>
+          </div>
+          <aside class="checks" aria-label="Package checklist">
+            <h4>Complete package</h4>
+            <ul>
+              <li>Focused SKILL.md contract</li>
+              <li>Minimal · Recreate · Remix prompts</li>
+              <li>Working standalone demo</li>
+              <li>Browser preview + interaction proof</li>
+              <li>Validation + narrow commit</li>
+            </ul>
+          </aside>
+        </div>
+
+        <div class="footer-note"><span>Source evidence retained</span><span>Theme lock-in removed</span><span>Proof before handoff</span></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const skills = {
+      lens: {
+        path: "web-design / pointer-lens-reveal",
+        title: "Reveal a second image through a bounded lens.",
+        copy: "Keep pointer and touch parity, media-bound clamping, keyboard comparison controls, and a static reduced-motion fallback. Remove the archive's art direction.",
+        prompt: "Use $pointer-lens-reveal to reveal an alternate product finish inside a pointer-following lens."
+      },
+      rail: {
+        path: "web-design / chapter-progress-rail",
+        title: "Connect reading progress to direct chapter navigation.",
+        copy: "Keep viewport-center section detection, anchored navigation, visible keyboard focus, and responsive collapse. Remove the source article's chapter count and rail styling.",
+        prompt: "Use $chapter-progress-rail to add an accessible five-chapter progress rail to this product story."
+      },
+      filters: {
+        path: "web-design / accessible-collection-filters",
+        title: "Filter a collection without losing focus or context.",
+        copy: "Keep live result announcements, focus preservation, deterministic filtering, and the no-motion layout fallback. Remove the source topics, cards, and editorial palette.",
+        prompt: "Use $accessible-collection-filters to add focus-safe topic filters to this resource library."
+      }
+    };
+
+    const sourceButtons = [...document.querySelectorAll(".prompt")];
+    const skillButtons = [...document.querySelectorAll(".skill-card")];
+    const detail = document.querySelector("#skill-detail");
+    const path = document.querySelector("#detail-path");
+    const title = document.querySelector("#detail-title");
+    const copy = document.querySelector("#detail-copy");
+    const prompt = document.querySelector("#detail-prompt");
+
+    function selectSkill(key, moveFocus = false) {
+      const data = skills[key];
+      sourceButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.skill === key)));
+      skillButtons.forEach((button) => {
+        const selected = button.dataset.skill === key;
+        button.setAttribute("aria-selected", String(selected));
+        button.tabIndex = selected ? 0 : -1;
+        if (selected) detail.setAttribute("aria-labelledby", button.id);
+      });
+      path.textContent = data.path;
+      title.textContent = data.title;
+      copy.textContent = data.copy;
+      prompt.textContent = data.prompt;
+      if (moveFocus) skillButtons.find((button) => button.dataset.skill === key).focus();
+    }
+
+    [...sourceButtons, ...skillButtons].forEach((button) => {
+      button.addEventListener("click", () => selectSkill(button.dataset.skill));
+    });
+
+    skillButtons.forEach((button, index) => {
+      button.addEventListener("keydown", (event) => {
+        if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+        event.preventDefault();
+        const direction = event.key === 'ArrowRight' ? 1 : -1;
+        const next = (index + direction + skillButtons.length) % skillButtons.length;
+        selectSkill(skillButtons[next].dataset.skill, true);
+      });
+    });
+  </script>
+</body>
+</html>

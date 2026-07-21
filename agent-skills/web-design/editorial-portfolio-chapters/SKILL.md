@@ -69,6 +69,10 @@ Replace all source brands, projects, people, claims, images, labels, and links w
 - Confirm case studies remain readable before animation and no source content was lightly paraphrased.
 - Remove invented awards, clients, outcomes, or claims when evidence is unavailable.
 
+## Source-Backed Prompt Pack
+
+Use [Mara Voss Interaction Prompt Pack](ARTICLE.md) as a worked example for turning one editorial portfolio into portable loader, pinned chapter, archive, inspection, sticky-stack, and footer interaction prompts. Reuse the motion logic, not the reference identity, copy, imagery, or claims.
+
 ## Avoid
 
 - Explaining the studio before showing its work.

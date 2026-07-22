@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shaders Cursor Ripples"
+  short_description: "Add WebGPU water ripples that follow the cursor"
+  default_prompt: "Use $shaders-cursor-ripples to add a cursor-following WebGPU water ripple to this image-led hero."

@@ -1,0 +1,42 @@
+.cursor-ripple-media {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cursor-ripple-media__fallback {
+  position: relative;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cursor-ripple-shader {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+
+.cursor-ripple-shader.is-ready {
+  opacity: 1;
+}
+
+.cursor-ripple-shader canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-ripple-shader {
+    display: none;
+    transition: none;
+  }
+}

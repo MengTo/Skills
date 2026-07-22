@@ -1,0 +1,3 @@
+- [Shaders framework guide](https://shaders.com/docs/guide)
+- [Shaders package](https://www.npmjs.com/package/shaders)
+- [Fragrance Hero interaction reference](https://previews.shaders.com/sections/fragrance-hero)

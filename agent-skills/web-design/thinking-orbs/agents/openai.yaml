@@ -1,0 +1,4 @@
+interface:
+  display_name: "Thinking Orbs"
+  short_description: "Add animated AI agent status orbs"
+  default_prompt: "Use $thinking-orbs to add an accessible AI loading indicator to my React interface."

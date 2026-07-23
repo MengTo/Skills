@@ -1,0 +1,4 @@
+interface:
+  display_name: "Liquid Metal Border"
+  short_description: "Add animated liquid-metal borders to React controls"
+  default_prompt: "Use $liquid-metal-border to add a restrained liquid-metal active border to this React button."

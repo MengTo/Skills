@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Reference Originality"
+  short_description: "Check websites for reference overlap"
+  default_prompt: "Use $audit-reference-originality to compare this website against its source references and report originality risks with fixes."

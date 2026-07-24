@@ -1,6 +1,6 @@
 ---
 name: handle-saas-account-cases
-description: Run evidence-first customer-case flows for SaaS account or entitlement access issues, unsupported-platform responses, duplicate messages, and resolved acknowledgements. Use when a customer cannot sign in or access paid content, reports a missing account or entitlement, asks about an unsupported device or platform, sends the same request more than once, or confirms that a support issue is resolved.
+description: Run evidence-first customer-case flows for SaaS account or entitlement access issues, unsupported-platform responses, duplicate messages, resolved acknowledgements, and eligible final closure replies with an optional Trustpilot review invitation. Use when a customer cannot sign in or access paid content, reports a missing account or entitlement, asks about an unsupported device or platform, sends the same request more than once, or replies after a fix to confirm that the outcome is resolved and positive.
 ---
 
 # Handle SaaS Account Cases
@@ -103,24 +103,34 @@ Stop if identifiers point to different people, environments, or products.
 
 ## Flow: Resolved acknowledgement
 
-1. **Evidence** — Verify the latest customer message clearly confirms success,
-   thanks support without a new ask, or accepts the outcome. Re-read the
-   authoritative system state when the acknowledgement depends on a prior
-   repair.
-2. **Match** — Attach it to the existing canonical case; do not create a new
-   task for a pure acknowledgement.
-3. **Allowed action** — Default to no reply when nothing remains. Draft a brief
-   courtesy reply only when the relationship or local policy calls for it.
-4. **Approval gate** — Any courtesy send still needs send authority. A customer
-   acknowledgement does not authorize account, billing, or mail-label changes.
-5. **Customer communication** — If replying, acknowledge resolution without
-   reopening the diagnosis or making a new promise.
-6. **Post-action verification** — If sent, verify exact recipient, subject,
-   complete body, sent message id, thread id, and `SENT`. If no reply is needed,
-   record `outbound_not_needed`.
-7. **Closure** — Close the Codex case and stop reminders when no action remains.
-   Leave Gmail unchanged when no outbound is needed; do not invent a send or
-   bypass the verified-`SENT` archive gate.
+1. **Evidence** — Verify the latest inbound is the customer's own reply after
+   the fix and explicitly confirms that the outcome is fixed and positive.
+   Re-read authoritative state when the confirmation depends on a prior repair.
+   An internal success signal or ambiguous thank-you is not the trigger.
+2. **Match** — Attach the reply to the existing canonical case. Search the
+   canonical mail/Codex threads, duplicate threads, drafts, and `SENT` for prior
+   closure or review-request wording. Do not create a new task or invitation.
+3. **Allowed action** — When the customer explicitly confirms the positive
+   result and no open ask remains, prepare one final closure reply. Add an
+   optional Trustpilot invitation only for a non-contentious account/access or
+   product-help success and only with the verified configured official review
+   link. If the link or eligibility cannot be verified, omit the invitation.
+4. **Approval gate** — Require explicit current approval for the exact closure
+   recipient, body, canonical thread, and verified link. Never request a review
+   for refunds, failed payments, cancellations, accidental renewals, disputes,
+   complaints, unresolved cases, or mixed-contentious cases. Never send a
+   second invitation for the same case.
+5. **Customer communication** — Keep the invitation optional and
+   consent-friendly. Ask for no rating, offer no incentive, and apply no
+   pressure. Do not send a separate review-request message after a closure was
+   already sent.
+6. **Post-action verification** — Read the final closure reply from `SENT` and
+   verify recipient, subject, complete body, sent message id, thread id, and
+   exact verified review link when present. Confirm no earlier invitation was
+   sent for this case.
+7. **Closure** — Close the Codex case and stop reminders after the approved
+   final reply is verified. Apply Gmail archive only through the separate
+   verified-`SENT` and thread-wide `INBOX` removal gate.
 
 ## Send, archive, and handoff
 

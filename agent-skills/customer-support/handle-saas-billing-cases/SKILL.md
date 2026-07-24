@@ -131,6 +131,14 @@ another.
    reply are verified. Leave open if the refund is pending, the provider action
    failed, or another subscription still qualifies.
 
+## Exclude Trustpilot review requests
+
+Never add a Trustpilot review invitation to any flow in this skill. Refunds,
+failed payments, cancellations, accidental renewals, disputes, complaints, and
+mixed account-plus-billing cases remain ineligible even when the customer is
+polite or later acknowledges the result. Close the verified case without review
+outreach.
+
 ## Send, archive, and handoff
 
 Use `customer-email-draft-threads` for mailbox operations. Re-read the full

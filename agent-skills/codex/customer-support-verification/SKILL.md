@@ -1,14 +1,14 @@
 ---
 name: customer-support-verification
-description: Verify customer support work against the selected customer-case flow, full-thread evidence, account and canonical-thread matching, authority, financial approval, customer communication, post-action read-back, send confirmation, thread-wide archive, and closure requirements. Use after every SaaS support triage, account/access or unsupported-platform response, duplicate or resolved acknowledgement, cancellation, failed-payment cancellation, refund, accidental-renewal case, support handoff, draft, send, or archive task before reporting completion.
+description: Verify customer support work against the selected customer-case flow, full-thread evidence, account and canonical-thread matching, authority, financial approval, customer communication, eligible optional Trustpilot review-request rules, post-action read-back, send confirmation, thread-wide archive, and closure requirements. Use after every SaaS support triage, account/access or unsupported-platform response, duplicate or resolved acknowledgement, positive-confirmation closure reply, cancellation, failed-payment cancellation, refund, accidental-renewal case, support handoff, draft, send, or archive task before reporting completion.
 ---
 
 # Customer Support Verification
 
-Use this skill as the final gate for the
-[customer-support automation family](../../customer-support/README.md). Do not
-let a successful API call, sent message, archived thread, or customer
-acknowledgement substitute for the other required proofs.
+Use this skill as the final gate for the customer-support automation family.
+Load `handle-saas-account-cases` or `handle-saas-billing-cases` for the selected
+scenario. Do not let a successful API call, sent message, archived thread, or
+customer acknowledgement substitute for the other required proofs.
 
 ## Build the case ledger
 
@@ -59,13 +59,18 @@ Evaluate every item as `PASS`, `FAIL`, or `UNKNOWN`.
 10. **Send proof** — Re-read the complete thread before send, then verify the
     exact recipient, subject, complete body, attachments, sent message id,
     thread id, and `SENT` state.
-11. **Archive proof** — Archive only after send proof and separate authority.
+11. **Trustpilot closure proof** — When a review invitation is present, require
+    the customer's own latest positive confirmation after the fix, a fully
+    resolved eligible case, canonical-thread and duplicate checks, no prior
+    invite, the verified configured official link, optional wording, and exact
+    send approval. Otherwise require `review_invitation_omitted`.
+12. **Archive proof** — Archive only after send proof and separate authority.
     Remove `INBOX` from every message in every in-scope thread and verify
     `inbox_remaining: []`.
-12. **Closure** — Close only when the requested outcome, approved communication,
+13. **Closure** — Close only when the requested outcome, approved communication,
     and necessary follow-up are complete. Stop reminders and close the
     canonical Codex task separately. Mail archive alone does not resolve a case.
-13. **Commit scope** — When files changed, validate and commit only requested
+14. **Commit scope** — When files changed, validate and commit only requested
     files. State clearly when no repository change was needed.
 
 ## Verify the selected scenario
@@ -97,14 +102,24 @@ Evaluate every item as `PASS`, `FAIL`, or `UNKNOWN`.
 
 ### Resolved acknowledgement
 
-- Verify the latest message contains no new ask and any prior action it refers
-  to is actually complete.
-- Record `outbound_not_needed` when no reply is warranted; do not invent a send.
-- Close Codex tracking separately. When no reply is sent, leave Gmail unchanged;
-  the family has no no-reply archive shortcut.
+- Verify the latest inbound is the customer's own reply after the fix and
+  explicitly confirms the outcome is fixed and positive; internal resolution
+  evidence or an ambiguous thank-you cannot trigger a review request.
+- Require one canonical final closure draft/reply. Search canonical and duplicate
+  threads, drafts, and `SENT`; fail if a prior review invitation was sent or a
+  second closure/review message was created.
+- Allow the optional Trustpilot invitation only for a fully resolved
+  non-contentious account/access or product-help success. Confirm the official
+  configured link was verified and not invented.
+- Confirm the invitation asks for no rating, offers no incentive, applies no
+  pressure, and had exact send approval. If any gate fails, require the closure
+  reply to omit the invitation.
+- Close Codex tracking separately after `SENT` read-back and leave Gmail archive
+  to its own authority gate.
 
 ### Cancellation
 
+- Confirm no Trustpilot review invitation appears.
 - Verify exact subscription, immediate versus period-end timing, invoice/retry
   treatment, access end, and approval.
 - Re-read subscription, invoice/payment intent, product plan, and entitlement
@@ -112,6 +127,7 @@ Evaluate every item as `PASS`, `FAIL`, or `UNKNOWN`.
 
 ### Unpaid or failed-payment cancellation
 
+- Confirm no Trustpilot review invitation appears.
 - Verify collected amount and later-success history.
 - If collected amount is zero, confirm no refund was created.
 - Verify canceled subscription plus no open invoice, retry, or other live
@@ -119,6 +135,7 @@ Evaluate every item as `PASS`, `FAIL`, or `UNKNOWN`.
 
 ### Refund
 
+- Confirm no Trustpilot review invitation appears.
 - Verify exact captured transaction, amount/currency, policy, existing refunds,
   dispute state, account link, and approval.
 - For a subscription refund, require verified cancellation read-back before the
@@ -128,6 +145,7 @@ Evaluate every item as `PASS`, `FAIL`, or `UNKNOWN`.
 
 ### Accidental renewal
 
+- Confirm no Trustpilot review invitation appears.
 - Verify the renewal is captured or pending and is not a new purchase or
   duplicate subscription.
 - For captured renewal, require separately explicit cancellation and refund
@@ -147,6 +165,7 @@ PASS/FAIL/UNKNOWN — Canonical thread:
 PASS/FAIL/UNKNOWN — Authority and approval:
 PASS/FAIL/UNKNOWN — Action and post-action read-back:
 PASS/FAIL/UNKNOWN — Customer communication and SENT proof:
+PASS/FAIL/UNKNOWN — Trustpilot eligibility, verified link, and no-repeat proof:
 PASS/FAIL/UNKNOWN — Thread-wide archive:
 PASS/FAIL/UNKNOWN — Closure and reminders:
 PASS/FAIL/UNKNOWN — Commit scope:

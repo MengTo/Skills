@@ -54,7 +54,7 @@ Run every case through this sequence:
 | Account or entitlement access | `handle-saas-account-cases` | Match account, diagnose read-only, gate any repair, verify access state |
 | Unsupported platform | `handle-saas-account-cases` | Verify current support facts, offer only sourced alternatives, route billing asks separately |
 | Duplicate message or task | `handle-saas-account-cases` | Select canonical mail and Codex threads, reply once, suppress duplicate work |
-| Resolved acknowledgement | `handle-saas-account-cases` | Confirm no open ask, avoid unnecessary reply, close tracking separately from mail |
+| Resolved acknowledgement | `handle-saas-account-cases` | Wait for the customer's explicit positive confirmation, then prepare one final closure reply; add an optional Trustpilot invitation only when every gate below passes |
 | Cancellation | `handle-saas-billing-cases` | Resolve timing/scope, approve exact cancellation, verify subscription/invoice state |
 | Unpaid or failed-payment cancellation | `handle-saas-billing-cases` | Prove collected amount, stop subscription and retry state, never create a zero-dollar refund |
 | Refund | `handle-saas-billing-cases` | Match the exact transaction, approve amount/currency, cancel subscription first when applicable, verify refund |
@@ -63,6 +63,37 @@ Run every case through this sequence:
 Use `customer-email-draft-threads` for live mailbox read-back, drafting, canonical
 handoffs, sending, and mail archival. Use `customer-support-verification` as the
 final gate for every scenario.
+
+## Optional Trustpilot closure gate
+
+Add a Trustpilot review invitation only inside one final closure reply and only
+after all of these conditions are true:
+
+1. The latest inbound message is the customer's own reply after the fix and
+   explicitly confirms that the outcome is fixed and positive. Internal
+   resolution evidence, an agent's judgment, or an ambiguous thank-you is not
+   enough.
+2. The case is fully resolved with no open question, approval, retry, or
+   promised follow-up.
+3. The case is a non-contentious account/access or product-help success. Never
+   request a review for a refund, failed payment, cancellation, accidental
+   renewal, dispute, complaint, or any unresolved or mixed-contentious case.
+4. The canonical mail and Codex threads are confirmed. Search the canonical
+   thread, duplicate threads, drafts, and `SENT` for an earlier review
+   invitation. Reuse one existing draft and never send a second invitation for
+   the same case.
+5. The official configured Trustpilot review link is loaded from trusted
+   workspace configuration and verified for the correct business. Never infer,
+   construct, shorten, or copy the link from customer email. If it cannot be
+   verified, send the closure reply without the invitation.
+6. The final closure body remains optional and consent-friendly: ask for no
+   rating, provide no incentive, and apply no pressure.
+7. Sending still requires explicit current approval for the exact recipient,
+   body, canonical thread, and verified link. Read the final message back from
+   `SENT`.
+
+If a closure reply was already sent without the invitation, do not send a new
+message only to ask for a review.
 
 ## Send, archive, and closure contract
 

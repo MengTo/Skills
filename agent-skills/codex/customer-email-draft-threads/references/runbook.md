@@ -115,6 +115,84 @@ Fail closed: if standing approval, account verification, Discord authentication,
 - Prefer in-thread drafts with the latest customer message id. If Gmail rejects in-thread subject matching, create a standalone draft and report it.
 - Before creating a new draft, check existing drafts for the same thread/customer to avoid duplicates.
 
+## Optional Trustpilot Review Invitation
+
+Use this only inside one final closure reply after the customer confirms the
+positive outcome.
+
+### Eligibility decision tree
+
+Fail closed unless every answer is yes:
+
+1. Is the latest inbound message the customer's own reply after the fix,
+   explicitly confirming that the outcome is fixed and positive? Internal
+   evidence, an agent's judgment, silence, or an ambiguous thank-you is not
+   enough.
+2. Is the case fully resolved with no open question, approval, retry, complaint,
+   or promised follow-up?
+3. Is this a non-contentious account/access or product-help success? Refunds,
+   failed payments, cancellations, accidental renewals, disputes, complaints,
+   and mixed-contentious cases are always excluded.
+4. Did the canonical-thread check pass? Search the customer identifiers, Gmail
+   thread/message/draft ids, issue phrase, canonical Codex task, duplicate mail
+   threads, drafts, and `SENT`. If a prior invitation was sent for this case,
+   never invite again. If one unsent closure draft exists, reuse it. Do not
+   create a second draft.
+5. Is the official configured Trustpilot review link available from trusted
+   workspace configuration or a product runbook? Verify that it uses HTTPS,
+   belongs to an official Trustpilot-owned host, resolves to the correct
+   business review page, and is not a shortener or customer-supplied redirect.
+   Record the trusted source and verification time. Never construct or guess a
+   URL. If verification fails, omit the invitation and send only the closure.
+6. Has the request owner approved the exact recipient, final body, canonical
+   thread, and verified link? Drafting may proceed when eligible; sending may
+   not.
+
+If the closure reply was already sent without a review invitation, do not send a
+second message only to request a review.
+
+### Warm closure template
+
+```text
+Hi {first_name},
+
+I'm glad to hear {verified_outcome} is working now. Thanks for letting us know.
+
+If you'd like, you can share your experience on Trustpilot:
+{verified_trustpilot_review_url}
+
+It's completely optional, and there's no pressure to leave a review.
+
+Best,
+{sender_name}
+```
+
+### Compact closure template
+
+```text
+Hi {first_name},
+
+Great to hear {verified_outcome} is resolved.
+
+If you'd like to share feedback, our optional Trustpilot review page is here:
+{verified_trustpilot_review_url}
+
+No pressure at all.
+
+Best,
+{sender_name}
+```
+
+Do not ask for a particular rating, mention stars, offer a gift/discount, or
+condition support on a review. Keep the invitation in the same final closure
+reply; never create a separate review campaign from this workflow.
+
+Run the focused policy test after changing this section:
+
+```bash
+node agent-skills/codex/customer-email-draft-threads/scripts/test-trustpilot-review-request-policy.mjs
+```
+
 ## Approved Send And Gmail Archive
 
 Treat send, archive, and customer-case resolution as separate states.

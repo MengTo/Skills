@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Hybrid Game Assets"
+  short_description: "Choose and integrate the right game asset type"
+  default_prompt: "Use $build-hybrid-game-assets to plan and implement game assets."

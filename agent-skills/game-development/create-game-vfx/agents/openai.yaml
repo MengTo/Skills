@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Game VFX"
+  short_description: "Build readable performance-safe Three.js VFX"
+  default_prompt: "Use $create-game-vfx to build readable Three.js combat effects."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Mobile Three.js Games"
+  short_description: "Build responsive touch-ready Three.js games"
+  default_prompt: "Use $build-mobile-threejs-games to improve this Three.js game for mobile."

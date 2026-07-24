@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ship Web Games"
+  short_description: "Release and verify playable web games"
+  default_prompt: "Use $ship-web-games to release and verify this playable web game."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tune Enemy AI"
+  short_description: "Build and verify combat-ready enemy AI"
+  default_prompt: "Use $tune-enemy-ai to improve enemy behavior and deterministic tests."

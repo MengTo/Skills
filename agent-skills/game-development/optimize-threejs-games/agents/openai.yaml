@@ -1,0 +1,4 @@
+interface:
+  display_name: "Optimize Three.js Games"
+  short_description: "Profile and improve Three.js game performance"
+  default_prompt: "Use $optimize-threejs-games to profile and improve a Three.js game."

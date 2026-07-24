@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Playable Web Games"
+  short_description: "Run repeatable browser game playtests"
+  default_prompt: "Use $test-playable-web-games to test this playable web game end to end."

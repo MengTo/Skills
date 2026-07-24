@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Action Combat"
+  short_description: "Implement readable tactical action combat"
+  default_prompt: "Use $design-action-combat to design and implement readable action combat."

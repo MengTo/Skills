@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Game Audio Feedback"
+  short_description: "Add readable responsive game audio feedback"
+  default_prompt: "Use $build-game-audio-feedback to design game audio feedback."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Game Camera Controls"
+  short_description: "Create readable Three.js game camera control"
+  default_prompt: "Use $build-game-camera-controls to implement isometric camera controls."

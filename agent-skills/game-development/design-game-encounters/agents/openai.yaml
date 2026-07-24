@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Game Encounters"
+  short_description: "Design balanced Three.js combat encounters"
+  default_prompt: "Use $design-game-encounters to create a balanced game encounter."

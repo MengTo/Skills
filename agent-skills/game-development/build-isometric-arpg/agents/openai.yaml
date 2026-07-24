@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Isometric ARPG"
+  short_description: "Build a playable isometric action RPG"
+  default_prompt: "Use $build-isometric-arpg to build a playable isometric action RPG."

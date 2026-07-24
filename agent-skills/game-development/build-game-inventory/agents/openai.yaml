@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Game Inventory"
+  short_description: "Create reliable equipment and inventory flows"
+  default_prompt: "Use $build-game-inventory to create a reliable game inventory system."

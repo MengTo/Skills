@@ -1,0 +1,4 @@
+interface:
+  display_name: "Author Game Levels"
+  short_description: "Create readable playable Three.js game levels"
+  default_prompt: "Use $author-game-levels to author a playable Three.js game level."

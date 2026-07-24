@@ -115,6 +115,30 @@ Fail closed: if standing approval, account verification, Discord authentication,
 - Prefer in-thread drafts with the latest customer message id. If Gmail rejects in-thread subject matching, create a standalone draft and report it.
 - Before creating a new draft, check existing drafts for the same thread/customer to avoid duplicates.
 
+## Approved Send And Gmail Archive
+
+Treat send, archive, and customer-case resolution as separate states.
+
+1. Re-read the complete live thread immediately before sending. If a newer
+   customer message or changed draft exists, stop and refresh the response.
+2. Confirm explicit current approval covers the exact recipient, subject,
+   complete body, attachments, and thread. A financial-action approval does not
+   approve sending, and send approval does not approve a financial action.
+3. Send once. Read the resulting message back from `SENT` and verify the
+   recipient, subject, complete body, attachments, sent message id, and thread
+   id. Do not claim success from the send call alone.
+4. Archive only when the request owner separately authorizes it and the `SENT`
+   read-back passes. Remove `INBOX` from every message in the entire Gmail
+   thread, not only the newest message.
+5. Re-read the thread and list any message that still has `INBOX`. Report
+   archive success only when `inbox_remaining: []`.
+6. For duplicate Gmail conversations, apply the same protocol to each approved
+   thread after the canonical response is verified. Never archive an unanswered
+   duplicate merely because a matching Codex task was closed.
+
+If the final reply does not need to be sent, leave Gmail unchanged. Do not
+invent an outbound message or use a no-reply archive shortcut.
+
 ## Project Mapping
 
 Use project targets from the user's workspace map, support runbook, repo docs, or explicit instructions. If no mapping exists, use a general support workspace and explain the ambiguity.
@@ -143,11 +167,16 @@ If one matching thread exists, reuse it as the canonical thread and update that 
 
 Do not close a thread only because the same Gmail conversation has a newer customer reply. First decide whether it is the same unresolved issue. If it is the same issue, keep the newest/current thread canonical; if it is a genuinely new issue in the same Gmail conversation, make the difference explicit in the call to action.
 
+Here, `archive or close stale duplicate threads` refers to Codex support tasks.
+Do not mutate a duplicate Gmail conversation until an approved canonical reply
+has a verified `SENT` read-back and the Gmail archive protocol above is
+separately authorized.
+
 ## Resolved Ticket Cleanup
 
 During every chief-of-staff or unresolved-follow-up pass, check whether any tracked support ticket is already resolved because the request owner confirmed it, the approved final action was completed, the final reply was sent, or trusted evidence shows no remaining customer-facing action.
 
-For resolved tickets, archive the canonical Codex support thread/chat with the thread archive tool, stop or pause duplicate unresolved follow-up automations for that ticket, and report the archived thread id. This cleanup applies to Codex chats only. Do not archive, delete, label, mark read/unread, or otherwise mutate Gmail conversations unless the request owner explicitly asks.
+For resolved tickets, archive the canonical Codex support thread/chat with the thread archive tool, stop or pause duplicate unresolved follow-up automations for that ticket, and report the archived thread id. This cleanup applies to Codex chats only. Gmail archive is a separate, explicit operation and must follow the verified `SENT` plus thread-wide `INBOX` removal protocol above.
 
 Keep a ticket open when it is waiting for request-owner approval, waiting for customer confirmation, waiting on risky/manual review, or missing trusted verification.
 

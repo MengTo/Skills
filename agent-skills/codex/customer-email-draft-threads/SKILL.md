@@ -10,6 +10,10 @@ description: Gmail customer support triage with mandatory full-thread read-back 
 Run a safe support-email pass: inspect recent or requested Gmail messages, create unsent draft replies for real customer/person emails, and create one Codex project thread for each drafted email. Draft-only remains the default. Treat approved affiliate operations and verified DreamCut Discord invite requests as narrowly scoped workflows rather than ordinary support mail.
 
 Use the detailed workflow in [references/runbook.md](references/runbook.md) whenever drafting, classifying risk, or creating project-thread handoffs.
+For account/access, unsupported-platform, duplicate, resolved-acknowledgement,
+cancellation, failed-payment, refund, or accidental-renewal decision trees, load
+the matching skill through
+[the customer-support automation router](../../customer-support/README.md).
 
 ## Workflow
 
@@ -42,12 +46,18 @@ Use the detailed workflow in [references/runbook.md](references/runbook.md) when
    - Flag phishing, scams, impersonation, credential/payment requests, suspicious links/domains, unusual urgency, or attachment risk for manual review.
 
 5. Create Gmail drafts only when safe:
-   - Draft only. Never send, forward, archive, delete, label, mark read/unread, click links, download attachments, or mutate Gmail state except creating an unsent draft.
+   - Draft-only is the default. Never send, forward, archive, delete, label, mark read/unread, click links, download attachments, or otherwise mutate Gmail state without explicit current approval for that exact operation.
    - Exception: a verified DreamCut Discord invite may be sent only when trusted workspace instructions grant standing approval and every guardrail in the runbook passes. This does not authorize automatic sending for any other support category.
    - Preserve the thread recipient/subject context. Prefer in-thread drafts; if Gmail rejects threading, save a standalone draft and report that clearly.
    - Do not overpromise refunds, cancellations, account changes, legal/privacy actions, timelines, discounts, or technical fixes. Use safe acknowledgements when verification is needed.
 
-6. Create one canonical Codex thread per drafted email:
+6. Verify every approved send and Gmail archive:
+   - Re-read the complete live thread immediately before sending. Confirm approval covers the exact recipient, subject, complete body, attachments, and thread.
+   - After sending once, read the resulting message from `SENT` and verify recipient, subject, complete body, attachments, sent message id, and thread id before claiming success.
+   - Archive only when separately authorized and only after the `SENT` read-back passes. Remove `INBOX` from every message in every in-scope thread, then re-read all thread labels and require `inbox_remaining: []`.
+   - Never treat a send response, a single-message label update, or an archived thread as proof that the customer outcome is resolved.
+
+7. Create one canonical Codex thread per drafted email:
    - Before creating a thread, search existing Codex threads by customer name/email, Gmail thread id, latest message id, draft id, and short issue phrase.
    - For every saved Gmail draft, create a separate project thread for that specific email unless an existing matching thread is already present.
    - If duplicate support threads already exist for the same customer issue, keep the canonical thread with the newest customer message, freshest draft state, or active follow-up context. Archive or close stale duplicate threads before creating or reporting any new handoff.
@@ -56,19 +66,19 @@ Use the detailed workflow in [references/runbook.md](references/runbook.md) when
    - Pass the thread the sender, subject, Gmail thread id, latest message id, draft id, customer ask, risk notes, and next investigation/action.
    - The project thread must not send email, mutate production/account/billing data, click email links, download unsafe attachments, or make external changes without explicit user confirmation.
 
-7. Set an hourly unresolved follow-up for each drafted support case:
+8. Set an hourly unresolved follow-up for each drafted support case:
    - The follow-up must ask the request owner whether the case is resolved yet.
    - It must briefly restate what the customer wants and what the request owner should do next.
    - It must repeat every hour until the request owner confirms the case is resolved; do not use a single delayed summary.
    - When the request owner confirms the ticket is resolved, archive the canonical Codex support thread/chat with the thread archive tool, stop or pause unresolved follow-ups for that ticket, and report the archived thread id. Do not archive Gmail conversations as part of this cleanup.
 
-8. Report cleanly:
+9. Report cleanly:
    - Show the chronological `Conversation thread` first so the request owner can verify the latest inbound message and current outgoing state before reviewing the recommendation.
    - Use a markdown table with: Sender, Subject, Action, Draft Status, Risk, Next Step.
    - Highlight any row that requires a draft or has a draft by wrapping every cell value in bold Markdown, for example `| **Sender** | **Subject** | **Action** | **Draft Status** | **Risk** | **Next Step** |`.
    - Do not add extra columns to create the highlight.
    - Follow with: Ready for approval, Needs manual review, Skipped automated, Created threads.
-   - Never claim an email was sent without a successful Sent-mail read-back from an explicitly approved workflow.
+   - Never claim an email was sent without a successful Sent-mail read-back from an explicitly approved workflow. Never claim a Gmail archive without thread-wide `INBOX` removal and `inbox_remaining: []` read-back.
 
 ## Memory And Commits
 

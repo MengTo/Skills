@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handle SaaS Billing Cases"
+  short_description: "Resolve cancellation and refund cases safely"
+  default_prompt: "Use $handle-saas-billing-cases to resolve this cancellation, failed-payment, or refund case through verified decision gates."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handle SaaS Account Cases"
+  short_description: "Resolve account and access support safely"
+  default_prompt: "Use $handle-saas-account-cases to resolve this account or access support case through verified decision gates."

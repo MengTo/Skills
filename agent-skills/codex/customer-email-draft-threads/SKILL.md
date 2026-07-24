@@ -53,10 +53,11 @@ cancellation, failed-payment, refund, or accidental-renewal decision trees, load
 6. Gate optional Trustpilot closure invitations:
    - Wait for the customer's own new inbound reply after the fix explicitly confirming that the outcome is fixed and positive. Do not trigger from internal resolution, an agent inference, or an ambiguous thank-you.
    - Require a fully resolved, non-contentious account/access or product-help case. Never request a review for an unresolved case, refund, failed payment, cancellation, accidental renewal, dispute, complaint, or mixed-contentious case.
+   - Determine exactly one positively confirmed product from canonical-thread evidence. If multiple products appear in the case or the fixed product is ambiguous, ask the minimum necessary clarification or omit the invitation. Never reuse another product's review profile or link.
    - Confirm the canonical mail and Codex threads. Search canonical and duplicate threads, drafts, and `SENT` for prior review-request wording or the configured link. Reuse one existing draft; never send a second invitation for the same case.
-   - Load and verify the official configured Trustpilot review link from trusted workspace configuration. Never invent or derive a URL. If it cannot be verified, omit the invitation.
+   - Load the official configured Trustpilot profile and review link from trusted workspace configuration, then verify that both belong to the positively confirmed product. Never invent or derive a URL, and never substitute another product's link. If the same-product match cannot be verified, omit the invitation.
    - Prepare one final closure reply using the runbook template. Keep the invitation optional, ask for no rating, provide no incentive, and apply no pressure. Do not send a separate review request after closure.
-   - Treat the closure as an ordinary draft-first reply. Sending requires explicit current approval for the exact recipient, body, canonical thread, and verified link.
+   - Treat the closure as an ordinary draft-first reply. Sending requires explicit current approval for the exact recipient, body, canonical thread, confirmed product, and verified same-product link.
 
 7. Verify every approved send and Gmail archive:
    - Re-read the complete live thread immediately before sending. Confirm approval covers the exact recipient, subject, complete body, attachments, and thread.

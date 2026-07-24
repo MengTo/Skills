@@ -75,18 +75,90 @@ function requireText(documentName, expressions) {
   }
 }
 
+function validateMermaidFlowchart(markdown) {
+  const blocks = [...markdown.matchAll(/```mermaid\n([\s\S]*?)\n```/g)];
+  if (blocks.length !== 1) {
+    throw new Error(`Expected one Mermaid block, found ${blocks.length}`);
+  }
+
+  const lines = blocks[0][1]
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (lines.shift() !== "flowchart TD") {
+    throw new Error("Mermaid block must start with `flowchart TD`");
+  }
+
+  const nodePattern = /^([A-Z][A-Z0-9]*)\s*(?:\["[^"]*"\]|\{"[^"]*"\})$/;
+  const edgePattern =
+    /^([A-Z][A-Z0-9]*)\s+-->(?:\|[^|]+\|)?\s+([A-Z][A-Z0-9]*)$/;
+  const nodes = new Set();
+  const edges = [];
+
+  for (const line of lines) {
+    const node = line.match(nodePattern);
+    if (node) {
+      if (nodes.has(node[1])) {
+        throw new Error(`Duplicate Mermaid node: ${node[1]}`);
+      }
+      nodes.add(node[1]);
+      continue;
+    }
+
+    const edge = line.match(edgePattern);
+    if (edge) {
+      edges.push([edge[1], edge[2]]);
+      continue;
+    }
+
+    throw new Error(`Unsupported Mermaid syntax in policy flowchart: ${line}`);
+  }
+
+  for (const [source, target] of edges) {
+    if (!nodes.has(source) || !nodes.has(target)) {
+      throw new Error(`Undefined Mermaid edge: ${source} --> ${target}`);
+    }
+  }
+
+  const chart = blocks[0][1];
+  for (const required of [
+    /Actionable customer case\?/,
+    /Identity and canonical-thread match\?/,
+    /Explicit approval for exact financial action and target\?/,
+    /Customer explicitly confirms the post-fix outcome is positive\?/,
+    /Exactly one positively confirmed product proven by canonical evidence\?/,
+    /Prior invitation or closure already sent/,
+    /Official configured Trustpilot profile and link match that product\?/,
+    /Final closure SENT verification passed\?/,
+    /Thread-wide archive read-back passed\?/,
+    /No external action/,
+  ]) {
+    if (!required.test(chart)) {
+      throw new Error(`Mermaid flowchart is missing: ${required}`);
+    }
+  }
+
+  return { nodes: nodes.size, edges: edges.length };
+}
+
+let mermaidStats = null;
 if (documents.family) {
   requireText("family", [
     /customer's own reply after\s+the fix/i,
     /canonical.*duplicate.*drafts.*`SENT`/is,
     /never send a\s+second invitation/i,
-    /official configured Trustpilot review link/i,
+    /official configured Trustpilot profile and review link/i,
+    /multiple products.*ambiguous.*omit the invitation/is,
+    /Never reuse another product's\s+Trustpilot profile or link/is,
   ]);
+  mermaidStats = validateMermaidFlowchart(documents.family);
 }
 requireText("account", [
   /customer's own reply after\s+the fix/i,
   /never send a\s+second invitation/i,
-  /refunds, failed payments, cancellations.*disputes,\s+complaints/is,
+  /multiple products.*ambiguous.*omit the invitation/is,
+  /Never reuse another\s+product's link/is,
+  /refunds,\s+failed payments,\s+cancellations.*disputes,\s+complaints/is,
 ]);
 requireText("billing", [
   /Exclude Trustpilot review requests/i,
@@ -96,17 +168,23 @@ requireText("email", [
   /customer's own new inbound reply after\s+the fix/i,
   /Search canonical and duplicate threads, drafts, and `SENT`/i,
   /never send a\s+second invitation/i,
+  /multiple products.*ambiguous.*omit the invitation/is,
+  /Never reuse another product's review profile or link/is,
 ]);
 requireText("runbook", [
   /latest inbound message.*customer's own reply after the fix/is,
   /If a prior invitation was sent for this case,\s+never invite again/is,
-  /official configured Trustpilot review link/i,
+  /official configured Trustpilot profile and review link/i,
+  /multiple products.*ambiguous.*omit the invitation/is,
+  /Never reuse another product's review\s+profile or link/is,
   /explicit current approval|request owner approved/i,
 ]);
 requireText("verification", [
   /Trustpilot closure proof/i,
   /customer's own latest positive confirmation after\s+the fix/i,
   /no prior\s+invite/is,
+  /exactly one positively confirmed product/is,
+  /link belongs to another\s+product/is,
 ]);
 
 const allPolicyText = Object.values(documents).join("\n");
@@ -122,6 +200,14 @@ if (templateLinkCount !== 2) {
   );
 }
 
+const templateProductCount =
+  documents.runbook.match(/\{verified_product_name\}/g)?.length ?? 0;
+if (templateProductCount !== 2) {
+  throw new Error(
+    `Expected two verified-product template placeholders, found ${templateProductCount}`,
+  );
+}
+
 const excludedCaseTypes = new Set([
   "refund",
   "failed-payment",
@@ -133,6 +219,14 @@ const excludedCaseTypes = new Set([
 ]);
 
 function reviewInvitationEligible(candidate) {
+  const canonicalProducts = [
+    ...new Set(
+      candidate.canonicalProducts
+        .map((product) => product.trim())
+        .filter(Boolean),
+    ),
+  ];
+
   return (
     candidate.customerConfirmedAfterFix === true &&
     candidate.outcomePositive === true &&
@@ -142,6 +236,9 @@ function reviewInvitationEligible(candidate) {
     candidate.priorInvitationSent === false &&
     candidate.closureAlreadySent === false &&
     candidate.officialConfiguredLinkVerified === true &&
+    canonicalProducts.length === 1 &&
+    candidate.confirmedProduct === canonicalProducts[0] &&
+    candidate.trustpilotProfileProduct === candidate.confirmedProduct &&
     excludedCaseTypes.has(candidate.caseType) === false
   );
 }
@@ -155,6 +252,9 @@ const baseline = {
   priorInvitationSent: false,
   closureAlreadySent: false,
   officialConfiguredLinkVerified: true,
+  canonicalProducts: ["Aura"],
+  confirmedProduct: "Aura",
+  trustpilotProfileProduct: "Aura",
   caseType: "account-access",
 };
 
@@ -181,6 +281,29 @@ const cases = [
     { officialConfiguredLinkVerified: false },
     false,
   ],
+  [
+    "Aura plus Neuform mixed thread cannot use the Aura review link",
+    {
+      canonicalProducts: ["Aura", "Neuform"],
+      confirmedProduct: "Aura",
+      trustpilotProfileProduct: "Aura",
+    },
+    false,
+  ],
+  [
+    "Neuform confirmation cannot use the Aura review link",
+    {
+      canonicalProducts: ["Neuform"],
+      confirmedProduct: "Neuform",
+      trustpilotProfileProduct: "Aura",
+    },
+    false,
+  ],
+  [
+    "ambiguous confirmed product",
+    { confirmedProduct: "" },
+    false,
+  ],
   ["refund", { caseType: "refund" }, false],
   ["failed payment", { caseType: "failed-payment" }, false],
   ["cancellation", { caseType: "cancellation" }, false],
@@ -198,5 +321,5 @@ for (const [name, overrides, expected] of cases) {
 }
 
 console.log(
-  `Trustpilot review-request policy tests passed: ${cases.length} scenarios, two templates, no hard-coded URL.`,
+  `Trustpilot review-request policy tests passed: ${cases.length} scenarios, two same-product templates, no hard-coded URL${mermaidStats ? `, Mermaid ${mermaidStats.nodes} nodes/${mermaidStats.edges} edges` : ""}.`,
 );

@@ -61,9 +61,12 @@ Evaluate every item as `PASS`, `FAIL`, or `UNKNOWN`.
     thread id, and `SENT` state.
 11. **Trustpilot closure proof** — When a review invitation is present, require
     the customer's own latest positive confirmation after the fix, a fully
-    resolved eligible case, canonical-thread and duplicate checks, no prior
-    invite, the verified configured official link, optional wording, and exact
-    send approval. Otherwise require `review_invitation_omitted`.
+    resolved eligible case, exactly one positively confirmed product from
+    canonical-thread evidence, canonical-thread and duplicate checks, no prior
+    invite, the configured official profile and link verified for that exact
+    product, optional wording, and exact send approval. If multiple products
+    appear, product identity is ambiguous, or the link belongs to another
+    product, require `review_invitation_omitted`.
 12. **Archive proof** — Archive only after send proof and separate authority.
     Remove `INBOX` from every message in every in-scope thread and verify
     `inbox_remaining: []`.
@@ -108,9 +111,13 @@ Evaluate every item as `PASS`, `FAIL`, or `UNKNOWN`.
 - Require one canonical final closure draft/reply. Search canonical and duplicate
   threads, drafts, and `SENT`; fail if a prior review invitation was sent or a
   second closure/review message was created.
+- Require canonical-thread evidence for exactly one positively confirmed
+  product. If multiple products appear or the fixed product is ambiguous, fail
+  the invitation gate and require clarification or omission.
 - Allow the optional Trustpilot invitation only for a fully resolved
   non-contentious account/access or product-help success. Confirm the official
-  configured link was verified and not invented.
+  configured profile and link were verified for the exact confirmed product,
+  were not invented, and were not reused from another product.
 - Confirm the invitation asks for no rating, offers no incentive, applies no
   pressure, and had exact send approval. If any gate fails, require the closure
   reply to omit the invitation.
@@ -165,7 +172,7 @@ PASS/FAIL/UNKNOWN — Canonical thread:
 PASS/FAIL/UNKNOWN — Authority and approval:
 PASS/FAIL/UNKNOWN — Action and post-action read-back:
 PASS/FAIL/UNKNOWN — Customer communication and SENT proof:
-PASS/FAIL/UNKNOWN — Trustpilot eligibility, verified link, and no-repeat proof:
+PASS/FAIL/UNKNOWN — Trustpilot eligibility, product/link match, and no-repeat proof:
 PASS/FAIL/UNKNOWN — Thread-wide archive:
 PASS/FAIL/UNKNOWN — Closure and reminders:
 PASS/FAIL/UNKNOWN — Commit scope:

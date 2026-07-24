@@ -36,6 +36,109 @@ Run every case through this sequence:
 9. **Close deliberately** — Verify send, archive, and case state separately.
    Archiving mail is not proof that the customer issue is resolved.
 
+## Customer-case flowchart
+
+```mermaid
+flowchart TD
+    I["Inbound support message"]
+    T["Read the complete live thread"]
+    C{"Actionable customer case?"}
+    N["No external action; record the reason and skip or close"]
+    K{"Case type?"}
+    E["Collect product and account evidence"]
+    B["Collect provider, product, and transaction evidence"]
+    M["Manual review; no review invitation"]
+    ID{"Identity and canonical-thread match?"}
+    H["Hold; ask for minimum clarification and keep mutations blocked"]
+    A{"Next action?"}
+    RO["Read-only diagnosis"]
+    AM{"Verified account target and mutation approval?"}
+    FM{"Explicit approval for exact financial action and target?"}
+    ACT["Perform the approved account action and read back state"]
+    FACT["Perform the approved financial action and read back all linked state"]
+    D["Draft an evidence-backed reply"]
+    SA{"Exact reply send approved?"}
+    P["Keep one canonical draft pending; no archive or review request"]
+    S["Send once and read the exact message from SENT"]
+    SV{"SENT verification passed?"}
+    F["Stop and report the blocker; keep the case open"]
+    W["Wait for the customer's reply; do not request a review"]
+    PC{"Customer explicitly confirms the post-fix outcome is positive?"}
+    NR["No Trustpilot invitation; keep open or close without review outreach"]
+    R{"Fully resolved, non-contentious, and no open ask?"}
+    X{"Refund, billing, cancellation, dispute, complaint, or mixed case?"}
+    CI["Prepare one final closure draft without Trustpilot"]
+    PI{"Exactly one positively confirmed product proven by canonical evidence?"}
+    PX["Omit the invitation; clarify the product only if needed"]
+    PR{"Prior invitation or closure already sent in canonical or duplicate threads?"}
+    STOP["Do not send another message; record no-repeat closure state"]
+    L{"Official configured Trustpilot profile and link match that product?"}
+    TI["Add one optional no-pressure Trustpilot invitation to the final closure draft"]
+    FA{"Exact final closure send approved?"}
+    FP["Keep the one canonical closure draft unsent"]
+    FS["Send the final closure once and verify body and link in SENT"]
+    FV{"Final closure SENT verification passed?"}
+    AR{"Archive authorized?"}
+    CL["Close the canonical case and stop reminders; leave Gmail unchanged"]
+    AI["Remove INBOX from every message in the thread"]
+    AV{"Thread-wide archive read-back passed?"}
+    DONE["Close the canonical case, stop reminders, and report verified archive"]
+
+    I --> T
+    T --> C
+    C -->|No| N
+    C -->|Yes| K
+    K -->|Account access or product help| E
+    K -->|Refund payment cancellation or renewal| B
+    K -->|Dispute complaint risky or unclear| M
+    E --> ID
+    B --> ID
+    ID -->|No| H
+    ID -->|Yes| A
+    A -->|Read only| RO
+    A -->|Account mutation| AM
+    A -->|Financial mutation| FM
+    AM -->|No| H
+    AM -->|Yes| ACT
+    FM -->|No| H
+    FM -->|Yes| FACT
+    RO --> D
+    ACT --> D
+    FACT --> D
+    D --> SA
+    SA -->|No| P
+    SA -->|Yes| S
+    S --> SV
+    SV -->|No| F
+    SV -->|Yes| W
+    W --> PC
+    PC -->|No silence or mixed| NR
+    PC -->|Yes| R
+    R -->|No| NR
+    R -->|Yes| X
+    X -->|Yes| CI
+    X -->|No| PI
+    PI -->|No or multiple products| PX
+    PI -->|Yes| PR
+    PX --> CI
+    PR -->|Yes| STOP
+    PR -->|No| L
+    L -->|No| CI
+    L -->|Yes| TI
+    CI --> FA
+    TI --> FA
+    FA -->|No| FP
+    FA -->|Yes| FS
+    FS --> FV
+    FV -->|No| F
+    FV -->|Yes| AR
+    AR -->|No| CL
+    AR -->|Yes| AI
+    AI --> AV
+    AV -->|No| F
+    AV -->|Yes| DONE
+```
+
 ## Authority map
 
 | Level | Agent may do | Gate |
@@ -78,19 +181,25 @@ after all of these conditions are true:
 3. The case is a non-contentious account/access or product-help success. Never
    request a review for a refund, failed payment, cancellation, accidental
    renewal, dispute, complaint, or any unresolved or mixed-contentious case.
-4. The canonical mail and Codex threads are confirmed. Search the canonical
+4. Canonical-thread evidence identifies exactly one product that the customer
+   positively confirmed as fixed. If multiple products appear anywhere in the
+   case or the fixed product is ambiguous, ask the minimum necessary
+   clarification or omit the invitation. Never reuse another product's
+   Trustpilot profile or link.
+5. The canonical mail and Codex threads are confirmed. Search the canonical
    thread, duplicate threads, drafts, and `SENT` for an earlier review
    invitation. Reuse one existing draft and never send a second invitation for
    the same case.
-5. The official configured Trustpilot review link is loaded from trusted
-   workspace configuration and verified for the correct business. Never infer,
-   construct, shorten, or copy the link from customer email. If it cannot be
-   verified, send the closure reply without the invitation.
-6. The final closure body remains optional and consent-friendly: ask for no
+6. The official configured Trustpilot profile and review link are loaded from
+   trusted workspace configuration and verified for that exact product. Never
+   infer, construct, shorten, copy the link from customer email, or substitute a
+   link belonging to another product or business. If the same-product match
+   cannot be verified, send the closure reply without the invitation.
+7. The final closure body remains optional and consent-friendly: ask for no
    rating, provide no incentive, and apply no pressure.
-7. Sending still requires explicit current approval for the exact recipient,
-   body, canonical thread, and verified link. Read the final message back from
-   `SENT`.
+8. Sending still requires explicit current approval for the exact recipient,
+   body, canonical thread, confirmed product, and verified same-product link.
+   Read the final message back from `SENT`.
 
 If a closure reply was already sent without the invitation, do not send a new
 message only to ask for a review.

@@ -133,20 +133,27 @@ Fail closed unless every answer is yes:
 3. Is this a non-contentious account/access or product-help success? Refunds,
    failed payments, cancellations, accidental renewals, disputes, complaints,
    and mixed-contentious cases are always excluded.
-4. Did the canonical-thread check pass? Search the customer identifiers, Gmail
+4. Does canonical-thread evidence identify exactly one product that the
+   customer positively confirmed as fixed? If multiple products appear anywhere
+   in the case or the fixed product is ambiguous, ask the minimum necessary
+   clarification or omit the invitation. Never reuse another product's review
+   profile or link.
+5. Did the canonical-thread check pass? Search the customer identifiers, Gmail
    thread/message/draft ids, issue phrase, canonical Codex task, duplicate mail
    threads, drafts, and `SENT`. If a prior invitation was sent for this case,
    never invite again. If one unsent closure draft exists, reuse it. Do not
    create a second draft.
-5. Is the official configured Trustpilot review link available from trusted
-   workspace configuration or a product runbook? Verify that it uses HTTPS,
-   belongs to an official Trustpilot-owned host, resolves to the correct
-   business review page, and is not a shortener or customer-supplied redirect.
-   Record the trusted source and verification time. Never construct or guess a
-   URL. If verification fails, omit the invitation and send only the closure.
-6. Has the request owner approved the exact recipient, final body, canonical
-   thread, and verified link? Drafting may proceed when eligible; sending may
-   not.
+6. Are the official configured Trustpilot profile and review link available
+   from trusted workspace configuration or a product runbook? Verify that the
+   profile belongs to the exact positively confirmed product, the link uses
+   HTTPS, belongs to an official Trustpilot-owned host, resolves to that
+   product's business review page, and is not a shortener or customer-supplied
+   redirect. Record the confirmed product, trusted source, and verification
+   time. Never construct or guess a URL or substitute another product's link.
+   If verification fails, omit the invitation and send only the closure.
+7. Has the request owner approved the exact recipient, final body, canonical
+   thread, confirmed product, and verified same-product link? Drafting may
+   proceed when eligible; sending may not.
 
 If the closure reply was already sent without a review invitation, do not send a
 second message only to request a review.
@@ -158,7 +165,7 @@ Hi {first_name},
 
 I'm glad to hear {verified_outcome} is working now. Thanks for letting us know.
 
-If you'd like, you can share your experience on Trustpilot:
+If you'd like, you can share your experience with {verified_product_name} on Trustpilot:
 {verified_trustpilot_review_url}
 
 It's completely optional, and there's no pressure to leave a review.
@@ -174,7 +181,7 @@ Hi {first_name},
 
 Great to hear {verified_outcome} is resolved.
 
-If you'd like to share feedback, our optional Trustpilot review page is here:
+If you'd like to share feedback about {verified_product_name}, its optional Trustpilot review page is here:
 {verified_trustpilot_review_url}
 
 No pressure at all.

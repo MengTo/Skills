@@ -107,27 +107,34 @@ Stop if identifiers point to different people, environments, or products.
    the fix and explicitly confirms that the outcome is fixed and positive.
    Re-read authoritative state when the confirmation depends on a prior repair.
    An internal success signal or ambiguous thank-you is not the trigger.
+   Determine which one product the customer positively confirmed from
+   canonical-thread evidence.
 2. **Match** — Attach the reply to the existing canonical case. Search the
    canonical mail/Codex threads, duplicate threads, drafts, and `SENT` for prior
    closure or review-request wording. Do not create a new task or invitation.
+   If multiple products appear in the case or the fixed product is ambiguous,
+   ask the minimum necessary clarification or omit the invitation.
 3. **Allowed action** — When the customer explicitly confirms the positive
    result and no open ask remains, prepare one final closure reply. Add an
    optional Trustpilot invitation only for a non-contentious account/access or
-   product-help success and only with the verified configured official review
-   link. If the link or eligibility cannot be verified, omit the invitation.
+   product-help success and only with the configured official Trustpilot profile
+   and review link verified for that exact product. Never reuse another
+   product's link. If product identity, link ownership, or eligibility cannot
+   be verified, omit the invitation.
 4. **Approval gate** — Require explicit current approval for the exact closure
-   recipient, body, canonical thread, and verified link. Never request a review
-   for refunds, failed payments, cancellations, accidental renewals, disputes,
-   complaints, unresolved cases, or mixed-contentious cases. Never send a
-   second invitation for the same case.
+   recipient, body, canonical thread, confirmed product, and verified
+   same-product link. Never request a review for refunds, failed payments,
+   cancellations, accidental renewals, disputes, complaints, unresolved cases,
+   or mixed-contentious cases. Never send a second invitation for the same
+   case.
 5. **Customer communication** — Keep the invitation optional and
    consent-friendly. Ask for no rating, offer no incentive, and apply no
    pressure. Do not send a separate review-request message after a closure was
    already sent.
 6. **Post-action verification** — Read the final closure reply from `SENT` and
    verify recipient, subject, complete body, sent message id, thread id, and
-   exact verified review link when present. Confirm no earlier invitation was
-   sent for this case.
+   exact verified same-product review link when present. Confirm no earlier
+   invitation was sent for this case.
 7. **Closure** — Close the Codex case and stop reminders after the approved
    final reply is verified. Apply Gmail archive only through the separate
    verified-`SENT` and thread-wide `INBOX` removal gate.

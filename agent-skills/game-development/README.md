@@ -12,6 +12,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 | Author readable flat-world routes and motivated lighting | [`author-game-levels`](author-game-levels/SKILL.md) |
 | Implement camera framing, lock-on, occlusion, or touch gestures | [`build-game-camera-controls`](build-game-camera-controls/SKILL.md) |
 | Define enemy archetypes, movesets, model conventions, and runtime hooks | [`build-threejs-enemy-systems`](build-threejs-enemy-systems/SKILL.md) |
+| Rig and validate monster joints, sockets, colliders, animation states, and LODs | [`build-game-monster-system`](build-game-monster-system/SKILL.md) |
 | Tune enemy perception, intent, spacing, and state transitions | [`tune-enemy-ai`](tune-enemy-ai/SKILL.md) |
 | Define attack timing, contact authority, defense, and combat feedback | [`design-action-combat`](design-action-combat/SKILL.md) |
 | Compose arenas, waves, objectives, boss phases, and rewards | [`design-game-encounters`](design-game-encounters/SKILL.md) |
@@ -34,6 +35,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 
 - [`design-action-combat`](design-action-combat/SKILL.md) — specify startup, active, recovery, contact authority, defense, interruption, and deterministic combat proof.
 - [`build-threejs-enemy-systems`](build-threejs-enemy-systems/SKILL.md) — define portable enemy content, model/rig/collider/socket conventions, movesets, runtime hooks, fallbacks, and fixtures.
+- [`build-game-monster-system`](build-game-monster-system/SKILL.md) — enforce one concrete rig, socket, collider, state, moveset, LOD, and deterministic review contract for every monster.
 - [`tune-enemy-ai`](tune-enemy-ai/SKILL.md) — build fair, bounded, reproducible perception, intent, navigation, spacing, and attack decisions.
 - [`design-game-encounters`](design-game-encounters/SKILL.md) — compose arenas, enemy roles, spawn pacing, hazards, objectives, boss phases, failure recovery, and rewards.
 
@@ -52,7 +54,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 
 ## Important boundaries
 
-- `build-threejs-enemy-systems` defines enemy content and runtime contracts; `tune-enemy-ai` decides what an enemy should do.
+- `build-threejs-enemy-systems` defines portable enemy content and runtime orchestration; `build-game-monster-system` owns individual rig and animation conformance; `tune-enemy-ai` decides what an enemy should do.
 - `design-action-combat` defines individual combat verbs and outcomes; `design-game-encounters` composes those verbs into pressure and pacing.
 - `build-hybrid-game-assets` chooses and integrates asset representations; `create-game-vfx` and `build-game-audio-feedback` communicate gameplay state.
 - `test-playable-web-games` proves the player experience; `ship-web-games` owns the release sequence and production read-back.

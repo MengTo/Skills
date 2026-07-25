@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Game Monster System"
+  short_description: "Rig and validate action-game monsters"
+  default_prompt: "Use $build-game-monster-system to build a rigged Three.js monster that conforms to the runtime combat contract."

@@ -93,6 +93,8 @@ agent-skills/
       SKILL.md
     build-threejs-enemy-systems/
       SKILL.md
+    build-game-monster-system/
+      SKILL.md
     test-playable-web-games/
       SKILL.md
   media/
@@ -172,7 +174,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **113 skills** across six categories.
+This snapshot contains **114 skills** across six categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -221,7 +223,7 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Game development (15)
+### Game development (16)
 
 Playable Three.js and browser-game workflows. See the [game-development guide](agent-skills/game-development/README.md) for the skill-selection table and system boundaries.
 
@@ -229,7 +231,7 @@ Foundation and world:
 - `build-isometric-arpg`, `author-game-levels`, `build-game-camera-controls`, `build-mobile-threejs-games`
 
 Combat, enemies, and encounters:
-- `design-action-combat`, `build-threejs-enemy-systems`, `tune-enemy-ai`, `design-game-encounters`
+- `design-action-combat`, `build-threejs-enemy-systems`, `build-game-monster-system`, `tune-enemy-ai`, `design-game-encounters`
 
 Player systems and feedback:
 - `build-game-inventory`, `create-game-vfx`, `build-game-audio-feedback`

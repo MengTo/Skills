@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implement Fog of War"
+  short_description: "Build soft wall-aware Three.js visibility"
+  default_prompt: "Use $implement-fog-of-war to build and validate a soft, wall-aware fog-of-war system."

@@ -1,0 +1,50 @@
+.cursor-trail-region {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #070708;
+}
+
+.cursor-trail-layer {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  mix-blend-mode: screen;
+  opacity: 0.78;
+}
+
+.cursor-trail-mount {
+  display: contents;
+}
+
+.cursor-trail-shader {
+  position: absolute !important;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.cursor-trail-content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-trail-layer {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (hover: none), (pointer: coarse) {
+  .cursor-trail-layer {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .cursor-trail-layer {
+    display: none;
+  }
+}

@@ -76,6 +76,8 @@ agent-skills/
   codex/
     audit-verify-explain-grade-5/
       SKILL.md
+    build-daily-inspiration-sites/
+      SKILL.md
     daily-ui-inspiration-capture/
       SKILL.md
   customer-support/
@@ -95,6 +97,8 @@ agent-skills/
       SKILL.md
     build-game-monster-system/
       SKILL.md
+    build-vesperfall-review-assets/
+      SKILL.md
     test-playable-web-games/
       SKILL.md
   media/
@@ -108,6 +112,10 @@ agent-skills/
       ARTICLE.md
       REFERENCES.md
   web-design/
+    add-shader-cursor-trail/
+      SKILL.md
+    build-awwwards-quality-sites/
+      SKILL.md
     pricing-page/
       SKILL.md
       REFERENCES.md
@@ -174,17 +182,18 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **114 skills** across six categories.
+This snapshot contains **118 skills** across six categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### Codex workflows (16)
+### Codex workflows (17)
 
 Operational skills for repeatable Codex work:
 - `article-prompts-to-skills` - turn articles and prompt packs into focused, validated skill packages.
 - `audit-reference-originality` - compare a website with its references and identify originality risks.
 - `audit-verify-explain-grade-5` - audit work, verify claims, and explain results simply.
 - `browser-video-recording` - render polished browser screen-recording videos from scripted UI scenes.
+- `build-daily-inspiration-sites` - turn five captured references into five original Sites builds.
 - `customer-email-draft-threads` - draft-only Gmail support triage with per-draft project threads.
 - `customer-support-verification` - final support-work safety and evidence gate.
 - `daily-ui-inspiration-capture` - recurring UI inspiration bundles with screenshots, motion, and prompts.
@@ -223,7 +232,7 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Game development (16)
+### Game development (17)
 
 Playable Three.js and browser-game workflows. See the [game-development guide](agent-skills/game-development/README.md) for the skill-selection table and system boundaries.
 
@@ -237,18 +246,18 @@ Player systems and feedback:
 - `build-game-inventory`, `create-game-vfx`, `build-game-audio-feedback`
 
 Assets, performance, QA, and release:
-- `build-hybrid-game-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`
+- `build-hybrid-game-assets`, `build-vesperfall-review-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`
 
-### Web design (77)
+### Web design (79)
 
 Conversion and implementation:
-- `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`
+- `build-awwwards-quality-sites`, `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`
 
 Motion and scroll:
 - `animation-on-scroll`, `cinematic-gsap-lenis-motion-system`, `cinematic-scroll-storytelling`, `gsap`, `gsap-scrolltrigger-storytelling`, `marquee-loop`, `masked-reveal`, `staggered-word-reveal`
 
 WebGL, canvas, and 3D:
-- `background-grid-webgl`, `cobejs`, `globe-gl`, `globe-particles`, `matterjs`, `threejs`, `unicorn-studio`, `vantajs`, `webgl-3d-object`, `webgl-laser`
+- `add-shader-cursor-trail`, `background-grid-webgl`, `cobejs`, `globe-gl`, `globe-particles`, `matterjs`, `threejs`, `unicorn-studio`, `vantajs`, `webgl-3d-object`, `webgl-laser`
 
 CSS treatments and details:
 - `beautiful-shadows`, `company-logos`, `container-lines`, `corner-diagonals`, `corner-lasers`, `css-alpha-masking`, `css-border-gradient`, `gooey-blob-system`, `number-details`, `progressive-blur`, `solar-duotone-bold`

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Vesperfall Review Assets"
+  short_description: "Create truthful PNG and live model review pairs"
+  default_prompt: "Use $build-vesperfall-review-assets to add a transparent catalog reference and live model preview for a Vesperfall asset."

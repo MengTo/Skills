@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Shader Cursor Trail"
+  short_description: "Build an accessible WebGPU halftone mouse trail"
+  default_prompt: "Use $add-shader-cursor-trail to add the twinkling halftone WebGPU cursor effect with production fallbacks."

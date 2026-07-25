@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Daily Inspiration Sites"
+  short_description: "Turn five UI references into five original Sites builds"
+  default_prompt: "Use $build-daily-inspiration-sites to turn today’s UI inspiration capture into five original landing pages in separate Sites tasks."

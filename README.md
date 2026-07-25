@@ -1,10 +1,10 @@
 # Agent Skills
 
-A curated collection of **agent skills** for designers and builders using **Codex**, **Claude**, **Cursor**, and other AI coding agents to build rich user interfaces, frontend systems, agent loops, automations, and reusable workflows.
+A curated collection of **agent skills** for designers and builders using **Codex**, **Claude**, **Cursor**, and other AI coding agents to build rich user interfaces, playable games, frontend systems, agent loops, automations, and reusable workflows.
 
 ![Aura Build super prompt workflow](assets/aura-build-superprompt.gif)
 
-Use these skills with **Codex**, **Claude Design**, [**Aura Build**](https://aura.build), **Lovable**, and the rest of your agent stack to turn references into prompts, generate detailed landing pages, and build reusable frontend workflows.
+Use these skills with **Codex**, **Claude Design**, [**Aura Build**](https://aura.build), **Lovable**, and the rest of your agent stack to turn references into prompts, generate detailed landing pages, build playable Three.js systems, and create reusable implementation workflows.
 
 Start with the flagship web-design workflow:
 
@@ -25,6 +25,7 @@ Browse [all runnable demos and recreation prompts](DEMOS.md).
 
 Use these skills when you want:
 - repeatable design direction
+- reusable game architecture and gameplay QA
 - procedural implementation steps
 - copy/paste snippets
 - common pitfalls and guardrails
@@ -76,6 +77,23 @@ agent-skills/
     audit-verify-explain-grade-5/
       SKILL.md
     daily-ui-inspiration-capture/
+      SKILL.md
+  customer-support/
+    handle-saas-account-cases/
+      SKILL.md
+    handle-saas-billing-cases/
+      SKILL.md
+  game-development/
+    README.md
+    build-isometric-arpg/
+      SKILL.md
+    author-game-levels/
+      SKILL.md
+    design-action-combat/
+      SKILL.md
+    build-threejs-enemy-systems/
+      SKILL.md
+    test-playable-web-games/
       SKILL.md
   media/
     aura-asset-images/
@@ -135,7 +153,7 @@ agent-skills/<category>/<skill-name>/
   ARTICLE.md          # optional: long-form explanation
   assets/             # optional: images, templates, examples
   scripts/            # optional: helper scripts
-  demo/
+  demo/               # optional: visual or interaction proof
     index.html         # standalone HTML, CSS, and JavaScript
     PROMPT.md          # exact recreation and remix prompts
     assets/            # local demo assets when required
@@ -144,8 +162,8 @@ agent-skills/<category>/<skill-name>/
 Conventions:
 - `SKILL.md` is the skill an agent loads and follows.
 - `REFERENCES.md` is links only. Keep `SKILL.md` lean.
-- Every skill includes a portable `demo/index.html` and `demo/PROMPT.md`.
-- Workflow skills also include fictional `demo/input.md` and `demo/expected-output.md` handoffs.
+- Visual and interaction skills may include a portable `demo/index.html` and `demo/PROMPT.md`.
+- Workflow skills may include fictional `demo/input.md` and `demo/expected-output.md` handoffs when they materially improve proof.
 - Keep skills **procedural** (steps, patterns, guardrails), not encyclopedic.
 - Prefer explicit triggers: "Use when..." beats vague descriptions.
 - Prefer defaults: durations, spacing, hierarchy, commands, and acceptance checks.
@@ -154,25 +172,35 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **78 skills** across four categories.
+This snapshot contains **113 skills** across six categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### Codex workflows (12)
+### Codex workflows (16)
 
 Operational skills for repeatable Codex work:
+- `article-prompts-to-skills` - turn articles and prompt packs into focused, validated skill packages.
+- `audit-reference-originality` - compare a website with its references and identify originality risks.
 - `audit-verify-explain-grade-5` - audit work, verify claims, and explain results simply.
 - `browser-video-recording` - render polished browser screen-recording videos from scripted UI scenes.
 - `customer-email-draft-threads` - draft-only Gmail support triage with per-draft project threads.
 - `customer-support-verification` - final support-work safety and evidence gate.
 - `daily-ui-inspiration-capture` - recurring UI inspiration bundles with screenshots, motion, and prompts.
 - `elevenlabs-tts` - generate reusable ElevenLabs voiceovers from local profiles.
+- `generate-reference-inspired-brand-worlds` - turn reference grammar into original brand-world directions.
 - `html-to-interaction-prompts` - turn HTML pages into screenshot-backed interaction prompt articles.
 - `optimize-web-animations` - profile and reduce animation, canvas, and WebGL performance cost.
 - `performance-profiling` - Apple platform profiling with Instruments, diagnostics, and MetricKit.
 - `stitched-full-page-capture` - reliable full-page screenshots for lazy, animated, and WebGL pages.
 - `video-to-superprompt` - analyze reference videos into detailed recreation prompts.
+- `write-like-meng-on-x` - calibrate concise X drafts against an authored voice corpus.
 - `x-bookmark-quote-posts` - turn recent X bookmarks into source-backed quote-post drafts.
+
+### Customer support (2)
+
+Reusable case-handling workflows:
+- `handle-saas-account-cases` - diagnose and safely route SaaS access, identity, login, and account-state cases.
+- `handle-saas-billing-cases` - diagnose and safely route subscription, invoice, payment, refund, and entitlement cases.
 
 ### Media (2)
 
@@ -193,7 +221,23 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Web design (63)
+### Game development (15)
+
+Playable Three.js and browser-game workflows. See the [game-development guide](agent-skills/game-development/README.md) for the skill-selection table and system boundaries.
+
+Foundation and world:
+- `build-isometric-arpg`, `author-game-levels`, `build-game-camera-controls`, `build-mobile-threejs-games`
+
+Combat, enemies, and encounters:
+- `design-action-combat`, `build-threejs-enemy-systems`, `tune-enemy-ai`, `design-game-encounters`
+
+Player systems and feedback:
+- `build-game-inventory`, `create-game-vfx`, `build-game-audio-feedback`
+
+Assets, performance, QA, and release:
+- `build-hybrid-game-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`
+
+### Web design (77)
 
 Conversion and implementation:
 - `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`
@@ -213,6 +257,9 @@ Layout systems:
 Visual styles and page moods:
 - `atmosphere-background`, `blue-cloudy-clean-modern`, `blue-laser-clean-glass-layout`, `bright-green-tech-system-webgl`, `clean-minimal-beige-light-mode`, `dark-blue-contrasting-clean`, `dark-glass-clean-layout`, `dither-background`, `dither-laser-dark-mode`, `framed-tech-dark-border-gradient`, `funky-purple-container-tech`, `glass-dark-mode-clock`, `glass-dark-ui`, `high-contrast-skeuomorphic-clean`, `light-mode-paper-technical`, `mesh-gradient-dark-blue-clean`, `nested-container-clean-agency`, `orange-clean-paper-saas`, `skeuomorphic-ui`, `tech-green-dark-mode-modern`
 
+Additional interaction, narrative, and product systems:
+- `ambient-section-particles`, `beam-glow-states`, `documentary-brutalist-agency`, `editorial-portfolio-chapters`, `editorial-service-booking`, `liquid-metal-border`, `operational-enterprise-ai`, `product-proof-saas`, `reveal-hover-effect`, `scroll-progress-timeline`, `scroll-scrubbed-visual-sequence`, `scroll-scrubbed-word-reveal`, `scroll-world-storytelling`, `shaders-cursor-ripples`, `thinking-orbs`
+
 ---
 
 ## How to add a new skill (workflow)
@@ -224,7 +271,7 @@ Visual styles and page moods:
 - frontmatter: `name`, `description`
 - content: when to use, workflow, pitfalls, recipes, what to ask
 
-3) Add a portable demo:
+3) Add a portable demo when visual or interaction proof is useful:
 - `demo/index.html` with inline CSS and JavaScript
 - `demo/PROMPT.md` with minimal, recreation, and remix prompts
 - local files under `demo/assets/`

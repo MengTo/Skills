@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Game Changelogs"
+  short_description: "Versioned in-game release ledger mechanics"
+  default_prompt: "Use $build-game-changelog to design and implement a reliable in-game changelog with release versioning."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Game Map Editor"
+  short_description: "Build safe production-linked map editors"
+  default_prompt: "Use $build-game-map-editor to build a safe, production-linked map editor for this game."

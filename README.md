@@ -80,11 +80,6 @@ agent-skills/
       SKILL.md
     daily-ui-inspiration-capture/
       SKILL.md
-  customer-support/
-    handle-saas-account-cases/
-      SKILL.md
-    handle-saas-billing-cases/
-      SKILL.md
   game-development/
     README.md
     build-isometric-arpg/
@@ -182,7 +177,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **118 skills** across six categories.
+This snapshot contains **118 skills** across five categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -194,8 +189,6 @@ Operational skills for repeatable Codex work:
 - `audit-verify-explain-grade-5` - audit work, verify claims, and explain results simply.
 - `browser-video-recording` - render polished browser screen-recording videos from scripted UI scenes.
 - `build-daily-inspiration-sites` - turn five captured references into five original Sites builds.
-- `customer-email-draft-threads` - draft-only Gmail support triage with per-draft project threads.
-- `customer-support-verification` - final support-work safety and evidence gate.
 - `daily-ui-inspiration-capture` - recurring UI inspiration bundles with screenshots, motion, and prompts.
 - `elevenlabs-tts` - generate reusable ElevenLabs voiceovers from local profiles.
 - `generate-reference-inspired-brand-worlds` - turn reference grammar into original brand-world directions.
@@ -206,12 +199,6 @@ Operational skills for repeatable Codex work:
 - `video-to-superprompt` - analyze reference videos into detailed recreation prompts.
 - `write-like-meng-on-x` - calibrate concise X drafts against an authored voice corpus.
 - `x-bookmark-quote-posts` - turn recent X bookmarks into source-backed quote-post drafts.
-
-### Customer support (2)
-
-Reusable case-handling workflows:
-- `handle-saas-account-cases` - diagnose and safely route SaaS access, identity, login, and account-state cases.
-- `handle-saas-billing-cases` - diagnose and safely route subscription, invoice, payment, refund, and entitlement cases.
 
 ### Media (2)
 

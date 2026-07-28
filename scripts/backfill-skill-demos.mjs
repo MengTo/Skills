@@ -65,48 +65,6 @@ const workflowExamples = {
       "- contact sheet checked for framing and cursor continuity",
     ].join("\n"),
   },
-  "customer-email-draft-threads": {
-    scenario: "Triage one new support message while keeping the response in draft.",
-    input: [
-      "# Customer message",
-      "",
-      "Subject: Cannot access my project",
-      "",
-      "I signed in today and my saved project is missing. Can you help me find it?",
-      "",
-      "Constraint: draft only; do not send or mutate the account.",
-    ].join("\n"),
-    output: [
-      "# Draft handoff",
-      "",
-      "Status: DRAFTED, NOT SENT",
-      "",
-      "Draft asks the customer to confirm the sign-in email and project name.",
-      "Ownership and project records still require verification before promising a fix.",
-      "One canonical follow-up thread is recorded; no duplicate support task was created.",
-    ].join("\n"),
-  },
-  "customer-support-verification": {
-    scenario: "Check a refund-support handoff against evidence and authorization boundaries.",
-    input: [
-      "# Verification packet",
-      "",
-      "- Customer identity: confirmed",
-      "- Charge id: present",
-      "- Product ownership: confirmed",
-      "- Refund action: not authorized",
-      "- Gmail reply: saved as draft",
-    ].join("\n"),
-    output: [
-      "# Gate result",
-      "",
-      "Status: PASS WITH HOLD",
-      "",
-      "The investigation and draft are supported by evidence.",
-      "The refund must remain unissued until explicit approval is received.",
-      "Final handoff must say that the draft is unsent and the mutation is pending.",
-    ].join("\n"),
-  },
   "daily-ui-inspiration-capture": {
     scenario: "Package a daily reference study into a repeatable design bundle.",
     input: [

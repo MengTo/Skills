@@ -1,4 +1,0 @@
-interface:
-  display_name: "Customer Email Draft Threads"
-  short_description: "Triage support with full-thread readback"
-  default_prompt: "Use $customer-email-draft-threads to read the complete Gmail conversation, identify the latest customer message, and prepare a safe support reply or follow-up."

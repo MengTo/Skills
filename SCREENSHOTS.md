@@ -2,14 +2,14 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 89
+- Captured demos: 87
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
 
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
 
-## codex (13)
+## codex (11)
 
 ### article-prompts-to-skills
 
@@ -34,22 +34,6 @@ Create polished 60 fps 4:3 4K browser screen-recording style videos from Codex i
 [Open demo](agent-skills/codex/browser-video-recording/demo/index.html) · [Skill](agent-skills/codex/browser-video-recording/SKILL.md) · [Prompt](agent-skills/codex/browser-video-recording/demo/PROMPT.md) · Local demo
 
 ![browser-video-recording preview screenshot](agent-skills/codex/browser-video-recording/demo/preview.jpg)
-
-### customer-email-draft-threads
-
-Draft-only Gmail customer support triage with per-draft Codex project threads. Use when the user asks to run the customer email automation, check unread/recent support emails, prepare Gmail draft replies, triage customer/person emails while skipping automated mail, or create agent/project threads for drafted email follow-up.
-
-[Open demo](agent-skills/codex/customer-email-draft-threads/demo/index.html) · [Skill](agent-skills/codex/customer-email-draft-threads/SKILL.md) · [Prompt](agent-skills/codex/customer-email-draft-threads/demo/PROMPT.md) · Local demo
-
-![customer-email-draft-threads preview screenshot](agent-skills/codex/customer-email-draft-threads/demo/preview.jpg)
-
-### customer-support-verification
-
-Verify customer support work against the applicable runbook, draft-safety, evidence, mutation, and commit-scope requirements. Use after every Gmail/customer support triage, billing/cancellation/refund/account/access investigation, support handoff, or draft-review task before the final response; also use when the user asks to verify support work against a runbook, checklist, skill, or requirements.
-
-[Open demo](agent-skills/codex/customer-support-verification/demo/index.html) · [Skill](agent-skills/codex/customer-support-verification/SKILL.md) · [Prompt](agent-skills/codex/customer-support-verification/demo/PROMPT.md) · Local demo
-
-![customer-support-verification preview screenshot](agent-skills/codex/customer-support-verification/demo/preview.jpg)
 
 ### daily-ui-inspiration-capture
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Iterate Until Verified"
+  short_description: "Run independent quality loops on any task"
+  default_prompt: "Use $iterate-until-verified to execute this task with independent quality gates and evidence."

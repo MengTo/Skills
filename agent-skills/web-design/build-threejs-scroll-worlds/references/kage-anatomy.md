@@ -15,6 +15,34 @@ Kage is a dark Japanese editorial world, not a generic Three.js showcase.
 | Surface | Heavy film grain, dark blue-black haze, slow bloom, no glossy glass dashboard |
 | Motion | Damped camera travel, subtle ambient drift, word-level headings, foreground rise/fade/blur |
 
+## Detail and surface implementation
+
+Kage reaches depth through several coordinated systems rather than a single texture overlay:
+
+| system | reference treatment | transferable lesson |
+| --- | --- | --- |
+| Sky and ridge | Procedural `CanvasTexture` plates, dark silhouette layers, and exponential fog | Separate distant planes and control whether each participates in fog; a black ridge with the wrong fog flag becomes a pale band |
+| Temple | Standard materials for timber, tile, gold hardware, and ground; emissive/basic paper and shoji layers | Use PBR where light response carries form, and unlit/emissive layers where a practical must stay luminous |
+| Moon and lantern glow | Textured discs/sprites plus restrained additive glow | Coordinate visible emitter, glow, and nearby light instead of asking bloom to create the lamp |
+| Trees and leaves | Instanced foliage with seeded placement and restrained material variation | Spend geometry on silhouette clusters while keeping draw calls bounded |
+| Grounding | Rough dark platforms, rocks, stairs, grass, fog, and contact shadows | Layer medium-scale contact details before adding tiny particles |
+| Foreground | Alpha WebP cut-outs parked in sections and moved into a fixed viewport host | Treat cut-outs as near-plane scenery, not rectangular content cards |
+| Finish | ACES-style exposure, restrained bloom/post, film grain, haze, and cold/warm contrast | Compose the unprocessed frame first; use finish effects to unify depth and material response |
+
+The procedural texture functions and material constants in the bundled demo are part of the approved reference. Reuse them when reproducing Kage; use the general material and texture ledger for unrelated worlds.
+
+## Interaction hierarchy
+
+Kage keeps scroll in charge of macro travel and reserves pointer response for local presence:
+
+- camera-space wisps trail the pointer without changing chapter ownership;
+- card cloth simulations wake only while relevant and stop when hidden;
+- fine-pointer cursor response is omitted for coarse pointers;
+- navigation and chapter rail controls move to measured anchors;
+- pointer effects can warm or disturb a local layer but cannot redirect the camera path.
+
+This is the default interaction hierarchy for scroll worlds: scroll controls the route, while pointer, touch, and keyboard control nearby detail.
+
 ## Chapter topology
 
 The reference uses six `[data-cam]` anchors:

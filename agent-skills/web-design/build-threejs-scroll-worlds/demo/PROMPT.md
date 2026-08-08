@@ -3,7 +3,7 @@
 ## Minimal prompt
 
 ```text
-Use $build-threejs-scroll-worlds to turn this landing page into one persistent Three.js world with camera waypoints and synchronized story chapters controlled by native scroll.
+Use $build-threejs-scroll-worlds to turn this experience into one detailed persistent Three.js world with camera waypoints, textured landmarks, local interactions, and synchronized story chapters controlled by native scroll.
 ```
 
 ## Recreate the Kage demo
@@ -47,5 +47,5 @@ Do not reconstruct or simplify the demo. Start from the current approved `kage.h
 ## Remix prompt
 
 ```text
-Use $build-threejs-scroll-worlds to create one continuous desert observatory at dusk. Keep the Kage architecture exactly: one persistent scene, six semantic chapters, authored camera position/target/FOV waypoints, exact and damped progress values, fixed near-plane foreground cut-outs, word-level headings, native reversible scrolling, local Three.js, tall-screen camera correction, reduced-motion snapping, and a poster fallback. Change only the world, palette, typography, copy, landmarks, and foreground assets.
+Use $build-threejs-scroll-worlds to create an interactive museum journey through a continuous desert observatory at dusk. Keep the proven Kage architecture: one persistent scene, six semantic chapters, authored camera position/target/FOV waypoints, exact and damped progress values, native reversible scrolling, responsive camera overrides, local Three.js, reduced-motion snapping, and a poster fallback. Build a coherent material and texture system for sandstone, oxidized brass, glass, dust, paper charts, and emissive instruments. Add keyboard-accessible local interactions for a telescope, star map, and mechanical orrery without letting them take control of the scroll camera. Change the world, palette, typography, copy, landmarks, DOM layout, foreground treatment, and interaction design while preserving the real-time scroll-world mechanism and measurable performance budgets.
 ```

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Rigged Game Assets"
+  short_description: "Create rigged characters, monsters, and catalog labs"
+  default_prompt: "Use $build-rigged-game-assets to create a production-ready rigged character or monster with movesets and an interactive asset-catalog inspector."

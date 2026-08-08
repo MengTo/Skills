@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "id": "character-id",
+  "kind": "character",
+  "status": "review-only",
+  "provenance": {
+    "pipeline": "imported-or-generated",
+    "source": "source task, file, or URL",
+    "referenceImage": "public/asset-catalog/characters/character-id-reference.png"
+  },
+  "files": {
+    "sourceModel": "public/models/source/character-id-source.glb",
+    "mainModel": "public/models/character-id/character-id-main.glb",
+    "runtimeModel": "public/models/character-id/character-id-runtime.glb",
+    "catalogPng": "public/asset-catalog/characters/character-id.png"
+  },
+  "budget": {
+    "runtimeTriangles": 40000,
+    "runtimeBytes": 10000000,
+    "materials": 4,
+    "textures": 8,
+    "skinnedMeshes": 4,
+    "bones": 90
+  },
+  "rig": {
+    "skeletonId": "character-id-v1",
+    "rootBone": "Root",
+    "actorHeightMeters": 1.85,
+    "upAxis": "Y",
+    "forwardAxis": "-Z",
+    "maxSkinInfluences": 4,
+    "sockets": [
+      { "role": "root", "name": "Root" },
+      { "role": "hips", "name": "Hips" },
+      { "role": "head", "name": "Head" },
+      { "role": "left-hand", "name": "LeftHand" },
+      { "role": "right-hand", "name": "RightHand" },
+      { "role": "back", "name": "Back" },
+      { "role": "left-foot", "name": "LeftFoot" },
+      { "role": "right-foot", "name": "RightFoot" }
+    ]
+  },
+  "actions": [
+    { "id": "idle", "role": "idle", "file": "public/models/character-id/actions/idle.glb", "loop": true, "rootMotion": "in-place", "durationSeconds": 2, "contactEvents": [] },
+    { "id": "walk", "role": "walk", "file": "public/models/character-id/actions/walk.glb", "loop": true, "rootMotion": "in-place", "durationSeconds": 1, "contactEvents": ["left-foot", "right-foot"] },
+    { "id": "run", "role": "run", "file": "public/models/character-id/actions/run.glb", "loop": true, "rootMotion": "in-place", "durationSeconds": 0.75, "contactEvents": ["left-foot", "right-foot"] },
+    { "id": "attack", "role": "primary-attack", "file": "public/models/character-id/actions/attack.glb", "loop": false, "rootMotion": "in-place", "durationSeconds": 0.8, "contactEvents": ["weapon-contact"] },
+    { "id": "hit", "role": "hit", "file": "public/models/character-id/actions/hit.glb", "loop": false, "rootMotion": "in-place", "durationSeconds": 0.5, "contactEvents": ["impact"] },
+    { "id": "dodge", "role": "dodge", "file": "public/models/character-id/actions/dodge.glb", "loop": false, "rootMotion": "authored", "durationSeconds": 0.75, "contactEvents": ["invulnerability-start", "invulnerability-end"] },
+    { "id": "death", "role": "death", "file": "public/models/character-id/actions/death.glb", "loop": false, "rootMotion": "in-place", "durationSeconds": 1.8, "contactEvents": ["corpse-settle"] }
+  ],
+  "equipment": {
+    "separateFromMainModel": true,
+    "slots": [
+      { "id": "headgear", "supported": true, "asset": "public/models/character-id/gear/headgear.glb", "socket": "head" },
+      { "id": "vestment", "supported": true, "asset": "public/models/character-id/gear/vestment.glb", "socket": "skeleton" },
+      { "id": "gloves", "supported": true, "asset": "public/models/character-id/gear/gloves.glb", "socket": "skeleton" },
+      { "id": "leggings", "supported": true, "asset": "public/models/character-id/gear/leggings.glb", "socket": "skeleton" },
+      { "id": "boots", "supported": true, "asset": "public/models/character-id/gear/boots.glb", "socket": "skeleton" },
+      { "id": "main-hand", "supported": true, "asset": "public/models/character-id/gear/sword.glb", "socket": "right-hand", "stowedSocket": "back" },
+      { "id": "offhand", "supported": true, "asset": "public/models/character-id/gear/shield.glb", "socket": "left-hand", "stowedSocket": "back" },
+      { "id": "back-ranged", "supported": false, "asset": null, "socket": null }
+    ]
+  },
+  "collision": {
+    "navigation": { "shape": "capsule", "radius": 0.4, "height": 1.4 },
+    "hurtboxes": [{ "id": "body", "shape": "capsule", "socket": "hips" }]
+  },
+  "catalog": {
+    "cardImage": "public/asset-catalog/characters/character-id.png",
+    "inspectorRoute": "/asset-catalog/character-id",
+    "cardCanvasCount": 0,
+    "inspectorCanvasCount": 1,
+    "controls": ["action-select", "restart", "play-pause", "drag-rotate", "equipment-toggle"]
+  },
+  "verification": {
+    "focusedTests": false,
+    "build": false,
+    "lint": false,
+    "fullTestsRun": false,
+    "fullTestsPassedOrBaselineDocumented": false,
+    "browserDesktop": false,
+    "browserNarrow": false,
+    "consoleClean": false,
+    "scroll": false,
+    "dragRotation": false,
+    "allActions": false,
+    "equipmentOffArtifactFree": false
+  }
+}

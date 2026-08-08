@@ -177,11 +177,11 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **118 skills** across five categories.
+This snapshot contains **121 skills** across five categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### Codex workflows (17)
+### Codex workflows (18)
 
 Operational skills for repeatable Codex work:
 - `article-prompts-to-skills` - turn articles and prompt packs into focused, validated skill packages.
@@ -219,7 +219,7 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Game development (17)
+### Game development (20)
 
 Playable Three.js and browser-game workflows. See the [game-development guide](agent-skills/game-development/README.md) for the skill-selection table and system boundaries.
 
@@ -235,7 +235,7 @@ Player systems and feedback:
 Assets, performance, QA, and release:
 - `build-hybrid-game-assets`, `build-vesperfall-review-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`
 
-### Web design (79)
+### Web design (80)
 
 Conversion and implementation:
 - `build-awwwards-quality-sites`, `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`
@@ -256,7 +256,7 @@ Visual styles and page moods:
 - `atmosphere-background`, `blue-cloudy-clean-modern`, `blue-laser-clean-glass-layout`, `bright-green-tech-system-webgl`, `clean-minimal-beige-light-mode`, `dark-blue-contrasting-clean`, `dark-glass-clean-layout`, `dither-background`, `dither-laser-dark-mode`, `framed-tech-dark-border-gradient`, `funky-purple-container-tech`, `glass-dark-mode-clock`, `glass-dark-ui`, `high-contrast-skeuomorphic-clean`, `light-mode-paper-technical`, `mesh-gradient-dark-blue-clean`, `nested-container-clean-agency`, `orange-clean-paper-saas`, `skeuomorphic-ui`, `tech-green-dark-mode-modern`
 
 Additional interaction, narrative, and product systems:
-- `ambient-section-particles`, `beam-glow-states`, `documentary-brutalist-agency`, `editorial-portfolio-chapters`, `editorial-service-booking`, `liquid-metal-border`, `operational-enterprise-ai`, `product-proof-saas`, `reveal-hover-effect`, `scroll-progress-timeline`, `scroll-scrubbed-visual-sequence`, `scroll-scrubbed-word-reveal`, `scroll-world-storytelling`, `shaders-cursor-ripples`, `thinking-orbs`
+- `ambient-section-particles`, `beam-glow-states`, `documentary-brutalist-agency`, `editorial-portfolio-chapters`, `editorial-service-booking`, `falling-leaves`, `liquid-metal-border`, `operational-enterprise-ai`, `product-proof-saas`, `reveal-hover-effect`, `scroll-progress-timeline`, `scroll-scrubbed-visual-sequence`, `scroll-scrubbed-word-reveal`, `scroll-world-storytelling`, `shaders-cursor-ripples`, `thinking-orbs`
 
 ---
 

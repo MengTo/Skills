@@ -1,0 +1,4 @@
+interface:
+  display_name: "Falling Leaves"
+  short_description: "Add leaves that tumble edge-on as they fall"
+  default_prompt: "Use $falling-leaves to add a maple fall to this section, with leaves that tumble edge-on rather than a generic particle field."

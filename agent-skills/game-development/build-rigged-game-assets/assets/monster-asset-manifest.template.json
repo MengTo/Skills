@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "id": "monster-id",
+  "kind": "monster",
+  "status": "review-only",
+  "provenance": {
+    "pipeline": "imported-generated-or-procedural",
+    "source": "source task, file, or factory",
+    "referenceImage": "public/asset-catalog/enemies/monster-id-reference.png"
+  },
+  "files": {
+    "sourceModel": "public/models/source/monster-id-source.glb",
+    "mainModel": "public/models/monster-id/monster-id-main.glb",
+    "runtimeModel": "public/models/monster-id/monster-id-runtime.glb",
+    "catalogPng": "public/asset-catalog/enemies/monster-id.png"
+  },
+  "budget": {
+    "runtimeTriangles": 30000,
+    "runtimeBytes": 8000000,
+    "materials": 4,
+    "textures": 8,
+    "skinnedMeshes": 2,
+    "bones": 70
+  },
+  "rig": {
+    "skeletonId": "monster-id-v1",
+    "rootBone": "Root",
+    "actorHeightMeters": 1.5,
+    "upAxis": "Y",
+    "forwardAxis": "-Z",
+    "maxSkinInfluences": 4,
+    "sockets": [
+      { "role": "root", "name": "Root" },
+      { "role": "center-mass", "name": "Spine" },
+      { "role": "head", "name": "Head" },
+      { "role": "vfx-origin", "name": "Mouth" },
+      { "role": "attack-origin", "name": "RightClaw" }
+    ]
+  },
+  "actions": [
+    { "id": "idle", "role": "idle", "file": "public/models/monster-id/actions/idle.glb", "loop": true, "rootMotion": "in-place", "durationSeconds": 2, "contactEvents": [] },
+    { "id": "move", "role": "locomotion", "file": "public/models/monster-id/actions/move.glb", "loop": true, "rootMotion": "in-place", "durationSeconds": 1, "contactEvents": ["left-foot", "right-foot"] },
+    { "id": "attack", "role": "primary-attack", "file": "public/models/monster-id/actions/attack.glb", "loop": false, "rootMotion": "in-place", "durationSeconds": 1, "contactEvents": ["attack-active"] },
+    { "id": "hit", "role": "hit", "file": "public/models/monster-id/actions/hit.glb", "loop": false, "rootMotion": "in-place", "durationSeconds": 0.5, "contactEvents": ["impact"] },
+    { "id": "death", "role": "death", "file": "public/models/monster-id/actions/death.glb", "loop": false, "rootMotion": "in-place", "durationSeconds": 1.8, "contactEvents": ["corpse-settle"] }
+  ],
+  "combat": {
+    "navigationCollider": { "shape": "capsule", "radius": 0.45, "height": 1.1 },
+    "hurtboxes": [{ "id": "body", "shape": "capsule", "socket": "center-mass" }],
+    "attacks": [
+      {
+        "id": "primary",
+        "actionId": "attack",
+        "originSocket": "attack-origin",
+        "telegraphSeconds": 0.3,
+        "activeSeconds": 0.18,
+        "recoverySeconds": 0.5
+      }
+    ]
+  },
+  "catalog": {
+    "cardImage": "public/asset-catalog/enemies/monster-id.png",
+    "inspectorRoute": "/moveset-lab/monster-id",
+    "cardCanvasCount": 0,
+    "inspectorCanvasCount": 1,
+    "controls": ["action-select", "restart", "play-pause", "drag-rotate", "combat-state"]
+  },
+  "verification": {
+    "focusedTests": false,
+    "build": false,
+    "lint": false,
+    "fullTestsRun": false,
+    "fullTestsPassedOrBaselineDocumented": false,
+    "browserDesktop": false,
+    "browserNarrow": false,
+    "consoleClean": false,
+    "scroll": false,
+    "dragRotation": false,
+    "allActions": false,
+    "monsterCombatContract": false
+  }
+}

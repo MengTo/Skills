@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publish Project to GitHub"
+  short_description: "Package, publish, and verify a public project"
+  default_prompt: "Use $publish-project-to-github to package this local project, publish it safely, and verify its public URL."

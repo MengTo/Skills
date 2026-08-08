@@ -1,6 +1,6 @@
 ---
 name: web-technique-to-skill
-description: Turn a visual or interaction technique you already built into a reusable web-design skill, by isolating the one mechanism that makes it work, separating it from the staging it happens to sit in, and packaging it with a demo that proves it. Covers finding the mechanism, anchoring every rule to the failure it prevents, carrying real numbers instead of adjectives, keeping the expensive gotchas, declaring the boundary against neighbouring skills, and browser-verifying before claiming it works. Use when a page, canvas scene, shader, scroll effect, layout system, or hover interaction turned out well and should become a skill rather than staying in one project.
+description: Turn a visual or interaction technique you already built into a reusable web-design skill, by isolating the one mechanism that makes it work while reproducing its approved reference exactly around that focus, and packaging it with a demo that proves both the mechanism and the visual fidelity. Covers finding the mechanism, auditing reference layers, carrying real numbers instead of adjectives, preserving owned staging, keeping expensive gotchas, declaring the boundary against neighbouring skills, and browser-verifying before claiming it works. Use when a page, canvas scene, shader, scroll effect, layout system, or hover interaction turned out well and should become a skill rather than staying in one project.
 ---
 
 # Web Technique to Skill
@@ -8,6 +8,8 @@ description: Turn a visual or interaction technique you already built into a reu
 Start from working code, not from prose. Reach for `article-prompts-to-skills` when the source is an article or a prompt pack that describes behavior. Reach for this when you built the thing, it works, and the knowledge is currently trapped in one file.
 
 Extract one mechanism per skill. A page that turned out well usually holds several; package them separately or each one gets diluted.
+
+Treat this as the living quality contract for every web-technique skill. On every creation or revision, audit this skill too. If the work exposes a missing fidelity rule, failure mode, packaging constraint, or verification step, update this contract in the same scoped change instead of solving it only inside one child skill.
 
 ## Name the mechanism in one sentence
 
@@ -27,7 +29,7 @@ Sort every part of the source into three piles and keep only the first:
 | staging | the demo only | palette, copy, imagery, page layout, brand |
 | incidental | nowhere | selector names, a font choice, a one-off asset path |
 
-Strip brand names, hard-coded palettes, project selectors, and asset paths from the skill body. Let the demo keep a real look — a demo with no art direction proves nothing about a visual technique — but rename the subject so it does not read as a clone of the source project.
+Strip project selectors and incidental asset paths from the reusable mechanism in the skill body. Keep the approved reference staging in the demo: the same owned brand, palette, type treatment, composition, asset placement, atmosphere, and motion hierarchy. Isolate the technique by narrowing what the demo teaches and controls, not by inventing a different visual world.
 
 ## Anchor every rule to the failure it prevents
 
@@ -92,11 +94,11 @@ The demo should look like that source — see **Direct the demo** below. What st
 
 So the demo inherits the craft bar of the source, not the craft bar of a code sample.
 
-- **Build the demo as close to the reference as you can.** Same palette, same type treatment, same composition, same atmosphere. The reference is the proof that this technique looks good when it is done properly, and a demo that wanders off into its own art direction throws that proof away. Someone opening the demo should recognise it as the page the technique came from.
+- **Treat the approved reference as an acceptance target, not inspiration.** Reproduce the same first frame, layout geometry, palette, type treatment, asset scale, atmosphere, and motion hierarchy around the isolated mechanism. Do a layer-by-layer inventory before coding. Someone opening the demo should identify the source immediately, before reading its name.
 - **Use the reference's own assets, by porting the code that makes them.** If the source generates its sky, its moon, its textures, its silhouettes, bring those functions across unchanged. A hand-rolled CSS approximation of a procedurally generated moon is a flat disc next to one with real maria and a crater field, and the gap is obvious the moment they sit side by side. Porting a generator costs nothing at rest, keeps the demo one self-contained file, and makes the staging genuinely the same rather than merely similar.
-- **What must not cross is anything you do not own:** a client's brand, licensed fonts, purchased or third-party imagery, and any binary asset you would have to ship alongside the file. Substitute those; reproduce everything else.
+- **Owned reference assets cross with the technique when they are necessary for fidelity.** Copy the smallest local set the demo needs and record their provenance. Exact owned staging outranks a one-file preference; a portable local bundle is better than a self-contained approximation that no longer matches. What must not cross is anything you do not own: a client's brand, licensed fonts, purchased imagery, or third-party media.
 - **Show the mechanism on the first screen** — before any scroll, before any interaction. If it takes a click to see the point, the framing is wrong.
-- **Write the skill's argument as the page's copy.** The demo explains the technique through its own content, not through a caption bolted underneath. Put the mechanism in the headline and the failure it prevents in the body, in the reference's own voice. Atmospheric filler makes the reader guess what they are looking at, and a demo that has to be explained elsewhere has failed as evidence.
+- **Preserve layout-defining reference copy.** If changing the headline or body would change the approved composition, keep it exactly and put the mechanism argument into the reference's existing secondary panel, controls, microcopy, or accessible description. Do not trade visual fidelity for an explanatory headline.
 - **Keep a family.** Two techniques pulled from the same reference should produce two demos that look like siblings. A library of demos that share a reference reads as a body of work; a library where each one invents its own world reads as scraps.
 
 A worked example of the copy rule, for a trail that emits per unit of distance:
@@ -117,7 +119,7 @@ Every one of these, every time:
 - A restrained palette with one accent that carries meaning
 - Every interactive control styled, including its focus state
 - Real, specific copy from a plausible project — never "Card title" or "Demo section"
-- One self-contained file: no build step, no external assets, no libraries unless the skill is about one
+- One self-contained file when the exact reference permits it; otherwise a minimal local bundle of owned assets with no remote runtime dependency
 - 390px through 1440px, semantic HTML, visible focus, and a clean console at both ends
 
 If the demo would embarrass you next to the page you extracted it from, it is not finished.
@@ -132,6 +134,7 @@ Do not claim visual or interaction behavior from reading the file. Drive it:
 4. Run the reduced-motion path and confirm a composed frame renders and animation stops.
 5. Confirm the console is clean at both sizes.
 6. Capture the preview at the repository's shared dimensions.
+7. Compare the demo and source side by side at the source viewport. Fix structural drift in hierarchy, crop, scale, alignment, and atmosphere before polishing the isolated effect.
 
 Expect this pass to find something. When it does, fix the demo and re-run rather than softening the rule.
 
@@ -145,6 +148,7 @@ agent-skills/<category>/<skill-name>/
     index.html
     PROMPT.md
     preview.jpg
+    reference.*        # optional owned staging required for exact fidelity
 ```
 
 Write `SKILL.md` in imperative form with only `name` and `description` in frontmatter, and put every trigger phrase in the description. Give `demo/PROMPT.md` three headings: **Minimal prompt**, **Recreate the demo**, **Remix prompt**, where the remix changes subject, palette, and composition while preserving the mechanism and the budgets.
@@ -161,8 +165,9 @@ Stage only the new folder and the gallery rows it needs. Review `git diff --cach
 - [ ] The boundary against the nearest existing skill is stated in the opening lines
 - [ ] Provenance is one line of context naming the source project
 - [ ] The demo is recognisably the reference — same palette, type, composition, atmosphere
-- [ ] The reference's own asset generators were ported, not approximated
-- [ ] Nothing unowned crossed over, and the demo ships as one file
+- [ ] The source and demo were compared side by side at the source viewport; no structural drift remains
+- [ ] The reference's own generators were ported, or the smallest owned reference asset was bundled when exact code isolation was not practical
+- [ ] Nothing unowned crossed over, and the demo ships as one file or the smallest justified local owned-asset bundle
 - [ ] Demos from the same reference look like siblings
 - [ ] The demo's own copy states the mechanism and names the failure it prevents
 - [ ] The demo shows the mechanism on the first screen, before scroll or interaction

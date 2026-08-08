@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rinkō — The Wisp Trail</title>
+<title>Kage — Cursor Wisps</title>
+<link rel="icon" href="data:,">
 <style>
-  /* Tokens, type treatment and staging follow the reference this technique was
-     pulled from, so the demo is recognisably that page. The look is rebuilt in
-     code — procedural sky, moon and ridge — never imported as assets. */
+  /* Tokens, type treatment and staging follow the Kage reference this
+     technique was pulled from. The owned reference frames preserve the
+     approved composition while the live canvas isolates the cursor wisps. */
   :root{
     --ink:#05070a;          /* page black                        */
     --ink-2:#0a0e12;
@@ -137,10 +138,96 @@
     .jp{ display:none; }
     .hud{ gap:calc(var(--r)*2); }
   }
+
+  /* ==================================================== Kage reference stage
+     The technique came from Kage, so the demo keeps Kage's approved hero frame
+     instead of inventing a second visual world. The owned desktop and mobile
+     reference frames are local, responsive staging; the live canvas above them
+     remains the isolated mechanism under test. */
+  #sky,.moon,.ridge{ display:none; }
+  .reference{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:#05070a url('./reference-kage.webp') center / 100% 100% no-repeat;
+    transform:scale(1.002);
+  }
+  .reference::after{
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 52% 42%, transparent 20%, rgba(3,5,8,.08) 70%, rgba(3,5,8,.36) 100%),
+      linear-gradient(180deg, rgba(3,5,8,.02), rgba(3,5,8,.10));
+  }
+  #trail{ z-index:2; filter:saturate(.86); }
+  #stage{ z-index:3; }
+
+  .sheet{
+    position:fixed; inset:0; z-index:4; min-height:0; padding:0; display:block;
+    pointer-events:none;
+  }
+  .sheet > *{ pointer-events:auto; }
+  .wisp-panel{
+    position:absolute; z-index:5; top:61.4%; right:3.45%;
+    width:clamp(236px,19.2vw,310px);
+    padding:16px 17px 15px;
+    color:var(--bone);
+    background:linear-gradient(145deg,rgba(4,7,10,.88),rgba(4,7,10,.72));
+    border:1px solid rgba(223,231,224,.18);
+    box-shadow:0 20px 54px rgba(0,0,0,.44);
+    -webkit-backdrop-filter:blur(12px);
+            backdrop-filter:blur(12px);
+  }
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--line);
+  }
+  .panel-kicker{
+    margin:0; display:flex; align-items:center; gap:9px;
+    font-size:9px; font-weight:500; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--bone-dim);
+  }
+  .panel-kicker::before{
+    content:''; width:5px; height:5px; border-radius:50%; background:var(--vermilion);
+    box-shadow:0 0 10px rgba(224,35,28,.85);
+  }
+  .panel-jp{ font-size:11px; letter-spacing:.24em; color:var(--muted); }
+  .panel-claim{
+    margin:0 0 12px; max-width:31ch; font-size:11px; line-height:1.55;
+    color:rgba(223,231,224,.66);
+  }
+  .hud{ display:grid; grid-template-columns:1fr auto; gap:9px 12px; border:0; padding:0; }
+  .hud fieldset{ grid-column:1 / -1; justify-content:space-between; }
+  .hud legend{ margin-right:auto; }
+  .seg{ gap:4px; }
+  .opt span{ padding:5px 9px; font-size:7px; }
+  .ctl{ grid-column:1 / -1; display:grid; grid-template-columns:45px 1fr 26px; gap:8px; }
+  .ctl > label{ font-size:7px; }
+  input[type=range]{ width:100%; height:12px; }
+  button{ padding:7px 12px; font-size:7px; }
+  #trace{ position:absolute; right:16px; top:44px; }
+  .panel-hint{ margin:9px 0 0; font-size:8px; letter-spacing:.12em; color:var(--muted); }
+
+  @media (max-width:760px){
+    .reference{
+      background-image:url('./reference-kage-mobile.webp');
+      background-position:center top;
+    }
+    .reference::after{
+      background:linear-gradient(180deg,rgba(3,5,8,.02) 55%,rgba(3,5,8,.48) 100%);
+    }
+    .wisp-panel{
+      top:auto; left:14px; right:14px; bottom:max(14px,env(safe-area-inset-bottom));
+      width:auto; padding:14px 15px 13px;
+    }
+    .panel-claim{ max-width:30ch; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .reference{ transform:none; }
+  }
 </style>
 </head>
 <body>
 
+<div class="reference" aria-hidden="true"></div>
 <canvas id="sky" aria-hidden="true"></canvas>
 <div class="moon" aria-hidden="true"><canvas id="moon"></canvas></div>
 <div class="ridge" aria-hidden="true"><canvas id="ridge"></canvas></div>
@@ -149,23 +236,13 @@
      aria-label="Wisp field. Move the pointer, or use the arrow keys, to lay a trail."></div>
 
 <main class="sheet">
-  <header class="top">
-    <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Chapter 02 — The Wisp Trail</p>
-    <p class="jp" aria-hidden="true">燐光</p>
-  </header>
-
-  <div class="mid">
-    <div class="lede">
-      <h1>A flick and a crawl<br><em>draw the same line.</em></h1>
-      <p class="sub">The motes are shed by distance, not by the clock, so the spacing along
-        the path never changes with the speed of the hand. Switch emission to a timer and
-        the same gesture breaks apart — a fast pass leaves scattered dots, a resting hand
-        piles them on one spot.</p>
+  <h1 class="sr">Kage cursor wisps — a flick and a crawl draw the same line</h1>
+  <section class="wisp-panel" aria-labelledby="wisp-title">
+    <div class="panel-head">
+      <p class="panel-kicker" id="wisp-title">Cursor wisps</p>
+      <span class="panel-jp" aria-hidden="true">燐光</span>
     </div>
-  </div>
-
-  <footer class="foot">
-    <p class="hint">Move the pointer, or focus the field and steer with <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>.</p>
+    <p class="panel-claim">Distance keeps the ribbon continuous. A timer breaks a fast pass into dots.</p>
     <div class="hud">
       <fieldset>
         <legend>Emission</legend>
@@ -192,7 +269,8 @@
       <button id="trace" type="button">Trace path</button>
       <p class="sr" role="status" aria-live="polite" id="say"></p>
     </div>
-  </footer>
+    <p class="panel-hint">Move the pointer · Focus the field and use arrow keys</p>
+  </section>
 </main>
 
 <script>
@@ -200,7 +278,8 @@
 'use strict';
 
 const TAU = Math.PI * 2;
-const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches ||
+  new URLSearchParams(location.search).has('reduce'); /* deterministic demo QA */
 const COARSE = matchMedia('(hover: none)').matches;
 const clamp = (v, a, b) => v < a ? a : (v > b ? b : v);
 /* frame-rate independent approach, so the lag is the same at 60 and 120Hz */
@@ -461,13 +540,18 @@ function texMoon() {
   return c;
 }
 
-/* built once; only the sky is re-generated when the viewport aspect changes */
+/* These source generators remain as provenance for the original Kage stage,
+   but the focused demo uses the approved reference frames above. Keeping them
+   dormant avoids spending startup time on staging the skill is not testing. */
+const USE_GENERATED_STAGE = false;
 (function paintMoon() {
+  if (!USE_GENERATED_STAGE) return;
   const el = document.getElementById('moon');
   el.width = el.height = 512;
   el.getContext('2d').drawImage(texMoon(), 0, 0);
 })();
 (function paintRidge() {
+  if (!USE_GENERATED_STAGE) return;
   const el = document.getElementById('ridge');
   el.width = 2048; el.height = 512;
   el.getContext('2d').drawImage(texRidge(2048, 512), 0, 0);
@@ -483,16 +567,18 @@ const SPRITE = (() => {
   c.width = c.height = S;
   const x = c.getContext('2d');
   const g = x.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
-  g.addColorStop(0,   'rgba(236,250,255,1)');
-  g.addColorStop(.12, 'rgba(191,230,242,.90)');
-  g.addColorStop(.34, 'rgba(120,178,206,.28)');
-  g.addColorStop(1,   'rgba(80,140,175,0)');
+  g.addColorStop(0,   'rgba(255,255,255,1)');
+  g.addColorStop(.07, 'rgba(236,250,250,.92)');
+  g.addColorStop(.16, 'rgba(190,230,238,.40)');
+  g.addColorStop(.34, 'rgba(132,192,212,.13)');
+  g.addColorStop(.62, 'rgba(88,146,172,.035)');
+  g.addColorStop(1,   'rgba(70,120,142,0)');
   x.fillStyle = g; x.beginPath(); x.arc(S / 2, S / 2, S / 2, 0, TAU); x.fill();
   return c;
 })();
 
 /* ------------------------------------------------------------ 2 · the field */
-const N = 460;
+const N = 190;
 const M = new Array(N);
 for (let i = 0; i < N; i++) M[i] = { life: 0, max: 1, x: 0, y: 0, vx: 0, vy: 0, sz: 0, ph: 0 };
 
@@ -502,7 +588,7 @@ let W = 0, H = 0, dpr = 1, clock = 0;
 
 /* Scatter is a fraction of the field it hangs on, never an absolute. The same
    number that reads as a soft cloud on a laptop is a hard line on a phone. */
-const spread = () => (P.scatter / 1000) * Math.min(H, W * 1.1);
+const spread = () => (P.scatter / 100) * Math.min(H, W * 1.1) * .75;
 
 function spawn(x, y, ang, weak) {
   const i = E.i; E.i = (i + 1) % N;   /* slot first, then advance: the other
@@ -516,7 +602,7 @@ function spawn(x, y, ang, weak) {
   const k = Math.min(H, W) * .055;
   m.vx = -Math.cos(ang) * k * .5 + (Math.random() - .5) * k * 2.1;
   m.vy = -Math.sin(ang) * k * .5 + (Math.random() - .5) * k * 1.8 - k * .12;
-  m.sz = ((weak ? .006 : .008) + Math.random() * .009) * Math.min(H, W);
+  m.sz = ((weak ? .0014 : .0018) + Math.random() * .0018) * Math.min(H, W);
   m.ph = Math.random() * TAU;
 }
 
@@ -731,7 +817,7 @@ function fit() {
      the aspect actually moves — regenerating a full-resolution fbm on every
      resize frame is the kind of thing that turns a drag into a slideshow. */
   const asp = W / H;
-  if (!sky.done || Math.abs(asp - sky.asp) > .06) {
+  if (USE_GENERATED_STAGE && (!sky.done || Math.abs(asp - sky.asp) > .06)) {
     sky.asp = asp; sky.done = true;
     const sw = Math.min(1024, Math.round(720 * Math.max(1, asp)));
     const sh = Math.round(sw / asp);

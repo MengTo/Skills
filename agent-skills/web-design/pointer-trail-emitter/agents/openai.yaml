@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pointer Trail Emitter"
+  short_description: "Cursor trails that respond to hand speed"
+  default_prompt: "Use $pointer-trail-emitter to add a mote trail to this hero that emits by distance travelled, so a slow hand threads and a fast one scatters."

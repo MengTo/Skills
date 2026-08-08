@@ -84,7 +84,7 @@ Report the lever that buys the most for the least — for a recycled particle fi
 
 Write one line in `SKILL.md` naming the source: what the project was, and what the mechanism was doing in it. A reader decides whether the skill applies to them by understanding the context it survived — "extracted from a dark WebGL Kyoto night scene where it had to stay legible over type" tells them more than any amount of description.
 
-Describe the origin; never carry it across. Client names, licensed fonts, proprietary imagery, and brand palettes stay in the source project. Provenance is a sentence, not an asset.
+The demo should look like that source — see **Direct the demo** below. What stays behind is only what you do not own: a client's name and brand, licensed fonts, purchased or third-party imagery. Substitute those and reproduce everything else.
 
 ## Direct the demo
 
@@ -92,9 +92,19 @@ Describe the origin; never carry it across. Client names, licensed fonts, propri
 
 So the demo inherits the craft bar of the source, not the craft bar of a code sample.
 
-- **Match the source's standard**, not its content. If the original had a real type scale, considered spacing, and a restrained palette, the demo has all three. If the original was a cinematic full-viewport scene, the demo is a composed full-viewport scene.
-- **Re-subject, don't re-skin.** Change the subject, palette, copy, and imagery so the demo cannot be mistaken for the source project. Keep the compositional discipline; drop the identity. A leaf fall extracted from a Kyoto night becomes a different autumn, not the same page with the logo removed.
+- **Build the demo as close to the reference as you can.** Same palette, same type treatment, same composition, same atmosphere. The reference is the proof that this technique looks good when it is done properly, and a demo that wanders off into its own art direction throws that proof away. Someone opening the demo should recognise it as the page the technique came from.
+- **Use the reference's own assets, by porting the code that makes them.** If the source generates its sky, its moon, its textures, its silhouettes, bring those functions across unchanged. A hand-rolled CSS approximation of a procedurally generated moon is a flat disc next to one with real maria and a crater field, and the gap is obvious the moment they sit side by side. Porting a generator costs nothing at rest, keeps the demo one self-contained file, and makes the staging genuinely the same rather than merely similar.
+- **What must not cross is anything you do not own:** a client's brand, licensed fonts, purchased or third-party imagery, and any binary asset you would have to ship alongside the file. Substitute those; reproduce everything else.
 - **Show the mechanism on the first screen** — before any scroll, before any interaction. If it takes a click to see the point, the framing is wrong.
+- **Write the skill's argument as the page's copy.** The demo explains the technique through its own content, not through a caption bolted underneath. Put the mechanism in the headline and the failure it prevents in the body, in the reference's own voice. Atmospheric filler makes the reader guess what they are looking at, and a demo that has to be explained elsewhere has failed as evidence.
+- **Keep a family.** Two techniques pulled from the same reference should produce two demos that look like siblings. A library of demos that share a reference reads as a body of work; a library where each one invents its own world reads as scraps.
+
+A worked example of the copy rule, for a trail that emits per unit of distance:
+
+> **A flick and a crawl draw the same line.**
+> The motes are shed by distance, not by the clock, so the spacing along the path never changes with the speed of the hand. Switch emission to a timer and the same gesture breaks apart — a fast pass leaves scattered dots, a resting hand piles them on one spot.
+
+The headline is the mechanism. The body is the failure. The control named in the last sentence is on screen, so the reader can go and check the claim.
 - **One idea per screen.** A demo proving three things proves none of them.
 - **Controls expose states that matter**, as real form elements, and prove the system is parameterised rather than baked. Skip controls that only restate what is already visible.
 
@@ -149,7 +159,12 @@ Stage only the new folder and the gallery rows it needs. Review `git diff --cach
 - [ ] Constants are real numbers, not adjectives
 - [ ] The expensive gotchas are written symptom-first
 - [ ] The boundary against the nearest existing skill is stated in the opening lines
-- [ ] Provenance is one line of context, carrying no brand, font, or asset across
+- [ ] Provenance is one line of context naming the source project
+- [ ] The demo is recognisably the reference — same palette, type, composition, atmosphere
+- [ ] The reference's own asset generators were ported, not approximated
+- [ ] Nothing unowned crossed over, and the demo ships as one file
+- [ ] Demos from the same reference look like siblings
+- [ ] The demo's own copy states the mechanism and names the failure it prevents
 - [ ] The demo shows the mechanism on the first screen, before scroll or interaction
 - [ ] The demo would not embarrass you next to the page it came from
 - [ ] Type scale, spacing rhythm, and palette are deliberate, not defaults

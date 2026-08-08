@@ -80,13 +80,37 @@ Say what is actually expensive, and measure before claiming it. Profile rather t
 
 Report the lever that buys the most for the least — for a recycled particle field, tightening the spawn band beats raising the count, because on-screen density goes as count ÷ area.
 
-## Build a demo that proves the mechanism
+## Record where the design came from
 
-- Show the mechanism on the first screen, without scrolling or interaction.
-- Add controls only where they expose a state that matters, and let them prove the system is parameterised rather than baked.
-- Use realistic content. Never "Card title" or "Demo section".
-- Keep it one self-contained file: no build step, no external assets, no libraries unless the skill is about one.
-- Support 390px through 1440px. Semantic HTML, visible focus.
+Write one line in `SKILL.md` naming the source: what the project was, and what the mechanism was doing in it. A reader decides whether the skill applies to them by understanding the context it survived — "extracted from a dark WebGL Kyoto night scene where it had to stay legible over type" tells them more than any amount of description.
+
+Describe the origin; never carry it across. Client names, licensed fonts, proprietary imagery, and brand palettes stay in the source project. Provenance is a sentence, not an asset.
+
+## Direct the demo
+
+**The demo is the only evidence most readers will ever see.** They will not read the source project, and they will judge the technique by this one file. A mechanism that shipped on a considered page, demonstrated by something that looks like a test harness, reads as unfinished — and nobody reaches for a skill that looks unfinished.
+
+So the demo inherits the craft bar of the source, not the craft bar of a code sample.
+
+- **Match the source's standard**, not its content. If the original had a real type scale, considered spacing, and a restrained palette, the demo has all three. If the original was a cinematic full-viewport scene, the demo is a composed full-viewport scene.
+- **Re-subject, don't re-skin.** Change the subject, palette, copy, and imagery so the demo cannot be mistaken for the source project. Keep the compositional discipline; drop the identity. A leaf fall extracted from a Kyoto night becomes a different autumn, not the same page with the logo removed.
+- **Show the mechanism on the first screen** — before any scroll, before any interaction. If it takes a click to see the point, the framing is wrong.
+- **One idea per screen.** A demo proving three things proves none of them.
+- **Controls expose states that matter**, as real form elements, and prove the system is parameterised rather than baked. Skip controls that only restate what is already visible.
+
+### Quality floor
+
+Every one of these, every time:
+
+- A deliberate type scale with a considered largest and smallest step — never browser defaults
+- Spacing on one consistent rhythm
+- A restrained palette with one accent that carries meaning
+- Every interactive control styled, including its focus state
+- Real, specific copy from a plausible project — never "Card title" or "Demo section"
+- One self-contained file: no build step, no external assets, no libraries unless the skill is about one
+- 390px through 1440px, semantic HTML, visible focus, and a clean console at both ends
+
+If the demo would embarrass you next to the page you extracted it from, it is not finished.
 
 ## Verify in a browser, then report
 
@@ -125,6 +149,10 @@ Stage only the new folder and the gallery rows it needs. Review `git diff --cach
 - [ ] Constants are real numbers, not adjectives
 - [ ] The expensive gotchas are written symptom-first
 - [ ] The boundary against the nearest existing skill is stated in the opening lines
+- [ ] Provenance is one line of context, carrying no brand, font, or asset across
+- [ ] The demo shows the mechanism on the first screen, before scroll or interaction
+- [ ] The demo would not embarrass you next to the page it came from
+- [ ] Type scale, spacing rhythm, and palette are deliberate, not defaults
 - [ ] Reduced motion renders a designed still, not a hidden element
 - [ ] Cost claims were measured, not assumed
 - [ ] The demo was driven in a browser at both breakpoints with a clean console

@@ -9,13 +9,7 @@ Build the emitter yourself when the trail's density has to respond to how fast t
 
 Reach for `add-shader-cursor-trail` or `shaders-cursor-ripples` when you want the packaged WebGPU looks from the Shaders library. Reach for `reveal-hover-effect` when the cursor exposes a second image through a mask. Reach for `ambient-section-particles` when motes fill a section and the pointer only disturbs them. Reach for this when the pointer *lays* them.
 
-Extracted from the Kage — Hidden Realms of Kyoto hero, where cold cursor wisps had to stay readable across the moonlit temple, oversized KAGE letters, Japanese type, foliage, and film grain without pulling attention from that set.
-
-## Keep the Kage stage in the demo
-
-The approved source is the Kage hero, not a generic night scene. Preserve its red moon, temple axis, left-aligned chapter copy, oversized KAGE foreground letters, vertical Japanese type, dark foliage, muted sage-white typography, vermilion accents, and heavy film grain. Isolate this skill by making the cursor wisps the only live lesson and parameter set; do not replace Kage with a valley, star field, abstract particle test, or new brand.
-
-Use the owned Kage reference frames bundled with the demo at their intended desktop and mobile crops. The live trail canvas must remain a separate layer above them so the emitter is testable rather than baked into an image.
+The bundled demo keeps the stage intentionally neutral. A plain dark field makes spacing, scatter, and coast easy to judge without a background image competing with the trail. Keep the live canvas separate from the interface so the emitter stays testable rather than baked into a composition.
 
 ## Emit by distance, not by time
 
@@ -146,8 +140,8 @@ Measure before reporting a regression. A frame-time comparison on this trail onc
 
 ## Verify
 
-- [ ] The first frame is recognisably Kage before the pointer moves
-- [ ] Desktop and mobile use the intended Kage reference crop, not one stretched image
+- [ ] The trail is legible on a neutral field before the pointer moves
+- [ ] The demo does not rely on background imagery to make the effect look complete
 - [ ] Spacing along the path is constant; a flick and a crawl draw the same ribbon
 - [ ] Measured, not assumed: mote count over a fixed path barely moves with speed
 - [ ] A flick lays motes along the whole segment, not clumped at one end

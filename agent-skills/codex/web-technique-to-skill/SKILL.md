@@ -98,6 +98,7 @@ So the demo inherits the craft bar of the source, not the craft bar of a code sa
 - **Use the reference's own assets, by porting the code that makes them.** If the source generates its sky, its moon, its textures, its silhouettes, bring those functions across unchanged. A hand-rolled CSS approximation of a procedurally generated moon is a flat disc next to one with real maria and a crater field, and the gap is obvious the moment they sit side by side. Porting a generator costs nothing at rest, keeps the demo one self-contained file, and makes the staging genuinely the same rather than merely similar.
 - **Owned reference assets cross with the technique when they are necessary for fidelity.** Copy the smallest local set the demo needs and record their provenance. Exact owned staging outranks a one-file preference; a portable local bundle is better than a self-contained approximation that no longer matches. What must not cross is anything you do not own: a client's brand, licensed fonts, purchased imagery, or third-party media.
 - **Show the mechanism on the first screen** — before any scroll, before any interaction. If it takes a click to see the point, the framing is wrong.
+- **Verify the whole state path when the mechanism spans time or scroll.** The opening frame must establish the world and expose its conductor, but it cannot prove a multi-scene journey by itself. Compare every authored key state plus the forward, reverse, fast-skip, and reload-at-depth paths; a perfect hero does not excuse a broken third chapter.
 - **Preserve layout-defining reference copy.** If changing the headline or body would change the approved composition, keep it exactly and put the mechanism argument into the reference's existing secondary panel, controls, microcopy, or accessible description. Do not trade visual fidelity for an explanatory headline.
 - **Keep a family.** Two techniques pulled from the same reference should produce two demos that look like siblings. A library of demos that share a reference reads as a body of work; a library where each one invents its own world reads as scraps.
 
@@ -130,11 +131,12 @@ Do not claim visual or interaction behavior from reading the file. Drive it:
 
 1. Load the demo at 1440×900 and 390×844.
 2. Exercise the primary interaction and confirm the state actually changes.
-3. Tab through and confirm focus is visible and ordered.
-4. Run the reduced-motion path and confirm a composed frame renders and animation stops.
-5. Confirm the console is clean at both sizes.
-6. Capture the preview at the repository's shared dimensions.
-7. Compare the demo and source side by side at the source viewport. Fix structural drift in hierarchy, crop, scale, alignment, and atmosphere before polishing the isolated effect.
+3. For scroll, timeline, or multi-state techniques, traverse every authored state forward and backward, fast-skip across seams, and reload at a nonzero state.
+4. Tab through and confirm focus is visible and ordered.
+5. Run the reduced-motion path and confirm a composed frame renders and animation stops.
+6. Confirm the console is clean at both sizes.
+7. Capture the preview at the repository's shared dimensions.
+8. Compare the demo and source side by side at the source viewport. For multi-state techniques, compare every representative key state. Fix structural drift in hierarchy, crop, scale, alignment, and atmosphere before polishing the isolated effect.
 
 Expect this pass to find something. When it does, fix the demo and re-run rather than softening the rule.
 
@@ -171,6 +173,7 @@ Stage only the new folder and the gallery rows it needs. Review `git diff --cach
 - [ ] Demos from the same reference look like siblings
 - [ ] The demo's own copy states the mechanism and names the failure it prevents
 - [ ] The demo shows the mechanism on the first screen, before scroll or interaction
+- [ ] A scroll, timeline, or multi-state mechanism was verified at every key state, in reverse, across fast skips, and after reload at depth
 - [ ] The demo would not embarrass you next to the page it came from
 - [ ] Type scale, spacing rhythm, and palette are deliberate, not defaults
 - [ ] Reduced motion renders a designed still, not a hidden element

@@ -1,6 +1,6 @@
 ---
 name: web-technique-to-skill
-description: Turn a visual or interaction technique you already built into a reusable web-design skill, by isolating the one mechanism that makes it work while reproducing its approved reference exactly around that focus, and packaging it with a demo that proves both the mechanism and the visual fidelity. Covers finding the mechanism, auditing reference layers, carrying real numbers instead of adjectives, preserving owned staging, keeping expensive gotchas, declaring the boundary against neighbouring skills, and browser-verifying before claiming it works. Use when a page, canvas scene, shader, scroll effect, layout system, or hover interaction turned out well and should become a skill rather than staying in one project.
+description: Turn a visual or interaction technique you already built into a reusable web-design skill, by isolating the one mechanism that makes it work while reproducing its approved reference exactly around that focus, and packaging it with a demo that proves both the mechanism and the visual fidelity. Covers finding the mechanism, naming the technique plainly, disclosing the verified runtime and renderer, auditing reference layers, carrying real numbers instead of adjectives, preserving owned staging, keeping expensive gotchas, declaring the boundary against neighbouring skills, and browser-verifying before claiming it works. Use when a page, canvas scene, shader, scroll effect, layout system, or hover interaction turned out well and should become a skill rather than staying in one project.
 ---
 
 # Web Technique to Skill
@@ -18,6 +18,22 @@ Write the sentence before you write anything else: *the one thing that, if remov
 The sentence decides everything downstream. For a leaf fall it is "the tumble crosses edge-on, and that instant of near-disappearance is what the eye reads as a leaf" — so the sprite artwork, the palette, and the night scene are all staging, and the tumble is the skill.
 
 Test it: change the subject, the palette, and the layout in your head. If the sentence still holds, it is the mechanism. If it stops making sense, you named the staging.
+
+## Name the demo and disclose the stack
+
+Use the concrete technique name for the visible `h1` and browser `<title>`: **Wisps**, **Cursor Ripples**, **Liquid Metal Border**, or **Scroll-scrubbed Word Reveal**. Do not hide the subject behind an abstract mechanism claim. “Draw at any speed” describes behaviour, but it does not tell anyone what the demo is.
+
+Put the verified implementation path directly above or below that title. Name, in order:
+
+1. The runtime or framework: Vanilla JavaScript, React, Vue
+2. The renderer or browser API: Canvas 2D, WebGL, DOM/CSS, SVG
+3. The technique layer when present: GLSL shaders, Three.js, GSAP, ScrollTrigger
+
+Write **Vanilla JavaScript · Canvas 2D** or **Three.js · WebGL · GLSL**, not “interactive experiment” or “motion study.” Never guess from the look. Verify imports, renderer construction, and context creation in the source. `getContext('2d')` is Canvas 2D, not a shader; `WebGLRenderer` plus `ShaderMaterial` is Three.js, WebGL, and GLSL. When the visual could be mistaken for a more complex stack, state the absence plainly: **No WebGL, shaders, or Three.js.**
+
+Separate the effect stack from the interface stack when they differ. Write **Vanilla JavaScript + Canvas 2D effect; CSS interface** instead of listing CSS beside Canvas 2D as if both render the particles. Readers should know which technology creates the technique and which technology only lays out its controls.
+
+If an approved reference headline must remain for layout fidelity, keep it and put the technique name plus stack in the browser title and the reference's existing kicker, control panel, or secondary label. The implementation must still be obvious on the first screen.
 
 ## Split mechanism from staging
 
@@ -99,15 +115,18 @@ So the demo inherits the craft bar of the source, not the craft bar of a code sa
 - **Owned reference assets cross with the technique when they are necessary for fidelity.** Copy the smallest local set the demo needs and record their provenance. Exact owned staging outranks a one-file preference; a portable local bundle is better than a self-contained approximation that no longer matches. What must not cross is anything you do not own: a client's brand, licensed fonts, purchased imagery, or third-party media.
 - **Show the mechanism on the first screen** — before any scroll, before any interaction. If it takes a click to see the point, the framing is wrong.
 - **Verify the whole state path when the mechanism spans time or scroll.** The opening frame must establish the world and expose its conductor, but it cannot prove a multi-scene journey by itself. Compare every authored key state plus the forward, reverse, fast-skip, and reload-at-depth paths; a perfect hero does not excuse a broken third chapter.
-- **Preserve layout-defining reference copy.** If changing the headline or body would change the approved composition, keep it exactly and put the mechanism argument into the reference's existing secondary panel, controls, microcopy, or accessible description. Do not trade visual fidelity for an explanatory headline.
+- **Preserve layout-defining reference copy.** If changing the headline or body would change the approved composition, keep it exactly and put the technique name, verified stack, and mechanism argument into the browser title plus the reference's existing secondary panel, controls, microcopy, or accessible description. Do not trade visual fidelity for an explanatory headline, but never leave the implementation unidentified.
 - **Keep a family.** Two techniques pulled from the same reference should produce two demos that look like siblings. A library of demos that share a reference reads as a body of work; a library where each one invents its own world reads as scraps.
 
-A worked example of the copy rule, for a trail that emits per unit of distance:
+A worked example of the copy rule, for a Canvas 2D trail that emits per unit of distance:
 
-> **A flick and a crawl draw the same line.**
-> The motes are shed by distance, not by the clock, so the spacing along the path never changes with the speed of the hand. Switch emission to a timer and the same gesture breaks apart — a fast pass leaves scattered dots, a resting hand piles them on one spot.
+> Vanilla JavaScript · Canvas 2D
+>
+> **Wisps**
+>
+> Distance-emitted Canvas 2D particles keep the same spacing at any hand speed; CSS styles the interface only. Switch emission to a timer and the same gesture breaks apart — a fast pass leaves scattered dots, while a resting hand piles them on one spot. No WebGL, shaders, or Three.js.
 
-The headline is the mechanism. The body is the failure. The control named in the last sentence is on screen, so the reader can go and check the claim.
+The title names the effect. The kicker identifies the stack. The body states the mechanism, the failure, and any likely implementation ambiguity. The control named in the body is on screen, so the reader can check the claim.
 - **One idea per screen.** A demo proving three things proves none of them.
 - **Controls expose states that matter**, as real form elements, and prove the system is parameterised rather than baked. Skip controls that only restate what is already visible.
 
@@ -119,6 +138,7 @@ Every one of these, every time:
 - Spacing on one consistent rhythm
 - A restrained palette with one accent that carries meaning
 - Every interactive control styled, including its focus state
+- A concrete technique title plus the verified runtime, renderer, and major technique libraries on the first screen
 - Real, specific copy from a plausible project — never "Card title" or "Demo section"
 - One self-contained file when the exact reference permits it; otherwise a minimal local bundle of owned assets with no remote runtime dependency
 - 390px through 1440px, semantic HTML, visible focus, and a clean console at both ends
@@ -130,13 +150,14 @@ If the demo would embarrass you next to the page you extracted it from, it is no
 Do not claim visual or interaction behavior from reading the file. Drive it:
 
 1. Load the demo at 1440×900 and 390×844.
-2. Exercise the primary interaction and confirm the state actually changes.
-3. For scroll, timeline, or multi-state techniques, traverse every authored state forward and backward, fast-skip across seams, and reload at a nonzero state.
-4. Tab through and confirm focus is visible and ordered.
-5. Run the reduced-motion path and confirm a composed frame renders and animation stops.
-6. Confirm the console is clean at both sizes.
-7. Capture the preview at the repository's shared dimensions.
-8. Compare the demo and source side by side at the source viewport. For multi-state techniques, compare every representative key state. Fix structural drift in hierarchy, crop, scale, alignment, and atmosphere before polishing the isolated effect.
+2. Confirm the visible title names the technique and the stack disclosure matches the source imports, renderer, and context creation.
+3. Exercise the primary interaction and confirm the state actually changes.
+4. For scroll, timeline, or multi-state techniques, traverse every authored state forward and backward, fast-skip across seams, and reload at a nonzero state.
+5. Tab through and confirm focus is visible and ordered.
+6. Run the reduced-motion path and confirm a composed frame renders and animation stops.
+7. Confirm the console is clean at both sizes.
+8. Capture the preview at the repository's shared dimensions.
+9. Compare the demo and source side by side at the source viewport. For multi-state techniques, compare every representative key state. Fix structural drift in hierarchy, crop, scale, alignment, and atmosphere before polishing the isolated effect.
 
 Expect this pass to find something. When it does, fix the demo and re-run rather than softening the rule.
 
@@ -160,6 +181,8 @@ Stage only the new folder and the gallery rows it needs. Review `git diff --cach
 ## Verify
 
 - [ ] The mechanism sentence survives changing the subject, palette, and layout
+- [ ] The visible title names the technique instead of using an abstract mechanism claim
+- [ ] The first screen states the verified runtime, renderer or browser API, and major technique libraries
 - [ ] Staging lives in the demo, not in the skill body
 - [ ] Every rule names the failure it prevents
 - [ ] Constants are real numbers, not adjectives

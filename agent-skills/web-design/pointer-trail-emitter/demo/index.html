@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pointer Trail Emitter — Motion Lab</title>
+<title>Wisps — Vanilla JavaScript + Canvas 2D</title>
 <link rel="icon" href="data:,">
 <style>
   :root{
@@ -342,7 +342,6 @@
   @media (max-width:700px){
     .sheet{ padding:20px; }
     h1{ max-width:8ch; font-size:clamp(38px,13vw,58px); }
-    .intro-copy{ display:none; }
     .wisp-panel{
       left:12px;
       right:12px;
@@ -357,7 +356,6 @@
   }
 
   @media (max-height:720px){
-    .intro-copy{ display:none; }
     .wisp-panel{ padding:16px; }
     .panel-head{ margin-bottom:12px; padding-bottom:12px; }
     .hud{ gap:11px; }
@@ -382,15 +380,15 @@
 
 <main class="sheet">
   <header class="intro">
-    <p class="eyebrow">Motion study 01 · Distance emitter</p>
-    <h1>Draw at any speed.</h1>
-    <p class="intro-copy">A distance emitter spends particles along the path, so a slow crawl and a fast flick draw the same continuous ribbon.</p>
+    <p class="eyebrow">Vanilla JavaScript · Canvas 2D</p>
+    <h1>Wisps</h1>
+    <p class="intro-copy">The wisps use Vanilla JavaScript and the Canvas 2D API; CSS styles the interface only. No shaders, WebGL, Three.js, or runtime dependencies. A slow crawl and a fast flick keep the same spacing.</p>
   </header>
 
   <section class="wisp-panel" aria-labelledby="wisp-title">
     <div class="panel-head">
       <div>
-        <h2 class="panel-kicker" id="wisp-title">Trail controls</h2>
+        <h2 class="panel-kicker" id="wisp-title">Wisp controls</h2>
         <p class="panel-claim">Tune the path, then switch to timer mode to expose the spacing failure.</p>
       </div>
       <span class="live" aria-hidden="true">Live</span>

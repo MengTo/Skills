@@ -8,12 +8,13 @@ Use $pointer-trail-emitter to add a mote trail to this hero that emits by distan
 
 ## Recreate the demo
 
-Use `$pointer-trail-emitter` to build **Pointer Trail Emitter** as a focused local demo. Treat `index.html` as the visual, motion, responsive, accessibility, and performance reference.
+Use `$pointer-trail-emitter` to build **Wisps** as a focused local demo. Treat `index.html` as the visual, motion, responsive, accessibility, and performance reference.
 
 ### Experience
 
 - Use a solid, neutral dark field with no background image. The trail is the only visual mechanism under study.
-- Keep a short explanation at the top-left and a compact control panel at the bottom-right. Preserve as much open field as possible for drawing.
+- Title the page **Wisps**. Put the verified effect stack — **Vanilla JavaScript · Canvas 2D** — directly above it, then state plainly that CSS styles the interface only and that the effect uses no shaders, WebGL, Three.js, or runtime dependencies.
+- Keep the implementation explanation at the top-left and a compact control panel at the bottom-right. Preserve as much open field as possible for drawing.
 - Make every range control full-width with a visible filled track, a generous thumb, a live numeric value, and labelled endpoints.
 - **The mechanism is legible before anyone touches anything.** On load the field traces its own path — a slow arc, then a fast one — and under distance emission both stretches carry identical spacing, which is the point. Any pointer or key input takes over immediately.
 - An emission toggle switches between distance and a timer. Under the timer the same gesture breaks apart: a fast pass scatters the line into dots, a resting hand piles motes on one spot.

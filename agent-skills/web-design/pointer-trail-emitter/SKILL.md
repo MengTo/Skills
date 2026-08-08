@@ -9,7 +9,7 @@ Build the emitter yourself when the trail's density has to respond to how fast t
 
 Reach for `add-shader-cursor-trail` or `shaders-cursor-ripples` when you want the packaged WebGPU looks from the Shaders library. Reach for `reveal-hover-effect` when the cursor exposes a second image through a mask. Reach for `ambient-section-particles` when motes fill a section and the pointer only disturbs them. Reach for this when the pointer *lays* them.
 
-The bundled demo keeps the stage intentionally neutral. A plain dark field makes spacing, scatter, and coast easy to judge without a background image competing with the trail. Keep the live canvas separate from the interface so the emitter stays testable rather than baked into a composition.
+The bundled demo keeps the stage intentionally neutral. A plain dark field makes spacing, scatter, and coast easy to judge without a background image competing with the trail. The wisps are dependency-free Vanilla JavaScript rendered through the Canvas 2D API; CSS styles the interface only. There are no shaders, WebGL, or Three.js. Keep the live canvas separate from the interface so the emitter stays testable rather than baked into a composition.
 
 ## Emit by distance, not by time
 

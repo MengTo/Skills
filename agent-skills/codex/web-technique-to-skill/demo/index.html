@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Triage Bench — Web Technique to Skill</title>
+<style>
+  :root{
+    --ink:#0a0c0f;
+    --panel:#101419;
+    --edge:rgba(226,232,238,.11);
+    --edge-soft:rgba(226,232,238,.06);
+    --bone:#e2e8ee;
+    --dim:#9aa6b1;
+    --mute:#66717c;
+    --keep:#5fd4a4;
+    --stage:#e0a955;
+    --drop:#e0645c;
+    --pad:clamp(18px,3.4vw,44px);
+    --ease:cubic-bezier(.22,.65,.28,1);
+  }
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0; background:var(--ink); color:var(--bone);
+    font-family:ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',sans-serif;
+    font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+  .wrap{ max-width:1440px; margin:0 auto; padding:0 var(--pad) clamp(40px,7vh,80px); }
+
+  header{ padding:clamp(26px,5vh,54px) 0 22px; border-bottom:1px solid var(--edge-soft); }
+  .eyebrow{ font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--mute);
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; margin:0 0 12px; }
+  h1{ margin:0 0 10px; font-size:clamp(27px,4.2vw,46px); line-height:1.05;
+    letter-spacing:-.02em; font-weight:500; }
+  .lede{ margin:0; max-width:62ch; color:var(--dim); }
+  .lede b{ color:var(--bone); font-weight:500; }
+
+  .bench{ display:grid; gap:clamp(20px,2.6vw,38px); padding-top:clamp(22px,4vh,38px);
+    grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); align-items:start; }
+  @media (max-width:860px){ .bench{ grid-template-columns:1fr; } }
+
+  h2{ font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--mute);
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:500;
+    margin:0 0 14px; }
+
+  /* ------------------------------------------------------------- the parts */
+  .parts{ display:flex; flex-direction:column; gap:10px; list-style:none; margin:0; padding:0; }
+  .part{ border:1px solid var(--edge); border-radius:11px; background:var(--panel);
+    padding:15px 16px 13px; transition:border-color .35s var(--ease); }
+  .part[data-pile="mechanism"]{ border-color:rgba(95,212,164,.42); }
+  .part[data-pile="staging"]  { border-color:rgba(224,169,85,.38); }
+  .part[data-pile="drop"]     { border-color:var(--edge-soft); opacity:.5; }
+
+  .part h3{ margin:0 0 5px; font-size:15px; font-weight:500; letter-spacing:-.01em; }
+  .part p{ margin:0 0 9px; font-size:13.5px; color:var(--dim); }
+  .fail{ display:block; font-size:12.5px; color:var(--mute); border-left:2px solid rgba(224,100,92,.5);
+    padding-left:10px; margin:0 0 10px; }
+  .fail b{ color:var(--dim); font-weight:500; }
+
+  fieldset{ border:0; margin:0; padding:0; display:flex; flex-wrap:wrap; align-items:center; gap:7px; }
+  legend{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .opt{ position:relative; }
+  .opt input{ position:absolute; inset:0; opacity:0; width:100%; height:100%; margin:0; cursor:pointer; }
+  .opt span{ display:block; padding:5px 12px; border:1px solid var(--edge); border-radius:100px;
+    font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--mute);
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    transition:color .3s var(--ease), border-color .3s var(--ease), background-color .3s var(--ease); }
+  .opt input:checked + span{ color:var(--ink); font-weight:600; }
+  .opt[data-v="mechanism"] input:checked + span{ background:var(--keep); border-color:var(--keep); }
+  .opt[data-v="staging"]   input:checked + span{ background:var(--stage); border-color:var(--stage); }
+  .opt[data-v="drop"]      input:checked + span{ background:var(--drop); border-color:var(--drop); }
+  .opt input:focus-visible + span{ outline:2px solid var(--bone); outline-offset:2px; }
+  .opt input:hover + span{ color:var(--dim); border-color:rgba(226,232,238,.26); }
+
+  /* the rename test appears only once a part is called a mechanism */
+  .test{ margin-top:11px; padding-top:11px; border-top:1px dashed var(--edge-soft); }
+  .test[hidden]{ display:none; }
+  .test p{ margin:0 0 8px; font-size:12.5px; color:var(--dim); }
+  .test q{ color:var(--bone); font-style:italic; }
+  .test .row{ display:flex; flex-wrap:wrap; gap:7px; align-items:center; }
+  .verdict{ font-size:11px; color:var(--keep); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .verdict.bad{ color:var(--drop); }
+
+  /* ----------------------------------------------------------- the outline */
+  .outline{ position:sticky; top:20px; border:1px solid var(--edge); border-radius:13px;
+    background:var(--panel); padding:clamp(16px,2vw,24px); }
+  @media (max-width:860px){ .outline{ position:static; } }
+
+  .meter{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px; padding:0; list-style:none; }
+  .meter li{ flex:1 1 90px; border:1px solid var(--edge-soft); border-radius:8px; padding:9px 11px; }
+  .meter b{ display:block; font-size:21px; line-height:1.1; font-weight:500;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .meter small{ font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute);
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .meter li[data-tone="keep"] b{ color:var(--keep); }
+  .meter li[data-tone="warn"] b{ color:var(--stage); }
+
+  .doc{ border:1px solid var(--edge-soft); border-radius:9px; background:#0c1015;
+    padding:15px 16px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:12.5px; line-height:1.72; overflow-x:auto; }
+  .doc .fm{ color:var(--mute); }
+  .doc .h{ color:var(--bone); }
+  .doc .rule{ color:var(--dim); }
+  .doc .why{ color:var(--keep); }
+  .doc .nofail{ color:var(--stage); }
+  .doc .num{ color:#8ab4f8; }
+  .doc .empty{ color:var(--mute); font-style:italic; }
+  .doc ul{ margin:0 0 11px; padding-left:15px; }
+  .doc li{ margin:0 0 3px; }
+  .doc > p{ margin:0 0 11px; }
+
+  .note{ margin:16px 0 0; font-size:12.5px; color:var(--mute); }
+  .note b{ color:var(--dim); font-weight:500; }
+
+  .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Web technique → skill</p>
+    <h1>The Triage Bench</h1>
+    <p class="lede">A skill is not what was in the source. It is <b>what survives triage</b>.
+      Sort the parts of a shipped page below and watch the skill outline rewrite itself —
+      staging drops out, and only rules that name the failure they prevent count as real.</p>
+  </header>
+
+  <main class="bench">
+
+    <section aria-labelledby="src-h">
+      <h2 id="src-h">Source · harbour-nocturne.html</h2>
+      <ul class="parts" id="parts"></ul>
+    </section>
+
+    <section aria-labelledby="out-h">
+      <h2 id="out-h">Resulting skill</h2>
+      <div class="outline">
+        <ul class="meter">
+          <li data-tone="keep"><b id="mCount">0</b><small>Mechanism</small></li>
+          <li><b id="sCount">0</b><small>Staging</small></li>
+          <li data-tone="warn"><b id="fCount">0/0</b><small>Rules w/ failure</small></li>
+        </ul>
+        <div class="doc" id="doc"></div>
+        <p class="note" id="note"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <p class="sr" role="status" aria-live="polite" id="say"></p>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+/* Content is a plausible shipped project, not placeholders — triage only means
+   something if the parts are specific enough to disagree about. */
+const PARTS = [
+  { id:'beam', title:'Lighthouse beam sweep',
+    desc:'A cone of light rotating once every 11s, brightening as it turns toward the camera.',
+    fail:'A screen-space fog gradient makes the beam read as a painted triangle.',
+    sentence:'Sampling density along the ray in short steps is what makes a beam read as volume.',
+    numbers:'period 11s · march 24 steps desktop, 12 mobile · chosen by pixel count',
+    pile:'mechanism', tested:true },
+
+  { id:'tide', title:'Tide line noise band',
+    desc:'Foam where the water meets the quay, from a noise field scrolling at two rates.',
+    fail:'Rates on a common multiple make the foam visibly repeat within seconds.',
+    sentence:'Two scroll rates that share no common multiple are what stop a noise band from repeating.',
+    numbers:'two coprime rates',
+    pile:null, tested:false },
+
+  { id:'hover', title:'Card lift on hover',
+    desc:'Cards rise and their shadow softens, on two separate layers.',
+    fail:'One box-shadow forces lift and blur onto the same curve, so the lift reads weightless.',
+    sentence:'Splitting lift and shadow onto separate layers lets them run different curves.',
+    numbers:'6px over 240ms · cubic-bezier(.22,.65,.28,1)',
+    pile:null, tested:false },
+
+  { id:'pink', title:'Emissive orange returns pink',
+    desc:'Cost a day. Correcting the colour in the editor never worked.',
+    fail:'The value is decoded before the material multiplies it, so editor-side fixes no-op.',
+    sentence:'Drive green and blue toward zero for an emissive red under a tone-mapped composite.',
+    numbers:'0x780200, not 0x8c1410',
+    pile:null, tested:false },
+
+  { id:'lean', title:'Beam brightens toward the camera',
+    desc:'The cone gains intensity as it swings to face the viewer. Believed to sell the volume — the alternative was never built.',
+    fail:null,
+    sentence:'Brightening the cone as it turns toward the camera sells the depth of the volume.',
+    numbers:null,
+    pile:null, tested:false },
+
+  { id:'mast', title:'Masthead type',
+    desc:'“Harbour Nocturne” in a licensed serif at 96px, client blue #1B3A57.',
+    fail:null, sentence:null, numbers:null,
+    pile:null, tested:false },
+
+  { id:'pre', title:'Full-screen preloader',
+    desc:'A wipe that clears on the first WebGL frame. It exists because the client asked for one.',
+    fail:null, sentence:null, numbers:null,
+    pile:null, tested:false },
+];
+
+const PILES = [['mechanism','Mechanism'], ['staging','Staging'], ['drop','Drop']];
+const list = document.getElementById('parts');
+const say  = document.getElementById('say');
+
+PARTS.forEach(p => {
+  const li = document.createElement('li');
+  li.className = 'part';
+  li.id = 'part-' + p.id;
+  if (p.pile) li.dataset.pile = p.pile;
+
+  const opts = PILES.map(([v, label]) => `
+        <label class="opt" data-v="${v}">
+          <input type="radio" name="pile-${p.id}" value="${v}"${p.pile === v ? ' checked' : ''}>
+          <span>${label}</span>
+        </label>`).join('');
+
+  li.innerHTML = `
+      <h3>${p.title}</h3>
+      <p>${p.desc}</p>
+      ${p.fail ? `<span class="fail"><b>Prevents:</b> ${p.fail}</span>` : ''}
+      <fieldset>
+        <legend>Pile for ${p.title}</legend>
+        ${opts}
+      </fieldset>
+      <div class="test" id="test-${p.id}"${p.pile === 'mechanism' ? '' : ' hidden'}>
+        <p>Mechanism sentence — <q>${p.sentence || 'none written'}</q></p>
+        <div class="row">
+          <label class="opt" data-v="mechanism">
+            <input type="checkbox" id="t-${p.id}"${p.tested ? ' checked' : ''}>
+            <span>Survives a rename</span>
+          </label>
+          <span class="verdict" id="v-${p.id}"></span>
+        </div>
+      </div>`;
+  list.appendChild(li);
+});
+
+/* A part only counts as a mechanism once its sentence survives changing the
+   subject, palette, and layout — otherwise it was the staging, renamed. */
+function verdict(p) {
+  const el = document.getElementById('v-' + p.id);
+  if (!el) return;
+  if (!p.sentence) { el.textContent = 'no sentence — not a mechanism yet'; el.className = 'verdict bad'; }
+  else if (p.tested) { el.textContent = 'holds'; el.className = 'verdict'; }
+  else { el.textContent = 'untested — counts as staging'; el.className = 'verdict bad'; }
+}
+
+const kept = () => PARTS.filter(p => p.pile === 'mechanism' && p.tested && p.sentence);
+
+function render() {
+  const mech = kept();
+  const staged = PARTS.filter(p => p.pile === 'staging' ||
+    (p.pile === 'mechanism' && !(p.tested && p.sentence)));
+  const withFail = mech.filter(p => p.fail).length;
+
+  document.getElementById('mCount').textContent = mech.length;
+  document.getElementById('sCount').textContent = staged.length;
+  document.getElementById('fCount').textContent = withFail + '/' + mech.length;
+
+  const doc = document.getElementById('doc');
+  if (!mech.length) {
+    doc.innerHTML = '<p class="empty">Nothing has survived triage yet. Sort a part into ' +
+      'Mechanism and confirm its sentence still holds after a rename.</p>';
+  } else {
+    const nums = mech.filter(p => p.numbers);
+    doc.innerHTML =
+      '<p class="fm">---<br>name: harbour-<span class="h">' +
+        (mech[0].id === 'beam' ? 'beam-sweep' : mech[0].id) + '</span><br>---</p>' +
+      '<p class="h">## Name the mechanism</p><ul>' +
+        mech.map(p => `<li class="rule">${p.sentence}</li>`).join('') + '</ul>' +
+      '<p class="h">## Rules</p><ul>' +
+        mech.map(p => p.fail
+          ? `<li class="rule">${p.title}. <span class="why">Prevents: ${p.fail}</span></li>`
+          : `<li class="rule">${p.title}. <span class="nofail">No failure named — decoration, cut it or go and test it.</span></li>`
+        ).join('') + '</ul>' +
+      (nums.length
+        ? '<p class="h">## Numbers</p><ul>' +
+            nums.map(p => `<li class="num">${p.numbers}</li>`).join('') + '</ul>'
+        : '') +
+      (staged.length
+        ? '<p class="h">## Demo only</p><ul>' +
+            staged.map(p => `<li class="rule">${p.title}</li>`).join('') + '</ul>'
+        : '');
+  }
+
+  const note = document.getElementById('note');
+  const gap = mech.length - withFail;
+  note.innerHTML = !mech.length
+    ? '<b>Six parts in.</b> Most of a good page is staging — expect to keep two or three.'
+    : gap
+      ? `<b>${gap} rule${gap > 1 ? 's' : ''} name${gap > 1 ? '' : 's'} no failure.</b> ` +
+        'A rule you cannot attach a wrong result to is usually one you never tested.'
+      : '<b>Every kept rule names its failure.</b> This outline is ready to write up.';
+}
+
+list.addEventListener('change', e => {
+  const t = e.target;
+  const m = /^(pile|t)-(.+)$/.exec(t.name || t.id) || [];
+  const p = PARTS.find(x => x.id === m[2]);
+  if (!p) return;
+
+  if (t.type === 'radio') {
+    p.pile = t.value;
+    const li = document.getElementById('part-' + p.id);
+    li.dataset.pile = t.value;
+    const test = document.getElementById('test-' + p.id);
+    test.hidden = t.value !== 'mechanism';
+    say.textContent = `${p.title} sorted to ${t.value}`;
+  } else {
+    p.tested = t.checked;
+    say.textContent = `${p.title} rename test ${t.checked ? 'passed' : 'cleared'}`;
+  }
+  verdict(p);
+  render();
+});
+
+PARTS.forEach(verdict);
+render();
+})();
+</script>
+</body>
+</html>

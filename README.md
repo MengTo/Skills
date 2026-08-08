@@ -177,11 +177,11 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **121 skills** across five categories.
+This snapshot contains **122 skills** across five categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### Codex workflows (18)
+### Codex workflows (19)
 
 Operational skills for repeatable Codex work:
 - `article-prompts-to-skills` - turn articles and prompt packs into focused, validated skill packages.
@@ -197,6 +197,7 @@ Operational skills for repeatable Codex work:
 - `performance-profiling` - Apple platform profiling with Instruments, diagnostics, and MetricKit.
 - `stitched-full-page-capture` - reliable full-page screenshots for lazy, animated, and WebGL pages.
 - `video-to-superprompt` - analyze reference videos into detailed recreation prompts.
+- `web-technique-to-skill` - turn an effect you already built into a reusable web-design skill.
 - `write-like-meng-on-x` - calibrate concise X drafts against an authored voice corpus.
 - `x-bookmark-quote-posts` - turn recent X bookmarks into source-backed quote-post drafts.
 

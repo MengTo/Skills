@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Three.js Towers — a building that builds itself</title>
+<style>
+:root{
+  --paper:#ecdcbc; --ink:#2e2515; --ink2:#8b7c5c; --accent:#a8621f;
+  --hair:rgba(58,40,14,.40);
+  --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;
+  -webkit-font-smoothing:antialiased;transition:background-color .6s ease,color .6s ease}
+#app{position:fixed;inset:0}
+#stage{position:absolute;inset:0;display:block;cursor:grab;touch-action:none}
+#stage.drag{cursor:grabbing}
+header{position:absolute;left:0;right:0;top:0;height:54px;padding:0 30px;display:flex;
+  align-items:center;gap:22px;border-bottom:1px solid var(--hair)}
+.brand{font-weight:700;font-size:15px;letter-spacing:2.4px}
+.spacer{margin-left:auto}
+.btn{font-size:11px;font-weight:700;letter-spacing:.9px;color:var(--ink);background:none;
+  border:0;font-family:inherit;padding:0 0 6px;border-bottom:1px solid var(--hair);
+  cursor:pointer;white-space:nowrap;transition:color .18s,border-color .18s}
+.btn:hover{color:var(--accent);border-color:var(--accent)}
+.note{position:absolute;left:30px;top:80px;max-width:300px;font-family:var(--serif);
+  font-size:14px;line-height:23px;opacity:.86}
+.note b{display:block;font-family:var(--sans);font-size:11px;font-weight:700;
+  letter-spacing:1.3px;color:var(--accent);margin-bottom:9px}
+.plaque{position:absolute;transform:translate(-50%,-50%);background:#fdf8e8;
+  border:1px solid #ddceac;padding:7px 14px 6px;font-size:11px;font-weight:700;
+  letter-spacing:1.05px;color:#3f3520;white-space:nowrap;pointer-events:none;
+  box-shadow:0 2px 4px rgba(70,58,40,.12)}
+.pct{position:absolute;right:30px;bottom:74px;font-weight:700;font-size:132px;
+  line-height:.76;letter-spacing:-5px;opacity:.86;font-variant-numeric:tabular-nums;
+  pointer-events:none;transition:opacity .6s ease}
+.pct i{font-style:normal;font-size:40px;letter-spacing:0;margin-left:6px;opacity:.5}
+.pct.done{opacity:0}
+footer{position:absolute;left:0;right:0;bottom:0;height:60px;padding:0 30px;display:flex;
+  align-items:center;gap:16px;border-top:1px solid var(--hair)}
+.track{position:relative;flex:1 1 auto;height:2.5px;background:var(--hair);cursor:pointer}
+.fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink);opacity:.78}
+.time{font-size:11px;font-weight:700;letter-spacing:.5px;opacity:.72;white-space:nowrap;
+  font-variant-numeric:tabular-nums;min-width:92px;text-align:right}
+@media (max-width:720px){
+  header{padding:0 16px;gap:14px;overflow-x:auto;scrollbar-width:none}
+  header::-webkit-scrollbar{display:none}
+  .note{left:16px;right:16px;top:66px;max-width:none;font-size:13px;line-height:21px}
+  .pct{font-size:64px;right:16px;bottom:70px;letter-spacing:-2px}
+  .pct i{font-size:20px}
+  footer{padding:0 16px;height:52px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="stage"></canvas>
+  <header>
+    <div class="brand">TOWERS</div>
+    <div class="spacer"></div>
+    <button class="btn" id="styleBtn">STYLE / KEEP</button>
+    <button class="btn" id="scafBtn">SCAFFOLD / ON</button>
+    <button class="btn" id="rebuildBtn">↻ REBUILD</button>
+  </header>
+  <div class="note"><b>WHAT YOU ARE LOOKING AT</b>
+    The whole tower exists from the first frame. A clipping plane travels up
+    through it, so everything below the line is finished work and the
+    scaffolding stands above it. Drag to orbit. Scrub the timeline.</div>
+  <div class="plaque" id="plaque">READY</div>
+  <div class="pct" id="pct"><span id="pctNum">0</span><i>%</i></div>
+  <footer>
+    <div class="track" id="track"><div class="fill" id="fill"></div></div>
+    <div class="time" id="time">0.00 / 4.40</div>
+  </footer>
+</div>
+
+<script src="assets/three.min.js"></script>
+<script>
+/* =====================================================================
+   Three.js Towers — the reference build for the threejs-towers skill.
+   A procedural tower assembled from a small geometry vocabulary, filmed
+   assembling behind a rising clipping plane. No meshes, no textures.
+   ===================================================================== */
+(function(){
+"use strict";
+const T=THREE;
+
+/* ------------------------------------------------------------------ *
+ * 1.  the vocabulary — every part of every tower comes out of these
+ * ------------------------------------------------------------------ */
+const NS=4, STEP=Math.PI*2/NS;
+const cornPt=(k,R)=>[Math.cos(k*STEP)*R,Math.sin(k*STEP)*R];
+const cornRot=k=>Math.PI/2-k*STEP;
+const faceRot=k=>Math.PI/2-(k+0.5)*STEP;
+const AP=Math.cos(Math.PI/NS), SW=2*Math.sin(Math.PI/NS);
+const cPtN=(k,R,n)=>[Math.cos(k*Math.PI*2/n)*R,Math.sin(k*Math.PI*2/n)*R];
+
+function Bld(){this.p=[];this.n=[];this.u=[];this.i=[];}
+Bld.prototype.vert=function(x,y,z,nx,ny,nz,u,v){
+  this.p.push(x,y,z);this.n.push(nx,ny,nz);this.u.push(u,v);
+  return this.p.length/3-1;
+};
+Bld.prototype.face=function(P,uv){
+  const ax=P[1][0]-P[0][0],ay=P[1][1]-P[0][1],az=P[1][2]-P[0][2];
+  const bx=P[2][0]-P[0][0],by=P[2][1]-P[0][1],bz=P[2][2]-P[0][2];
+  let nx=ay*bz-az*by,ny=az*bx-ax*bz,nz=ax*by-ay*bx;
+  const L=Math.hypot(nx,ny,nz)||1;nx/=L;ny/=L;nz/=L;
+  uv=uv||[[0,0],[1,0],[1,1],[0,1]];
+  const a=this.vert(P[0][0],P[0][1],P[0][2],nx,ny,nz,uv[0][0],uv[0][1]);
+  const b=this.vert(P[1][0],P[1][1],P[1][2],nx,ny,nz,uv[1][0],uv[1][1]);
+  const c=this.vert(P[2][0],P[2][1],P[2][2],nx,ny,nz,uv[2][0],uv[2][1]);
+  const d=this.vert(P[3][0],P[3][1],P[3][2],nx,ny,nz,uv[3][0],uv[3][1]);
+  this.i.push(a,b,c,a,c,d);
+};
+Bld.prototype.geo=function(){
+  if(!this.p.length)return null;
+  const g=new T.BufferGeometry();
+  g.setAttribute('position',new T.Float32BufferAttribute(this.p,3));
+  g.setAttribute('normal',new T.Float32BufferAttribute(this.n,3));
+  g.setAttribute('uv',new T.Float32BufferAttribute(this.u,2));
+  g.setIndex(this.i);return g;
+};
+Bld.prototype.box=function(cx,cy,cz,sx,sy,sz,ry,rz){
+  const co=Math.cos(ry||0),si=Math.sin(ry||0);
+  const cz2=Math.cos(rz||0),sz2=Math.sin(rz||0);
+  const M=(x,y,z)=>{
+    const x2=x*cz2-y*sz2, y2=x*sz2+y*cz2;
+    return [cx+x2*co+z*si, cy+y2, cz-x2*si+z*co];
+  };
+  const h=[sx/2,sy/2,sz/2];
+  const V=(a,b,c)=>M(a*h[0],b*h[1],c*h[2]);
+  this.face([V(1,-1,1),V(1,-1,-1),V(1,1,-1),V(1,1,1)]);
+  this.face([V(-1,-1,-1),V(-1,-1,1),V(-1,1,1),V(-1,1,-1)]);
+  this.face([V(-1,1,1),V(1,1,1),V(1,1,-1),V(-1,1,-1)]);
+  this.face([V(-1,-1,-1),V(1,-1,-1),V(1,-1,1),V(-1,-1,1)]);
+  this.face([V(-1,-1,1),V(1,-1,1),V(1,1,1),V(-1,1,1)]);
+  this.face([V(1,-1,-1),V(-1,-1,-1),V(-1,1,-1),V(1,1,-1)]);
+};
+/* n-gon prism. Get this winding right once and copy it everywhere: a prism
+   wound inward is culled and you end up looking at the inside of the far wall */
+Bld.prototype.prismN=function(y0,y1,R0,R1,n,capTop,capBot){
+  for(let k=0;k<n;k++){
+    const a=cPtN(k,R0,n),b=cPtN(k+1,R0,n),c=cPtN(k+1,R1,n),d=cPtN(k,R1,n);
+    this.face([[b[0],y0,b[1]],[a[0],y0,a[1]],[d[0],y1,d[1]],[c[0],y1,c[1]]]);
+  }
+  if(capTop)for(let k=1;k<n-1;k++){
+    const a=cPtN(0,R1,n),b=cPtN(k,R1,n),c=cPtN(k+1,R1,n);
+    this.face([[a[0],y1,a[1]],[b[0],y1,b[1]],[c[0],y1,c[1]],[c[0],y1,c[1]]]);
+  }
+  if(capBot)for(let k=1;k<n-1;k++){
+    const a=cPtN(0,R0,n),b=cPtN(k+1,R0,n),c=cPtN(k,R0,n);
+    this.face([[a[0],y0,a[1]],[b[0],y0,b[1]],[c[0],y0,c[1]],[c[0],y0,c[1]]]);
+  }
+};
+Bld.prototype.prism=function(y0,y1,R0,R1,capTop,capBot){
+  this.prismN(y0,y1,R0,R1,NS,capTop,capBot);
+};
+Bld.prototype.lathe=function(cy,y0,y1,prof,steps,seg){
+  const rings=[];
+  for(let i=0;i<=steps;i++){
+    const t=i/steps,y=cy+y0+(y1-y0)*t,r=prof(t),ring=[];
+    for(let j=0;j<seg;j++){
+      const a=j/seg*Math.PI*2;
+      ring.push([Math.cos(a)*r,y,Math.sin(a)*r]);
+    }
+    rings.push(ring);
+  }
+  for(let i=0;i<steps;i++)for(let j=0;j<seg;j++){
+    const j2=(j+1)%seg;
+    this.face([rings[i][j2],rings[i][j],rings[i+1][j],rings[i+1][j2]]);
+  }
+};
+
+/* ---- the roof: one function of position along the eave ------------- */
+const RQ=Math.SQRT1_2;
+function ridgePt(k,L){const m=((k%4)+4)%4;return (m===0||m===1)?[RQ*L,RQ*L]:[-RQ*L,-RQ*L];}
+function roofPoint(o,p,u,t){
+  /* Math.pow(negative, 2.6) is NaN, and tiles overshoot the eave, so the
+     curve is evaluated on a clamped t and the overshoot added back linearly */
+  const tc=Math.min(1,t),over=Math.max(0,t-1);
+  const g=1-Math.pow(1-tc,o.pow||1.3);
+  const f=(u+1)/2;
+  const oa=cornPt(p+1,1),ob=cornPt(p,1);
+  const ox=oa[0]+(ob[0]-oa[0])*f, oz=oa[1]+(ob[1]-oa[1])*f;
+  const ia=o.trunc?cornPt(p+1,o.trunc):ridgePt(p+1,o.ridge),
+        ib=o.trunc?cornPt(p,o.trunc):ridgePt(p,o.ridge);
+  const ix=ia[0]+(ib[0]-ia[0])*f, iz=ia[1]+(ib[1]-ia[1])*f;
+  const corner=Math.pow(Math.abs(u),2.0);          /* 0 mid-eave, 1 at the hips */
+  const flare=1+(o.flare!==undefined?o.flare:0.03)*corner*Math.pow(tc,3.2);
+  const RE=o.RE*flare;
+  const y=o.yT-(o.yT-o.yE)*g+o.lift*corner*Math.pow(tc,2.6)-over*(o.yT-o.yE)*0.45;
+  return [ix+(ox*RE-ix)*t, y, iz+(oz*RE-iz)*t];
+}
+function buildRoof(o,surf,soff){
+  const NU=18,NT=11,TH=0.10;
+  for(let p=0;p<NS;p++){
+    const top=[],bot=[];
+    for(let it=0;it<=NT;it++){
+      const t=it/NT*(o.tip?1+o.tip:1),rowT=[],rowB=[];
+      for(let iu=0;iu<=NU;iu++){
+        const u=-1+2*iu/NU;
+        const P=roofPoint(o,p,u,t);
+        rowT.push(P);rowB.push([P[0],P[1]-TH,P[2]]);
+      }
+      top.push(rowT);bot.push(rowB);
+    }
+    for(let it=0;it<NT;it++)for(let iu=0;iu<NU;iu++){
+      surf.face([top[it][iu],top[it][iu+1],top[it+1][iu+1],top[it+1][iu]],
+        [[iu/NU*3,it/NT*3],[(iu+1)/NU*3,it/NT*3],[(iu+1)/NU*3,(it+1)/NT*3],[iu/NU*3,(it+1)/NT*3]]);
+      soff.face([bot[it][iu+1],bot[it][iu],bot[it+1][iu],bot[it+1][iu+1]]);
+    }
+    /* the fascia along the eave, so the roof has a real thickness */
+    for(let iu=0;iu<NU;iu++)
+      soff.face([top[NT][iu],top[NT][iu+1],bot[NT][iu+1],bot[NT][iu]]);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * 2.  materials — every structural one clips against the same plane
+ * ------------------------------------------------------------------ */
+const CLIP=new T.Plane(new T.Vector3(0,-1,0),0);
+const MAT={
+  stone  :new T.MeshLambertMaterial({color:0xa89b83}),
+  plaster:new T.MeshLambertMaterial({color:0xe8dcc0}),
+  tile   :new T.MeshLambertMaterial({color:0x55524a}),
+  timber :new T.MeshLambertMaterial({color:0x6b4f38}),
+  soffit :new T.MeshLambertMaterial({color:0x8a6b4d}),
+  gold   :new T.MeshLambertMaterial({color:0xc9a24a}),
+  jade   :new T.MeshLambertMaterial({color:0x4c6b4a}),
+  red    :new T.MeshLambertMaterial({color:0x8e4034}),
+  hollow :new T.MeshLambertMaterial({color:0x171310,side:T.DoubleSide}),
+  scaffold:new T.MeshLambertMaterial({color:0xd9b473})
+};
+Object.keys(MAT).forEach(k=>{
+  if(k==='scaffold')return;                 /* scaffolding ignores the plane */
+  MAT[k].clippingPlanes=[CLIP];
+  MAT[k].clipShadows=true;                  /* or the shadow builds early */
+});
+
+/* ------------------------------------------------------------------ *
+ * 3.  two styles, same primitives, different parameters
+ * ------------------------------------------------------------------ */
+function buildKeep(){
+  const g=new T.Group();
+  const stone=new Bld(),plaster=new Bld(),timber=new Bld(),
+        tile=new Bld(),soff=new Bld(),gold=new Bld(),hollow=new Bld();
+  /* a battered stone base: vertical at the coping, flaring at the footing */
+  const IB={y0:0,y1:3.3,R0:3.36,R1:2.66};
+  for(let i=0;i<14;i++){
+    const t0=i/14,t1=(i+1)/14;
+    const r=t=>IB.R1+(IB.R0-IB.R1)*Math.pow(1-t,1.85);
+    stone.prism(IB.y0+3.3*t0,IB.y0+3.3*t1,r(t0),r(t1));
+  }
+  const L=[{y0:3.16,y1:5.06,R:2.56},{y0:6.14,y1:7.74,R:2.18},
+           {y0:8.68,y1:10.20,R:1.80},{y0:11.04,y1:12.40,R:1.46}];
+  const RF=[{yE:5.06,yT:6.26,RE:3.32,trunc:2.00,lift:0.15,tip:0.11,pow:1.30},
+            {yE:7.74,yT:8.80,RE:2.84,trunc:1.73,lift:0.13,tip:0.10,pow:1.30},
+            {yE:10.20,yT:11.10,RE:2.42,trunc:1.66,lift:0.12,tip:0.09,pow:1.30},
+            {yE:12.40,yT:13.46,RE:2.22,ridge:0.72,lift:0.16,tip:0.12,pow:1.26}];
+  L.forEach((s,i)=>{
+    plaster.prism(s.y0,s.y1,s.R,s.R*0.995);
+    hollow.prism(s.y0,s.y1,s.R*0.72,s.R*0.72,true,true);
+    /* posts and a sill band on every face, plus dark windows */
+    for(let k=0;k<NS;k++){
+      const rot=faceRot(k),co=Math.cos(rot),si=Math.sin(rot);
+      const W=s.R*SW,z=s.R*AP,h=s.y1-s.y0;
+      const P=(b,x,y,zz,sx,sy,sz)=>b.box(x*co+zz*si,y,-x*si+zz*co,sx,sy,sz,rot);
+      for(let q=-1;q<=1;q+=2)P(timber,q*W*0.34,(s.y0+s.y1)/2,z+0.02,0.14,h,0.07);
+      P(timber,0,s.y1-0.10,z+0.03,W*0.99,0.16,0.09);
+      P(timber,0,s.y0+0.12,z+0.03,W*0.99,0.12,0.09);
+      for(let q=-1;q<=1;q+=2)
+        P(MAT.hollowB||timber,q*W*0.15,s.y0+h*0.56,z+0.035,0.34,0.30,0.05);
+    }
+    buildRoof(RF[i],tile,soff);
+  });
+  /* the ridge finials */
+  for(let q=-1;q<=1;q+=2)
+    gold.box(q*0.55,13.9,0,0.34,0.9,0.20,0);
+  const add=(b,m,n)=>{const geo=b.geo();if(!geo)return;
+    const me=new T.Mesh(geo,m);me.castShadow=true;me.receiveShadow=true;me.name=n;g.add(me);};
+  add(hollow,MAT.hollow,'hollow');add(stone,MAT.stone,'stone');
+  add(plaster,MAT.plaster,'plaster');add(timber,MAT.timber,'timber');
+  add(tile,MAT.tile,'tile');add(soff,MAT.soffit,'soffit');add(gold,MAT.gold,'gold');
+  return g;
+}
+function buildPagoda(){
+  const g=new T.Group();
+  const stone=new Bld(),red=new Bld(),jade=new Bld(),soff=new Bld(),
+        gold=new Bld(),hollow=new Bld(),timber=new Bld();
+  stone.prism(0,0.58,3.10,2.96,true);
+  const tiers=5;
+  for(let i=0;i<tiers;i++){
+    const y0=0.52+i*2.16, R=2.46-i*0.24, h=1.62;
+    red.prism(y0,y0+h,R,R*0.99);
+    hollow.prism(y0,y0+h,R*0.66,R*0.66,true,true);
+    for(let k=0;k<NS;k++){
+      const rot=faceRot(k),co=Math.cos(rot),si=Math.sin(rot);
+      const W=R*SW,z=R*AP;
+      const P=(b,x,y,zz,sx,sy,sz)=>b.box(x*co+zz*si,y,-x*si+zz*co,sx,sy,sz,rot);
+      for(let q=-1;q<=1;q+=2)P(timber,q*W*0.30,y0+h*0.5,z+0.02,0.11,h*0.96,0.06);
+      P(timber,0,y0+h-0.08,z+0.03,W*0.98,0.13,0.08);
+    }
+    /* the bracket tier the eave sits on */
+    jade.prism(y0+h,y0+h+0.14,R*1.10,R*1.10);
+    buildRoof({yE:y0+h+0.14,yT:y0+h+1.02,RE:R*1.46,trunc:R*0.70,
+               lift:0.30,tip:0.13,pow:1.10,flare:0.05},jade,soff);
+  }
+  /* the finial: rings to a jewel */
+  const top=0.52+tiers*2.16;
+  gold.box(0,top+1.1,0,0.13,2.2,0.13,Math.PI/4);
+  for(let i=0;i<9;i++){
+    const t=i/9,r=0.46-t*0.30;
+    gold.prismN(top+0.1+t*1.5,top+0.1+t*1.5+0.06,r,r*0.9,12);
+  }
+  gold.lathe(top+1.9,0,0.42,t=>0.20*Math.sin(Math.PI*(0.14+t*0.8)),10,10);
+  const add=(b,m,n)=>{const geo=b.geo();if(!geo)return;
+    const me=new T.Mesh(geo,m);me.castShadow=true;me.receiveShadow=true;me.name=n;g.add(me);};
+  add(hollow,MAT.hollow,'hollow');add(stone,MAT.stone,'stone');
+  add(red,MAT.red,'red');add(timber,MAT.timber,'timber');
+  add(jade,MAT.jade,'jade');add(soff,MAT.soffit,'soffit');add(gold,MAT.gold,'gold');
+  return g;
+}
+const STYLES=[
+ {id:'KEEP',build:buildKeep,
+  caps:[[0,3.3,null],[3.16,5.06,2.56],[6.14,7.74,2.18],[8.68,10.20,1.80],[11.04,13.9,1.46]],
+  scaf:[{top:3.44,base:0.10,w:7.10,d:3.95,bays:8},{top:6.34,base:3.10,w:6.10,d:3.55,bays:7},
+        {top:8.90,base:6.00,w:5.20,d:3.05,bays:6},{top:11.26,base:8.55,w:4.45,d:2.60,bays:6},
+        {top:13.66,base:10.90,w:3.80,d:2.25,bays:5}],
+  stages:[['READY',0],['STONEWORK',3.36],['TIMBER',6.24],['PLASTER',8.80],
+          ['TURRET',11.16],['ROOFING',14.30],['COMPLETE',14.30]]},
+ {id:'PAGODA',build:buildPagoda,
+  caps:[[0,0.58,3.05],[0.52,2.20,2.42],[2.68,4.36,2.18],[4.84,6.52,1.94],
+        [7.00,8.68,1.70],[9.16,11.0,1.46],[11.0,14.2,0.44]],
+  scaf:[{top:3.20,base:0.10,w:7.00,d:3.90,bays:8},{top:5.60,base:2.90,w:6.30,d:3.55,bays:7},
+        {top:7.80,base:5.30,w:5.50,d:3.10,bays:6},{top:9.80,base:7.50,w:4.70,d:2.65,bays:6},
+        {top:13.20,base:9.50,w:4.00,d:2.30,bays:5}],
+  stages:[['READY',0],['PLINTH',2.30],['TIMBER',5.10],['BRACKETS',7.40],
+          ['LACQUER',9.40],['ROOFING',14.30],['COMPLETE',14.30]]}
+];
+
+/* ------------------------------------------------------------------ *
+ * 4.  scene
+ * ------------------------------------------------------------------ */
+const cvs=document.getElementById('stage');
+const renderer=new T.WebGLRenderer({canvas:cvs,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+renderer.localClippingEnabled=true;                 /* the whole trick */
+const scene=new T.Scene();
+scene.background=new T.Color(0xecdcbc);        /* the page colour, so the
+   ground reads as a plate rather than a lit object floating in the void */
+scene.fog=new T.Fog(0xecdcbc,44,240);
+const camera=new T.PerspectiveCamera(12,1,0.5,900);
+const key=new T.DirectionalLight(0xffe9c8,2.1);
+key.position.set(26,34,30);key.castShadow=true;
+key.shadow.mapSize.set(2048,2048);
+key.shadow.camera.near=1;key.shadow.camera.far=120;
+key.shadow.camera.left=-16;key.shadow.camera.right=16;
+key.shadow.camera.top=26;key.shadow.camera.bottom=-8;
+key.shadow.bias=-0.0014;
+scene.add(key,key.target);
+scene.add(new T.HemisphereLight(0xfff0d4,0x6d5a34,0.55));
+scene.add(new T.AmbientLight(0xffe9c8,0.16));
+
+const ground=new T.Mesh(new T.CircleGeometry(300,64),
+  new T.MeshLambertMaterial({color:0xc9bb98}));
+ground.rotation.x=-Math.PI/2;ground.position.y=-0.02;ground.receiveShadow=true;
+scene.add(ground);
+
+/* the cut cap: a lid at the plane's height, scaled to the footprint, which is
+   what turns a hollow clipped section into a solid course of masonry. Its plan
+   has to match what is being cut — a square cap inside an octagon leaves four
+   wedges open to the sky. */
+let capSegs=4;
+const capMesh=new T.Mesh(new T.CircleGeometry(1,4),
+  new T.MeshLambertMaterial({color:0x9d907a}));
+capMesh.rotation.x=-Math.PI/2;capMesh.receiveShadow=true;scene.add(capMesh);
+function capPlan(n){
+  if(n===capSegs)return;
+  capSegs=n;capMesh.geometry.dispose();capMesh.geometry=new T.CircleGeometry(1,n);
+}
+
+/* ------------------------------------------------------------------ *
+ * 5.  scaffolding — the one thing that ignores the plane, so it always
+ *     stands one step ahead of the finished work
+ * ------------------------------------------------------------------ */
+const scafGroups=[];
+function worldUV(geo,sx,sy,sz,dens,ou,ov){
+  /* BoxGeometry gives every face a 0..1 UV whatever its size, so a long pole
+     and a short brace get the same grain and both read as plastic */
+  const uv=geo.attributes.uv;
+  const dims=[[sz,sy],[sz,sy],[sx,sz],[sx,sz],[sx,sy],[sx,sy]];
+  for(let f=0;f<6;f++){
+    const du=dims[f][0],dv=dims[f][1],swap=dv>du;
+    for(let i=0;i<4;i++){
+      const k=f*4+i;let u=uv.getX(k),v=uv.getY(k);
+      if(swap){const t=u;u=v;v=t;}
+      uv.setXY(k,u*(swap?dv:du)*dens+ou,v*(swap?du:dv)*dens+ov);
+    }
+  }
+  uv.needsUpdate=true;
+}
+function buildScaffolds(list){
+  scafGroups.forEach(g=>{g.traverse(o=>{if(o.geometry)o.geometry.dispose();});scene.remove(g);});
+  scafGroups.length=0;
+  list.forEach(t=>{
+    const g=new T.Group();g.visible=false;scene.add(g);scafGroups.push(g);
+    const h=t.top-t.base, R=0.055;
+    const put=(x,y,z,sx,sy,sz,kind)=>{
+      const geo=new T.BoxGeometry(sx,sy,sz);
+      worldUV(geo,sx,sy,sz,1.15,Math.random()*4,Math.random()*4);
+      const m=new T.Mesh(geo,MAT.scaffold);
+      m.position.set(x,y,z);m.castShadow=true;m.userData.kind=kind;
+      g.add(m);
+    };
+    for(let side=0;side<4;side++){
+      const rot=side*Math.PI/2;
+      const co=Math.cos(rot),si=Math.sin(rot);
+      const half=(side%2?t.d:t.w)/2, off=(side%2?t.w:t.d)/2;
+      for(let b=0;b<=t.bays;b++){
+        const x=-half+(2*half)*b/t.bays;
+        const px=x*co+off*si, pz=-x*si+off*co;
+        const post=new T.Mesh(new T.BoxGeometry(R*2,h,R*2),MAT.scaffold);
+        post.position.set(px,t.base+h/2,pz);post.castShadow=true;
+        post.userData.kind='v';g.add(post);
+      }
+      for(let r=1;r<=3;r++){
+        const y=t.base+h*r/3.4;
+        const geo=new T.BoxGeometry(2*half,R*1.7,R*1.7);
+        worldUV(geo,2*half,R*1.7,R*1.7,1.15,Math.random()*4,0);
+        const rail=new T.Mesh(geo,MAT.scaffold);
+        rail.position.set(off*si,y,off*co);rail.rotation.y=rot;
+        rail.castShadow=true;rail.userData.kind='h';g.add(rail);
+      }
+      /* one diagonal brace per bay face, which is what stops it reading as a grid */
+      const dg=new T.BoxGeometry(Math.hypot(2*half,h)*0.98,R*1.5,R*1.5);
+      const dia=new T.Mesh(dg,MAT.scaffold);
+      dia.position.set(off*si,t.base+h/2,off*co);
+      dia.rotation.y=rot;dia.rotation.z=Math.atan2(h,2*half);
+      dia.userData.kind='h';g.add(dia);
+    }
+  });
+}
+
+/* ------------------------------------------------------------------ *
+ * 6.  the timeline — stages carry the plane, the plane carries the build
+ * ------------------------------------------------------------------ */
+const DUR=4.40;
+const STAGE_T=[0.00,0.21,1.07,1.92,2.79,3.64,4.36];
+let STAGES=[],CAPS=[],styleIdx=0,modelGroup=null;
+let t=0,playing=true,lastStage=-1,scafOn=true;
+const easeInOut=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+const easeOut=x=>1-Math.pow(1-x,3);
+const plaqueEl=document.getElementById('plaque'),pctEl=document.getElementById('pct'),
+      pctNum=document.getElementById('pctNum'),fillEl=document.getElementById('fill'),
+      timeEl=document.getElementById('time');
+function stageIndexAt(tt){let i=0;for(let k=0;k<STAGES.length;k++)if(tt>=STAGES[k].t)i=k;return i;}
+function buildHeightAt(tt){
+  const i=stageIndexAt(tt),s=STAGES[i],prev=STAGES[i-1];
+  if(!prev)return s.to;
+  const nx=STAGES[i+1]?STAGES[i+1].t:DUR;
+  const f=Math.max(0,Math.min(1,(tt-s.t)/Math.max(0.0001,nx-s.t)));
+  return prev.to+(s.to-prev.to)*easeInOut(f);
+}
+function ishiR(y){const f=Math.max(0,Math.min(1,y/3.3));return 2.66+(3.36-2.66)*Math.pow(1-f,1.85);}
+function capAt(y){
+  for(const c of CAPS)if(y>=c[0]&&y<=c[1]){capPlan(c[3]||4);return c[2]===null?ishiR(y):c[2];}
+  return 0;
+}
+function applyTime(tt){
+  t=tt;
+  const h=buildHeightAt(tt);
+  CLIP.constant=h;
+  const a=capAt(h);
+  if(a>0.01&&h>0.03&&h<13.9){
+    capMesh.visible=true;capMesh.scale.set(a,a,1);capMesh.position.y=h-0.003;
+  }else capMesh.visible=false;
+  const si=stageIndexAt(tt);
+  for(let k=0;k<scafGroups.length;k++){
+    const stg=STAGES[k+1],g=scafGroups[k];
+    const on=scafOn&&(si===k+1);
+    g.visible=on;
+    if(!on)continue;
+    const nx=STAGES[k+2]?STAGES[k+2].t:DUR;
+    const local=(tt-stg.t)/(nx-stg.t);
+    const grow=Math.min(1,local/0.17), out=local>0.90?1-(local-0.90)/0.10:1;
+    g.children.forEach((m,idx)=>{
+      const d=(idx%9)/9*0.3;
+      const gg=Math.max(0,Math.min(1,(grow-d)/(1-d)))*Math.max(0,out);
+      m.visible=gg>0.02;
+      if(!m.visible)return;
+      const s2=easeOut(gg);
+      if(m.userData.kind==='v')m.scale.set(1,s2,1); else m.scale.set(s2,1,1);
+    });
+  }
+  const st=STAGES[si];
+  if(si!==lastStage){lastStage=si;plaqueEl.textContent=st.cn;}
+  const frac=Math.min(1,tt/DUR);
+  fillEl.style.width=(frac*100)+'%';
+  pctNum.textContent=Math.round(frac*100);
+  pctEl.classList.toggle('done',tt>=DUR-0.001);
+  timeEl.textContent=tt.toFixed(2)+' / '+DUR.toFixed(2);
+  placePlaque(h);
+}
+const _v=new T.Vector3();
+function placePlaque(h){
+  _v.set(0,Math.max(0.4,h),0).project(camera);
+  plaqueEl.style.left=((_v.x*0.5+0.5)*innerWidth)+'px';
+  plaqueEl.style.top=((-_v.y*0.5+0.5)*innerHeight)+'px';
+}
+function applyStyle(i){
+  styleIdx=((i%STYLES.length)+STYLES.length)%STYLES.length;
+  const st=STYLES[styleIdx];
+  if(modelGroup){modelGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();});scene.remove(modelGroup);}
+  modelGroup=st.build();scene.add(modelGroup);
+  CAPS=st.caps;
+  STAGES=st.stages.map((x,k)=>({t:STAGE_T[k],cn:x[0],to:x[1]}));
+  buildScaffolds(st.scaf);
+  document.getElementById('styleBtn').textContent='STYLE / '+st.id;
+  lastStage=-1;playing=true;applyTime(0);
+}
+
+/* ------------------------------------------------------------------ *
+ * 7.  camera, controls, loop
+ * ------------------------------------------------------------------ */
+const CAM_D=80,CAM_H=7.0,UNITS_TALL=16.4;
+let orbAz=0.0,orbEl=0.045,curAz=0,curEl=0.045,zoomT=1,zoom=1;
+const EL_MIN=-0.03,EL_MAX=0.55,ZMIN=0.6,ZMAX=2.2;
+function placeCamera(k){
+  curAz+=(orbAz-curAz)*k;
+  curEl+=(Math.max(EL_MIN,Math.min(EL_MAX,orbEl))-curEl)*k;
+  zoom+=(zoomT-zoom)*k;
+  const ce=Math.cos(curEl),se=Math.sin(curEl);
+  camera.position.set(CAM_D*ce*Math.sin(curAz),CAM_H+CAM_D*se,CAM_D*ce*Math.cos(curAz));
+  camera.lookAt(0,CAM_H,0);
+  const vNeed=UNITS_TALL, hNeed=10.4/Math.max(0.2,camera.aspect);
+  camera.fov=2*Math.atan((Math.max(vNeed,hNeed)/2)/CAM_D/zoom)*180/Math.PI;
+  camera.updateProjectionMatrix();
+}
+function layout(){
+  renderer.setSize(innerWidth,innerHeight,false);
+  camera.aspect=innerWidth/innerHeight;placeCamera(1);
+}
+addEventListener('resize',layout);
+
+const ptrs=new Map();
+let dragging=false,lastX=0,lastY=0,pinchD=0,pinchZ=1;
+const dist=()=>{const a=[...ptrs.values()];return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);};
+cvs.addEventListener('pointerdown',e=>{
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{cvs.setPointerCapture(e.pointerId);}catch(_){}
+  if(ptrs.size===2){dragging=false;pinchD=dist();pinchZ=zoomT;return;}
+  dragging=true;lastX=e.clientX;lastY=e.clientY;cvs.classList.add('drag');
+});
+cvs.addEventListener('pointermove',e=>{
+  if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size>=2){const d=dist();if(pinchD>8)zoomT=Math.max(ZMIN,Math.min(ZMAX,pinchZ*(d/pinchD)));return;}
+  if(!dragging)return;
+  orbAz-=(e.clientX-lastX)*0.0062;
+  orbEl=Math.max(EL_MIN,Math.min(EL_MAX,orbEl-(e.clientY-lastY)*0.0042));
+  lastX=e.clientX;lastY=e.clientY;
+});
+function end(e){
+  if(e&&ptrs.has(e.pointerId))ptrs.delete(e.pointerId);
+  if(ptrs.size<2)pinchD=0;
+  if(ptrs.size===0){dragging=false;cvs.classList.remove('drag');}
+  else{const a=[...ptrs.values()][0];lastX=a.x;lastY=a.y;dragging=true;}
+}
+cvs.addEventListener('pointerup',end);cvs.addEventListener('pointercancel',end);
+cvs.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const d=e.deltaMode===1?e.deltaY*16:e.deltaY;
+  zoomT=Math.max(ZMIN,Math.min(ZMAX,zoomT*Math.exp(-d*0.0016)));
+},{passive:false});
+
+const track=document.getElementById('track');
+function seekFrom(ev){
+  const r=track.getBoundingClientRect();
+  lastStage=-1;playing=false;
+  applyTime(Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))*DUR);
+}
+track.addEventListener('pointerdown',e=>{seekFrom(e);try{track.setPointerCapture(e.pointerId);}catch(_){}});
+track.addEventListener('pointermove',e=>{if(e.buttons&1)seekFrom(e);});
+document.getElementById('rebuildBtn').addEventListener('click',()=>{lastStage=-1;playing=true;applyTime(0);});
+document.getElementById('styleBtn').addEventListener('click',()=>applyStyle(styleIdx+1));
+const scafBtn=document.getElementById('scafBtn');
+scafBtn.addEventListener('click',()=>{
+  scafOn=!scafOn;scafBtn.textContent='SCAFFOLD / '+(scafOn?'ON':'OFF');applyTime(t);
+});
+
+applyStyle(0);layout();
+let prev=performance.now(),frames=0,acc=0,fps=0;
+(function frame(now){
+  const dt=Math.min(0.05,(now-prev)/1000);prev=now;
+  if(playing){let nt=t+dt;if(nt>=DUR){nt=DUR;playing=false;}applyTime(nt);}
+  placeCamera(1-Math.pow(0.0012,dt));
+  placePlaque(CLIP.constant);
+  renderer.render(scene,camera);
+  frames++;acc+=dt;
+  if(acc>0.5){fps=Math.round(frames/acc);frames=0;acc=0;}
+  requestAnimationFrame(frame);
+})(performance.now());
+
+window.__seek=v=>{lastStage=-1;playing=false;applyTime(Math.max(0,Math.min(DUR,v)));
+  placeCamera(1);renderer.render(scene,camera);};
+window.__style=i=>{applyStyle(i);placeCamera(1);renderer.render(scene,camera);};
+window.__orbit=(a,e)=>{orbAz=a;orbEl=e;placeCamera(1);renderer.render(scene,camera);};
+window.__stats=()=>({fps,tri:renderer.info.render.triangles,calls:renderer.info.render.calls,
+  style:STYLES[styleIdx].id,stage:STAGES[stageIndexAt(t)].cn,clip:+CLIP.constant.toFixed(2)});
+window.__scene=scene;window.__camera=camera;window.__renderer=renderer;
+})();
+</script>
+</body>
+</html>

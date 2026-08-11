@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Three.js Landscape — a place to stand something in</title>
+<style>
+:root{
+  --paper:#ecdcbc; --ink:#2e2515; --ink2:#8b7c5c; --accent:#a8621f;
+  --hair:rgba(58,40,14,.40);
+  --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;
+  -webkit-font-smoothing:antialiased;transition:background-color .6s ease,color .6s ease}
+#app{position:fixed;inset:0}
+#stage{position:absolute;inset:0;display:block;cursor:grab;touch-action:none}
+#stage.drag{cursor:grabbing}
+header{position:absolute;left:0;right:0;top:0;height:54px;padding:0 30px;display:flex;
+  align-items:center;gap:22px;border-bottom:1px solid var(--hair);
+  transition:border-color .6s ease}
+.brand{font-weight:700;font-size:15px;letter-spacing:2.4px}
+.spacer{margin-left:auto}
+.btn{font-size:11px;font-weight:700;letter-spacing:.9px;color:var(--ink);background:none;
+  border:0;font-family:inherit;padding:0 0 6px;border-bottom:1px solid var(--hair);
+  cursor:pointer;white-space:nowrap;transition:color .18s,border-color .18s}
+.btn:hover{color:var(--accent);border-color:var(--accent)}
+.note{position:absolute;left:30px;top:80px;max-width:320px;font-family:var(--serif);
+  font-size:14px;line-height:23px;color:var(--ink);opacity:.86}
+.note b{display:block;font-family:var(--sans);font-size:11px;font-weight:700;
+  letter-spacing:1.3px;color:var(--accent);margin-bottom:9px}
+.stat{position:absolute;right:30px;top:80px;font-size:11px;letter-spacing:.6px;
+  color:var(--ink);opacity:.6;font-variant-numeric:tabular-nums;text-align:right;line-height:18px}
+@media (max-width:720px){
+  header{padding:0 16px;gap:14px;overflow-x:auto;scrollbar-width:none}
+  header::-webkit-scrollbar{display:none}
+  .note{left:16px;right:16px;top:66px;max-width:none;font-size:13px;line-height:21px}
+  .stat{right:16px;top:66px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="stage"></canvas>
+  <header>
+    <div class="brand">LANDSCAPE</div>
+    <div class="spacer"></div>
+    <button class="btn" id="timeBtn">TIME / MORNING</button>
+    <button class="btn" id="grassBtn">GRASS / ON</button>
+    <button class="btn" id="wireBtn">GRID / OFF</button>
+  </header>
+  <div class="note"><b>WHAT YOU ARE LOOKING AT</b>
+    A polar heightfield centred under the camera, coloured by slope and moisture
+    rather than by a texture, with 150,000 instanced grass blades shaped entirely
+    in the vertex shader. Drag to orbit. Wheel to zoom.</div>
+  <div class="stat" id="stat"></div>
+</div>
+
+<script src="assets/three.min.js"></script>
+<script>
+/* =====================================================================
+   Three.js Landscape — the reference build for the threejs-landscape skill.
+   Everything here is procedural: no textures, no meshes, no assets.
+   ===================================================================== */
+(function(){
+"use strict";
+const T=THREE;
+
+/* ------------------------------------------------------------------ *
+ * 1.  noise — 2-D simplex, plus fBm and a ridged variant
+ * ------------------------------------------------------------------ */
+const NZ=(function(){
+  const p=new Uint8Array(512),perm=new Uint8Array(512);
+  let s=1337; const rnd=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};
+  for(let i=0;i<256;i++)p[i]=i;
+  for(let i=255;i>0;i--){const j=(rnd()*(i+1))|0;const t=p[i];p[i]=p[j];p[j]=t;}
+  for(let i=0;i<512;i++)perm[i]=p[i&255];
+  const G=[[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+  const F2=0.5*(Math.sqrt(3)-1), G2=(3-Math.sqrt(3))/6;
+  function snoise(xin,yin){
+    const s2=(xin+yin)*F2;
+    let i=Math.floor(xin+s2), j=Math.floor(yin+s2);
+    const t=(i+j)*G2, X0=i-t, Y0=j-t, x0=xin-X0, y0=yin-Y0;
+    const i1=x0>y0?1:0, j1=x0>y0?0:1;
+    const x1=x0-i1+G2, y1=y0-j1+G2, x2=x0-1+2*G2, y2=y0-1+2*G2;
+    i&=255; j&=255;
+    let n=0;
+    const c=(x,y,gi)=>{
+      let t2=0.5-x*x-y*y;
+      if(t2<0)return 0;
+      t2*=t2; const g=G[gi&7];
+      return t2*t2*(g[0]*x+g[1]*y);
+    };
+    n+=c(x0,y0,perm[i+perm[j]]);
+    n+=c(x1,y1,perm[i+i1+perm[j+j1]]);
+    n+=c(x2,y2,perm[i+1+perm[j+1]]);
+    return 70*n;
+  }
+  function fbm(x,y,oct,gain){
+    let a=1,f=1,sum=0,norm=0; gain=gain||0.5;
+    for(let i=0;i<oct;i++){sum+=snoise(x*f,y*f)*a;norm+=a;a*=gain;f*=2.02;}
+    return sum/norm;
+  }
+  function ridged(x,y,oct){
+    let a=1,f=1,sum=0,norm=0;
+    for(let i=0;i<oct;i++){
+      const v=1-Math.abs(snoise(x*f,y*f));
+      sum+=v*v*a; norm+=a; a*=0.5; f*=2.07;
+    }
+    return sum/norm;
+  }
+  return {snoise,fbm,ridged};
+})();
+
+/* the analytic ground. Everything scattered on the terrain samples this,
+   never the mesh, or it floats and sinks. */
+function landH(x,z){
+  /* domain warp first — this is what stops fBm reading as crumpled paper */
+  const wx=x+NZ.fbm(x*0.0125,z*0.0125,3)*24;
+  const wz=z+NZ.fbm(x*0.0125+41,z*0.0125-17,3)*24;
+  let h=NZ.fbm(wx*0.0040,wz*0.0040,5)*30;
+  h+=NZ.ridged(wx*0.0105,wz*0.0105,3)*8.5;
+  h+=NZ.fbm(wx*0.052,wz*0.052,2)*0.32;
+  /* hold the whole near field dead flat — the camera orbits at 80 units and
+     must never end up inside a hill — and let the landforms rise beyond it */
+  const d=Math.hypot(x,z);
+  const t=Math.max(0,Math.min(1,(d-110)/170));
+  h*=t*t*(3-2*t);
+  return h-0.5;
+}
+function landN(x,z){
+  const e=0.9;
+  const hx=landH(x+e,z)-landH(x-e,z), hz=landH(x,z+e)-landH(x,z-e);
+  const n=new T.Vector3(-hx,2*e,-hz); n.normalize(); return n;
+}
+
+/* ------------------------------------------------------------------ *
+ * 2.  scene
+ * ------------------------------------------------------------------ */
+const cvs=document.getElementById('stage');
+const renderer=new T.WebGLRenderer({canvas:cvs,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=T.PCFSoftShadowMap;
+renderer.outputEncoding=T.sRGBEncoding!==undefined?T.sRGBEncoding:renderer.outputEncoding;
+const scene=new T.Scene();
+scene.fog=new T.Fog(0xf0d6a8,60,560);
+const camera=new T.PerspectiveCamera(12,1,0.5,2000);
+
+const key=new T.DirectionalLight(0xffffff,1);
+key.castShadow=true;
+key.shadow.mapSize.set(2048,2048);
+key.shadow.camera.near=1;key.shadow.camera.far=180;
+key.shadow.bias=-0.0016;
+scene.add(key,key.target);
+const hemi=new T.HemisphereLight(0xffffff,0x604020,0.5);
+const amb=new T.AmbientLight(0xffffff,0.1);
+const fill=new T.DirectionalLight(0xffffff,0.08);
+fill.position.set(-40,18,-30);
+scene.add(hemi,amb,fill);
+
+/* ------------------------------------------------------------------ *
+ * 3.  sky dome — a six-stop gradient on an 8x512 canvas
+ * ------------------------------------------------------------------ */
+const SKY_STOPS=[0,0.30,0.52,0.68,0.84,1];
+const skyCan=document.createElement('canvas');skyCan.width=8;skyCan.height=512;
+function paintSky(cols){
+  const g=skyCan.getContext('2d');
+  const grd=g.createLinearGradient(0,0,0,512);
+  cols.forEach((c,i)=>grd.addColorStop(SKY_STOPS[i],'#'+('000000'+c.getHexString()).slice(-6)));
+  g.fillStyle=grd;g.fillRect(0,0,8,512);
+  if(skyMat.map)skyMat.map.needsUpdate=true;
+}
+const skyMat=new T.MeshBasicMaterial({side:T.BackSide,fog:false,depthWrite:false});
+skyMat.map=new T.CanvasTexture(skyCan);
+const sky=new T.Mesh(new T.SphereGeometry(900,32,24),skyMat);
+sky.renderOrder=-20;scene.add(sky);
+
+/* stars, confined to the band the camera can actually reach */
+const starLayers=[];
+(function(){
+  const S=64,c=document.createElement('canvas');c.width=c.height=S;
+  const g=c.getContext('2d');
+  const gr=g.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+  gr.addColorStop(0,'rgba(255,255,255,1)');
+  gr.addColorStop(0.28,'rgba(255,255,255,.85)');
+  gr.addColorStop(0.60,'rgba(255,255,255,.16)');
+  gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr;g.fillRect(0,0,S,S);
+  const tex=new T.CanvasTexture(c);
+  const DPR=Math.min(devicePixelRatio||1,2);
+  let seed=20260811;
+  const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+  /* three size classes so brightness varies; sizes scale with DPR or they
+     disappear entirely on a retina display */
+  [[22000,1.7*DPR],[6000,2.7*DPR],[1400,4.6*DPR]].forEach(([N,px])=>{
+    const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+    for(let i=0;i<N;i++){
+      const th=rnd()*Math.PI*2;
+      const u=Math.max(-0.06,Math.min(0.85,-0.06+rnd()*0.91));
+      const R=760,s=Math.sqrt(Math.max(0,1-u*u));
+      pos[i*3]=Math.cos(th)*s*R;pos[i*3+1]=u*R;pos[i*3+2]=Math.sin(th)*s*R;
+      const w=rnd();
+      const cc=w>0.88?[1,0.87,0.70]:w<0.13?[0.74,0.84,1]:[0.97,0.97,0.93];
+      const b=0.46+Math.pow(rnd(),1.7)*0.54;
+      col[i*3]=cc[0]*b;col[i*3+1]=cc[1]*b;col[i*3+2]=cc[2]*b;
+    }
+    const g2=new T.BufferGeometry();
+    g2.setAttribute('position',new T.Float32BufferAttribute(pos,3));
+    g2.setAttribute('color',new T.Float32BufferAttribute(col,3));
+    const m=new T.PointsMaterial({size:px,map:tex,vertexColors:true,transparent:true,
+      opacity:0,depthWrite:false,fog:false,sizeAttenuation:false,blending:T.AdditiveBlending});
+    const pts=new T.Points(g2,m);pts.renderOrder=-15;pts.frustumCulled=false;
+    scene.add(pts);starLayers.push(m);
+  });
+})();
+
+/* ------------------------------------------------------------------ *
+ * 4.  terrain — a polar grid so resolution follows the lens
+ * ------------------------------------------------------------------ */
+const AN=620,RN=48,R0=1.6,R1=760;
+const terrainMat=new T.MeshLambertMaterial({vertexColors:true});
+const ROCK=new T.Color(0x8a8272),GRASS=new T.Color(0x66703c),
+      SAND=new T.Color(0xbcae86),DARK=new T.Color(0x4a5230);
+const terrain=(function(){
+  const pos=[],col=[],idx=[],c=new T.Color();
+  for(let r=0;r<=RN;r++){
+    const t=r/RN, rad=R0+(R1-R0)*Math.pow(t,2.4);
+    for(let a=0;a<AN;a++){
+      const th=a/AN*Math.PI*2;
+      const x=Math.cos(th)*rad, z=Math.sin(th)*rad;
+      const y=landH(x,z);
+      pos.push(x,y,z);
+      const n=landN(x,z);
+      const slope=1-n.y;
+      const moist=Math.max(0,Math.min(1,(3.0-y)/12));
+      const tint=NZ.fbm(x*0.02,z*0.02,2)*0.5+0.5;
+      c.copy(ROCK)
+       .lerp(GRASS,Math.max(0,Math.min(1,1-slope*3.4))*(0.34+moist*0.66))
+       .lerp(SAND,Math.max(0,0.42-moist)*0.55)
+       .lerp(DARK,tint*0.22);
+      /* fade the far rings toward the fog so the horizon has no edge */
+      const fade=Math.min(1,Math.pow(t,2.6));
+      c.lerp(new T.Color(0xd8c9a4),fade*0.55);
+      col.push(c.r,c.g,c.b);
+    }
+  }
+  for(let r=0;r<RN;r++)for(let a=0;a<AN;a++){
+    const a1=(a+1)%AN;
+    const a0=r*AN+a, b0=r*AN+a1, a2=(r+1)*AN+a, b2=(r+1)*AN+a1;
+    /* wind it this way round or you see the sky through the ground */
+    idx.push(a0,b2,b0, a0,a2,b2);
+  }
+  const g=new T.BufferGeometry();
+  g.setAttribute('position',new T.Float32BufferAttribute(pos,3));
+  g.setAttribute('color',new T.Float32BufferAttribute(col,3));
+  g.setIndex(idx);g.computeVertexNormals();
+  const m=new T.Mesh(g,terrainMat);
+  m.receiveShadow=true;scene.add(m);return m;
+})();
+
+/* a wire copy, for showing what the polar grid actually is */
+const wire=new T.Mesh(terrain.geometry,
+  new T.MeshBasicMaterial({wireframe:true,color:0x3a2f18,transparent:true,opacity:0.16}));
+wire.visible=false;scene.add(wire);
+
+/* ------------------------------------------------------------------ *
+ * 5.  grass — one instanced ribbon, shaped in the vertex shader
+ * ------------------------------------------------------------------ */
+const grassUni={uTime:{value:0},uWind:{value:new T.Vector2(0.84,0.54)},
+  uWindAmp:{value:0.30},uSnow:{value:0},uOrigin:{value:new T.Vector2()},
+  uRadius:{value:64}};
+const GRASS_N=150000, GRASS_R=64, GRASS_AHEAD=74;
+const grassMesh=(function(){
+  const BSEG=5,pos=[],idx=[];
+  for(let s=0;s<BSEG;s++){const t=s/BSEG;pos.push(-0.5,t,0, 0.5,t,0);}
+  pos.push(0,1,0);
+  for(let s=0;s<BSEG-1;s++){const a=s*2;idx.push(a,a+1,a+2, a+1,a+3,a+2);}
+  idx.push((BSEG-1)*2,(BSEG-1)*2+1,BSEG*2);
+  const bg=new T.BufferGeometry();
+  bg.setAttribute('position',new T.Float32BufferAttribute(pos,3));
+  bg.setIndex(idx);
+
+  const mat=new T.MeshLambertMaterial({color:0xffffff,side:T.DoubleSide});
+  mat.onBeforeCompile=sh=>{
+    Object.assign(sh.uniforms,grassUni);
+    sh.vertexShader=`
+      uniform float uTime,uWindAmp,uRadius;
+      uniform vec2 uWind,uOrigin;
+      attribute vec4 aParams;      /* height, phase, tint, lean */
+      varying float vT; varying float vTint;
+    `+sh.vertexShader.replace('#include <begin_vertex>',`
+      float gT=position.y;
+      vT=gT; vTint=aParams.z;
+      vec3 gRoot=vec3(instanceMatrix[3][0],instanceMatrix[3][1],instanceMatrix[3][2]);
+      /* phase from the WORLD position, not the local one, or the gust
+         pattern travels along with the patch as the camera moves */
+      vec2 gWorld=gRoot.xz+uOrigin;
+      float gW=sin(uTime*1.35+aParams.y+gWorld.x*0.09+gWorld.y*0.07);
+      float gBend=(aParams.w+gW*uWindAmp)*pow(gT,1.7);
+      /* fade the blades out at the rim of the patch, or its edge reads as a
+         ruled line across the field */
+      float gEdge=1.0-smoothstep(0.74,1.0,length(gRoot.xz)/uRadius);
+      vec2 gDir=normalize(uWind);
+      vec2 gRib=gDir*gBend*aParams.x
+               +vec2(-gDir.y,gDir.x)*position.x*0.072*(1.0-gT*0.70);
+      /* three.js applies instanceMatrix itself further down the chain, so the
+         blade is built about the origin — gRoot is only read to decorrelate
+         the wind phase. Adding it here translates every blade twice. */
+      vec3 transformed=vec3(gRib.x,gT*aParams.x*gEdge*(1.0-gBend*gBend*0.22),gRib.y);
+    `).replace('#include <beginnormal_vertex>',`
+      vec3 objectNormal=normalize(vec3(-normalize(uWind).y,0.55,normalize(uWind).x));
+    `);
+    sh.fragmentShader=`
+      uniform float uSnow;
+      varying float vT; varying float vTint;
+    `+sh.fragmentShader.replace('#include <color_fragment>',`
+      #include <color_fragment>
+      vec3 gBase=vec3(0.150,0.180,0.092)*(0.74+vTint*0.54);
+      vec3 gTip =vec3(0.560,0.630,0.330)*(0.76+vTint*0.56);
+      /* the blade colour is mixed here, so anything that has to recolour the
+         grass — settled snow, a season — needs this uniform, not the material */
+      gBase=mix(gBase,vec3(0.60,0.65,0.72),uSnow*0.86);
+      gTip =mix(gTip ,vec3(0.90,0.94,1.00),uSnow);
+      diffuseColor.rgb*=mix(gBase,gTip,pow(vT,0.78))*1.30;
+    `);
+  };
+  mat.customProgramCacheKey=()=>'landscape-grass';
+
+  const im=new T.InstancedMesh(bg,mat,GRASS_N);
+  const par=new Float32Array(GRASS_N*4);
+  const m4=new T.Matrix4(),q=new T.Quaternion(),v=new T.Vector3(),one=new T.Vector3(1,1,1);
+  let n=0,guard=0;
+  /* the field is a patch carried in front of the camera rather than a disc
+     laid over the whole world — you only pay for the grass in shot, and the
+     blades nearest the lens are large enough to read as blades. The near
+     ground is flat by construction, so moving the patch is a translation and
+     nothing has to be re-sampled. */
+  while(n<GRASS_N&&guard<GRASS_N*8){
+    guard++;
+    const rad=Math.sqrt(Math.random())*GRASS_R;  /* uniform by area */
+    /* placed about the patch origin; the patch itself is carried below */
+    const th=Math.random()*Math.PI*2;
+    const x=Math.cos(th)*rad, z=Math.sin(th)*rad;
+    v.set(x,0,z);m4.compose(v,q,one);
+    im.setMatrixAt(n,m4);
+    par[n*4]  =0.30+Math.random()*0.36;          /* height */
+    par[n*4+1]=Math.random()*6.283;              /* phase */
+    par[n*4+2]=Math.random();                    /* tint */
+    par[n*4+3]=0.10+Math.random()*0.26;          /* rest lean */
+    n++;
+  }
+  im.count=n;
+  bg.setAttribute('aParams',new T.InstancedBufferAttribute(par,4));
+  im.frustumCulled=false;im.castShadow=false;im.receiveShadow=false;
+  im.position.y=-0.5;
+  scene.add(im);return im;
+})();
+
+/* ------------------------------------------------------------------ *
+ * 6.  stones — scattered by the same height function
+ * ------------------------------------------------------------------ */
+const stoneMat=new T.MeshLambertMaterial({color:0xffffff});
+const stoneMesh=(function(){
+  const g=new T.IcosahedronGeometry(0.5,1);
+  g.scale(1,0.62,1);g.translate(0,0.3,0);        /* sunk, not resting */
+  const N=1600,im=new T.InstancedMesh(g,stoneMat,N);
+  const m4=new T.Matrix4(),q=new T.Quaternion(),
+        v=new T.Vector3(),s=new T.Vector3(),e=new T.Euler();
+  let n=0,guard=0;
+  while(n<N&&guard<N*20){
+    guard++;
+    const rad=2.0+Math.pow(Math.random(),0.55)*95;
+    const th=Math.random()*Math.PI*2;
+    const x=Math.cos(th)*rad, z=Math.sin(th)*rad;
+    if(landN(x,z).y<0.80)continue;
+    const sc=0.10+Math.pow(Math.random(),2.4)*0.42;
+    e.set(Math.random()*0.4,Math.random()*6.28,Math.random()*0.4);
+    q.setFromEuler(e);
+    v.set(x,landH(x,z)-sc*0.12,z);
+    s.set(sc*(0.8+Math.random()*0.6),sc*(0.6+Math.random()*0.5),sc*(0.8+Math.random()*0.6));
+    m4.compose(v,q,s);im.setMatrixAt(n,m4);n++;
+  }
+  im.count=n;im.castShadow=true;im.receiveShadow=true;
+  scene.add(im);return im;
+})();
+
+/* ------------------------------------------------------------------ *
+ * 7.  times of day — full states, cross-faded
+ * ------------------------------------------------------------------ */
+const THEMES=[
+ {id:'MORNING',
+  css:{paper:'#ecdcbc',ink:'#2e2515',ink2:'#8b7c5c',accent:'#a8621f',hair:'rgba(58,40,14,.40)'},
+  sky:[0xf7ecd0,0xf3e2bd,0xeed7ab,0xe7cb9a,0xdcbd8c,0xd2b184],
+  fog:0xf0d6a8,fogN:56,fogF:520,ground:0xb9a882,grass:0xf2e6c6,
+  sun:{az:0.50,el:0.30,color:0xffe0ad,int:2.0},
+  hemiC:[0xfff0d4,0x6d5a34,0.52],ambC:[0xffe9c8,0.10],fillC:[0xffdcb0,0.07],
+  stars:0},
+ {id:'NOON',
+  css:{paper:'#e7ecee',ink:'#22282c',ink2:'#75828a',accent:'#2f6f96',hair:'rgba(24,34,42,.36)'},
+  sky:[0x9fc6e4,0xaed0e8,0xc0dcee,0xd2e6f2,0xe2eef5,0xeef4f6],
+  fog:0xdde7ec,fogN:56,fogF:560,ground:0xaeb0a4,grass:0xf4f6f2,
+  sun:{az:0.30,el:0.86,color:0xffffff,int:2.3},
+  hemiC:[0xdcecff,0x5a6248,0.62],ambC:[0xe6f2ff,0.13],fillC:[0xcfe4f6,0.09],
+  stars:0},
+ {id:'SUNSET',
+  css:{paper:'#f0d0aa',ink:'#3a2010',ink2:'#8f6244',accent:'#c2551b',hair:'rgba(66,24,6,.42)'},
+  sky:[0xf6b268,0xf0a05c,0xe58a52,0xd4744e,0xb85f4a,0x8d4d44],
+  fog:0xef9a52,fogN:50,fogF:480,ground:0xa8794e,grass:0xe8c8a0,
+  sun:{az:1.28,el:0.10,color:0xffa05a,int:2.4},
+  hemiC:[0xffc089,0x6a3a24,0.50],ambC:[0xffb98c,0.11],fillC:[0xff9e6a,0.09],
+  stars:0.12},
+ {id:'NIGHT',
+  css:{paper:'#151a24',ink:'#e9e2d2',ink2:'#8b8fa0',accent:'#c98a4a',hair:'rgba(233,226,210,.20)'},
+  sky:[0x0c1120,0x101733,0x151d3d,0x1b2647,0x243050,0x2d3a5c],
+  fog:0x131c2e,fogN:52,fogF:480,ground:0x2b3140,grass:0x7182a6,
+  sun:{az:0.50,el:0.62,color:0x9fb6de,int:0.42},
+  hemiC:[0x2e3a54,0x0d0f14,0.24],ambC:[0x5c6a8c,0.06],fillC:[0x7286ac,0.08],
+  stars:1.0}
+];
+function themeState(th){
+  return {sunAz:th.sun.az,sunEl:th.sun.el,sunC:new T.Color(th.sun.color),sunI:th.sun.int,
+    hemiS:new T.Color(th.hemiC[0]),hemiG:new T.Color(th.hemiC[1]),hemiI:th.hemiC[2],
+    ambC:new T.Color(th.ambC[0]),ambI:th.ambC[1],
+    fillC:new T.Color(th.fillC[0]),fillI:th.fillC[1],
+    fog:new T.Color(th.fog),fogN:th.fogN,fogF:th.fogF,
+    ground:new T.Color(th.ground),grass:new T.Color(th.grass),
+    sky:th.sky.map(c=>new T.Color(c)),stars:th.stars};
+}
+const CUR={sun:new T.Color(),hemiS:new T.Color(),hemiG:new T.Color(),amb:new T.Color(),
+  fill:new T.Color(),fog:new T.Color(),ground:new T.Color(),grass:new T.Color(),
+  sky:[0,0,0,0,0,0].map(()=>new T.Color())};
+const lerpN=(a,b,t)=>a+(b-a)*t;
+function applyState(A,B,t){
+  const az=lerpN(A.sunAz,B.sunAz,t), el=lerpN(A.sunEl,B.sunEl,t);
+  const D=90,ce=Math.cos(el),se=Math.sin(el);
+  key.position.set(D*ce*Math.sin(az),6+D*se,D*ce*Math.cos(az));
+  const ext=22+34*Math.cos(el),c=key.shadow.camera;
+  c.left=-34;c.right=34;c.top=ext;c.bottom=-ext;c.updateProjectionMatrix();
+  key.color.copy(CUR.sun.copy(A.sunC).lerp(B.sunC,t));
+  key.intensity=lerpN(A.sunI,B.sunI,t);
+  hemi.color.copy(CUR.hemiS.copy(A.hemiS).lerp(B.hemiS,t));
+  hemi.groundColor.copy(CUR.hemiG.copy(A.hemiG).lerp(B.hemiG,t));
+  hemi.intensity=lerpN(A.hemiI,B.hemiI,t);
+  amb.color.copy(CUR.amb.copy(A.ambC).lerp(B.ambC,t));amb.intensity=lerpN(A.ambI,B.ambI,t);
+  fill.color.copy(CUR.fill.copy(A.fillC).lerp(B.fillC,t));fill.intensity=lerpN(A.fillI,B.fillI,t);
+  scene.fog.color.copy(CUR.fog.copy(A.fog).lerp(B.fog,t));
+  scene.fog.near=lerpN(A.fogN,B.fogN,t);scene.fog.far=lerpN(A.fogF,B.fogF,t);
+  terrainMat.color.copy(CUR.ground.copy(A.ground).lerp(B.ground,t));
+  stoneMat.color.copy(CUR.ground).multiplyScalar(0.50);
+  grassMesh.material.color.copy(CUR.grass.copy(A.grass).lerp(B.grass,t));
+  for(let i=0;i<6;i++)CUR.sky[i].copy(A.sky[i]).lerp(B.sky[i],t);
+  paintSky(CUR.sky);
+  const st=lerpN(A.stars,B.stars,t);
+  starLayers.forEach(m=>{m.opacity=st;m.visible=st>0.005;});
+}
+let themeIdx=0,themeMix=1,themeFrom=null,themeTo=null;
+function applyTheme(i,instant){
+  const prev=themeTo;
+  themeIdx=((i%THEMES.length)+THEMES.length)%THEMES.length;
+  const th=THEMES[themeIdx],root=document.documentElement;
+  for(const k in th.css)root.style.setProperty('--'+k,th.css[k]);
+  document.getElementById('timeBtn').textContent='TIME / '+th.id;
+  themeTo=themeState(th);
+  if(instant||!prev){themeFrom=themeTo;themeMix=1;}
+  else{
+    /* freeze the current interpolated look as the new starting point, so a
+       switch mid-transition never jumps */
+    const A=Object.assign({},themeFrom),B=prev,t=themeMix;
+    A.sunAz=lerpN(A.sunAz,B.sunAz,t);A.sunEl=lerpN(A.sunEl,B.sunEl,t);
+    A.sunC=A.sunC.clone().lerp(B.sunC,t);A.sunI=lerpN(A.sunI,B.sunI,t);
+    A.hemiS=A.hemiS.clone().lerp(B.hemiS,t);A.hemiG=A.hemiG.clone().lerp(B.hemiG,t);
+    A.hemiI=lerpN(A.hemiI,B.hemiI,t);
+    A.ambC=A.ambC.clone().lerp(B.ambC,t);A.ambI=lerpN(A.ambI,B.ambI,t);
+    A.fillC=A.fillC.clone().lerp(B.fillC,t);A.fillI=lerpN(A.fillI,B.fillI,t);
+    A.fog=A.fog.clone().lerp(B.fog,t);A.fogN=lerpN(A.fogN,B.fogN,t);A.fogF=lerpN(A.fogF,B.fogF,t);
+    A.ground=A.ground.clone().lerp(B.ground,t);A.grass=A.grass.clone().lerp(B.grass,t);
+    A.sky=A.sky.map((c,i2)=>c.clone().lerp(B.sky[i2],t));
+    A.stars=lerpN(A.stars,B.stars,t);
+    themeFrom=A;themeMix=0;
+  }
+  applyState(themeFrom,themeTo,themeMix);
+}
+
+/* ------------------------------------------------------------------ *
+ * 8.  camera, controls, loop
+ * ------------------------------------------------------------------ */
+let orbAz=0.35,orbEl=0.012,curAz=0.35,curEl=0.012,zoomT=1,zoom=1;
+const CAM_D=80,CAM_H=3.6,UNITS_TALL=16,LOOK_Y=2.0;
+const EL_MIN=-0.004,EL_MAX=0.20,ZMIN=0.6,ZMAX=2.4;
+function placeCamera(k){
+  curAz+=(orbAz-curAz)*k;
+  curEl+=(Math.max(EL_MIN,Math.min(EL_MAX,orbEl))-curEl)*k;
+  zoom+=(zoomT-zoom)*k;
+  const ce=Math.cos(curEl),se=Math.sin(curEl);
+  camera.position.set(CAM_D*ce*Math.sin(curAz),CAM_H+CAM_D*se,CAM_D*ce*Math.cos(curAz));
+  camera.lookAt(0,LOOK_Y,0);
+  camera.fov=2*Math.atan((UNITS_TALL/2)/CAM_D/zoom)*180/Math.PI;
+  camera.updateProjectionMatrix();
+  /* far enough ahead that no blade is close enough to the lens to become a
+     wall across the bottom of the frame */
+  const fx=-Math.sin(curAz),fz=-Math.cos(curAz),CELL=2;
+  const gx=Math.round((camera.position.x+fx*GRASS_AHEAD)/CELL)*CELL;
+  const gz=Math.round((camera.position.z+fz*GRASS_AHEAD)/CELL)*CELL;
+  grassMesh.position.x=gx;grassMesh.position.z=gz;
+  grassUni.uOrigin.value.set(gx,gz);
+  key.target.position.set(0,0,0);key.target.updateMatrixWorld();
+}
+function layout(){
+  const w=innerWidth,h=innerHeight;
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h;placeCamera(1);
+}
+addEventListener('resize',layout);
+
+const ptrs=new Map();
+let dragging=false,lastX=0,lastY=0,pinchD=0,pinchZ=1;
+const dist=()=>{const a=[...ptrs.values()];return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);};
+cvs.addEventListener('pointerdown',e=>{
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{cvs.setPointerCapture(e.pointerId);}catch(_){}
+  if(ptrs.size===2){dragging=false;pinchD=dist();pinchZ=zoomT;return;}
+  dragging=true;lastX=e.clientX;lastY=e.clientY;cvs.classList.add('drag');
+});
+cvs.addEventListener('pointermove',e=>{
+  if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size>=2){const d=dist();if(pinchD>8)zoomT=Math.max(ZMIN,Math.min(ZMAX,pinchZ*(d/pinchD)));return;}
+  if(!dragging)return;
+  orbAz-=(e.clientX-lastX)*0.005;
+  orbEl=Math.max(EL_MIN,Math.min(EL_MAX,orbEl-(e.clientY-lastY)*0.0032));
+  lastX=e.clientX;lastY=e.clientY;
+});
+function end(e){
+  if(e&&ptrs.has(e.pointerId))ptrs.delete(e.pointerId);
+  if(ptrs.size<2)pinchD=0;
+  if(ptrs.size===0){dragging=false;cvs.classList.remove('drag');}
+  else{const a=[...ptrs.values()][0];lastX=a.x;lastY=a.y;dragging=true;}
+}
+cvs.addEventListener('pointerup',end);
+cvs.addEventListener('pointercancel',end);
+cvs.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const d=e.deltaMode===1?e.deltaY*16:e.deltaY;
+  zoomT=Math.max(ZMIN,Math.min(ZMAX,zoomT*Math.exp(-d*0.0016)));
+},{passive:false});
+
+document.getElementById('timeBtn').addEventListener('click',()=>applyTheme(themeIdx+1));
+const grassBtn=document.getElementById('grassBtn');
+grassBtn.addEventListener('click',()=>{
+  grassMesh.visible=!grassMesh.visible;
+  grassBtn.textContent='GRASS / '+(grassMesh.visible?'ON':'OFF');
+});
+const wireBtn=document.getElementById('wireBtn');
+wireBtn.addEventListener('click',()=>{
+  wire.visible=!wire.visible;
+  wireBtn.textContent='GRID / '+(wire.visible?'ON':'OFF');
+});
+
+const statEl=document.getElementById('stat');
+let frames=0,acc=0,fps=0;
+applyTheme(0,true);layout();
+let prev=performance.now();
+(function frame(now){
+  const dt=Math.min(0.05,(now-prev)/1000);prev=now;
+  if(themeMix<1){
+    themeMix=Math.min(1,themeMix+dt/1.25);
+    const e=themeMix<.5?2*themeMix*themeMix:1-Math.pow(-2*themeMix+2,2)/2;
+    applyState(themeFrom,themeTo,e);
+  }
+  grassUni.uTime.value=now*0.001;
+  placeCamera(1-Math.pow(0.0016,dt));
+  renderer.render(scene,camera);
+  frames++;acc+=dt;
+  if(acc>0.5){fps=Math.round(frames/acc);frames=0;acc=0;
+    const info=renderer.info.render;
+    statEl.textContent=fps+' fps\n'+info.triangles.toLocaleString()+' triangles\n'+
+      info.calls+' draw calls';
+    statEl.style.whiteSpace='pre-line';}
+  requestAnimationFrame(frame);
+})(performance.now());
+
+/* headless hooks, so the demo can be verified without a human */
+window.__theme=i=>{applyTheme(i,true);renderer.render(scene,camera);};
+window.__stats=()=>({fps,tri:renderer.info.render.triangles,calls:renderer.info.render.calls,
+  grass:grassMesh.count,stones:stoneMesh.count,theme:THEMES[themeIdx].id});
+window.__scene=scene;window.__camera=camera;window.__renderer=renderer;
+})();
+</script>
+</body>
+</html>

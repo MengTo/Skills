@@ -1,0 +1,4 @@
+interface:
+  display_name: "Three.js Landscape"
+  short_description: "Build a live procedural landscape to stand a subject in"
+  default_prompt: "Use $threejs-landscape to put this subject in a real place: noise terrain, instanced grass, a gradient sky and a time-of-day system."

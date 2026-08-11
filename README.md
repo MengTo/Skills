@@ -245,7 +245,7 @@ Motion and scroll:
 - `animation-on-scroll`, `cinematic-gsap-lenis-motion-system`, `cinematic-scroll-storytelling`, `gsap`, `gsap-scrolltrigger-storytelling`, `marquee-loop`, `masked-reveal`, `staggered-word-reveal`
 
 WebGL, canvas, and 3D:
-- `add-shader-cursor-trail`, `background-grid-webgl`, `cobejs`, `globe-gl`, `globe-particles`, `matterjs`, `threejs`, `unicorn-studio`, `vantajs`, `webgl-3d-object`, `webgl-laser`
+- `add-shader-cursor-trail`, `background-grid-webgl`, `cobejs`, `globe-gl`, `globe-particles`, `matterjs`, `threejs`, `threejs-landscape`, `threejs-towers`, `threejs-weather`, `unicorn-studio`, `vantajs`, `webgl-3d-object`, `webgl-laser`
 
 CSS treatments and details:
 - `beautiful-shadows`, `company-logos`, `container-lines`, `corner-diagonals`, `corner-lasers`, `css-alpha-masking`, `css-border-gradient`, `gooey-blob-system`, `number-details`, `progressive-blur`, `solar-duotone-bold`

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Three.js Towers"
+  short_description: "Generate architecture and film it building itself"
+  default_prompt: "Use $threejs-towers to generate a tower procedurally and animate it assembling behind a rising clip plane."

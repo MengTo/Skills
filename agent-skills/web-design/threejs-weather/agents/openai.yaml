@@ -1,0 +1,4 @@
+interface:
+  display_name: "Three.js Weather"
+  short_description: "Add rain, storms, lightning and blizzards to a Three.js scene"
+  default_prompt: "Use $threejs-weather to add rain, a storm with lightning, and snow that settles to this Three.js scene."

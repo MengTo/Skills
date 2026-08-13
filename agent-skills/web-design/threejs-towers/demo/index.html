@@ -16,7 +16,11 @@ html,body{height:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;
   -webkit-font-smoothing:antialiased;transition:background-color .6s ease,color .6s ease}
 #app{position:fixed;inset:0}
-#stage{position:absolute;inset:0;display:block;cursor:grab;touch-action:none}
+/* a canvas is a replaced element, so inset:0 does NOT stretch it — without
+   an explicit size it falls back to its intrinsic width/height attributes,
+   which at DPR 2 is twice the viewport, and the page shows a corner of it */
+#stage{position:absolute;inset:0;width:100%;height:100%;display:block;
+  cursor:grab;touch-action:none}
 #stage.drag{cursor:grabbing}
 header{position:absolute;left:0;right:0;top:0;height:54px;padding:0 30px;display:flex;
   align-items:center;gap:22px;border-bottom:1px solid var(--hair)}
@@ -352,9 +356,9 @@ renderer.localClippingEnabled=true;                 /* the whole trick */
 const scene=new T.Scene();
 scene.background=new T.Color(0xecdcbc);        /* the page colour, so the
    ground reads as a plate rather than a lit object floating in the void */
-scene.fog=new T.Fog(0xecdcbc,44,240);
+scene.fog=new T.Fog(0xecdcbc,60,300);
 const camera=new T.PerspectiveCamera(12,1,0.5,900);
-const key=new T.DirectionalLight(0xffe9c8,2.1);
+const key=new T.DirectionalLight(0xffe9c8,1.45);
 key.position.set(26,34,30);key.castShadow=true;
 key.shadow.mapSize.set(2048,2048);
 key.shadow.camera.near=1;key.shadow.camera.far=120;
@@ -362,11 +366,11 @@ key.shadow.camera.left=-16;key.shadow.camera.right=16;
 key.shadow.camera.top=26;key.shadow.camera.bottom=-8;
 key.shadow.bias=-0.0014;
 scene.add(key,key.target);
-scene.add(new T.HemisphereLight(0xfff0d4,0x6d5a34,0.55));
+scene.add(new T.HemisphereLight(0xfff0d4,0x6d5a34,0.42));
 scene.add(new T.AmbientLight(0xffe9c8,0.16));
 
 const ground=new T.Mesh(new T.CircleGeometry(300,64),
-  new T.MeshLambertMaterial({color:0xc9bb98}));
+  new T.MeshLambertMaterial({color:0xa89a7c}));
 ground.rotation.x=-Math.PI/2;ground.position.y=-0.02;ground.receiveShadow=true;
 scene.add(ground);
 
@@ -509,7 +513,8 @@ const _v=new T.Vector3();
 function placePlaque(h){
   _v.set(0,Math.max(0.4,h),0).project(camera);
   plaqueEl.style.left=((_v.x*0.5+0.5)*innerWidth)+'px';
-  plaqueEl.style.top=((-_v.y*0.5+0.5)*innerHeight)+'px';
+  const py=(-_v.y*0.5+0.5)*innerHeight;
+  plaqueEl.style.top=Math.max(76,Math.min(innerHeight-84,py))+'px';
 }
 function applyStyle(i){
   styleIdx=((i%STYLES.length)+STYLES.length)%STYLES.length;
@@ -545,6 +550,14 @@ function layout(){
   camera.aspect=innerWidth/innerHeight;placeCamera(1);
 }
 addEventListener('resize',layout);
+/* an embedded or background browser view can report a zero-size viewport at
+   load, and a resize event never comes. Re-layout whenever the size the page
+   reports stops matching the size the renderer was built for. */
+let _lw=0,_lh=0;
+function checkSize(){
+  const w=innerWidth,h=innerHeight;
+  if(w>0&&h>0&&(w!==_lw||h!==_lh)){_lw=w;_lh=h;layout();}
+}
 
 const ptrs=new Map();
 let dragging=false,lastX=0,lastY=0,pinchD=0,pinchZ=1;
@@ -595,6 +608,7 @@ applyStyle(0);layout();
 let prev=performance.now(),frames=0,acc=0,fps=0;
 (function frame(now){
   const dt=Math.min(0.05,(now-prev)/1000);prev=now;
+  checkSize();
   if(playing){let nt=t+dt;if(nt>=DUR){nt=DUR;playing=false;}applyTime(nt);}
   placeCamera(1-Math.pow(0.0012,dt));
   placePlaque(CLIP.constant);

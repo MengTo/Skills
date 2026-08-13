@@ -16,7 +16,11 @@ html,body{height:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;
   -webkit-font-smoothing:antialiased;transition:background-color .6s ease,color .6s ease}
 #app{position:fixed;inset:0}
-#stage{position:absolute;inset:0;display:block;cursor:grab;touch-action:none}
+/* a canvas is a replaced element, so inset:0 does NOT stretch it — without
+   an explicit size it falls back to its intrinsic width/height attributes,
+   which at DPR 2 is twice the viewport, and the page shows a corner of it */
+#stage{position:absolute;inset:0;width:100%;height:100%;display:block;
+  cursor:grab;touch-action:none}
 #stage.drag{cursor:grabbing}
 header{position:absolute;left:0;right:0;top:0;height:54px;padding:0 30px;display:flex;
   align-items:center;gap:22px;border-bottom:1px solid var(--hair);
@@ -755,6 +759,14 @@ function layout(){
   camera.aspect=w/h;placeCamera(1);
 }
 addEventListener('resize',layout);
+/* an embedded or background browser view can report a zero-size viewport at
+   load, and a resize event never comes. Re-layout whenever the size the page
+   reports stops matching the size the renderer was built for. */
+let _lw=0,_lh=0;
+function checkSize(){
+  const w=innerWidth,h=innerHeight;
+  if(w>0&&h>0&&(w!==_lw||h!==_lh)){_lw=w;_lh=h;layout();}
+}
 
 const ptrs=new Map();
 let dragging=false,lastX=0,lastY=0,pinchD=0,pinchZ=1;
@@ -797,6 +809,7 @@ applyWeather(0,true);applyTheme(0,true);layout();
 let prev=performance.now();
 (function frame(now){
   const dt=Math.min(0.05,(now-prev)/1000);prev=now;
+  checkSize();
   if(themeMix<1){
     themeMix=Math.min(1,themeMix+dt/1.25);
     const e=themeMix<.5?2*themeMix*themeMix:1-Math.pow(-2*themeMix+2,2)/2;

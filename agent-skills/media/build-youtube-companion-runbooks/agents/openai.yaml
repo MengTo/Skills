@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build YouTube Companion Runbooks"
+  short_description: "Package videos for YouTube and social launch"
+  default_prompt: "Use $build-youtube-companion-runbooks to create a source-faithful YouTube companion from this video, transcript, and article."

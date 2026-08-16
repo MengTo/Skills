@@ -1,221 +1,137 @@
 ---
 name: audit-ai-design-slop
-description: Audit websites, product interfaces, app screens, screenshots, prototypes, and design systems for visible AI-design clichés, generic template decisions, weak craft, and established UI or accessibility failures. Use when the user asks for an AI design slop check, design critique, anti-slop review, UI roast, taste audit, visual QA, feedback on whether a design feels AI-generated, or concrete swaps for bad design patterns without automatically redesigning the work.
+description: Audit websites, apps, screenshots, mockups, and design code for harmful AI-design clichés, generic generated defaults, and established UI defects. Use when the user wants evidence-backed design feedback, an anti-slop review, or a removal-first cleanup plan without a speculative redesign.
 ---
 
 # Audit AI Design Slop
 
-Produce evidence-backed design feedback. Do not guess whether AI made the interface, run an authorship detector, or score its “soul.” Name the visible pattern, show where it appears, explain the consequence, and propose a concrete design swap.
+Run a diagnostic, evidence-backed audit. Identify the smallest set of removals or corrections that would improve the interface while preserving its existing direction.
 
-## Preserve the audit boundary
+## Boundaries
 
-- Audit only unless the user also asks for implementation.
-- Treat a screenshot, URL, design file, and source code as different evidence surfaces.
-- Separate what is visible, what source confirms, and what remains unknown.
-- Do not clear a full product after checking one hero screenshot.
-- Do not treat every gradient, card, serif, dark theme, or animation as slop. Context and repetition matter.
-- Do not mistake “passes the checklist” for a distinctive design.
+- Do not guess whether AI made the design.
+- Do not assign a numeric slop score.
+- Do not reject a visual technique in isolation. A gradient, serif, dark theme, glass effect, card, animation, or single-font system can be intentional.
+- Do not prescribe a new font, palette, layout, design system, or art direction unless the user explicitly asks for one.
+- Do not turn an audit into an implementation task.
+- Mark anything outside the visible or provided evidence as unknown.
 
-Classify findings as:
+## Audit the Evidence
 
-- **Quality defect:** hurts comprehension, interaction, accessibility, responsiveness, or runtime behavior.
-- **Slop pattern:** a recurring generated-design default used without a product reason.
-- **Craft gap:** technically valid but generic, unresolved, or missing a point of view.
+Inspect the artifact available in the request:
 
-## 1. Establish the checked scope
+- screenshots and recordings
+- rendered pages and relevant viewports
+- interaction and state changes
+- source code, tokens, assets, and copy
+- console or runtime failures when they affect the experience
 
-Record:
+For every finding, cite a concrete location, component, behavior, or line of copy. Do not report a generic tendency without evidence in the artifact.
 
-- artifact and version inspected;
-- pages, flows, breakpoints, themes, and states available;
-- intended audience, task, brand, and release status;
-- supplied references or `DESIGN.md` constraints;
-- evidence that could not be accessed.
+## Classify Findings
 
-When context is missing, make only the smallest assumption needed. A landing page, dense dashboard, editor, game UI, and checkout should not share one taste rubric.
+Use one of these classes:
 
-## 2. Inspect the real experience
+- **Quality defect:** an established usability, accessibility, content, responsive, or runtime problem.
+- **Slop pattern:** a repeated default, decorative layer, or generated-looking convention with no useful role.
 
-When access allows, inspect:
+## What to Flag
 
-1. full page or full flow, not only the first viewport;
-2. desktop and mobile widths;
-3. keyboard focus and reading order;
-4. hover, focus, active, disabled, loading, empty, success, and error states;
-5. content with long labels, real paragraphs, missing media, and large data;
-6. reduced-motion behavior and content before animation completes;
-7. source tokens, component patterns, console errors, and overflow.
+### Decorative stacking
 
-If only a static image is available, mark interaction, semantics, runtime, and responsive behavior `UNKNOWN`.
+Flag combinations of glow, gradient text, glass, borders, shadows, grids, particles, beams, noise, floating shapes, or browser chrome when multiple layers perform the same decorative job or compete with the content.
 
-## 3. Run the quality pass first
+### Component and template repetition
 
-AI tells are secondary when the interface does not work.
+Flag:
 
-### Hierarchy and content
+- card treatment applied to nearly every content block
+- repeated icon-heading-description tiles with interchangeable content
+- nested rounded containers that do not communicate hierarchy
+- generic landing-page sequences unrelated to the product's buying or usage journey
+- headings, labels, pills, or CTA blocks that restate nearby information
 
-- Can a first-time user identify the page purpose, primary action, and next step?
-- Does emphasis follow importance, or is every section equally loud?
-- Is proof concrete and truthful rather than decorative?
-- Is copy specific, concise, and free of repeated labels or unsupported claims?
+### Typography and copy clutter
 
-### Typography and paragraphs
+Flag:
 
-- Are display, body, label, data, and code roles clear?
-- Do adjacent type levels have enough contrast, usually at least a `1.25` ratio?
-- Is body text generally `16–18px`, `1.45–1.7` line height, and `45–75ch` wide?
-- Are headings closer to their own content than to the preceding block?
-- Does a font pairing create useful role contrast, or was a second face added as decoration?
-- Is one family doing every role monotonously, or is one family being used well through size, weight, width, and spacing?
-- Are uppercase, italics, wide tracking, and tight display tracking legible and intentional?
-
-Do not automatically demand a font pair. Recommend one only when it solves hierarchy or brand voice.
-
-### Layout and spacing
-
-- Are related elements closer than unrelated groups?
-- Does the grid align content without making every block the same size?
-- Are containers necessary, or are borders and cards replacing hierarchy?
-- Do paragraphs, controls, and media have comfortable edge insets?
-- Do overlays, menus, tooltips, and long content avoid clipping and overflow?
-- Does mobile preserve task priority and reading order?
-
-### Controls, feedback, and accessibility
-
-- Are controls recognizable, labeled, keyboard reachable, and large enough to target?
-- Are focus, error, loading, empty, disabled, and success states present and distinct?
-- Does text meet contrast requirements and avoid color-only meaning?
-- Do heading structure, labels, alt text, and DOM order support assistive technology?
-- Does reduced motion preserve all information and controls?
-
-### Motion and runtime
-
-- Does motion explain cause, effect, continuity, feedback, or progress?
-- Is content complete before entrance effects run?
-- Are layout properties, large blurs, offscreen loops, and competing systems avoided?
-- Are script errors, broken images, layout shifts, and jank fixed before aesthetic judgment?
-
-## 4. Run the slop-pattern pass
-
-Look for clusters, not isolated fashion choices.
-
-### Template convergence
-
-- pill eyebrow + oversized headline + two CTAs + logo strip;
-- three hero metrics followed by identical feature cards;
-- bento grid, pricing cards, and final CTA used without content logic;
-- tiny numbered section labels or repeated faux-editorial devices;
-- every section centered and given the same rhythm.
-
-### Decorative AI costume
-
-- purple/cyan gradients, gradient type, dark glow, glass, and radial halos combined;
-- ornamental grids, repeating stripes, blobs, fake terminal cursors, or AI orbs;
-- safe beige surfaces selected without a brand reason;
-- extreme radii, wide shadows, and translucent borders on every surface.
-
-### Component monoculture
-
-- rounded icon tile above every heading;
-- same-sized icon-heading-paragraph cards repeated endlessly;
-- nested cards and unnecessary depth;
-- colored side-tab borders on rounded cards;
-- modal dialogs carrying a full page of work;
-- giant icons that outrank the content.
-
-### Typography and copy defaults
-
-- fashionable AI-era fonts selected by reflex;
-- flat hierarchy, tiny body text, long measures, or crushed tracking;
-- eyebrow labels, uppercase microcopy, em dashes, and aphoristic fragments everywhere;
-- vague phrases such as “streamline,” “supercharge,” “future-ready,” or “designed for humans”;
-- label, sublabel, hint, and helper text repeating one message.
+- duplicate text or unnecessary labels
+- empty superlatives, vague category claims, and generated filler
+- decorative type treatments that obscure hierarchy or readability
+- long centered paragraphs, awkward forced line breaks, or hard-to-scan text
+- inconsistent type roles that look accidental rather than expressive
 
 ### Motion theater
 
-- constant floating, marquee motion, fake typing, pulsing status, and bounce easing;
-- every image scaling or rotating on hover;
-- every section hidden until a staggered reveal;
-- several animated gradients, shadows, and particles competing for attention.
+Flag motion that delays access, repeats mechanically, distracts from reading, moves targets, blocks input, or lacks respect for reduced-motion preferences. Preserve motion that communicates state, causality, hierarchy, or spatial change.
 
-### Generated-media filler and fake proof
+### Fake proof
 
-- generic shape-built illustrations and low-specificity stock imagery;
-- mock product screens unrelated to the actual product;
-- invented customer logos, testimonials, people, metrics, or security badges;
-- charts with no units, sources, labels, or decision value.
+Flag invented or unverifiable metrics, customers, testimonials, awards, ratings, activity, dashboards, charts, logos, and portraits when they are presented as evidence.
 
-## 5. Judge intent and craft
+### Established UI failures
 
-An interface can avoid every cliché and still feel generic. Ask:
+Flag:
 
-- What is the visual thesis in one sentence?
-- Which decision could belong only to this product, audience, or story?
-- What content carries the design instead of decoration?
-- Where does the composition deliberately change scale, density, rhythm, or medium?
-- Do references inform principles, or has the work copied a recognizable composition?
-- Is there one authored detail worth remembering after the page closes?
+- unclear or competing primary actions
+- low contrast or unreadable content
+- clipping, overflow, overlap, or broken responsive behavior
+- broken assets, links, scripts, or controls
+- essential information available only on hover
+- missing states required by the observed flow
+- unclear labels, roles, feedback, or keyboard focus
+- accidental inconsistency in spacing, type, color, radius, or icons
+- visual hierarchy that contradicts task importance
 
-Call this a craft gap when the answers are missing. Do not invent a defect to explain a lack of point of view.
+## Use the Removal Test
 
-## 6. Give design swaps
+For every candidate:
 
-Recommend the smallest systemic change that fixes the cause. Avoid “make it cleaner,” “make it pop,” “more premium,” or a cosmetic recolor.
+1. State what information, state, action, hierarchy, or brand meaning it provides.
+2. Ask whether removing it would improve clarity without losing that role.
+3. If yes, recommend removal or consolidation.
+4. If no, recommend the smallest correction using the existing system.
+5. Suggest a replacement only when deletion would create a real loss.
 
-Use swaps like:
+Default to subtraction. A replacement should inherit the product's existing language rather than introduce a new visual concept.
 
-- **Nested cards →** one section surface, spacing groups, and a single divider.
-- **Six identical feature cards →** one proof-led feature, a compact list, and one contextual product image.
-- **Purple glow stack →** a palette derived from brand material, with one accent and solid text.
-- **Icon tiles everywhere →** small in-flow icons, or remove icons where headings already identify the content.
-- **Forced font pair →** one family with stronger role contrast; add a display face only if the brand needs it.
-- **Flat type hierarchy →** fewer sizes with larger jumps, readable body leading, and a constrained measure.
-- **Hero metric theater →** one sourced outcome with context, date, unit, and audience.
-- **Perpetual status pulse →** a static state; animate only during a real transition.
-- **Reveal-dependent content →** visible final content with optional, reduced-motion-safe enhancement.
-- **Modal abuse →** a dedicated page or progressive flow with saved state and clear navigation.
+## Prioritize
 
-For every swap, state how to verify the improvement.
+- **P0:** blocks completion, creates a severe accessibility issue, or presents deceptive proof
+- **P1:** materially harms comprehension, trust, navigation, or interaction
+- **P2:** repeated slop or inconsistency that weakens hierarchy and identity
+- **P3:** minor polish issue with limited user impact
 
-## 7. Prioritize the report
+Return the five to eight highest-impact findings by default. Group repeated instances into one systemic finding.
 
-Use:
+## Output
 
-- **P0 — Blocker:** prevents task completion, access, or safe release.
-- **P1 — High:** damages comprehension, trust, accessibility, or the central visual idea.
-- **P2 — Medium:** repeated slop pattern or system inconsistency with visible impact.
-- **P3 — Low:** isolated polish issue.
+```md
+## Verdict
+One concise paragraph about the dominant problems and what should be removed first.
 
-Do not create a single numeric slop score. It hides evidence and treats taste as objective.
+## Checked scope
+- Artifact, screen, state, and viewport actually inspected
 
-Return this shape:
+## Findings
+| Priority | Class | Pattern | Evidence | Harm | Remove or fix |
+|---|---|---|---|---|---|
+| P1 | Slop pattern | Repeated ornamental containers | Feature area uses the same layered card treatment for unrelated content | Flattens hierarchy and adds noise | Remove outer shells; retain grouping only where it communicates interaction |
 
-```markdown
-Verdict: [No material slop found in checked scope | Slop patterns present | Quality fixes needed | Blocked by missing evidence]
-
-Checked scope:
-- ...
-
-| Priority | Class | Pattern | Evidence | Why it hurts | Design swap |
-| --- | --- | --- | --- | --- | --- |
-| P1 | Slop pattern | ... | ... | ... | ... |
-
-System notes:
-- Typography and pairing: ...
-- Color and material: ...
-- Layout and spacing: ...
-- Motion and states: ...
-
-What already works:
-- ...
-
-Unknowns:
-- ...
-
-Next pass:
-1. ...
+## Unknowns
+- Important states or behavior that could not be verified
 ```
 
-Lead with the five to eight findings that would most improve the design. Group minor repetitions instead of listing every instance. Quote visible copy or name exact components, sections, states, selectors, or screenshots as evidence.
+Keep the report compact. Omit empty sections.
 
-If the user asks for fixes, finish the report first, implement the approved highest-impact swaps, and verify the rendered result again. Removing slop is one pass; adding a memorable design thesis is a separate craft pass.
+## Feedback Rules
+
+- Lead with concrete evidence, not taste claims.
+- Name the pattern and its harm.
+- Recommend removal before restyling.
+- Avoid generic compliments and exhaustive low-impact nitpicks.
+- Preserve useful product-specific detail and intentional character.
+- Do not cite a standard unless it directly supports the finding.
+- Do not describe an aesthetic as universally bad.
+- If the user explicitly asks for design swaps, place an optional replacement after the removal recommendation and keep it consistent with the existing system.
+- End with the single removal or correction that would produce the largest improvement.

@@ -1,4 +1,4 @@
 interface:
   display_name: "No AI Design Slop"
-  short_description: "Build intentional UI without generated-design cliches"
-  default_prompt: "Use $no-ai-design-slop to create or refine this interface without AI design slop."
+  short_description: "Remove harmful AI-design defaults from UI"
+  default_prompt: "Use $no-ai-design-slop to remove AI-design slop from this interface while preserving its existing direction."

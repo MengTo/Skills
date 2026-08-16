@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit AI Design Slop"
+  short_description: "Find UI slop and propose concrete design swaps"
+  default_prompt: "Use $audit-ai-design-slop to audit this interface and return evidence-backed design swaps."

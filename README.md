@@ -177,7 +177,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **123 skills** across five categories.
+This snapshot contains **124 skills** across five categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -207,7 +207,16 @@ Image sourcing skills:
 - `aura-asset-images` - use Aura Assets for stock-style design and marketing imagery.
 - `unsplash-asset-images` - pick high-quality Unsplash assets by use case, crop, and ratio.
 
-### UI (1)
+### UI (2)
+
+#### `anti-ui-slop`
+Anti-UI-slop finish gate for product-specific web and iOS interfaces:
+- ground UI work in 800,000+ real web and iOS screens via UIZZE
+- define a concrete design contract before layout work
+- render the result and fix every blocking finish-gate failure
+
+Files:
+- `agent-skills/ui/anti-ui-slop/SKILL.md`
 
 #### `design-first-ui-prompting`
 Design-first UI prompting system:

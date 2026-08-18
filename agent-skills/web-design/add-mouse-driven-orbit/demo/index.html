@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sylva — Living Orbit</title>
+  <meta name="description" content="A damped pointer target creates shallow camera and object orbit depth.">
+  <style>
+    @font-face{font-family:Lexend;src:url("assets/lexend-latin.woff2") format("woff2");font-weight:100 900;font-display:swap}
+    :root{color-scheme:dark;--field:#4a4d44;--ink:#fff;--soft:rgba(255,255,255,.62);--line:rgba(255,255,255,.08);--card:#f2f3ef;--card-ink:#23261f;--accent:#dbe9ab;--px:0;--py:0}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#3d4039}body{font-family:Lexend,system-ui,sans-serif;color:var(--ink);font-weight:300}
+    button,input{font:inherit}
+    .hero{position:relative;isolation:isolate;min-height:100svh;overflow:hidden;background:radial-gradient(72% 44% at 50% 117%,rgba(238,243,231,.48),rgba(238,243,231,.08) 65%,transparent 88%),radial-gradient(52% 46% at 28% 82%,rgba(224,236,207,.11),transparent 72%),var(--field)}
+    .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,transparent calc(25% - .5px),var(--line) 25%,transparent calc(25% + .5px),transparent calc(50% - .5px),var(--line) 50%,transparent calc(50% + .5px),transparent calc(75% - .5px),var(--line) 75%,transparent calc(75% + .5px))}
+    canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+    .brand{position:absolute;z-index:5;top:38px;left:50%;transform:translateX(-50%) translate3d(calc(var(--px)*-3px),calc(var(--py)*-2px),0);display:flex;align-items:center;gap:10px;padding:10px 16px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(31,37,28,.78);box-shadow:0 8px 24px rgba(10,14,8,.26);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+    .brand i{width:17px;height:17px;border-radius:50% 50% 45% 45%;display:grid;place-items:center;background:#eff2e9;color:#2e3329;font-style:normal}
+    .copy{position:absolute;z-index:4;left:3.1vw;top:25.5%;max-width:440px;transform:translate3d(calc(var(--px)*8px),calc(var(--py)*5px),0)}
+    h1{margin:0;font-size:clamp(46px,4.45vw,72px);font-weight:300;line-height:.95;letter-spacing:-.045em}
+    .lede{position:absolute;z-index:4;left:32.5%;top:26%;width:210px;margin:0;color:var(--soft);font-size:15px;line-height:1.48;transform:translate3d(calc(var(--px)*5px),calc(var(--py)*3px),0)}
+    .card{position:absolute;z-index:3;right:23.7%;top:26%;width:300px;height:275px;padding:18px 20px;border-radius:38px;background:var(--card);color:var(--card-ink);box-shadow:0 28px 80px rgba(24,27,20,.18);transform:translate3d(calc(var(--px)*-10px),calc(var(--py)*-6px),0)}
+    .card img{width:100%;height:121px;object-fit:cover;border-radius:28px;display:block}
+    .eyebrow{margin:15px 0 4px;color:#85897f;font-size:12px}.card h2{max-width:160px;margin:0;font-size:25px;line-height:1.02;font-weight:500;letter-spacing:-.04em}
+    .ghost{position:absolute;z-index:1;left:2%;bottom:-48px;color:rgba(255,255,255,.055);font-size:clamp(120px,19vw,300px);line-height:.8;letter-spacing:.08em;white-space:nowrap}
+    .instrument{position:absolute;z-index:6;right:28px;bottom:26px;width:min(430px,calc(100% - 36px));padding:14px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(33,38,30,.86);box-shadow:0 16px 40px rgba(12,15,10,.24);backdrop-filter:blur(10px)}
+    .instrument-head{display:flex;align-items:center;justify-content:space-between;gap:14px}.kicker{margin:0 0 4px;color:var(--accent);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}.instrument strong{font-size:14px;font-weight:500}
+    .motion{min-height:40px;padding:0 14px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:#eef1e8;color:#252a21;font-weight:600;font-size:12px;cursor:pointer}
+    .sliders{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+    label{display:grid;grid-template-columns:1fr auto;gap:4px 10px;color:var(--soft);font-size:10px;letter-spacing:.08em;text-transform:uppercase}output{color:#fff;font-variant-numeric:tabular-nums}
+    input[type=range]{grid-column:1/-1;width:100%;height:22px;margin:0;accent-color:#dbe9ab;cursor:pointer}
+    button:focus-visible,input:focus-visible{outline:3px solid #efffa8;outline-offset:3px}
+    .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:700px){
+      .hero{min-height:844px}.brand{top:22px}.copy{left:24px;right:24px;top:112px}.copy h1{font-size:52px;max-width:345px}.lede{left:24px;top:235px;width:310px;font-size:14px}
+      .card{right:22px;top:335px;width:236px;height:218px;padding:13px;border-radius:30px}.card img{height:96px;border-radius:22px}.card .eyebrow{margin-top:10px}.card h2{font-size:20px}
+      .instrument{right:18px;bottom:18px}.ghost{bottom:140px;left:-10px;font-size:112px}
+    }
+  </style>
+</head>
+<body>
+  <main class="hero" id="hero">
+    <canvas id="scene" aria-hidden="true"></canvas>
+    <div class="brand"><i aria-hidden="true">↟</i> Sylva field lab</div>
+    <div class="copy"><h1>Step into<br>the living world</h1></div>
+    <p class="lede">Move across the field. The lens and the root take different paths, so depth appears without losing the composition.</p>
+    <article class="card">
+      <img src="assets/card-ethos.jpg" alt="Moss and lichen growing over rounded stones">
+      <p class="eyebrow">Our Ethos</p><h2>Let the wild lead.</h2>
+    </article>
+    <div class="ghost" aria-hidden="true">SYLVA</div>
+    <section class="instrument" aria-labelledby="instrument-title">
+      <div class="instrument-head">
+        <div><p class="kicker">Living orbit 02</p><strong id="instrument-title">One target. Unequal depth.</strong></div>
+        <button class="motion" id="motion" type="button" aria-pressed="true">Motion on</button>
+      </div>
+      <div class="sliders">
+        <label for="axis-x">Horizontal <output id="out-x">0.00</output><input id="axis-x" type="range" min="-1" max="1" step=".01" value="0"></label>
+        <label for="axis-y">Vertical <output id="out-y">0.00</output><input id="axis-y" type="range" min="-1" max="1" step=".01" value="0"></label>
+      </div>
+    </section>
+    <p class="sr" id="status" aria-live="polite"></p>
+  </main>
+  <script src="assets/three.min.js"></script>
+  <script>
+  (() => {
+    "use strict";
+    const hero=document.querySelector("#hero"),canvas=document.querySelector("#scene");
+    const motionButton=document.querySelector("#motion"),axisX=document.querySelector("#axis-x"),axisY=document.querySelector("#axis-y");
+    const outX=document.querySelector("#out-x"),outY=document.querySelector("#out-y"),status=document.querySelector("#status");
+    const reduced=new URLSearchParams(location.search).get("reduced")==="1"||matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+    renderer.setClearColor(0x000000,0);renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+    if("outputEncoding" in renderer)renderer.outputEncoding=THREE.sRGBEncoding;
+    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,1,10,5000),DIST=1400;
+    camera.position.set(0,0,DIST);
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
+    scene.add(new THREE.HemisphereLight(0xdfe8cf,0x0d100a,.48));
+    const key=new THREE.DirectionalLight(0xf5f7dd,.82);key.position.set(-500,700,900);scene.add(key);
+    const nearGroup=new THREE.Group(),farGroup=new THREE.Group();scene.add(farGroup,nearGroup);
+    const resources=[];
+    function material(color,roughness=.9){const m=new THREE.MeshStandardMaterial({color,roughness,metalness:0});resources.push(m);return m}
+    const nearMat=material(0x233908),farMat=material(0x343a2d),barkMat=material(0x211d17);
+    function limb(group,points,radius,mat,segments=72){
+      const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)),false,"centripetal",.5);
+      const geo=new THREE.TubeGeometry(curve,segments,radius,10,false);resources.push(geo);
+      const mesh=new THREE.Mesh(geo,mat);group.add(mesh);return mesh;
+    }
+    limb(nearGroup,[[-880,-250,0],[-630,-55,30],[-360,-75,-8],[-90,-235,22],[170,-250,10],[390,-38,56],[565,205,24],[760,-65,12]],88,barkMat,100);
+    limb(nearGroup,[[-860,-220,20],[-620,-26,52],[-350,-42,25],[-85,-205,50],[170,-218,42],[392,-10,88],[560,228,54],[742,-40,42]],36,nearMat,100);
+    limb(nearGroup,[[250,-150,12],[360,26,38],[490,120,22],[655,148,-4]],33,nearMat,54);
+    limb(nearGroup,[[-555,-62,15],[-482,88,32],[-375,162,-5]],27,nearMat,42);
+    limb(farGroup,[[-930,-30,-180],[-640,90,-150],[-320,10,-170],[40,76,-150],[390,28,-180],[760,105,-150]],52,farMat,90);
+    nearGroup.rotation.z=-.03;farGroup.position.y=60;
+
+    const target={x:reduced ? .28 : 0,y:reduced ? -.12 : 0};
+    const smooth={x:target.x,y:target.y};
+    let motionOn=true,width=1,height=1,rect={left:0,top:0,width:1,height:1};
+    let visible=true,raf=0,last=0,lastPublished="",destroyed=false;
+
+    function publish(){
+      const x=Math.round(smooth.x*1000)/1000,y=Math.round(smooth.y*1000)/1000,key=x+","+y;
+      if(key===lastPublished)return;lastPublished=key;
+      hero.style.setProperty("--px",x);hero.style.setProperty("--py",y);
+      outX.value=x.toFixed(2);outY.value=y.toFixed(2);
+    }
+    function pose(){
+      camera.position.x=-smooth.x*26;camera.position.y=smooth.y*16;
+      camera.lookAt(camera.position.x*.42,camera.position.y*.42,0);
+      nearGroup.rotation.y=smooth.x*.055;nearGroup.rotation.x=smooth.y*.026;
+      farGroup.rotation.y=smooth.x*.030;
+      publish();renderer.render(scene,camera);
+    }
+    function tick(now){
+      raf=0;if(!visible||document.hidden||destroyed)return;
+      const dt=last?Math.min(1/30,(now-last)/1000):1/60;last=now;
+      if(!reduced){
+        const a=1-Math.pow(1-.055,dt*60);
+        smooth.x+=(target.x-smooth.x)*a;smooth.y+=(target.y-smooth.y)*a;
+      }
+      pose();
+      if(!reduced&&motionOn)start();
+    }
+    function start(){if(!raf&&!destroyed){last=0;raf=requestAnimationFrame(tick)}}
+    function stop(){cancelAnimationFrame(raf);raf=0;last=0}
+    function resize(){
+      width=hero.clientWidth;height=hero.clientHeight;if(!width||!height)return;
+      rect=hero.getBoundingClientRect();renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(width,height,false);
+      camera.fov=2*Math.atan((height/2)/DIST)*180/Math.PI;camera.aspect=width/height;camera.updateProjectionMatrix();
+      const mobile=width<700,scale=mobile ? .52 : Math.min(1,width/1440);
+      nearGroup.scale.setScalar(scale);farGroup.scale.setScalar(scale*.94);
+      nearGroup.position.set(mobile?-70:0,mobile?-235:-205,0);farGroup.position.set(mobile?-40:0,mobile?-130:-85,-180);
+      pose();
+    }
+    function pointerMove(event){
+      if(!motionOn||reduced||event.pointerType==="touch")return;
+      target.x=((event.clientX-rect.left)/rect.width)*2-1;
+      target.y=((event.clientY-rect.top)/rect.height)*2-1;start();
+    }
+    function pointerLeave(){if(!motionOn||reduced)return;target.x=0;target.y=0;start()}
+    function sliderInput(){
+      target.x=+axisX.value;target.y=+axisY.value;
+      if(reduced){smooth.x=target.x;smooth.y=target.y;pose()}else start();
+      status.textContent="Orbit pose set to "+target.x.toFixed(2)+", "+target.y.toFixed(2)+".";
+    }
+    function toggleMotion(){
+      motionOn=!motionOn;motionButton.setAttribute("aria-pressed",String(motionOn));motionButton.textContent=motionOn?"Motion on":"Motion still";
+      if(!motionOn){target.x=target.y=0}else{target.x=+axisX.value;target.y=+axisY.value}
+      status.textContent=motionOn?"Pointer orbit enabled.":"Pointer orbit paused at center.";
+      if(reduced){smooth.x=target.x;smooth.y=target.y;pose()}else start();
+    }
+    const ro=new ResizeObserver(resize);ro.observe(hero);
+    const io=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible){pose();if(!reduced&&motionOn)start()}else stop()},{threshold:.02});io.observe(hero);
+    function visibility(){document.hidden?stop():(reduced?pose():start())}
+    hero.addEventListener("pointermove",pointerMove,{passive:true});hero.addEventListener("pointerleave",pointerLeave);
+    axisX.addEventListener("input",sliderInput);axisY.addEventListener("input",sliderInput);motionButton.addEventListener("click",toggleMotion);
+    document.addEventListener("visibilitychange",visibility);
+    function destroy(){
+      if(destroyed)return;destroyed=true;stop();ro.disconnect();io.disconnect();
+      hero.removeEventListener("pointermove",pointerMove);hero.removeEventListener("pointerleave",pointerLeave);
+      document.removeEventListener("visibilitychange",visibility);resources.forEach(r=>r.dispose());renderer.dispose();
+    }
+    addEventListener("pagehide",destroy,{once:true});
+    window.__skillDemo={name:"add-mouse-driven-orbit",reduced,getState:()=>({target:{...target},smooth:{...smooth},motionOn,rafActive:!!raf})};
+    axisX.value=target.x;axisY.value=target.y;resize();pose();if(!reduced)start();
+  })();
+  </script>
+</body>
+</html>

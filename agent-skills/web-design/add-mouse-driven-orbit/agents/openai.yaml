@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mouse-driven Orbit"
+  short_description: "Add damped cinematic pointer orbit depth"
+  default_prompt: "Use $add-mouse-driven-orbit to add restrained pointer-driven depth to this Three.js hero without OrbitControls."

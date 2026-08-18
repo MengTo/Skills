@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sylva — Pollen Trace</title>
+  <meta name="description" content="Distance-sampled pointer motion emits a recycled GPU pollen trail.">
+  <style>
+    @font-face{font-family:Lexend;src:url("assets/lexend-latin.woff2") format("woff2");font-weight:100 900;font-display:swap}
+    :root{color-scheme:dark;--field:#4a4d44;--ink:#fff;--soft:rgba(255,255,255,.62);--line:rgba(255,255,255,.08);--card:#f2f3ef;--card-ink:#23261f;--accent:#e4f5aa}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#3d4039}body{font-family:Lexend,system-ui,sans-serif;color:var(--ink);font-weight:300}
+    button{font:inherit}
+    .hero{position:relative;isolation:isolate;min-height:100svh;overflow:hidden;touch-action:pan-y;background:radial-gradient(72% 44% at 50% 117%,rgba(238,243,231,.48),rgba(238,243,231,.08) 65%,transparent 88%),radial-gradient(52% 46% at 28% 82%,rgba(224,236,207,.11),transparent 72%),var(--field)}
+    .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,transparent calc(25% - .5px),var(--line) 25%,transparent calc(25% + .5px),transparent calc(50% - .5px),var(--line) 50%,transparent calc(50% + .5px),transparent calc(75% - .5px),var(--line) 75%,transparent calc(75% + .5px))}
+    canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+    .brand{position:absolute;z-index:5;top:38px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:10px 16px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(31,37,28,.78);box-shadow:0 8px 24px rgba(10,14,8,.26);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+    .brand i{width:17px;height:17px;border-radius:50% 50% 45% 45%;display:grid;place-items:center;background:#eff2e9;color:#2e3329;font-style:normal}
+    .copy{position:absolute;z-index:4;left:3.1vw;top:25.5%;max-width:440px}
+    h1{margin:0;font-size:clamp(46px,4.45vw,72px);font-weight:300;line-height:.95;letter-spacing:-.045em}
+    .lede{position:absolute;z-index:4;left:32.5%;top:26%;width:225px;margin:0;color:var(--soft);font-size:15px;line-height:1.48}
+    .card{position:absolute;z-index:3;right:23.7%;top:26%;width:300px;height:275px;padding:18px 20px;border-radius:38px;background:var(--card);color:var(--card-ink);box-shadow:0 28px 80px rgba(24,27,20,.18)}
+    .card img{width:100%;height:121px;object-fit:cover;border-radius:28px;display:block}
+    .eyebrow{margin:15px 0 4px;color:#85897f;font-size:12px}.card h2{max-width:160px;margin:0;font-size:25px;line-height:1.02;font-weight:500;letter-spacing:-.04em}
+    .ghost{position:absolute;z-index:1;left:2%;bottom:-48px;color:rgba(255,255,255,.055);font-size:clamp(120px,19vw,300px);line-height:.8;letter-spacing:.08em;white-space:nowrap}
+    .instrument{position:absolute;z-index:6;right:28px;bottom:26px;width:min(365px,calc(100% - 36px));padding:14px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(33,38,30,.86);box-shadow:0 16px 40px rgba(12,15,10,.24);backdrop-filter:blur(10px)}
+    .instrument-row{display:flex;align-items:center;justify-content:space-between;gap:16px}.kicker{margin:0 0 4px;color:var(--accent);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}.instrument strong{font-size:14px;font-weight:500}
+    .burst{min-height:42px;padding:0 14px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:#eef1e8;color:#252a21;font-weight:600;font-size:12px;cursor:pointer;transition:transform .2s ease}
+    .burst:hover{transform:translateY(-1px)}.burst:focus-visible{outline:3px solid #efffa8;outline-offset:3px}
+    .meta{display:flex;gap:14px;margin-top:11px;padding-top:10px;border-top:1px solid var(--line);color:var(--soft);font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+    .hint{position:absolute;z-index:4;left:3.1vw;bottom:28px;margin:0;color:rgba(255,255,255,.56);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+    .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:700px){
+      .hero{min-height:844px}.brand{top:22px}.copy{left:24px;right:24px;top:112px}.copy h1{font-size:52px;max-width:345px}.lede{left:24px;top:235px;width:310px;font-size:14px}
+      .card{right:22px;top:335px;width:236px;height:218px;padding:13px;border-radius:30px}.card img{height:96px;border-radius:22px}.card .eyebrow{margin-top:10px}.card h2{font-size:20px}
+      .instrument{right:18px;bottom:18px}.ghost{bottom:140px;left:-10px;font-size:112px}.hint{display:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="hero" id="hero">
+    <canvas id="scene" aria-hidden="true"></canvas>
+    <div class="brand"><i aria-hidden="true">↟</i> Sylva field lab</div>
+    <div class="copy"><h1>Step into<br>the living world</h1></div>
+    <p class="lede">A flick and a crawl shed the same line. The motes are spaced by distance, not by the clock.</p>
+    <article class="card">
+      <img src="assets/card-ethos.jpg" alt="Moss and lichen growing over rounded stones">
+      <p class="eyebrow">Our Ethos</p><h2>Let the wild lead.</h2>
+    </article>
+    <div class="ghost" aria-hidden="true">SYLVA</div>
+    <p class="hint">Move, draw, or tap across the living surface</p>
+    <section class="instrument" aria-labelledby="instrument-title">
+      <div class="instrument-row">
+        <div><p class="kicker">Pollen trace 03</p><strong id="instrument-title">Distance keeps the rhythm.</strong></div>
+        <button class="burst" id="burst" type="button">Release pollen</button>
+      </div>
+      <div class="meta"><span>7u spacing</span><span>620 pool</span><span id="count">Composed trace</span></div>
+    </section>
+    <p class="sr" id="status" aria-live="polite"></p>
+  </main>
+  <script src="assets/three.min.js"></script>
+  <script>
+  (() => {
+    "use strict";
+    const hero=document.querySelector("#hero"),canvas=document.querySelector("#scene"),burst=document.querySelector("#burst");
+    const status=document.querySelector("#status"),countLabel=document.querySelector("#count");
+    const reduced=new URLSearchParams(location.search).get("reduced")==="1"||matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+    renderer.setClearColor(0x000000,0);renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+    if("outputEncoding" in renderer)renderer.outputEncoding=THREE.sRGBEncoding;
+    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,1,10,5000),DIST=1400;
+    camera.position.set(0,0,DIST);
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
+    scene.add(new THREE.HemisphereLight(0xdfe8cf,0x0d100a,.48));
+    const key=new THREE.DirectionalLight(0xf5f7dd,.82);key.position.set(-500,700,900);scene.add(key);
+    const resources=[],root=new THREE.Group();scene.add(root);
+    function track(resource){resources.push(resource);return resource}
+    function limb(points,radius,color,segments=72){
+      const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)),false,"centripetal",.5);
+      const geometry=track(new THREE.TubeGeometry(curve,segments,radius,10,false));
+      const material=track(new THREE.MeshStandardMaterial({color,roughness:.92,metalness:0}));
+      root.add(new THREE.Mesh(geometry,material));
+    }
+    limb([[-880,-250,0],[-630,-55,30],[-360,-75,-8],[-90,-235,22],[170,-250,10],[390,-38,56],[565,205,24],[760,-65,12]],88,0x211d17,100);
+    limb([[-860,-220,20],[-620,-26,52],[-350,-42,25],[-85,-205,50],[170,-218,42],[392,-10,88],[560,228,54],[742,-40,42]],36,0x233908,100);
+    limb([[250,-150,12],[360,26,38],[490,120,22],[655,148,-4]],33,0x233908,54);
+    limb([[-555,-62,15],[-482,88,32],[-375,162,-5]],27,0x233908,42);
+    root.rotation.z=-.03;
+
+    const POOL=620,LIFE=1.6;
+    const origins=new Float32Array(POOL*3),velocities=new Float32Array(POOL*3),births=new Float32Array(POOL),randoms=new Float32Array(POOL*2);
+    births.fill(-999);
+    const geometry=track(new THREE.BufferGeometry());
+    const originAttr=new THREE.BufferAttribute(origins,3).setUsage(THREE.DynamicDrawUsage);
+    const velocityAttr=new THREE.BufferAttribute(velocities,3).setUsage(THREE.DynamicDrawUsage);
+    const birthAttr=new THREE.BufferAttribute(births,1).setUsage(THREE.DynamicDrawUsage);
+    const randomAttr=new THREE.BufferAttribute(randoms,2).setUsage(THREE.DynamicDrawUsage);
+    geometry.setAttribute("position",originAttr);geometry.setAttribute("aVelocity",velocityAttr);geometry.setAttribute("aBirth",birthAttr);geometry.setAttribute("aRandom",randomAttr);
+    function radialTexture(){
+      const c=document.createElement("canvas");c.width=c.height=64;const g=c.getContext("2d");
+      const grad=g.createRadialGradient(32,32,0,32,32,32);grad.addColorStop(0,"rgba(255,255,255,1)");grad.addColorStop(.32,"rgba(239,248,209,.72)");grad.addColorStop(1,"rgba(224,242,185,0)");
+      g.fillStyle=grad;g.fillRect(0,0,64,64);const texture=track(new THREE.CanvasTexture(c));texture.minFilter=THREE.LinearFilter;return texture;
+    }
+    const uniforms={uTime:{value:2},uMap:{value:radialTexture()},uSize:{value:14},uScale:{value:440},uLife:{value:LIFE},uStill:{value:reduced?1:0}};
+    const material=track(new THREE.ShaderMaterial({
+      uniforms,transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,
+      vertexShader:[
+        "attribute vec3 aVelocity; attribute float aBirth; attribute vec2 aRandom;",
+        "uniform float uTime,uSize,uScale,uLife,uStill; varying float vAlpha;",
+        "void main(){",
+        " if(aBirth < -900.0){vAlpha=0.0;gl_PointSize=0.0;gl_Position=vec4(2.0);return;}",
+        " float age=uStill>.5?uLife*.45:uTime-aBirth;",
+        " if(age<0.0||age>uLife){vAlpha=0.0;gl_PointSize=0.0;gl_Position=vec4(2.0);return;}",
+        " float u=age/uLife; vec3 p=position;",
+        " if(uStill<.5)p+=aVelocity*age*(1.0-.34*u)+vec3(sin(aRandom.y*6.283+age*2.6)*22.0*u,46.0*age,0.0);",
+        " vec4 mv=modelViewMatrix*vec4(p,1.0);",
+        " gl_PointSize=uSize*aRandom.x*(uScale/max(-mv.z,1.0))*(.45+.55*(1.0-u));",
+        " vAlpha=smoothstep(0.0,.09,u)*(1.0-smoothstep(.40,1.0,u));",
+        " gl_Position=projectionMatrix*mv;",
+        "}"
+      ].join("\n"),
+      fragmentShader:[
+        "precision highp float;uniform sampler2D uMap;varying float vAlpha;",
+        "void main(){vec4 t=texture2D(uMap,gl_PointCoord);gl_FragColor=vec4(t.rgb,t.a*vAlpha*.92);}"
+      ].join("\n")
+    }));
+    const spray=new THREE.Points(geometry,material);spray.frustumCulled=false;spray.renderOrder=8;scene.add(spray);
+
+    let head=0,dirty=false,emitted=0,time=2,width=1,height=1,visible=true,raf=0,last=0,destroyed=false;
+    let pointerActive=false,pointerId=null,idle=0;
+    const ndc=new THREE.Vector2(10,10),raycaster=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,0,1),-160);
+    const hit=new THREE.Vector3(),previous=new THREE.Vector3(9999,0,0),step=new THREE.Vector3(),burstPoint=new THREE.Vector3();
+    function rand(a,b){return a+Math.random()*(b-a)}
+    function spawn(point,boost=1){
+      const i=head;head=(head+1)%POOL;const o=i*3;
+      origins[o]=point.x+rand(-15,15)*boost;origins[o+1]=point.y+rand(-15,15)*boost;origins[o+2]=point.z+rand(-45,45);
+      velocities[o]=rand(-38,38)*boost;velocities[o+1]=(rand(2,64)+22*(boost-1))*boost;velocities[o+2]=rand(-26,26)*boost;
+      births[i]=time;randoms[i*2]=rand(.50,1.15);randoms[i*2+1]=Math.random();dirty=true;emitted++;
+    }
+    function flush(){if(!dirty)return;originAttr.needsUpdate=velocityAttr.needsUpdate=birthAttr.needsUpdate=randomAttr.needsUpdate=true;dirty=false}
+    function clearPool(){births.fill(-999);head=0;birthAttr.needsUpdate=true}
+    function seedCurve(still=false){
+      clearPool();const n=still?150:130;
+      for(let i=0;i<n;i++){
+        const t=i/(n-1),x=-width*.27+t*width*.55,y=-height*.12+Math.sin(t*Math.PI)*height*.11,z=160;
+        const p=new THREE.Vector3(x,y,z);spawn(p,.55);
+        births[(head-1+POOL)%POOL]=still?0:time-(1-t)*1.1;
+      }
+      flush();countLabel.textContent=still?"Designed still":"Composed trace";
+    }
+    function seedStillBurst(){
+      clearPool();burstPoint.set(width*.13,-height*.12,160);
+      for(let i=0;i<180;i++){const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random())*105;spawn(new THREE.Vector3(burstPoint.x+Math.cos(a)*r,burstPoint.y+Math.sin(a)*r,160),.45)}
+      flush();countLabel.textContent="Still burst";renderer.render(scene,camera);
+    }
+    function emit(dt){
+      if(reduced||!pointerActive){previous.x=9999;return}
+      raycaster.setFromCamera(ndc,camera);
+      if(!raycaster.ray.intersectPlane(plane,hit)){previous.x=9999;return}
+      if(previous.x>9000){previous.copy(hit);return}
+      const distance=hit.distanceTo(previous),n=Math.min(14,Math.floor(distance/7));
+      for(let i=1;i<=n;i++){step.lerpVectors(previous,hit,i/n);spawn(step)}
+      if(n){previous.copy(hit);idle=0;countLabel.textContent=n+" emitted"}
+      else if((idle+=dt)>.055){spawn(hit);idle=0;countLabel.textContent="Idle trickle"}
+      flush();
+    }
+    function render(){uniforms.uTime.value=time;renderer.render(scene,camera)}
+    function tick(now){
+      raf=0;if(!visible||document.hidden||destroyed)return;
+      const dt=last?Math.min(1/30,(now-last)/1000):1/60;last=now;
+      if(!reduced)time+=dt;emit(dt);render();if(!reduced)start();
+    }
+    function start(){if(!raf&&!destroyed){last=0;raf=requestAnimationFrame(tick)}}
+    function stop(){cancelAnimationFrame(raf);raf=0;last=0}
+    function resize(){
+      width=hero.clientWidth;height=hero.clientHeight;if(!width||!height)return;
+      renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(width,height,false);
+      camera.fov=2*Math.atan((height/2)/DIST)*180/Math.PI;camera.aspect=width/height;camera.updateProjectionMatrix();
+      const mobile=width<700,scale=mobile ? .52 : Math.min(1,width/1440);
+      root.scale.setScalar(scale);root.position.set(mobile?-70:0,mobile?-235:-205,0);
+      uniforms.uScale.value=renderer.getDrawingBufferSize(new THREE.Vector2()).y*.5;
+      seedCurve(reduced);render();
+    }
+    function pointerMove(event){
+      const rect=hero.getBoundingClientRect();ndc.x=((event.clientX-rect.left)/rect.width)*2-1;ndc.y=-((event.clientY-rect.top)/rect.height)*2+1;
+      pointerActive=true;pointerId=event.pointerId;if(!reduced)start();
+    }
+    function pointerEnd(event){if(pointerId!==null&&event.pointerId!==pointerId)return;pointerActive=false;pointerId=null;previous.x=9999}
+    function release(){
+      if(reduced){seedStillBurst();status.textContent="A denser still pollen composition was placed.";return}
+      raycaster.setFromCamera(new THREE.Vector2(.18,.16),camera);
+      if(!raycaster.ray.intersectPlane(plane,burstPoint))burstPoint.set(width*.13,-height*.12,160);
+      for(let i=0;i<52;i++)spawn(burstPoint,2.5);flush();countLabel.textContent="52 mote burst";status.textContent="Fifty-two pollen motes released.";start();
+    }
+    const ro=new ResizeObserver(resize);ro.observe(hero);
+    const io=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible){render();if(!reduced)start()}else stop()},{threshold:.02});io.observe(hero);
+    function visibility(){document.hidden?stop():(reduced?render():start())}
+    hero.addEventListener("pointermove",pointerMove,{passive:true});hero.addEventListener("pointerdown",pointerMove,{passive:true});
+    hero.addEventListener("pointerleave",pointerEnd);hero.addEventListener("pointerup",pointerEnd);hero.addEventListener("pointercancel",pointerEnd);
+    burst.addEventListener("click",release);document.addEventListener("visibilitychange",visibility);
+    function destroy(){
+      if(destroyed)return;destroyed=true;stop();ro.disconnect();io.disconnect();
+      hero.removeEventListener("pointermove",pointerMove);hero.removeEventListener("pointerdown",pointerMove);
+      hero.removeEventListener("pointerleave",pointerEnd);hero.removeEventListener("pointerup",pointerEnd);hero.removeEventListener("pointercancel",pointerEnd);
+      document.removeEventListener("visibilitychange",visibility);resources.forEach(r=>r.dispose());renderer.dispose();
+    }
+    addEventListener("pagehide",destroy,{once:true});
+    window.__skillDemo={name:"build-interactive-particle-trail",reduced,getState:()=>({pool:POOL,head,emitted,pointerActive,time})};
+    resize();if(!reduced)start();
+  })();
+  </script>
+</body>
+</html>

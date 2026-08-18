@@ -99,6 +99,8 @@ agent-skills/
   media/
     aura-asset-images/
       SKILL.md
+    build-youtube-companion-runbooks/
+      SKILL.md
     unsplash-asset-images/
       SKILL.md
   ui/
@@ -177,7 +179,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **123 skills** across five categories.
+This snapshot contains **128 skills** across five categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -201,9 +203,10 @@ Operational skills for repeatable Codex work:
 - `write-like-meng-on-x` - calibrate concise X drafts against an authored voice corpus.
 - `x-bookmark-quote-posts` - turn recent X bookmarks into source-backed quote-post drafts.
 
-### Media (2)
+### Media (3)
 
-Image sourcing skills:
+Media production and image sourcing skills:
+- `build-youtube-companion-runbooks` - package verified videos into titles, thumbnails, chapters, descriptions, social copy, publication gates, and upload checks.
 - `aura-asset-images` - use Aura Assets for stock-style design and marketing imagery.
 - `unsplash-asset-images` - pick high-quality Unsplash assets by use case, crop, and ratio.
 
@@ -236,7 +239,7 @@ Player systems and feedback:
 Assets, performance, QA, and release:
 - `build-hybrid-game-assets`, `build-vesperfall-review-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`
 
-### Web design (81)
+### Web design (85)
 
 Conversion and implementation:
 - `build-awwwards-quality-sites`, `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`

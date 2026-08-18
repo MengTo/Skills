@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wireframe Scan Reveal"
+  short_description: "Reveal geometry with a leading wire scan"
+  default_prompt: "Use $build-wireframe-scan-reveal to reveal this 3D form with a wire cage leading the solid surface."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Interactive Particle Trail"
+  short_description: "Emit pooled particles along pointer travel"
+  default_prompt: "Use $build-interactive-particle-trail to add a distance-sampled cursor trail with pooled GPU particles."

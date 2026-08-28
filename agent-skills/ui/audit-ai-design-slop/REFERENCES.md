@@ -2,6 +2,8 @@
 - https://x.com/GoogleDesign/status/2087195277094695096
 - https://www.youtube.com/watch?v=M4DNgmI7MIM
 - https://impeccable.style/slop
+- https://getdesign.md/
+- https://github.com/Leonxlnx/taste-skill
 - https://github.com/petergyang/no-ai-slop
 - https://github.com/MengTo/Skills
 - https://www.w3.org/WAI/WCAG22/quickref/

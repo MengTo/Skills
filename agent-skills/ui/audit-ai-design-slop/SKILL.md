@@ -28,6 +28,8 @@ Inspect the artifact available in the request:
 
 For every finding, cite a concrete location, component, behavior, or line of copy. Do not report a generic tendency without evidence in the artifact.
 
+For a full-page or full-site review, read [../no-ai-design-slop/ARTICLE.md](../no-ai-design-slop/ARTICLE.md) and use only the catalog sections relevant to the inspected artifact. Do not turn every checklist match into a finding. Group symptoms by root cause and report the highest-impact evidence.
+
 ## Classify Findings
 
 Use one of these classes:

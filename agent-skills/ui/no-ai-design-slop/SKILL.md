@@ -1,142 +1,118 @@
 ---
 name: no-ai-design-slop
-description: Remove visible AI-design clichés, generic generated defaults, and established UI defects from websites, apps, screenshots, mockups, and design code while preserving the existing direction. Use for an anti-slop pass, a restrained cleanup, or a request to make an interface feel less AI-generated without turning it into a full redesign.
+description: Prevent and remove generic AI-generated design defaults, incoherent visual choices, and established UI defects while creating, revising, or reviewing websites, apps, screenshots, mockups, and design code. Use as a passive quality gate during UI work or for an explicit anti-slop cleanup; preserve the chosen art direction instead of forcing a neutral redesign.
 ---
 
-# No AI Design Slop
+# No Design Slops
 
-Act as a subtractive design editor. Preserve the product's direction, personality, and useful choices. Remove the minimum amount of visual noise, generic patterning, and interface harm needed to make the work clearer and more intentional.
+Act as a passive design quality gate. Keep the product's direction, personality, and useful choices. Catch generic defaults and design failures before they compound.
+
+## Core Judgment
+
+Slop is not a color, font, gradient, card, or animation. It is a choice made by reflex rather than for the product.
+
+Treat a choice as suspect when several of these are true:
+
+- it could be pasted into an unrelated product unchanged
+- it repeats a familiar generated-design pattern
+- it conflicts with the local design system or nearby sections
+- it communicates no useful information, state, action, hierarchy, or brand meaning
+- it competes with content, weakens trust, or makes the interface harder to use
+
+Do not guess whether AI made the artifact. Judge the visible result.
+
+## Apply Passively
+
+For every applicable design task:
+
+1. Read the local instructions, tokens, `DESIGN.md`, screenshots, references, and existing components before choosing a direction.
+2. Identify the product, audience, primary task, primary action, content hierarchy, and one visual thesis for the surface.
+3. Preserve established decisions unless the user asks for a redesign.
+4. During implementation, run the compact gates below whenever adding a section, component, effect, or state.
+5. Render the result at relevant viewports and inspect the actual interface, not only the source.
+6. Remove or correct the highest-impact problem created or exposed by the work.
+
+For a narrow edit, do not widen the task into a site audit. Fix the requested surface and avoid introducing new slop. For a full page, redesign, anti-slop pass, or detailed review, read [ARTICLE.md](ARTICLE.md) and use the relevant catalog sections.
+
+If the user asks only for a formal review, use the separate `audit-ai-design-slop` workflow and do not edit the artifact.
+
+## Design Principles
+
+### Start from context
+
+- Prompt and design from evidence: product content, real constraints, references, and the local system.
+- Use references to extract hierarchy, pacing, contrast, material, and interaction principles. Do not copy identity, layout, assets, or copy.
+- When no system exists, define a compact one before polishing: type roles, spacing rhythm, palette, radii, borders, shadows, imagery, icons, and motion.
+
+### Choose one coherent idea
+
+- Give each viewport one focal point and each flow one clear primary action.
+- Let typography, media, color, material, and motion support the same visual thesis.
+- Prefer one strong authored moment over many unrelated effects.
+- Use contrast and asymmetry deliberately; do not neutralize character in the name of cleanliness.
+
+### Make relationships visible
+
+- Use proximity before containers. Related items sit closer than unrelated items.
+- Use hierarchy before labels. Size, weight, placement, and contrast should do more work than pills, eyebrows, numbers, and captions.
+- Use depth only when the interface has a real layering model.
+- Let repeated components express a real repeated content type, not a convenient template.
+
+### Make the product specific
+
+- Choose sections from the product's story, buying journey, and usage flow instead of a default landing-page sequence.
+- Show real product behavior, useful screenshots, or honest placeholders. Do not manufacture proof.
+- Art-direct imagery and iconography to the subject. Generic stock, abstract SVG filler, and default icon tiles are not substitutes for product meaning.
+- Adapt imported patterns to the current typography, palette, shape language, and density.
+
+### Make motion explain something
+
+- Motion may explain state, causality, hierarchy, continuity, or spatial change.
+- Do not animate merely to prove that the page is interactive.
+- Keep reading and controls stable. Support reduced motion and complete static states.
+
+## Compact Quality Gates
+
+Before keeping a choice, check:
+
+- **System:** Does it use the established type, color, spacing, radius, icon, and motion language?
+- **Hierarchy:** Is the most important content or action obvious without decorative labels?
+- **Composition:** Are alignment, balance, proximity, overlap, and negative space intentional at every relevant viewport?
+- **Typography:** Are roles distinct, readable, and optically spaced without oversized tracking or forced display treatments?
+- **Color and material:** Does each gradient, glow, glass layer, border, shadow, and accent have a clear role?
+- **Product truth:** Are imagery, copy, metrics, screenshots, logos, and states specific and honest?
+- **Interaction:** Are active, hover, focus, loading, empty, error, disabled, selected, and success states present when needed?
+- **Motion and access:** Does motion help, remain performant, preserve input, and respect reduced-motion preferences?
+
+## Removal Test
+
+For every suspect element:
+
+1. Name it precisely: selected state, eyebrow, radial light, nested card, icon tile, marquee, fake proof, clipped popover, or another concrete pattern.
+2. State what job it performs.
+3. Remove it mentally. If meaning, state, action, hierarchy, or brand character survives and clarity improves, delete it.
+4. If deletion creates a real loss, make the smallest correction using the existing system.
+5. Add a replacement only when the interface needs one. Do not compensate with a new effect.
 
 ## Boundaries
 
-- Do not infer whether AI made the design.
-- Do not redesign the interface by default.
-- Do not prescribe a new font, palette, layout, component library, or art direction unless the user asks.
-- Do not treat a gradient, serif, dark theme, glass effect, card, animation, or single-font system as slop on its own.
-- Do not replace a distinctive choice with a neutral template merely because it is unusual.
-- Remove a choice only when it is repeated without purpose, has no clear job, obscures the content, weakens hierarchy, fakes proof, or creates an interaction problem.
+- Do not treat a technique as slop in isolation.
+- Do not replace a distinctive choice with a fashionable neutral template.
+- Do not prescribe a new font, palette, layout, component library, or art direction unless the task authorizes it.
+- Do not turn every content block into a card or every improvement into decoration.
+- Do not add new sections, effects, colors, fonts, assets, or dependencies during a cleanup unless they solve a demonstrated loss.
+- Do not remove useful density, edge, humor, asymmetry, or expressive motion merely because it is unusual.
+- Do not invent customers, metrics, testimonials, awards, ratings, product screens, or activity.
 
-## What Counts as Slop
+## Verification
 
-Look for a cluster of symptoms, not a lone aesthetic technique:
+Before finishing:
 
-- **Defaultness:** the choice feels inserted because it is a common generated-design reflex, not because the product needs it.
-- **Repetition:** the same container, icon, sentence shape, glow, or reveal is applied everywhere.
-- **No role:** the element communicates no useful information, state, action, hierarchy, or brand meaning.
-- **Harm:** the choice makes the interface harder to read, navigate, trust, or use.
+- compare the rendered result with the local system and supplied references
+- inspect the primary flow, relevant states, and responsive breakpoints
+- confirm that text does not clip, overlap, overflow, or lose contrast
+- confirm that controls remain labeled, reachable, stable, and responsive
+- confirm that every remaining decorative layer has a defensible role
+- confirm that the result is more specific to this product, not merely more fashionable
 
-Separate these from ordinary quality defects. Both should be removed, but name them accurately.
-
-## Remove AI-Default Layers
-
-### Decorative stacking
-
-Remove decoration when several effects are doing the same job:
-
-- glow behind a gradient headline inside a glass card over an ambient background
-- multiple borders, shadows, highlights, and inner rings around one container
-- floating orbs, grids, particles, beams, and noise with no product meaning
-- excessive pills, badges, eyebrows, and labels that repeat nearby copy
-- decorative browser chrome, code windows, or dashboards that do not show real product evidence
-
-Keep the strongest useful layer and remove the rest.
-
-### Template repetition
-
-Remove or collapse patterns that flatten every piece of content into the same component:
-
-- a card around every paragraph, feature, metric, or action
-- repeated icon-heading-description tiles with interchangeable copy
-- stacked rounded containers whose nesting does not express hierarchy
-- the same hero, bento grid, logo strip, testimonials, FAQ, and CTA sequence regardless of the product
-- repeated section headings that restate the navigation or preceding sentence
-
-Preserve containers that communicate grouping, state, action, comparison, or interaction.
-
-### Typography and copy clutter
-
-Remove:
-
-- empty superlatives and category claims
-- duplicate headings, labels, captions, or button text
-- decorative italics, gradients, or letter spacing applied without hierarchy
-- unnecessary font changes that do not signal a meaningful role
-- long centered paragraphs or line breaks that make reading harder
-- tiny labels used to make ordinary content look technical
-
-Keep the author's voice and meaning. Edit the smallest amount of copy needed.
-
-### Motion theater
-
-Remove motion that delays, hides, or competes with the content:
-
-- identical entrance animation on every element
-- scroll effects that add no spatial or narrative meaning
-- perpetual motion behind reading or form controls
-- hover effects that make targets move away
-- transitions that block input or make the interface feel slower
-
-Preserve motion that explains state, causality, hierarchy, or spatial change.
-
-### Fake proof and generated filler
-
-Remove:
-
-- invented metrics, customers, testimonials, awards, ratings, or activity
-- fake dashboards and charts presented as product evidence
-- duplicated logos or placeholder portraits that imply real adoption
-- decorative UI screenshots that contradict the actual product
-- filler sections added only to make a page feel complete
-
-If proof is unavailable, leave honest space or use clearly labeled placeholders.
-
-## Remove Established UI Failures
-
-Fix these regardless of whether they resemble AI output:
-
-- unclear primary action or competing actions with the same emphasis
-- low contrast, unreadable text, or paragraphs that are difficult to scan
-- clipped, overflowing, or overlapping content
-- broken assets, links, scripts, and controls
-- essential information available only on hover
-- missing focus, loading, empty, error, disabled, selected, or success states when the flow needs them
-- controls without clear labels, roles, or feedback
-- inconsistent spacing, type, color, radius, or icon rules that look accidental
-- motion that ignores reduced-motion preferences
-- layout that fails at a relevant viewport
-- visual hierarchy that contradicts task importance
-
-Use the product's existing patterns and tokens when correcting these failures.
-
-## Workflow
-
-1. Inspect the full artifact and note its existing visual direction.
-2. Identify a specific harmful pattern. Name the element, evidence, and harm.
-3. Ask whether deleting it would remove meaning, state, action, or necessary hierarchy.
-4. If not, remove it.
-5. If deletion would cause a loss, make the smallest correction using the existing design system.
-6. Verify the affected flow, viewport, state, and content.
-7. Repeat only for the next highest-impact problem. Stop when the remaining choices have a clear job.
-
-## Editing Rules
-
-- Make the minimum effective edit.
-- Prefer one systemic removal over many local restyles.
-- Do not add new sections, effects, colors, fonts, assets, or dependencies as compensation.
-- Preserve intentional edge, asymmetry, density, humor, and brand character.
-- Keep useful proof and product-specific detail.
-- When implementation is requested, change the artifact directly and verify it.
-- When only feedback is requested, do not modify files.
-
-## Completion Check
-
-Before finishing, confirm:
-
-- the interface has less noise without losing meaning
-- primary content and actions are easier to find
-- the existing direction still feels recognizable
-- no invented proof or placeholder claim is presented as real
-- no important state, interaction, or accessibility behavior was removed
-- every remaining decorative layer has a defensible role
-
-Report what was removed and why. Do not give an AI-authorship guess or a generic quality score.
+Report the material removals or corrections and why they improved the design. Do not return an AI-authorship guess or a generic numeric taste score.

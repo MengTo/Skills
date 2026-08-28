@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generate Course Cover Options"
+  short_description: "Create three source-aware GPT-Image 2 course covers"
+  default_prompt: "Use $generate-course-cover-options to create three cover choices for this course."

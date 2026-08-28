@@ -1,0 +1,4 @@
+interface:
+  display_name: "Holographic Brand Cards"
+  short_description: "Build tactile foil cards for partner brands"
+  default_prompt: "Use $build-holographic-brand-cards to create an interactive foil card for this brand."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Natural Preview Videos"
+  short_description: "Generate complete natural gallery media packages"
+  default_prompt: "Use $record-natural-preview-videos to generate the images, thumbnail, and optimized preview for this catalog item."

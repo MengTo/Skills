@@ -1,0 +1,4 @@
+interface:
+  display_name: "Three.js to Motion Design"
+  short_description: "Adapt exact 3D scenes into motion compositions"
+  default_prompt: "Use $adapt-threejs-to-motion-design to turn this Three.js scene into a reference-faithful motion-design composition."

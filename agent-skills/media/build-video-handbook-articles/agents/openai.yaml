@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Video Handbook Articles"
+  short_description: "Turn verified videos into visual guides"
+  default_prompt: "Use $build-video-handbook-articles to turn this verified video into a source-faithful visual article."

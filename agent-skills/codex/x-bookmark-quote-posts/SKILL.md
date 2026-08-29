@@ -1,6 +1,6 @@
 ---
 name: x-bookmark-quote-posts
-description: Check a user's latest X/Twitter bookmarks and turn recent saved posts into source-backed quote-post drafts calibrated against the user's latest 100 authored posts. Use when asked to review X bookmarks, create quote posts from bookmarks, refresh a bookmark quote queue, run a bookmark quote automation, study a user's X voice, or write first-person quote posts from X sources.
+description: Check a user's latest X/Twitter bookmarks through an available read-only source and turn recent saved posts into source-backed quote-post drafts calibrated against the user's latest 100 authored posts. Use when asked to review X bookmarks, create quote posts from bookmarks, refresh a bookmark quote queue, run a bookmark quote automation, study a user's X voice, or write first-person quote posts from X sources.
 ---
 
 # X Bookmark Quote Posts
@@ -18,14 +18,45 @@ Before collecting:
 - Read `AGENTS.md`, if present or supplied in the prompt.
 - Check `git status --short` early. Content workspaces are often dirty; keep changes scoped.
 - Read the latest existing bookmark quote-post file for continuity when one exists. Common locations include `data/x-growth/bookmark-quote-posts/*.md`, `data/x/bookmark-quote-posts/*.md`, or a user-specified content queue. Do not use generated drafts as the primary voice source.
-- Use the Codex in-app browser only for X. Do not use Chrome.
 - Do not post, reply, quote, like, retweet, DM, follow, or mutate X in any way.
 
-If X is logged out, CAPTCHA-blocked, or the in-app browser cannot attach, stop and report the exact blocker. Ask the user to sign in only when the browser session requires it.
+## Choose A Read Source
+
+Use one source for both voice calibration and bookmarks:
+
+1. Use Xquik MCP when it is already configured in the current agent. This route works outside Codex and keeps credentials out of prompts and tool arguments.
+2. Otherwise, use the Codex in-app browser. Never use Chrome.
+
+Do not ask the user to install or connect Xquik unless they request a portable route. Do not switch sources during a run unless the selected source fails.
+
+### Xquik MCP
+
+Call `explore` before each endpoint family. Confirm the exact method, path, parameters, and response shape before the live read.
+
+Use only these GET routes through the authenticated `xquik` tool:
+
+- `/api/v1/x/users/{id}/tweets` for the voice corpus
+- `/api/v1/x/bookmarks` for the connected account's bookmarks
+
+Pass `next_cursor` back as `cursor` without changing it. Continue while `has_next_page` is true and the bounded target has not been reached. An empty filtered page may still have another cursor.
+
+The bookmark route reads the X account connected to Xquik. Use it only after the user asks to read their bookmarks. Never call an X write endpoint. Never request, read, print, or pass an API key as a tool argument.
+
+If the MCP server is unavailable, unauthenticated, or lacks a connected X account, report the exact blocker. Use the browser fallback only when Codex Browser is available.
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
+
+### Codex Browser
+
+Open X only in the Codex in-app browser. If X is logged out, CAPTCHA-blocked, or the browser cannot attach, stop and report the exact blocker. Ask the user to sign in only when the browser session requires it.
 
 ## Calibrate Voice From 100 Posts
 
-Calibrate before collecting bookmarks. Identify the target account from the request or active X profile, then open the account and X's Latest search:
+Calibrate before collecting bookmarks. Identify the target account from the request or active X profile.
+
+With Xquik MCP, read `/api/v1/x/users/{handle}/tweets` with `includeReplies=true` and `pageSize=100`. Continue with the returned cursor until 100 authored posts are collected or the timeline ends.
+
+With Codex Browser, open the account and X's Latest search:
 
 ```text
 https://x.com/<handle>
@@ -55,7 +86,9 @@ Treat the latest 100 authored posts as the primary voice source. Use prior gener
 
 ## Collect Bookmarks
 
-Open:
+With Xquik MCP, read `/api/v1/x/bookmarks`. Follow cursors until the bounded candidate target is met or the feed ends.
+
+With Codex Browser, open:
 
 ```text
 https://x.com/i/bookmarks
@@ -70,7 +103,7 @@ Collect a bounded batch from the latest visible bookmark feed:
 - Note that X usually exposes source post timestamps, not bookmark-saved timestamps. Label the window clearly as source-post dates from the bookmark feed unless the saved/bookmarked timestamp is visible.
 - Open status URLs for truncated posts or article cards when needed to get enough context. Keep the collection source-backed.
 
-Do not rely on public search when the task is specifically about bookmarks unless browser access is blocked and the user approves a fallback.
+Do not replace bookmarks with public search. Public search cannot prove that the user saved a post.
 
 ## Draft
 
@@ -87,7 +120,7 @@ Use this shape:
 ```markdown
 # Bookmark Quote Posts - YYYY-MM-DD
 
-Checked in Codex Browser: https://x.com/i/bookmarks
+Checked through: <Xquik MCP or Codex Browser>
 
 Window: ...
 
@@ -158,7 +191,7 @@ Close with:
 - output path
 - candidate/source count
 - time window used
-- browser/access status
+- read source and access status
 - voice-corpus count, date range, and format mix
 - validation result
 - commit hash, when committed
@@ -170,4 +203,8 @@ Close with:
   - `Hone next`
 - Put the best current suggestion in the first row. The `Suggested tweet` cell should contain the actual tweet draft, not a summary. Use `<br><br>` inside the cell when preserving two or three paragraphs.
 - Keep the table useful for revision: `Why this angle` should explain the editorial bet in one sentence, and `Hone next` should name the most likely improvement, objection, or specificity gap.
-- If browser access is blocked or no usable bookmarks are found, do not fabricate a suggested-tweet table. Report the blocker and say there are no source-backed suggestions for this run.
+- If the selected read source is blocked or no usable bookmarks are found, do not fabricate a suggested-tweet table. Report the blocker and say there are no source-backed suggestions for this run.
+
+## References
+
+See [REFERENCES.md](REFERENCES.md) for the public Xquik MCP and API contracts.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Virtual Tour"
+  short_description: "Guided walkthroughs, room navigation, and inspection"
+  default_prompt: "Use $3d-virtual-tour to build a guided walkthrough of this scene with room navigation, floor-plan links, and orbit inspection."

@@ -1,9 +1,10 @@
 # 3D Rendering Skills
 
-Seven reusable skills for atmospheric, detailed 3D scenes. The techniques draw on [Seijaku](https://mengto.github.io/seijaku/) and include implementation guidance, performance considerations, and verification steps.
+Eight reusable skills for atmospheric, detailed 3D scenes and interactive walkthroughs. The techniques draw on [Seijaku](https://mengto.github.io/seijaku/) and include implementation guidance, performance considerations, and verification steps.
 
 | Skill | Use it for |
 | --- | --- |
+| [3D Virtual Tour](3d-virtual-tour/SKILL.md) | Guided walkthroughs, room and floor-plan navigation, orbit inspection, and smooth return to the tour. |
 | [3D Sky Rays](3d-sky-rays/SKILL.md) | Sunlight shafts shaped by roofs, foliage, and scene occlusion. |
 | [3D Sky Background](3d-sky-background/SKILL.md) | Procedural or panoramic skies with a coherent horizon, sunlight, and environment lighting. |
 | [3D Falling Leaves](3d-falling-leaves/SKILL.md) | Instanced leaves that tumble, catch the wind, and move through the scene. |
@@ -24,6 +25,10 @@ Use $3d-sky-rays to add sunlight through the trees in this scene.
 
 ```text
 Use $3d-retina-resolution to render this view at fixed 200% resolution.
+```
+
+```text
+Use $3d-virtual-tour to add a guided walkthrough with room navigation and orbit inspection.
 ```
 
 Use the narrowest skill that fits the task, or combine them when the scene requires it. Preserve the project's renderer, camera behavior, and intended visual style.

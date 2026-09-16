@@ -1,0 +1,8 @@
+- [Seijaku authored camera route and sampler](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L3512)
+- [Seijaku orbit inspection and handoff](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L7422)
+- [Seijaku rooms and floor-plan navigation](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L8046)
+- [Three.js Curve](https://threejs.org/docs/pages/Curve.html)
+- [Three.js CatmullRomCurve3](https://threejs.org/docs/pages/CatmullRomCurve3.html)
+- [Three.js PerspectiveCamera](https://threejs.org/docs/pages/PerspectiveCamera.html)
+- [Three.js OrbitControls](https://threejs.org/docs/pages/OrbitControls.html)
+- [Three.js PointerLockControls](https://threejs.org/docs/pages/PointerLockControls.html)

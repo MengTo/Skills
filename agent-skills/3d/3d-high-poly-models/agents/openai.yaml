@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D High-Poly Models"
+  short_description: "Detailed geometry with practical runtime LODs"
+  default_prompt: "Use $3d-high-poly-models to create highly detailed models for the closest views in this scene and optimize their runtime delivery."

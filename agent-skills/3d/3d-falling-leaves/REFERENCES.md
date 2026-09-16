@@ -1,0 +1,3 @@
+- [Seijaku instanced falling leaves](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L6322)
+- [Three.js InstancedMesh](https://threejs.org/docs/pages/InstancedMesh.html)
+- [Three.js Material alpha settings](https://threejs.org/docs/pages/Material.html)

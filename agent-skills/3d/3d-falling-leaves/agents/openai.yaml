@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Falling Leaves"
+  short_description: "Instanced leaves with natural tumble and wind"
+  default_prompt: "Use $3d-falling-leaves to add falling 3D leaves with realistic tumble, wind, and scene occlusion."

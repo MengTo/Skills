@@ -23,6 +23,8 @@ Portable by default. Each skill should work for any user, repo, or workspace unl
 
 Browse [all runnable demos and recreation prompts](DEMOS.md).
 
+Explore the [3D rendering skills](agent-skills/3d/README.md) for sky rays, sky backgrounds, falling leaves, four seasons, detailed textures and models, and Retina rendering at 200%.
+
 Use these skills when you want:
 - repeatable design direction
 - reusable game architecture and gameplay QA
@@ -73,6 +75,15 @@ Good skills tell the agent exactly when to use them, what to do first, what defa
 
 ```txt
 agent-skills/
+  3d/
+    README.md
+    3d-sky-rays/
+    3d-sky-background/
+    3d-falling-leaves/
+    3d-four-seasons/
+    3d-high-resolution-textures/
+    3d-high-poly-models/
+    3d-retina-resolution/
   codex/
     audit-verify-explain-grade-5/
       SKILL.md

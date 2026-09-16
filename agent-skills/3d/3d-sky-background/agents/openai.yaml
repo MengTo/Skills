@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Sky Background"
+  short_description: "Atmospheric skies with coherent scene lighting"
+  default_prompt: "Use $3d-sky-background to build a sky background that fits this 3D scene and its lighting."

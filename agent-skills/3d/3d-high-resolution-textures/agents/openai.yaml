@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D High-Resolution Textures"
+  short_description: "Detailed PBR materials with efficient loading"
+  default_prompt: "Use $3d-high-resolution-textures to improve this scene's close-up textures while controlling loading and GPU memory."

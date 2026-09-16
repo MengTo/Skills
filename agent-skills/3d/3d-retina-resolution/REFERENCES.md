@@ -1,0 +1,4 @@
+- [Seijaku renderer resolution policy](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L8112)
+- [Three.js WebGLRenderer](https://threejs.org/docs/pages/WebGLRenderer.html)
+- [Three.js EffectComposer](https://threejs.org/docs/pages/EffectComposer.html)
+- [Three.js EffectComposer implementation](https://github.com/mrdoob/three.js/blob/dev/examples/jsm/postprocessing/EffectComposer.js)

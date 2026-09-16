@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Retina Resolution"
+  short_description: "Sharp 200% rendering for Retina and HiDPI"
+  default_prompt: "Use $3d-retina-resolution to render this 3D view at fixed 200% resolution and verify every render buffer."

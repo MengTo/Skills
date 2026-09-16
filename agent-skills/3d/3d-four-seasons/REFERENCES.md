@@ -1,0 +1,4 @@
+- [Seijaku settled-snow material](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L3129)
+- [Seijaku seasonal foliage](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L3180)
+- [Seijaku shared season state](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L8183)
+- [Three.js material shader hooks](https://threejs.org/docs/pages/Material.html)

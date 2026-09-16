@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Sky Rays"
+  short_description: "Occlusion-aware sunlight shafts for 3D scenes"
+  default_prompt: "Use $3d-sky-rays to add sky rays shaped by the roofs and foliage in this scene."

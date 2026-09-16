@@ -1,0 +1,5 @@
+- [Seijaku texture loading and caching](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L3712)
+- [Seijaku foliage mip preparation](https://github.com/MengTo/seijaku/blob/e0cb3b5f2d5d034297ef6080961f217242f01aef/index.html#L3012)
+- [Three.js Texture](https://threejs.org/docs/pages/Texture.html)
+- [Three.js KTX2Loader](https://threejs.org/docs/pages/KTX2Loader.html)
+- [Three.js color-management source](https://github.com/mrdoob/three.js/blob/dev/manual/pages/color-management.html)

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex GPT Image 2.5 Flare"
+  short_description: "Generate transparent PNGs with built-in Codex"
+  default_prompt: "Use $codex-gpt-image-2-5-flare to generate artwork with built-in Codex image gen, verify transparent PNG output, and preserve the prompt and original assets."

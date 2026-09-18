@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Video Courses"
+  short_description: "Create verified draft-first video courses"
+  default_prompt: "Use $build-video-courses to turn these completed lessons into a verified draft-first course."

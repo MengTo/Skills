@@ -1,0 +1,4 @@
+interface:
+  display_name: "Edit Video Audio First"
+  short_description: "Make speech-safe timeline cuts from decoded audio"
+  default_prompt: "Use $edit-video-audio-first to plan and verify speech-safe cuts in this narrated video."

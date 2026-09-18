@@ -1,0 +1,4 @@
+interface:
+  display_name: "Attach Lesson Project Files"
+  short_description: "Package and attach verified lesson sources"
+  default_prompt: "Use $attach-lesson-project-files to find and package the verified source files for these lessons."

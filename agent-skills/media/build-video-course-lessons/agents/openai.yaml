@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Video Course Lessons"
+  short_description: "Create evidence-backed lesson companions"
+  default_prompt: "Use $build-video-course-lessons to turn these completed lesson videos into verified written companions."

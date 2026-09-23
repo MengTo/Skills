@@ -1,0 +1,4 @@
+interface:
+  display_name: "Edit Narrated Videos"
+  short_description: "Edit narration-led videos safely across editors"
+  default_prompt: "Use $edit-narrated-videos to edit and verify this narrated video through the available editor adapter."

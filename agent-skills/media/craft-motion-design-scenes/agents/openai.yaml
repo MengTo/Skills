@@ -1,0 +1,4 @@
+interface:
+  display_name: "Craft Motion Design Scenes"
+  short_description: "Audit and choreograph polished motion scenes"
+  default_prompt: "Use $craft-motion-design-scenes to audit and improve this motion scene."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prepare Video Launch Package"
+  short_description: "Package verified multi-channel video launches"
+  default_prompt: "Use $prepare-video-launch-package to prepare this finished video and its resources for a controlled launch."

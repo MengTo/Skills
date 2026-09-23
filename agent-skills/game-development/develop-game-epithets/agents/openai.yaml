@@ -1,0 +1,4 @@
+interface:
+  display_name: "Develop Game Epithets"
+  short_description: "Create and screen lore-native protagonist titles"
+  default_prompt: "Use $develop-game-epithets to create and preliminarily screen a protagonist epithet for my game from its current lore."

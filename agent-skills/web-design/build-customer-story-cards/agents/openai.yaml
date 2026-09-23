@@ -1,0 +1,4 @@
+interface:
+  display_name: "Customer Story Cards"
+  short_description: "Build equal-height editorial customer cards"
+  default_prompt: "Use $build-customer-story-cards to create a polished customer story card grid."

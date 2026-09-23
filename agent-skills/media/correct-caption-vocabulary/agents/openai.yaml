@@ -1,0 +1,4 @@
+interface:
+  display_name: "Correct Caption Vocabulary"
+  short_description: "Normalize caption terms with a supplied glossary"
+  default_prompt: "Use $correct-caption-vocabulary to review and correct these captions with the supplied glossary."

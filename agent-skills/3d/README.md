@@ -1,9 +1,10 @@
 # 3D Rendering Skills
 
-Eight reusable skills for atmospheric, detailed 3D scenes and interactive walkthroughs. The techniques draw on [Seijaku](https://mengto.github.io/seijaku/) and include implementation guidance, performance considerations, and verification steps.
+Nine reusable skills for atmospheric, detailed 3D scenes, open water and interactive walkthroughs. Most of the techniques draw on [Seijaku](https://mengto.github.io/seijaku/); the water comes from Pirate Ship Sunset. Each includes implementation guidance, performance considerations and verification steps.
 
 | Skill | Use it for |
 | --- | --- |
+| [3D Ultra-Realistic Water](3d-ultra-realistic-water/SKILL.md) | Open oceans with per-pixel Gerstner waves, sun glitter, lace foam, a Kelvin wake and a seamless horizon, plus a runnable demo. |
 | [3D Virtual Tour](3d-virtual-tour/SKILL.md) | Guided walkthroughs, room and floor-plan navigation, orbit inspection, and smooth return to the tour. |
 | [3D Sky Rays](3d-sky-rays/SKILL.md) | Sunlight shafts shaped by roofs, foliage, and scene occlusion. |
 | [3D Sky Background](3d-sky-background/SKILL.md) | Procedural or panoramic skies with a coherent horizon, sunlight, and environment lighting. |
@@ -29,6 +30,10 @@ Use $3d-retina-resolution to render this view at fixed 200% resolution.
 
 ```text
 Use $3d-virtual-tour to add a guided walkthrough with room navigation and orbit inspection.
+```
+
+```text
+Use $3d-ultra-realistic-water to add an open ocean with sun glitter, lace foam and a ship's wake.
 ```
 
 Use the narrowest skill that fits the task, or combine them when the scene requires it. Preserve the project's renderer, camera behavior, and intended visual style.

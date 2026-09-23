@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Ultra-Realistic Water"
+  short_description: "Per-pixel Gerstner ocean with footprint fade, glitter, foam and wake"
+  default_prompt: "Use $3d-ultra-realistic-water to add an open ocean with per-pixel Gerstner normals, a per-wave footprint fade, Fresnel sky reflection, sun glitter and lace foam."

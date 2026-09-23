@@ -1,0 +1,36 @@
+<div class="ow-scrim" aria-hidden="true"></div>
+<header class="ow-intro">
+  <p class="ow-kicker">Three.js · WebGL2 · GLSL</p>
+  <h1>Ultra-Realistic Water</h1>
+  <p>Eight deep-water Gerstner waves shaded per pixel from their analytic derivatives, so the sun&rsquo;s glitter stays sharp on a mesh that thins to 30&thinsp;m triangles at the horizon. Each wave fades out once it is shorter than the pixel it lands on.</p>
+  <p>Switch the footprint fade off and the far sea boils into moir&eacute;. Drop to per-vertex normals and the glitter path smears across the mesh facets.</p>
+</header>
+<form class="ow-panel" aria-label="Water controls" autocomplete="off" onsubmit="return false">
+  <p class="ow-status" id="ow-status" role="status" aria-live="polite">Every wave fades at its own pixel footprint.</p>
+  <div class="ow-row">
+    <label for="ow-foot">Footprint fade</label>
+    <input class="ow-switch" id="ow-foot" type="checkbox" role="switch" checked>
+  </div>
+  <fieldset class="ow-row">
+    <legend>Normals</legend>
+    <div class="ow-seg">
+      <label><input type="radio" name="ow-normals" value="1" checked><span>Per pixel</span></label>
+      <label><input type="radio" name="ow-normals" value="0"><span>Per vertex</span></label>
+    </div>
+  </fieldset>
+  <div class="ow-row">
+    <label for="ow-sea">Sea state</label>
+    <div class="ow-range">
+      <input id="ow-sea" type="range" min="0.4" max="1.6" step="0.05" value="1" aria-describedby="ow-sea-out">
+      <output id="ow-sea-out" for="ow-sea">1.00&times;</output>
+    </div>
+  </div>
+  <div class="ow-row">
+    <span>Camera</span>
+    <div class="ow-shot">
+      <small id="ow-shot-n">1 / 7</small>
+      <button class="ow-btn" id="ow-next" type="button">Next shot</button>
+    </div>
+  </div>
+  <p class="ow-hint">Drag to orbit &middot; scroll to zoom</p>
+</form>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prepare X Crosspost Drafts"
+  short_description: "Set up Threads and LinkedIn drafts safely"
+  default_prompt: "Use $prepare-x-crosspost-drafts to prepare this X post with the same media on Threads and LinkedIn, then stop before publishing."

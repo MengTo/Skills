@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prepare Social Post Launch"
+  short_description: "Prepare resource launches across social platforms."
+  default_prompt: "Use $prepare-social-post-launch to package the resources, validate channel-specific media, stage the requested social posts, and stop before publishing or activating automations."

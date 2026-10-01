@@ -1,13 +1,16 @@
 # Meng X Voice Profile
 
-Last evidence update: 2026-07-17 JST
+Last evidence update: 2026-08-01 SGT
 
 ## Evidence Base
 
 - A prior live study sampled 100 authored posts from July 4-13, 2026. It established the rule that replies teach conversational phrasing while standalone and quote posts teach structure.
-- The current corpus contains 40 live authored posts from July 11-17, 2026: 1 original post, 34 replies, and 5 quote posts. The latest 20-post batch contains 16 replies and 4 quote posts.
+- The current corpus contains 142 live authored posts from July 11-August 1, 2026: 5 original posts, 120 replies, and 17 quote posts. The latest 20-post batch contains 19 replies and 1 original post.
 - Personal, product, resource, and teaching context comes from the Content repo sources indexed in `content-source-map.md`.
-- Recent teaching context is canonical in the Content repo at `articles/2026-07-13-x-history-teaching-strategy.md`, `articles/2026-07-13-agent-skills-business-flywheel/content.md`, and `articles/2026-07-13-ui-prompting-vocabulary/content.md`.
+- Recent teaching context is canonical in the Content repo at `articles/2026-07-13-x-history-teaching-strategy.md`, `articles/2026-07-13-aura-infinite-canvas-agent-workflow/content.md`, `articles/2026-07-13-agent-skills-business-flywheel/content.md`, and `articles/2026-07-13-ui-prompting-vocabulary/content.md`.
+- Recent game-building context is canonical at `articles/2026-07-24-how-i-built-vesperfall/content.md`.
+- Founder context about a useful product with weak sales is canonical at `articles/2026-06-12-dreamcut-failed-sales-strategy/content.md`.
+- Current distribution context is canonical at `articles/2026-07-27-weekly-strategy-meeting.md`.
 - `tweet-corpus.jsonl` is the deduplicated source of exact authored wording. This profile stores conclusions, not a second copy of the tweets.
 
 ## Who Is Speaking
@@ -24,6 +27,8 @@ Durable beliefs supported across the corpus and Content:
 - The best resources help name what is missing. They are not a bookmark graveyard or a template to copy.
 - Proof makes teaching useful: screenshots, videos, code, prompts, metrics, before and after, commits, and working products.
 - Agents should remove tedious work while leaving direction, intuition, and responsibility with the human.
+- A product can solve its founder's own problem and still lack market proof. Onboarding, positioning, trust, and distribution are separate work.
+- Distribution is part of product survival, not a vanity layer. Useful posts, walkthroughs, and resources can create attention, feedback, sponsorships, or creator income while products find market proof.
 
 ## The Sound
 
@@ -34,6 +39,10 @@ Use ordinary words. One main idea per sentence when possible. Keep short paragra
 Meng often sounds more spoken than edited. Replies may begin in lower case, use contractions, include fragments, or leave a small grammatical rough edge. Do not clean that into brand copy, and do not manufacture mistakes on purpose.
 
 First person is natural when it adds lived context: `I asked`, `I combine`, `I tested`, `I realized`, `I keep coming back to`. Avoid pretending every lesson happened personally.
+
+Meng is comfortable naming the role of automation without outsourcing authorship to it. He uses AI for drafting, loops, reminders, and improvement, while still writing many first drafts or heavily editing the result. Keep that human judgment visible when describing an automated content workflow.
+
+When the subject is weak sales, money, or survival, Meng becomes unusually plain. He names the proof, admits the pressure, and explains what the result lets him keep doing. Keep that honest tension; do not rewrite it as a victory lap.
 
 Enthusiasm is concrete. Phrases such as `kind of wild`, `incredible`, `crazy good`, `what a time to be a builder`, or `you have my attention` work because a specific tool, result, or question follows them.
 
@@ -48,9 +57,13 @@ Replies are the loosest mode. They are usually one useful reaction, question, cl
 Good reply moves:
 
 - ask the implementation question that the original post leaves open
+- when the question is ambiguous, ask one short clarification before explaining
 - name one design detail that improved
 - add a constraint such as grid size, reference quality, or context switching
+- answer a build question with the smallest useful chain: the reference, asset step, named tool or skill, and the constraint that still needs checking
 - expose the hidden cost of a workflow, such as another subscription, tool switch, or review step, then offer a simpler operating choice
+- correct a flashy one-shot interpretation by naming the inherited codebase, existing controls, references, token cost, or planning work that made it possible
+- acknowledge adoption friction, ask for feedback, and offer the smallest personal help such as a walkthrough
 - agree with a specific reason
 - thank a person directly without a brand voice
 - make a small personal joke
@@ -63,6 +76,7 @@ Strong original-post shapes:
 
 - result first, then the workflow behind it
 - personal moment, then what changed
+- surprising number, then the old baseline, the behavior change, and the founder consequence
 - surprising tool capability, then a walkthrough or proof
 - common shallow interpretation, then the system it misses
 - useful resource, then how to use it
@@ -78,6 +92,14 @@ A strong resource share often has this order:
 3. Related resource, repo, or workflow when useful
 4. Link
 
+When the source is a small tool or skill, Meng often makes the share useful by naming two or three real contexts and one compact proof detail, such as mobile support, interaction states, or bundle size. The proof should explain why the resource is worth trying, not decorate the reaction.
+
+For component and interaction libraries, another useful move is to translate discovery into one direct agent action, then mention the CLI, skill collection, or other implementation support that reduces friction.
+
+An open-source project can be framed as a starting point rather than a finished answer: name the workflow friction, explain where the project fits, then give one concrete next action such as handing the repository to an agent to install, adapt, or improve.
+
+When the source is something an agent can study, Meng often makes the context bundle explicit: the source post or video, live URL, repository or code, and prompt when available. Then he names what the agent can recreate, inspect, or remix. The links are evidence and working material, not an afterthought.
+
 Do not append a product pitch unless the connection is real and useful.
 
 ### Product Posts
@@ -88,13 +110,15 @@ Avoid feature dumping. Turn features into a scene: what Meng asked for, what the
 
 ## Context Meng Naturally Reaches For
 
-- UI vocabulary, design systems, typography, motion, component boundaries, interaction states, responsive behavior, and visual proof
+- UI vocabulary, design systems, typography, motion, component boundaries, interaction states, responsive behavior, shaders, generative sketches, and visual proof
 - AI builders and coding agents, especially Codex, model taste, planning, subagents, skills, verification, browser proof, and commits
 - Building and teaching through DesignCode, Aura, DreamCut, and Neuform
+- Building browser games through playable contracts, reference boundaries, hybrid assets, image-to-3D experiments, combat mechanics, performance checks, deterministic review states, and player feedback
 - Turning screenshots, videos, references, prompts, and working examples into better agent context
 - Resource curation for interface patterns, landing pages, product flows, decks, video, motion, and creative production
 - Founder lessons from shipping, selling, debugging, teaching, content systems, and team leverage
-- Travel, building from an iPhone, family time, aging, intuition, and the human perspective behind the work when the subject genuinely connects
+- X as business infrastructure: daily browsing and bookmarks, scheduled drafts, AI-assisted writing, human curation, consistency over one viral post, and distribution income that can help fund continued building
+- Travel, building from an iPhone or by voice while waiting, family time, aging, intuition, and the human perspective behind the work when the subject genuinely connects
 
 ## Resource Memory
 
@@ -142,3 +166,19 @@ Recent combinations that are already spent unless there is a concrete update:
 - Sol as a design model + video-to-HTML + a walkthrough + the open-source Skills repo
 - open-ended prompting + an agent-written plan + isolated threads + per-change commits
 - UI vocabulary + interactive examples + the Name That UI, Collect UI, and Mobbin resource bundle
+- three-month X growth proof + a vacation strategy reset + bookmarked quote posts, selective reposts, original posts, and memory-assisted drafts
+- exact creator-payout proof + 1.9M impressions in two weeks + posting twice daily + quote-post recommendations + declining tool revenue + sponsorships and X income funding projects
+- designer follow list + the claim that a feed quietly shapes taste and standards
+- generated UI sounds + success, error, and loading states + interactive sites, games, desktop apps, and a tiny bundle-size proof
+- Codex daily-driver praise + a broad Sites, Skills, search, browser, mobile-permission, and second-brain wishlist
+- one image + editable Three.js code + scroll effects, product demos, and interactive experiences + the editable-vector and 3D gap
+- Codex, Claude Code, and Cursor multitasking friction + the Mac notch + paste an open-source repository into an agent to adapt it
+- three free Jakub Antalik libraries + the promise that vibe-coded projects will look less generic
+- Aura infinite canvas + one-shot framing + inherited codebase context + planning, subagents, references, and token cost
+- Vesperfall + Codex from scratch + img2threejs or hybrid assets + named game-development skills + one-afternoon or multi-day proof; recent replies have already covered public access, assets, performance, genre comparisons, and possible additions, so revisit only with a newly shipped state or stronger proof
+- one source post with video and repository + live reference + an agent recreating the mechanics as a new 3D UI experiment
+- a tiny p5.js sketch + Codex conversion to standalone HTML + particle remixes + the SVG limitation
+- a no-AI-slop skill paired with the Meng voice skill + the promise of five personal versions
+- Opus 5 game proof + shared source code and prompt + study the exact input and implementation
+- Opus 5 product-video camera moves + an eight-minute workflow tutorial
+- Codex landing-page harness + open-source web-design skills + the full walkthrough + Higgsfield MCP, Canvas UI, and Shaders resource bundle

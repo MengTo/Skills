@@ -161,6 +161,8 @@ attribute vec3 aPrev;
 attribute vec3 aNext;
 attribute vec4 aData;   // side (-1|1), along (0..1), width (world), min width (px)
 attribute vec4 aExtra;  // intensity, core share, anchor slot (-1: world), 1: inside the orb, 2: lying on the ground
+attribute vec3 aGrow;   // when the leader reaches this point (0..1 of the bolt's growth), the bolt's birth (arc clock), growth time (s)
+uniform float uArcTime;
 uniform vec2 uResolution;
 uniform float uMaxPx;
 uniform vec3 uAnchor[4];
@@ -197,6 +199,12 @@ void main(){
 #endif
   c.xy += n * aData.x * px * .5 / hr * c.w;
   float I = aExtra.x;
+  // The stepped leader: the channel reaches out from its origin (forks from their junctions) over aGrow.z
+  // seconds with a bright tip, then the return stroke flares the whole channel as it connects.
+  float age = uArcTime - aGrow.y, prog = aGrow.z > 0. ? age / aGrow.z : 9.;
+  float tip = (1. - smoothstep(0., .14, abs(prog - aGrow.x))) * step(prog, 1.1);
+  float ret = prog >= 1. ? exp(-(age - aGrow.z) * 20.) : 0.;
+  I *= smoothstep(aGrow.x - .07, aGrow.x, prog) * (1. + tip * 1.3 + ret * .8);
   if (aExtra.w > 1.5) c.z -= 6e-4 * c.w;   // lying on the ground: seen at a grazing angle the stone would eat half the ribbon
   else if (aExtra.w > .5) {            // behind the core the storm cloud hides most of an arc
     float z = dot(P - uOrb.xyz, normalize(cameraPosition - uOrb.xyz)) / max(uOrb.w, 1e-3);
@@ -254,11 +262,12 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     uTime: { value: 0 },
     uResolution: { value: res },
     uDpr: { value: 1 },
+    uArcTime: { value: 0 },           // the lightning's own clock: it stops in a hold, never below arcFloor in slow motion
     tNoise: { value: null },          // baked in the post section below
   };
 
   // ---------------------------------------------------------------- clock
-  const clock = { sim: 0, real: 0, hold: 0, base: 1, arcAcc: 0, arcPhase: 0, rampFrom: 1, rampTo: 1, rampT: 1, rampDur: 0, rampValue: 1 };
+  const clock = { sim: 0, real: 0, hold: 0, base: 1, arcAcc: 0, arcPhase: 0, arcTime: 0, rampFrom: 1, rampTo: 1, rampT: 1, rampDur: 0, rampValue: 1 };
   function ramp(to, seconds = 0.4) {
     clock.rampFrom = clock.rampValue; clock.rampTo = to; clock.rampT = 0; clock.rampDur = Math.max(seconds, 1e-4);
   }
@@ -292,6 +301,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   const ringP = new Float32Array(RINGP * 3);
   const sOff = new Float64Array(RINGS), sN = new Uint16Array(RINGS), sW = new Float32Array(RINGS), sPx = new Float32Array(RINGS);
   const sI = new Float32Array(RINGS), sDepth = new Uint8Array(RINGS), sSeed = new Float32Array(RINGS);
+  const sArr0 = new Float32Array(RINGS), sArrK = new Float32Array(RINGS);   // when the leader reaches the strip's start, and its span
   let pAlloc = 0, sAlloc = 0, boltsDirty = true;
   const bolts = [];
   for (let i = 0; i < MAXBOLTS; i++) bolts.push({ alive: false, s0: 0, sc: 0, p0: 0, gen: { a: new V3(), b: new V3(), bend: new V3(), hasBend: false, levels: 4, jag: 0.2 }, anchor: null, slot: -1, inner: 0, flat: null, shell: 0, inside: 0, width: 0.04, minPx: 8, I: 1, life: 2, age: 0, seed: 0, branches: 1, twigs: 3, jag: 0.2, from: null });
@@ -346,12 +356,12 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     else if (B.shell > 0) for (let i = 0; i < n; i++) { const i3 = i * 3, l = Math.hypot(P[i3], P[i3 + 1], P[i3 + 2]) || 1, k = B.shell / l; P[i3] *= k; P[i3 + 1] *= k; P[i3 + 2] *= k; }
     else if (B.inside > 0) for (let i = 0; i < n; i++) { const i3 = i * 3, l = Math.hypot(P[i3], P[i3 + 1], P[i3 + 2]); if (l > B.inside) { const k = B.inside / l; P[i3] *= k; P[i3 + 1] *= k; P[i3 + 2] *= k; } }
   }
-  function allocStrip(P, n, width, px, I, depth, seed) {
+  function allocStrip(P, n, width, px, I, depth, seed, arr0 = 0, arrK = 1) {
     let o = pAlloc % RINGP;
     if (o + n > RINGP) { pAlloc += RINGP - o; o = 0; }      // strips never wrap: they stay contiguous
     ringP.set(P.subarray(0, n * 3), o * 3);
     const s = sAlloc % RINGS;
-    sOff[s] = pAlloc; sN[s] = n; sW[s] = width; sPx[s] = px; sI[s] = I; sDepth[s] = depth; sSeed[s] = seed;
+    sOff[s] = pAlloc; sN[s] = n; sW[s] = width; sPx[s] = px; sI[s] = I; sDepth[s] = depth; sSeed[s] = seed; sArr0[s] = arr0; sArrK[s] = arrK;
     pAlloc += n;
     return sAlloc++;
   }
@@ -367,8 +377,12 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   // inside the orb, dimmed where it passes behind the core. twigs: fork depth (3 = forks of
   // forks of forks), twigK: how many twigs each fork throws, core: the white core's share.
   // path: a polyline [x,y,z,...] to follow instead of a generated zigzag (arcs along ground
-  // cracks). hit: false stops a bolt that ends on the ground from striking it.
-  function bolt(a, b, { levels = 5, jag = 0.2, width = 0.04, minPx = 8, intensity = 1, life = 2, branches = 1, anchor = null, bend = null, flat = null, shell = 0, inside = 0, inner = false, twigs = 3, twigK = 1, core = 1, forkLen = 1, path = null, hit = true } = {}) {
+  // cracks). hit: false stops a bolt that ends on the ground from striking it. fringe: how many
+  // hair-fine branchlets line the trunk and first forks. hold: keep this shape at full strength for
+  // its whole life (in ticks) instead of stepping down each tick: a channel that re-rolls every
+  // 1/30 s strobes, one held for 4-9 ticks reads as a living arc. leader: seconds the channel takes to
+  // reach out from its origin before the return stroke flares (default by length; 0 = at once).
+  function bolt(a, b, { levels = 5, jag = 0.2, width = 0.04, minPx = 8, intensity = 1, life = 2, branches = 1, anchor = null, bend = null, flat = null, shell = 0, inside = 0, inner = false, twigs = 3, twigK = 1, core = 1, forkLen = 1, fringe = 1, hold = false, leader = -1, path = null, hit = true } = {}) {
     const B = freeBolt();
     let slot = anchorSlot(anchor);
     const ax = anchor && slot < 0 ? anchor : null;          // no anchor slot left: bake it in
@@ -376,9 +390,10 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     const big = R(0.85, 1.45);                       // not every trunk is the same weight
     const tween = options.lightning === 'tween';
     B.alive = true; B.anchor = anchor; B.slot = anchor ? slot : -1; B.inner = inner ? 1 : 0;
-    B.flat = flat === true ? 0.012 : flat; B.shell = shell; B.inside = inside;
-    B.width = width * big; B.minPx = minPx * big; B.I = intensity; B.branches = branches; B.twigs = twigs; B.twigK = twigK; B.jag = jag; B.coreK = core; B.forkLen = forkLen;
+    B.flat = flat === true ? 0.012 : flat; B.shell = shell; B.inside = inside; B.birth = clock.arcTime;
+    B.width = width * big; B.minPx = minPx * big; B.I = intensity; B.branches = branches; B.twigs = twigs; B.twigK = twigK; B.jag = jag; B.coreK = core; B.forkLen = forkLen; B.fringe = fringe; B.hold = hold;
     B.life = tween ? life * 5 : life; B.age = 0; B.seed = rnd();
+    if (hold && !tween) { B.holdLife = B.life; B.life += 2; }   // two dim ticks of afterglow: a channel fades, it never blinks out
     B.gen.a.copy(a); B.gen.b.copy(b); if (ax) { B.gen.a.add(ax); B.gen.b.add(ax); }
     let len = B.gen.a.distanceTo(B.gen.b), n;
     B.gen.levels = Math.min(levels + (len > 1.5 ? 1 : 0), 7); B.gen.jag = jag;   // long bolts get a finer level
@@ -395,6 +410,8 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     } else n = shape(SHP, B.gen);
     confine(B, SHP, n);
     if (B.from) B.from.set(SHP.subarray(0, n * 3));
+    B.growT = tween ? 0 : leader >= 0 ? leader : inner ? 0.03 : Math.min(0.09, 0.03 + 0.014 * len);   // the leader's reach, seconds
+    B.len0 = len;
     B.p0 = pAlloc; B.s0 = allocStrip(SHP, n, B.width, B.minPx, 1, 0, B.seed); B.sc = 1;
     if (!tween && branches > 0 && twigs > 0) grow(B, B.s0, len, 0, len / (1 << B.gen.levels) * 1.3);
     boltsDirty = true;
@@ -402,7 +419,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     _hs.copy(B.gen.a); _he.copy(B.gen.b); if (anchor) { _hs.add(anchor); _he.add(anchor); }
     if (len * intensity > 0.6) { _a.addVectors(_hs, _he).multiplyScalar(0.5); flashLight(2, _a, Math.min(len * intensity * 2.2, 26), 18); }
     // a bolt that comes down onto the stone strikes it: flash, crawling arcs, lit cracks
-    if (hit && B.flat === null && !inner && _he.y < 0.16 && _hs.y > _he.y + 0.3) groundStrike(_he, intensity, len);
+    if (hit && B.flat === null && !inner && _he.y < 0.16 && _hs.y > _he.y + 0.3) pendingStrikes.push({ t: clock.arcTime + B.growT, p: _he.clone(), I: intensity, len, life: B.holdLife || B.life });   // the ground flashes when the leader arrives
     return B;
   }
   const _hs = new V3(), _he = new V3(), _hp = new V3(), _hd = new V3(), _hq = new V3(), _ht = new V3();
@@ -437,16 +454,44 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       const m = shape(SHP, F); confine(B, SHP, m);
       F.a.copy(keepA); F.b.copy(keepB); F.levels = keepL; F.jag = B.jag; F.hasBend = keepBend;
       const d1 = depth + 1, wk = 0.75 + 0.5 * Math.min(1, fl / (len * 0.5));
-      const sj = allocStrip(SHP, m, B.width * FORK_W[d1] * wk, B.minPx * FORK_PX[d1] * wk, FORK_I[d1] * R(0.75, 1.15), d1, rnd());
+      const sj = allocStrip(SHP, m, B.width * FORK_W[d1] * wk, B.minPx * FORK_PX[d1] * wk, FORK_I[d1] * R(0.75, 1.15), d1, rnd(), sArr0[s] + (i / (n - 1)) * sArrK[s], fl / Math.max(B.len0, 1e-3));
       B.sc++;
       grow(B, sj, fl, d1, seg);
       _hd.set(ringP[o + (n - 1) * 3] - ringP[o], ringP[o + (n - 1) * 3 + 1] - ringP[o + 1], ringP[o + (n - 1) * 3 + 2] - ringP[o + 2]).normalize();
     }
+    if (depth < 2 && B.fringe > 0) fringe(B, si, len, depth, seg);
+  }
+  // Hair-fine branchlets every few points along a trunk or first fork: short, dim, splayed. They make a
+  // channel read as lightning (fine detail all along it) without making its core any bolder.
+  function fringe(B, si, len, depth, seg) {
+    const s = si % RINGS, n = sN[s]; if (n < 5) return;
+    const o = (sOff[s] % RINGP) * 3;
+    const count = Math.min(24, Math.round((n / 6) * B.fringe * (depth ? 0.6 : 1) * R(0.7, 1.2)));
+    for (let k = 0; k < count; k++) {
+      const i = 1 + ((rnd() * (n - 2)) | 0), i3 = o + i * 3;
+      const fl = len * R(0.012, 0.05) * (depth ? 1.4 : 1);
+      if (fl < seg * 0.8) continue;
+      _hp.set(ringP[i3], ringP[i3 + 1], ringP[i3 + 2]);
+      _ht.set(ringP[i3 + 3] - ringP[i3 - 3], ringP[i3 + 4] - ringP[i3 - 2], ringP[i3 + 5] - ringP[i3 - 1]).normalize();
+      _hq.set(R(-1, 1), R(-1, 1), R(-1, 1)); _hq.addScaledVector(_ht, -_ht.dot(_hq)).normalize();
+      const th = R(0.5, 1.3);
+      _ht.multiplyScalar(Math.cos(th)).addScaledVector(_hq, Math.sin(th));
+      if (B.flat !== null) _ht.y = 0;
+      else if (B.shell > 0) { _hq.copy(_hp).normalize(); _ht.addScaledVector(_hq, -_hq.dot(_ht)); }
+      _ht.normalize();
+      const F = B.gen, keepA = _hs.copy(F.a), keepB = _he.copy(F.b), keepL = F.levels, keepBend = F.hasBend;
+      F.a.copy(_hp); F.b.copy(_hp).addScaledVector(_ht, fl); F.levels = 2; F.jag = B.jag * 2; F.hasBend = false;   // two kinks at least: a straight hair read as white fur
+      const m = shape(SHP, F); confine(B, SHP, m);
+      F.a.copy(keepA); F.b.copy(keepB); F.levels = keepL; F.jag = B.jag; F.hasBend = keepBend;
+      allocStrip(SHP, m, B.width * 0.09, B.minPx * 0.14, R(0.18, 0.32), 4, rnd(), sArr0[s] + (i / (n - 1)) * sArrK[s], fl / Math.max(B.len0, 1e-3));
+      B.sc++;
+    }
   }
   // Where a bolt meets the stone: a flash, arcs crawling flat away from it, heat in the cracks, light.
   let strikeSlot = 0, lastChips = -1, strikeLoad = 0;
+  const pendingStrikes = [];
   const _gs = new V3(), _gd = new V3();
-  function groundStrike(p, intensity = 1, len = 2) {
+  function groundStrike(p, intensity = 1, len = 2, life = 2) {
     const k = Math.min(1.4, 0.55 + len * 0.2) * Math.min(1.3, intensity);
     _gs.set(p.x, 0.012, p.z);
     glint(_gs, { size: 0.22 * k, intensity: 1.3 * k, type: 0, life: 0.1 });      // a small white-hot point; the pool round it is the light below on wet stone
@@ -457,7 +502,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       const ang = a0 + (c / crawl) * 6.28 + R(-0.5, 0.5), L = R(0.6, 1.8) * k;
       const path = options.crackPath ? options.crackPath(_gs.x, _gs.z, ang, L) : null;
       _gd.set(_gs.x + Math.cos(ang) * L, 0.012, _gs.z + Math.sin(ang) * L);
-      bolt(_gs.clone(), _gd.clone(), { levels: 5, jag: 0.32, width: 0.018, minPx: 4, intensity: 0.85 * intensity, life: 2, branches: 1, twigs: 2, flat: 0.012, path, hit: false });
+      bolt(_gs.clone(), _gd.clone(), { levels: 5, jag: 0.32, width: 0.014, minPx: 3, intensity: 0.55 * intensity, core: 0.6, life: Math.max(2, life), hold: life > 2, branches: 1, twigs: 2, flat: 0.012, path, hit: false });
     }
     if (clock.sim - lastChips > 0.3) {               // a spray of chips and dust off the hit (not on every return stroke)
       lastChips = clock.sim;
@@ -472,30 +517,34 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   const STEP_I = [1.0, 0.55, 0.28, 0.14, 0.07];
   function boltIntensity(B) {
     if (options.lightning === 'tween') return B.I * Math.max(0, 1 - (B.age + clock.arcPhase) / B.life);
+    if (B.hold) {
+      const left = B.holdLife - B.age;   // 1 on the last held tick, then 0 and -1: the afterglow
+      return B.I * (left > 1 ? 0.9 + 0.1 * ((B.seed * 7.31 + B.age * 0.37) % 1) : left === 1 ? 0.55 : left === 0 ? 0.2 : 0.07);
+    }
     return B.I * STEP_I[Math.min(B.age, 4)] * (0.75 + 0.25 * ((B.seed * 7.31 + B.age * 0.37) % 1));
   }
 
   const BV = POINT_BUDGET * 2;
   const boltGeo = new THREE.BufferGeometry();
   const bPos = new Float32Array(BV * 3), bPrev = new Float32Array(BV * 3), bNext = new Float32Array(BV * 3);
-  const bData = new Float32Array(BV * 4), bExtra = new Float32Array(BV * 4);
+  const bData = new Float32Array(BV * 4), bExtra = new Float32Array(BV * 4), bGrow = new Float32Array(BV * 3);
   const bIndex = new Uint32Array(POINT_BUDGET * 6);
   const dyn = (arr, n) => new THREE.BufferAttribute(arr, n).setUsage(THREE.DynamicDrawUsage);
   boltGeo.setAttribute('position', dyn(bPos, 3)); boltGeo.setAttribute('aPrev', dyn(bPrev, 3)); boltGeo.setAttribute('aNext', dyn(bNext, 3));
-  boltGeo.setAttribute('aData', dyn(bData, 4)); boltGeo.setAttribute('aExtra', dyn(bExtra, 4)); boltGeo.setIndex(dyn(bIndex, 1));
+  boltGeo.setAttribute('aData', dyn(bData, 4)); boltGeo.setAttribute('aExtra', dyn(bExtra, 4)); boltGeo.setAttribute('aGrow', dyn(bGrow, 3)); boltGeo.setIndex(dyn(bIndex, 1));
   const boltMat = new THREE.ShaderMaterial({
-    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr, uMaxPx: { value: 30 }, uCore: { value: new V3(0.92, 0.95, 1) }, uGlow: { value: new V3() }, uAnchor: { value: anchorU }, uOrb: { value: new THREE.Vector4(0, -100, 0, 1) } },
+    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr, uMaxPx: { value: 30 }, uCore: { value: new V3(0.92, 0.95, 1) }, uGlow: { value: new V3() }, uAnchor: { value: anchorU }, uOrb: { value: new THREE.Vector4(0, -100, 0, 1) }, uArcTime: uniforms.uArcTime },
     vertexShader: BOLT_VERT,
     fragmentShader: /* glsl */`
       uniform vec3 uCore; uniform vec3 uGlow; uniform float uDpr;
       varying vec4 vData; varying vec2 vExtra; varying float vPx; varying float vDepth;
       void main(){
         float s = abs(vData.x), hw = vPx * .5, px = s * hw;
-        float coreR = max(.45 * uDpr, min(hw * .115 * vExtra.y, 2. * uDpr));  // trunks carry wider cores than twigs, but never a fat tube
+        float coreR = max(.4 * uDpr, min(hw * .09 * vExtra.y, 1.25 * uDpr));  // trunks carry wider cores than twigs, but never a fat tube
         float core = exp(-(px * px) / (coreR * coreR));
         float glow = exp(-px / max(hw * .22, .8 * uDpr)) * (1. - s);          // a tight blue glow round the core
         float halo = (1. - s) * (1. - s) * (1. - s);                          // and a wide faint one out to the ribbon's edge
-        vec3 c = uCore * core * 6. * vExtra.y + uGlow * (glow * 2.2 + halo * .55);   // twigs are mostly glow: hair-fine and blue
+        vec3 c = uCore * core * 3.8 * vExtra.y + uGlow * (glow * 1.45 + halo * .38);   // a fine white core in a soft glow; twigs are mostly glow
         gl_FragColor = vec4(c * vExtra.x * smoothstep(.5, 1.8, vDepth), 1.);   // fade by the lens
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
@@ -532,7 +581,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     arrs.extra[v2] = e0; arrs.extra[v2 + 1] = e1;
   }
   const TMP = new Float32Array(MAXP * 3);
-  const CORE_SHARE = [1, 0.78, 0.6, 0.48];
+  const CORE_SHARE = [1, 0.7, 0.45, 0.34, 0.26];   // the finer a strand, the more of it is blue glow   // depth 4: the fringe, almost all glow
   function buildBolts() {
     const tween = options.lightning === 'tween';
     if (!boltsDirty && !tween) return;
@@ -552,6 +601,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
           P = TMP; o = 0;
         }
         const depth = sDepth[si], seed = sSeed[si], I = I0 * sI[si], W = sW[si], PX = sPx[si], share = CORE_SHARE[depth];
+        const a0 = sArr0[si], aK = sArrK[si], gT = B.growT, bt = B.birth;
         const base = v;
         for (let i = 0; i < n; i++) {
           const i3 = o + i * 3, p3 = o + Math.max(i - 1, 0) * 3, n3 = o + Math.min(i + 1, n - 1) * 3;
@@ -560,6 +610,8 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
           const taper = depth ? 0.12 + 0.88 * Math.pow(1 - t, 1.1) : (1 - 0.8 * Math.pow(t, 1.4)) * (0.8 + 0.25 * Math.sin(i * 0.7 + seed * 40));
           // brightness pulses along the channel: a real stroke is never one even value
           const wob = (0.62 + 0.24 * Math.sin(t * 8.3 + seed * 61) + 0.14 * Math.sin(t * 21.7 + seed * 17)) * (depth ? 1 : 1.12 - 0.3 * t);
+          // beads: a few hot knots along trunks and first forks, where the channel kinks
+          const hb = depth < 2 ? (Math.sin((i + 1) * 12.9898 + seed * 78.233) * 43758.5453) % 1 : 0, bead = Math.abs(hb) > 0.9 ? 1.65 : 1;
           const w = W * taper, mp = PX * taper;
           for (let sd = -1; sd <= 1; sd += 2) {
             const v3 = v * 3, v4 = v * 4;
@@ -567,7 +619,8 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
             bPrev[v3] = P[p3]; bPrev[v3 + 1] = P[p3 + 1]; bPrev[v3 + 2] = P[p3 + 2];
             bNext[v3] = P[n3]; bNext[v3 + 1] = P[n3 + 1]; bNext[v3 + 2] = P[n3 + 2];
             bData[v4] = sd; bData[v4 + 1] = t; bData[v4 + 2] = w * 3; bData[v4 + 3] = mp * dpr * 3;
-            bExtra[v4] = I * wob; bExtra[v4 + 1] = share * B.coreK; bExtra[v4 + 2] = B.slot; bExtra[v4 + 3] = B.flat !== null ? 2 : B.inner;
+            bGrow[v * 3] = a0 + t * aK; bGrow[v * 3 + 1] = bt; bGrow[v * 3 + 2] = gT;
+            bExtra[v4] = I * wob * bead; bExtra[v4 + 1] = share * B.coreK; bExtra[v4 + 2] = B.slot; bExtra[v4 + 3] = B.flat !== null ? 2 : B.inner;
             v++;
           }
         }
@@ -578,7 +631,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         }
       }
     }
-    for (const name of ['position', 'aPrev', 'aNext', 'aData', 'aExtra']) { const at = boltGeo.getAttribute(name); at.needsUpdate = true; at.clearUpdateRanges?.(); at.addUpdateRange?.(0, v * at.itemSize); }
+    for (const name of ['position', 'aPrev', 'aNext', 'aData', 'aExtra', 'aGrow']) { const at = boltGeo.getAttribute(name); at.needsUpdate = true; at.clearUpdateRanges?.(); at.addUpdateRange?.(0, v * at.itemSize); }
     boltGeo.index.needsUpdate = true; boltGeo.index.clearUpdateRanges?.(); boltGeo.index.addUpdateRange?.(0, idx);
     boltGeo.setDrawRange(0, idx);
     stat.points = v >> 1;
@@ -752,6 +805,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         float tatter = tfbm2(vec3(vExtra.x * 3.4 - uTime * .3, v * 3.8, vExtra.y * 1.7 + uTime * .45)) * 1.3;   // fine rips along the edge
         // the noise moves the edge by most of the half-width, so the outline is torn, never the ribbon's side
         float d = across * 1.45 - .45 + n * .85 + tatter * .55;             // no lengthwise streak term: it drew striations
+        d += (tn(vec3(vExtra.x * .7 - uTime * .3, v * 9., vExtra.y * .7)).x - .1) * .3 * v * v;   // ...except at the sides: frayed fibres
         float th = mix(.32 + vData.w, 1.05, pow(age, .8));      // erosion rises with age (vData.w: the trail's erode)
         float a = smoothstep(th - .08, th + .3, d) * vData.z * smoothstep(.8, 2.6, vDepth);   // vData.z: opacity; fade near the lens
         a *= smoothstep(0., .16, across);                      // whatever the noise, nothing reaches the ribbon's side
@@ -850,13 +904,15 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       varying vec2 vQ; varying vec4 vA; varying vec4 vB; varying float vT; varying float vY;
       void main(){
         float age = vA.z, seed = vA.w;
-        float a;
+        float a; vec3 tint = vB.rgb;
         if (vT < .5) {
           // billow: soft disc broken by noise, eroding as it ages
           float r = length(vQ);
           float n = (tfbm3(vec3(vQ * 2.1, seed + age * 1.1)) + tn(vec3(vQ * 6.4, seed * 1.3 + age * 2.)).w * .14) * .5 + .5;
+          n += (tn(vec3(vQ.x * 14., vQ.y * 2.4, seed + age)).y * .14 + tn(vec3(vQ.x * 31., vQ.y * 5., seed * 1.7)).x * .07) * smoothstep(.25, 1., r);   // fibres along the billow's stretch fray its rim
           float th = mix(.16, .78, age);
           a = smoothstep(th, th + .07, n * smoothstep(1., .2, r));   // a crisp, torn edge: a soft one read as an out-of-focus smear
+          tint *= .65 + .7 * n;                                      // and inside it, darker and lighter folds
         } else {
           // flake: an irregular torn polygon, like ash or a scrap of cloak
           float ang = atan(vQ.y, vQ.x);
@@ -866,7 +922,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         }
         a *= vB.a * (1. - smoothstep(.75, 1., age));
         a *= smoothstep(0., .22, vY);                       // a soft particle against the ground plane: no straight cut line
-        gl_FragColor = vec4(vB.rgb * a, a);
+        gl_FragColor = vec4(tint * a, a);
       }`,
     transparent: true, depthWrite: false,
     blending: THREE.CustomBlending, blendEquation: THREE.AddEquation,
@@ -1264,10 +1320,12 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     // the storm cloud: domain-warped noise turning round the punch axis, the inside a little faster.
     // The second and third octaves are billowed (abs): rounded lobes with creases between them.
     vec3 cloudCoord(vec3 p, float r){
-      gAng = gSpin + (1. - r) * .45;                       // a little faster inside; more shear smeared the billows into streaks
+      gAng = gSpin + (1. - r) * .25;                       // a slow turn, a little faster inside
       vec3 q = rot(p, uAxis, gAng);
-      vec3 w = tn(q * .75 + vec3(0., uTime * .1, 4.2)).xyz;
-      return q * 2.5 + w * .8 + vec3(uTime * .06, 0., uTime * .21);
+      // the warp field drifts through the cloud, so the billows churn and boil in place; scrolling the
+      // cloud itself (and spinning it fast) read as a texture sliding over the ball
+      vec3 w = tn(q * .7 + vec3(uTime * .09, uTime * .16, 4.2 - uTime * .07)).xyz;
+      return q * 2.5 + w * .95;
     }
     float cloudAt(vec3 s, bool fine){
       // a high-contrast field, so billows get crisp edges and bright bodies instead of a uniform fog
@@ -1307,7 +1365,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         const int N = 28;
         float dt = (t1 - t0) / float(N);
         float t = t0 + dt * fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
-        gSpin = uTime * (.45 + .7 * uPressure);
+        gSpin = uTime * (.05 + .07 * uPressure);
         vec3 co = uCoreOff;
         float tc = dot(co - ro, rd), dcore = length(ro + rd * tc - co), transC = 1.;
         float Ic = (.5 + 1.1 * uPressure);   // the core lights the middle; the walls stay storm-dark
@@ -1315,7 +1373,8 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         // light it with a normal from the field's gradient. As a soft volume every billow blurred into fog.
         float ta = t0, tb = -1.;
         for (int i = 0; i < N; i++) {
-          if (fieldC(ro + rd * t) > 0.) { tb = t; break; }
+          vec3 pm = ro + rd * t;
+          if (fieldC(pm) > -.06 && field(pm) > 0.) { tb = t; break; }   // the cheap field finds it, the full one confirms: stepped edges otherwise
           ta = t; t += dt;
         }
         vec3 base = vec3(.17, .27, 1.);
@@ -1415,15 +1474,24 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
           // torn tongues: noise squeezed across the tail and streaming down it
           float tongues = tfbm3(vec3(pe * 2.4, al * .55 - uTime * 2.6, 3.7));
           float wisps = tn(vec3(pe * 6.5, al * 1.4 - uTime * 3.4, 9.1)).x;
-          float d = abs(pe) - halfW * (1. + .7 * tongues + .35 * wisps * (.3 + t));
+          // dry-brush fibres: noise stretched down the tail cuts the edge into streaks (two scales)
+          float fib = tn(vec3(pe * 22., al * .7 - uTime * 2.2, 31.)).x * .55 + tn(vec3(pe * 57., al * 1.6 - uTime * 2.8, 47.)).y * .45;
+          float d = abs(pe) - halfW * (1. + .7 * tongues + .35 * wisps * (.3 + t)) - fib * .3 * (.45 + t);
           float mass = 1. - smoothstep(-.02, .035, d);                  // a crisp torn edge: a soft one read as a blurred backdrop
+          float edgeBand = smoothstep(-.28, 0., d);                     // 1 at the rim, 0 deep inside
+          mass *= 1. - edgeBand * smoothstep(.05, .5, fib) * .8;       // the rim's strokes go partly see-through, like a brush running dry
           mass *= 1. - smoothstep(.7, .95, t + .25 * tongues);          // the tip shreds away
           mass *= smoothstep(-1.6, -.9, al);
           float rips = tn(vec3(pe * 4.2, al * 1.1 - uTime * 3., 21.)).z;  // torn holes opening toward the tip
           mass *= 1. - smoothstep(.15, .35, rips + t * .5 - .35) * smoothstep(.15, .5, t);
           mass *= smoothstep(3.3, 2.3, r) * (1. - smoothstep(.8, .98, max(abs(vP.x), abs(vP.y))));   // round, never the quad's edge
-          float a = mass * uDensity;
-          gl_FragColor = vec4(uSmoke * a, a);              // pure black: a lit edge read as blue haze
+          // flecks tearing off just outside the edge, more of them down the tail
+          float fleck = smoothstep(.54, .62, tn(vec3(vQ * 11. + uTrail * uTime * .9, 53.)).z) * step(0., d) * smoothstep(.35, .03, d) * (.4 + t);
+          float a = max(mass, fleck * .85) * uDensity;
+          // inside, never one flat black: slow charcoal billows drift through it (no lit edge: that read as blue haze)
+          float inner = tfbm2(vec3(vQ * 1.6 - uTrail * uTime * .4, 61.)) * .5 + .5;
+          vec3 c = uSmoke * (.55 + .9 * inner) + vec3(.0028, .0034, .0048) * smoothstep(.5, .9, inner) * (1. - edgeBand);
+          gl_FragColor = vec4(c * a, a);
         }`,
       transparent: true, depthWrite: false, depthTest: false,
       blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
@@ -1496,7 +1564,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       if (O.instability > 0.45 && t > O.nextKick) {     // unstable: expand, compress, collapse, re-expand
         O.pulse(R(-0.32, 0.26) * O.instability); O.nextKick = t + R(0.12, 0.32);
       }
-      const breathe = 1 + 0.035 * Math.sin(t * 9) + 0.05 * O.instability * Math.sin(t * 17 + 1.3);
+      const breathe = 1 + 0.02 * Math.sin(t * 4) + 0.03 * O.instability * Math.sin(t * 7.3 + 1.3);   // a slow breath: a fast wobble read as jitter
       const r = Math.max(0.001, O.radius * O.scale * breathe);
       O.u.uRadius.value = r; O.u.uInstab.value = O.instability; O.u.uPressure.value = O.pressure;
       O.u.uMode.value = options.orb === 'glow' ? 1 : 0;
@@ -1593,6 +1661,9 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   function orbTick(O) {
     if (!O.visible || O.radius < 0.05) { O.u.uArcN.value = 0; return; }
     const r = O.u.uRadius.value, rate = O.arcRate;
+    // Outside the orb, one discharge at a time: a strike, a leap or a crackle, each held, then the next.
+    // Several at once (two leaps a tick, crackles and a strike together) read as a firework.
+    const busy = () => O.strikeLeft > 0 || arcTicks < (O.extUntil || 0);
     // The storm inside, plasma-globe style: 10-15 jagged arcs from the core to the inner wall. Their
     // wall ends drift slowly and the shapes re-roll every tick, so each channel flickers in place;
     // a few arcs crawl along the inner wall from where a channel lands. The cloud gets their light.
@@ -1613,15 +1684,20 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         _oc.set(Math.cos(fp) * fr, fy, Math.sin(fp) * fr);
         if (rnd() < 0.06) randUnit(C.jit).multiplyScalar(0.32);
         C.d.lerp(_oc.add(C.jit).normalize(), 0.35).normalize();
-        C.on = i < want && rnd() > 0.1 ? 1 : 0;
-        if (C.on) {
-          _oa.copy(O.coreOff).multiplyScalar(r); _ob.copy(C.d).multiplyScalar(r * 0.965);
-          bolt(_oa, _ob, { levels: lv, jag: 0.26, width: 0.095 * r, minPx: mpx, intensity: I * R(0.75, 1.15), life: 1, anchor: O.position, inside: r * 0.97, inner: true, branches: 1.2, twigs: 2, twigK: 0.9, core: 0.6, hit: false });
-          if (rnd() < 0.3) {                                               // and crawls on along the inner wall
-            randUnit(_oc); _oc.addScaledVector(C.d, -C.d.dot(_oc)).normalize();
-            const th = R(0.35, 0.9);
-            _oa.copy(C.d).multiplyScalar(r * 0.97); _ob.copy(C.d).multiplyScalar(Math.cos(th)).addScaledVector(_oc, Math.sin(th)).multiplyScalar(r * 0.97);
-            bolt(_oa, _ob, { levels: 4, jag: 0.3, width: 0.035 * r, minPx: mpx * 0.65, intensity: I * 0.8, life: 1, anchor: O.position, shell: r * 0.975, inner: true, branches: 1, twigs: 2, twigK: 1.5, core: 0.5, hit: false });
+        // each channel holds one shape for 4-9 ticks (130-300 ms), then re-rolls: re-rolled every tick it strobed
+        C.left = (C.left || 0) - 1;
+        if (C.left <= 0) {
+          const H = 4 + ((rnd() * 6) | 0);
+          C.left = H; C.on = i < want && rnd() > 0.15 ? 1 : 0;
+          if (C.on) {
+            _oa.copy(O.coreOff).multiplyScalar(r); _ob.copy(C.d).multiplyScalar(r * 0.965);
+            bolt(_oa, _ob, { levels: lv, jag: 0.26, width: 0.08 * r, minPx: mpx * 0.8, intensity: I * R(0.7, 1.05), life: H, hold: true, anchor: O.position, inside: r * 0.97, inner: true, branches: 1.2, twigs: 2, twigK: 1.4, fringe: 1.3, core: 0.5, hit: false });
+            if (rnd() < 0.3) {                                             // and crawls on along the inner wall
+              randUnit(_oc); _oc.addScaledVector(C.d, -C.d.dot(_oc)).normalize();
+              const th = R(0.35, 0.9);
+              _oa.copy(C.d).multiplyScalar(r * 0.97); _ob.copy(C.d).multiplyScalar(Math.cos(th)).addScaledVector(_oc, Math.sin(th)).multiplyScalar(r * 0.97);
+              bolt(_oa, _ob, { levels: 4, jag: 0.3, width: 0.03 * r, minPx: mpx * 0.55, intensity: I * 0.7, life: H, hold: true, anchor: O.position, shell: r * 0.975, inner: true, branches: 1, twigs: 2, twigK: 1.6, core: 0.45, hit: false });
+            }
           }
         }
         if (k < MAXARC) O.u.uArc.value[k++].set(C.d.x * 0.965, C.d.y * 0.965, C.d.z * 0.965, C.on ? 0.9 * I : 0.2);
@@ -1629,40 +1705,43 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       O.u.uArcN.value = k;
       // arcs crawling over the outside of the membrane, mostly round the silhouette where they read
       _ob.copy(camera.position).sub(O.position).normalize();
-      const crawl = Math.round(R(1, 3) * (0.6 + 0.6 * O.pressure));
+      const crawl = rnd() < 0.3 * (0.5 + 0.6 * O.pressure) ? 1 : 0;   // now and then, held: a crawler per tick read as static
       for (let c = 0; c < crawl; c++) {
         randUnit(_oa); _oa.addScaledVector(_ob, -0.85 * _ob.dot(_oa)).normalize();
         randUnit(_oc); _oc.addScaledVector(_oa, -_oa.dot(_oc)).normalize();
         const th = R(0.2, 0.55);
         const e = _oc.multiplyScalar(Math.sin(th)).addScaledVector(_oa, Math.cos(th)).multiplyScalar(r * 1.03);
-        bolt(_oa.clone().multiplyScalar(r * 1.03), e.clone(), { levels: 4, jag: 0.35, width: 0.03 * r, minPx: mpx * 0.55, intensity: 0.85, life: 2, anchor: O.position, shell: r * 1.03, branches: 1.5, twigs: 2, twigK: 2, core: 0.6, hit: false });
+        bolt(_oa.clone().multiplyScalar(r * 1.03), e.clone(), { levels: 4, jag: 0.35, width: 0.025 * r, minPx: mpx * 0.5, intensity: 0.7, life: 4 + ((rnd() * 4) | 0), hold: true, anchor: O.position, shell: r * 1.03, branches: 1.5, twigs: 2, twigK: 2, core: 0.5, hit: false });
       }
-    }
-    const surf = Math.round((R(0.1, 0.8) + 0.7 * O.pressure) * rate);
-    for (let k = 0; k < surf; k++) {                 // short crackles leaping outward: arcs laid round the shell read as wire loops
-      _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
-      _b.copy(_a).multiplyScalar(R(1.3, 1.75)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(0.35));
-      bolt(_a.multiplyScalar(r * 0.98), _b.multiplyScalar(r), { levels: 5, jag: 0.3, width: 0.022 * (r / 0.45), minPx: 5, intensity: 0.9, life: R(1, 2.6) | 0, anchor: O.position, branches: 1.2, twigK: 1.5 });
     }
     // strikes down to the ground under it. A real strike is several return strokes down one channel,
     // so a strike holds its spot for a few ticks, flickering, instead of a new bolt every tick
-    if (O.strikes && O.position.y < 2.6 && !(O.strikeLeft > 0) && rnd() < (O.strikeRate ?? 0.08 + 0.2 * O.pressure)) {
+    if (O.strikes && O.position.y < 2.6 && !busy() && rnd() < (O.strikeRate ?? 0.03 + 0.06 * O.pressure)) {
       const a = R(0, 6.28), d = R(0.05, 0.55);         // nearly straight down: a wide offset drew a diagonal across the frame
       O.strikeHit = (O.strikeHit || new V3()).set(O.position.x + Math.cos(a) * d, 0.02, O.position.z + Math.sin(a) * d);
       if (O.strikeAt) O.strikeHit.set(O.strikeAt.x + R(-0.06, 0.06), 0.02, O.strikeAt.z + R(-0.06, 0.06));   // a spot the caller aims at
-      O.strikeLeft = 5 + ((rnd() * 6) | 0);
+      O.strikeLeft = 2 + ((rnd() * 2) | 0); O.strokeT = 0;   // 2-3 return strokes down one channel
     }
-    if (O.strikeLeft > 0 && O.strikes && O.position.y < 2.6 && (O.strikeLeft--, rnd() < 0.8)) {
+    if (O.strikeLeft > 0 && O.strikes && O.position.y < 2.6 && --O.strokeT <= 0) {
+      O.strikeLeft--; O.strokeT = 3 + ((rnd() * 2) | 0);
       const hit = O.strikeHit;
       _b.subVectors(hit, O.position); _a.copy(_b).normalize().multiplyScalar(r);
-      bolt(_a, _b, { levels: 6, jag: 0.24, width: 0.055, minPx: 11, intensity: 1.35, life: 1, anchor: O.position, branches: 2, twigK: 1.5 });   // bolt() strikes the ground; one stroke at a time
+      bolt(_a, _b, { levels: 6, jag: 0.24, width: 0.045, minPx: 8, intensity: 1.2, life: O.strokeT, hold: true, anchor: O.position, branches: 2, twigK: 1.5, fringe: 1.4 });   // bolt() strikes the ground; one stroke at a time
     }
-    for (let leap = 0; leap < 2; leap++) if (rnd() < (0.3 + 0.55 * O.pressure) * Math.min(rate, 1.6)) {
+    const surf = !busy() && rnd() < 0.12 * Math.min(rate, 1.2) * (0.5 + O.pressure) ? 1 : 0;   // a crackle now and then, not every tick
+    for (let k = 0; k < surf; k++) {                 // short crackles leaping outward: arcs laid round the shell read as wire loops
+      _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
+      _b.copy(_a).multiplyScalar(R(1.3, 1.75)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(0.35));
+      const H = 3 + ((rnd() * 3) | 0); O.extUntil = arcTicks + H;
+      bolt(_a.multiplyScalar(r * 0.98), _b.multiplyScalar(r), { levels: 5, jag: 0.3, width: 0.018 * (r / 0.45), minPx: 3.5, intensity: 0.8, life: H, hold: true, anchor: O.position, branches: 1.2, twigK: 1.5 });
+    }
+    if (!busy() && rnd() < (0.05 + 0.1 * O.pressure) * Math.min(rate, 1.6)) {   // a leap every few tenths of a second: two a tick was a firework
       _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
       if (_a.dot(O.axis) > 0.3) _a.addScaledVector(O.axis, -1.2).normalize();   // leap back along the arm or out sideways, not ahead
       const reach = O.reach.length && rnd() < 0.55 ? O.reach[(rnd() * O.reach.length) | 0] : null;
       if (reach) _b.subVectors(reach, O.position); else _b.copy(_a).multiplyScalar(r * R(1.5, 2.8)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(r * 0.4));
-      bolt(_a.multiplyScalar(r), _b, { levels: 6, jag: 0.24, width: 0.03, minPx: 8, intensity: 1, life: 2, anchor: O.position, branches: 2 });
+      const H = 3 + ((rnd() * 2) | 0); O.extUntil = arcTicks + H + 1;
+      bolt(_a.multiplyScalar(r), _b, { levels: 6, jag: 0.24, width: 0.026, minPx: 6, intensity: 0.9, life: H, hold: true, anchor: O.position, branches: 2, fringe: 1.2 });
     }
   }
 
@@ -1725,14 +1804,14 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     const d = dir.clone().normalize(), p = pos.clone();
     basis(d); const bu = _u.clone(), bw = _w.clone();       // bolt() rewrites _u/_w, so keep our own
     const spear = () => {
-      const n = Math.round(2 + 2 * strength), th0 = R(0, 6.28);
+      const n = Math.round(1 + strength), th0 = R(0, 6.28);
       for (let k = 0; k < n; k++) {                    // few and divergent: a parallel bundle read as combed hair
         const th = th0 + (k / n) * 6.28 + R(-0.4, 0.4), rr = radius * R(0.35, 1.0);
         _b.copy(p).addScaledVector(d, length * R(0.45, 1.0)).addScaledVector(bu, Math.cos(th) * rr).addScaledVector(bw, Math.sin(th) * rr);
-        bolt(_a.copy(p).addScaledVector(d, 0.15), _b, { levels: 6, jag: 0.2, width: 0.05 * Math.sqrt(strength), minPx: 10, intensity: 1.2, life: 2, branches: 3 });
+        bolt(_a.copy(p).addScaledVector(d, 0.15), _b, { levels: 6, jag: 0.2, width: 0.04 * Math.sqrt(strength), minPx: 8, intensity: 1.1, life: 3, hold: true, branches: 3, fringe: 1.2 });
       }
     };
-    spear(); repeat(2, spear);
+    spear(); repeat(3, () => { if (rnd() < 0.34) spear(); });   // a re-strike or two, not a volley every tick
     ring(_c.copy(p).addScaledVector(d, length * 0.35), d, { radius: radius * 1.3, thick: 0.08, intensity: 0.05, life: 0.3, amp: 0.05 * strength });
     sparks(p, { count: Math.round(70 * strength), dir: d, spread: 0.45, speed: [6, 16] });
     shards(_c.copy(p).addScaledVector(d, 0.4), { count: Math.round(16 * strength), dir: d, spread: 0.6, speed: [3, 8] });
@@ -1810,7 +1889,9 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   // ---------------------------------------------------------------- arc ticks and repeats
   const repeats = [];
   function repeat(ticks, fn) { repeats.push({ ticks, fn }); }
+  let arcTicks = 0;
   function arcTick() {
+    arcTicks++;
     for (const B of bolts) {
       if (!B.alive) continue;
       B.age++;
@@ -1997,7 +2078,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   const compositeMat = new THREE.ShaderMaterial({
     uniforms: {
       tColor: { value: rtColor.texture }, tDistort: { value: rtDistort.texture }, tBloom: { value: up[0].texture },
-      uAspect: { value: 1 }, uBloom: { value: 0.34 }, uBloomTint: { value: new V3(0.38, 0.42, 1.0) }, uExposure: { value: 1 },
+      uAspect: { value: 1 }, uBloom: { value: 0.27 }, uBloomTint: { value: new V3(0.38, 0.42, 1.0) }, uExposure: { value: 1 },
       uShake: { value: new THREE.Vector2() }, uZoom: { value: 1 }, uFisheye: { value: 0 },
       uFrame: { value: 0 }, uFrameFull: { value: 0 }, uNegRadius: { value: 0.42 }, uCenter: { value: new THREE.Vector2(0.5, 0.5) },
       uFlash: { value: 0 }, uDim: { value: 0 }, uTime: { value: 0 }, uGrain: { value: 0.03 }, uVignette: { value: 0.85 }, uSeed: { value: 0 },
@@ -2029,15 +2110,20 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
           float qr = length(q), qa = atan(q.y, q.x);
           // a jagged starburst, not a disc
           float spikes = .5 * sin(qa * 7. + uSeed) + .3 * sin(qa * 13. + uSeed * 1.7) + .2 * sin(qa * 29. + uSeed * 2.3);
-          float Rn = uNegRadius * (1. + .38 * spikes);
+          float Rn = uNegRadius * (1. + .38 * spikes + .05 * sin(qa * 61. + uSeed * 3.1) + .03 * sin(qa * 113. + uSeed * .7));   // the edge bleeds like ink
           float m = uFrameFull > .5 ? 1. : 1. - smoothstep(Rn * .94, Rn, qr);
           // manga speed lines in ink: random widths, each starting at its own radius
           float uu = (qa + 3.14159) / 6.28318 * 140.;
           float hsh = fract(sin(floor(uu) * 12.9898 + uSeed * 78.233) * 43758.5453);
-          float wdt = .08 + .25 * hsh;
+          float reach = smoothstep(uNegRadius * (.3 + .5 * hsh), uNegRadius * 1.6, qr);
+          float wdt = (.06 + .28 * hsh) * (.3 + .7 * reach);                 // strokes taper to a point toward the centre
           float ray = step(.45, hsh) * (1. - smoothstep(wdt * .5, wdt, abs(fract(uu) - .5)));
-          ink = max(ink, ray * smoothstep(uNegRadius * (.3 + .5 * hsh), uNegRadius * 1.6, qr) * .9);
-          vec3 neg = mix(vec3(.93, .965, 1.), vec3(.012, .014, .022), ink);   // energy turns to ink on white
+          float brk = 1. - step(.86, fract(sin(floor(qr / uNegRadius * 3.5 + hsh * 7.) * 91.7 + floor(uu) * 3.3) * 4375.85)) * step(.5, hsh);   // now and then one long dry-brush gap: many read as Morse code
+          float uu2 = (qa + 3.14159) / 6.28318 * 360., h2 = fract(sin(floor(uu2) * 7.13 + uSeed * 3.1) * 43758.5453);
+          float ray2 = step(.72, h2) * (1. - smoothstep(.05, .12, abs(fract(uu2) - .5))) * smoothstep(uNegRadius * (.9 + .6 * h2), uNegRadius * 2.1, qr);   // a finer layer far out
+          ink = max(ink, max(ray * reach * brk, ray2 * .7));
+          float paper = fract(sin(dot(floor(vUv * vec2(960., 540.)), vec2(12.9898, 78.233)) + uSeed) * 43758.5453);
+          vec3 neg = mix(vec3(.93, .965, 1.) * (.965 + .035 * paper), vec3(.012, .014, .022), ink);   // energy turns to ink on a faintly grained paper
           col = mix(col, mix(col * .3, neg, m), uFrame);
         }
         col = mix(col, vec3(.95, .97, 1.), uFlash);
@@ -2124,7 +2210,11 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     uniforms.uTime.value = clock.sim;
     if (!wasHeld) {
       const arcDt = realDt * clock.base * Math.max(clock.rampValue, options.arcFloor);
-      clock.arcAcc += arcDt;
+      clock.arcAcc += arcDt; clock.arcTime += arcDt; uniforms.uArcTime.value = clock.arcTime;
+      for (let i = pendingStrikes.length - 1; i >= 0; i--) {
+        const S = pendingStrikes[i];
+        if (S.t <= clock.arcTime) { pendingStrikes.splice(i, 1); groundStrike(S.p, S.I, S.len, S.life); }
+      }
       const tick = 1 / options.arcHz;
       let ticks = 0;
       while (clock.arcAcc >= tick && ticks < 3) { clock.arcAcc -= tick; arcTick(); ticks++; }

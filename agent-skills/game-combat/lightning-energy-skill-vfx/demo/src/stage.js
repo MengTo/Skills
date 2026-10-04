@@ -17,6 +17,7 @@
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(46, 1, 0.05, 220);
   const fx = createStormEnergy(THREE, { renderer, scene, camera, seed: 11 });
+  fx.options.shake = 0.6; fx.options.fisheye = 0.65;   // felt, not thrown at the viewer
   if (reduceMotion) { fx.options.shake = 0; fx.options.fisheye = 0; fx.options.flashes = 'safe'; }
 
   // ------------------------------------------------------------ arena
@@ -41,87 +42,79 @@
   sky.renderOrder = -10; sky.frustumCulled = false;
   scene.add(sky);
 
-  // The cracks use an integer hash and value noise that JavaScript reproduces exactly (crackEdge
-  // below), so arcs at a strike can be traced along the very cracks the shader draws.
-  const CRACK_GLSL = `
-      uvec2 pcg2d(uvec2 v){
-        v = v * 1664525u + 1013904223u; v.x += v.y * 1664525u; v.y += v.x * 1664525u; v ^= v >> 16u;
-        v.x += v.y * 1664525u; v.y += v.x * 1664525u; v ^= v >> 16u; return v;
-      }
-      vec2 ihash(vec2 c){ return vec2(pcg2d(uvec2(ivec2(c) + 32768))) * (1. / 4294967295.); }
-      vec2 vn(vec2 p){
-        vec2 i = floor(p), f = fract(p), u = f * f * (3. - 2. * f);
-        return mix(mix(ihash(i), ihash(i + vec2(1., 0.)), u.x), mix(ihash(i + vec2(0., 1.)), ihash(i + vec2(1., 1.)), u.x), u.y) * 2. - 1.;
-      }
-      vec2 crackWarp(vec2 p){ return (vn(p * .35) + vn(p * .8 + 7.3) * .4) * .9 + vn(p * 3.7 + 1.3) * .06; }   // the fine term makes the crack edges jagged
-      // distance to the nearest cell border (not f2 - f1, which swells near corners), the cell's id,
-      // and the offset to its centre; bn is the border's normal, so the distance's gradient is -bn
-      vec4 plates(vec2 x, out vec2 bn){
-        vec2 n = floor(x), f = fract(x), mg = vec2(0.), mr = vec2(0.); float md = 8.;
-        for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
-          vec2 g = vec2(float(i), float(j)), r = g + ihash(n + g) - f; float d = dot(r, r);
-          if (d < md) { md = d; mr = r; mg = g; }
-        }
-        md = 8.; bn = vec2(1., 0.);
-        for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
-          vec2 g = mg + vec2(float(i), float(j)), r = g + ihash(n + g) - f;
-          if (dot(mr - r, mr - r) > 1e-5) { vec2 nn = normalize(r - mr); float dd = dot(.5 * (mr + r), nn); if (dd < md) { md = dd; bn = nn; } }
-        }
-        return vec4(md, ihash(n + mg).x, mr);
-      }`;
+  // The ground is a scanned surface: Poly Haven's "Dry Ground 01" (Rob Tuytel, CC0), its colour,
+  // normal and AO/roughness maps at 1k, embedded by build.mjs as data URIs so the page still opens
+  // from disk. The mud is re-tinted to dark wet slate in the shader; its AO channel marks the cracks,
+  // which the heat lights and the strikes' arcs crawl along.
+  const TILE = 6;                                       // metres per tile: plates of 0.2-0.5 m, near the target's
+  const GM = window.GROUND_MAPS || {};
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
+  const groundU = { tDiff: { value: null }, tNor: { value: null }, tArm: { value: null }, uMaps: { value: 0 } };
+  let mapsLeft = 0, aoData = null;
+  function groundMap(key, srgb, onImage) {
+    const t = new THREE.Texture();
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = Math.min(8, maxAniso);   // grazing views need it
+    t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+    if (!GM[key]) return t;
+    mapsLeft++;
+    const img = new Image();
+    img.onload = () => {
+      t.image = img; t.needsUpdate = true; onImage?.(img);
+      if (--mapsLeft === 0) { groundU.uMaps.value = 1; dirty = true; }
+    };
+    img.src = GM[key];
+    return t;
+  }
+  groundU.tDiff.value = groundMap('diff', true);
+  groundU.tNor.value = groundMap('nor', false);
+  groundU.tArm.value = groundMap('arm', false, (img) => {   // keep the AO channel on the CPU for the crack tracer
+    const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height;
+    const cx = cv.getContext('2d', { willReadFrequently: true }); cx.drawImage(img, 0, 0);
+    aoData = { w: img.width, h: img.height, px: cx.getImageData(0, 0, img.width, img.height).data };
+  });
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(220, 220).rotateX(-Math.PI / 2), new THREE.ShaderMaterial({
-    uniforms: { ...fx.lightUniforms, ...fx.heatUniforms, uGlow: { value: new V3(fx.palette.glow.r, fx.palette.glow.g, fx.palette.glow.b) }, uFog: sky.material.uniforms.uFog, uAmbient: { value: new V3(0.17, 0.2, 0.27) }, uSkyFlash: sky.material.uniforms.uSkyFlash },
+    uniforms: { ...fx.lightUniforms, ...fx.heatUniforms, ...groundU, uGlow: { value: new V3(fx.palette.glow.r, fx.palette.glow.g, fx.palette.glow.b) }, uFog: sky.material.uniforms.uFog, uAmbient: { value: new V3(0.17, 0.2, 0.27) }, uSkyFlash: sky.material.uniforms.uSkyFlash },
     vertexShader: `varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
-    fragmentShader: NOISE_GLSL + ENERGY_LIGHTS_GLSL + GROUND_HEAT_GLSL + WET_GLSL + CRACK_GLSL + `
-      uniform vec3 uFog, uAmbient, uGlow; uniform float uSkyFlash; varying vec3 vW;
+    fragmentShader: NOISE_GLSL + ENERGY_LIGHTS_GLSL + GROUND_HEAT_GLSL + WET_GLSL + `
+      uniform vec3 uFog, uAmbient, uGlow; uniform float uSkyFlash, uMaps; uniform sampler2D tDiff, tNor, tArm; varying vec3 vW;
       void main(){
-        vec2 p = vW.xz;
-        float fw = length(fwidth(p));                                  // metres per pixel: fine grain fades out with distance
-        float n = fbm3(vec3(p * .8, 4.1)) * .5 + .5;
-        float kf = 1. - smoothstep(.004, .02, fw);
-        float g1 = (snoise(vec3(p * 17., 2.)) * .5 + .5) * kf, g2 = abs(snoise(vec3(p * 53., 6.))) * (1. - smoothstep(.004, .012, fw));
-        float g3 = (1. - abs(snoise(vec3(p * 97., 9.)))) * (1. - smoothstep(.003, .009, fw));   // grit: what breaks a wet sheen into glints
-        vec2 pw = p + crackWarp(p);                                     // warped: cracked stone, not tiles
-        vec2 bnB, bnS;
-        vec4 B = plates(pw * .62, bnB), S = plates(pw * 1.9 + 3., bnS);
-        float eB = B.x / .62, eS = S.x / 1.9;                           // border distances in metres
-        float fwB = fwidth(eB), fwS = fwidth(eS);
-        float liveS = smoothstep(-.15, .3, vn(p * 1.1 + 9.).x);         // the fine cracks come and go
-        float wB = .018 + .03 * (vn(p * 3.1 + 2.).y * .5 + .5);         // crack width wanders along the crack
-        float crack = max(1. - smoothstep(0., wB + fwB, eB), (1. - smoothstep(0., .006 + fwS, eS)) * liveS * .9);
-        float wetH = wetness(p);                                        // wet hollows are smooth: only the grit stands out of them
-        // plates at their own height and tilt, edges chipped down into the crack: an analytic gradient (the border
-        // normal), since screen-space derivatives stepped in 2x2 blocks along every crack and the sheen showed them as dashes
-        float wc = wB * 2.5 + .01 * (vn(p * 9. + 4.).x * .5 + .5), tB = clamp(eB / wc, 0., 1.), tS = clamp(eS / .012, 0., 1.);
-        vec2 kB = ihash(vec2(B.y * 9173., 3.)) - .5;
-        vec2 gA = -bnB * .016 * 6. * tB * (1. - tB) / wc - bnS * .004 * liveS * 6. * tS * (1. - tS) / .012 - kB * .035 * .62;
-        vec3 N0 = normalize(vec3(-gA.x, 1., -gA.y));
-        // the fine grit stays a screen-space bump: small, soft, and it fades with distance
-        float h = (n - .5) * .006 + g1 * .0012 * (1. - wetH) + g2 * .0008 + g3 * .00045;
+        vec2 p = vW.xz, uv = p / ${TILE.toFixed(1)};
+        float fw = length(fwidth(p));                                   // metres per pixel: fine grit fades out with distance
+        vec3 dif = mix(vec3(.2), texture2D(tDiff, uv).rgb, uMaps);       // linear: the maps are uploaded as sRGB
+        vec3 arm = mix(vec3(.55, .8, 0.), texture2D(tArm, uv).rgb, uMaps);
+        vec3 nm = mix(vec3(0., 0., 1.), texture2D(tNor, uv).xyz * 2. - 1., uMaps);
+        float lum = dot(dif, vec3(.2126, .7152, .0722));
+        float crack = 1. - smoothstep(.27, .42, arm.r);                 // the scan's own cracks, from its AO
+        float n = fbm3(vec3(p * .35, 4.1)) * .5 + .5;                   // macro variation hides the tile
+        float wetH = wetness(p);
+        // the scan's light-brown mud becomes dark wet slate, keeping all its detail
+        vec3 alb = vec3(.036, .039, .048) * pow(lum / .2, 1.3) * (.72 + .56 * n);
+        alb *= 1. - wetH * .35;
+        // relief from the scan's normals (lifted 1.7x: dry mud is shallow), grit for the wet glints
+        vec3 N0 = normalize(vec3(nm.x * 1.7, nm.z, nm.y * 1.7));
+        float g3 = (1. - abs(snoise(vec3(p * 97., 9.)))) * (1. - smoothstep(.003, .009, fw));
+        float h = g3 * .00035 + (n - .5) * .004;
         vec3 dpx = dFdx(vW), dpy = dFdy(vW);
         vec3 r1 = cross(dpy, N0), r2 = cross(N0, dpx); float det = dot(dpx, r1);
         vec3 N = normalize(abs(det) * N0 - sign(det) * (dFdx(h) * r1 + dFdy(h) * r2));
-        vec3 alb = vec3(.04, .043, .051) * (.6 + .65 * n) * (.75 + .5 * g1) * (.85 + .3 * g2) * (.8 + .4 * B.y);
-        alb = mix(alb, vec3(.006, .006, .008), crack * .92);
-        float wet = wetH * (1. - crack);                                // a wet sheen in the hollows (the bolts' reflections land here too)
-        alb *= 1. - wet * .35;
-        float rough = clamp(.5 - wet * .34 + crack * .35 - g1 * .1, .1, .95);   // the whole plain is damp, the hollows wet
+        float wet = wetH * (1. - crack);
+        float rough = clamp(mix(arm.g * .8, .16, wet * .9) + crack * .2, .1, .95);
         vec3 V = normalize(cameraPosition - vW);
-        vec3 col = alb * uAmbient + energyLight(vW, N, V, alb, rough);
-        // wet stone mirrors the storm: the horizon glow, and the blue the lightning throws into the air, catch on
+        vec3 col = alb * uAmbient * mix(.55, 1., arm.r) + energyLight(vW, N, V, alb, rough);
+        // wet stone mirrors the storm: the horizon glow and the blue the lightning throws into the air catch on
         // every damp facet at a grazing angle. Point lights alone lit only a pool under each strike.
         vec3 R = reflect(-V, N);
         vec3 storm = vec3(0.); for (int i = 1; i < 6; i++) storm += uLightCol[i];   // flashes only: the orb's steady light is not a lit sky
-        vec3 env = uFog * 1.3 * smoothstep(.35, -.02, R.y) + (uGlow * .25 + .75 * vec3(.35, .45, 1.)) * dot(storm, vec3(.0024)) + uSkyFlash * vec3(.05, .08, .18);   // the lightning, not a constant, lights the wet stone
+        vec3 env = uFog * 1.3 * smoothstep(.35, -.02, R.y) + (uGlow * .25 + .75 * vec3(.35, .45, 1.)) * dot(storm, vec3(.0024)) + uSkyFlash * vec3(.05, .08, .18);
         float Fr = .04 + .96 * pow(1. - max(dot(N, V), 0.), 5.);
         col += env * Fr * (1. - rough) * (1. - rough) * 1.4 * (1. - crack);
         col += uSkyFlash * vec3(.008, .013, .024) * (.35 + wet);
         // the strike's current runs in the stone's own cracks: hairlines, white-hot near the hit, blue further out
         float heat = groundHeat(p);
         if (heat > .01) {
-          float lineB = 1. - smoothstep(0., .005 + fwB * 1.2, eB), lineS = (1. - smoothstep(0., .0035 + fwS * 1.2, eS)) * liveS;
-          float live = smoothstep(-.3, .2, snoise(vec3(p * .9, 17.)));   // low frequency: long live stretches, never dashes
-          float lines = (lineB + lineS * .75) * live * smoothstep(.12, .5, heat), halo = (exp(-eB / .05) + exp(-eS / .028) * liveS * .5) * live;   // lines only where it is hot: a wide lit web read as neon tiling
+          float line = (1. - smoothstep(.2, .3, arm.r)) * uMaps;          // only the deepest cracks: a hairline
+          float live = smoothstep(-.3, .2, snoise(vec3(p * .9, 17.)));   // long live stretches, never dashes
+          float lines = line * live * smoothstep(.12, .5, heat), halo = crack * live * .25;
           col += (vec3(.9, .95, 1.) * lines * 1.6 * smoothstep(.35, 1., heat) + uGlow * (lines * 2. + halo * .35)) * heat;
         }
         float d = length(vW.xz - cameraPosition.xz);
@@ -132,57 +125,22 @@
   ground.frustumCulled = false;
   scene.add(ground);
 
-  // The same cracks on the CPU: pcg2d, value noise and the Voronoi border distance, mirrored from
-  // CRACK_GLSL. fx calls crackPath() when a bolt strikes, and its crawling arcs follow the cracks.
-  const pcg = (x, y) => {
-    x = (Math.imul(x, 1664525) + 1013904223) >>> 0; y = (Math.imul(y, 1664525) + 1013904223) >>> 0;
-    x = (x + Math.imul(y, 1664525)) >>> 0; y = (y + Math.imul(x, 1664525)) >>> 0; x = (x ^ (x >>> 16)) >>> 0; y = (y ^ (y >>> 16)) >>> 0;
-    x = (x + Math.imul(y, 1664525)) >>> 0; y = (y + Math.imul(x, 1664525)) >>> 0; x = (x ^ (x >>> 16)) >>> 0; y = (y ^ (y >>> 16)) >>> 0;
-    HX = x / 4294967295; HY = y / 4294967295;
+  // Strikes' arcs walk the scan's cracks: from a hit, each 3 cm step tries a fan of headings and takes the
+  // darkest AO (the deepest crack), with a small cost for turning, so the arc turns where the crack turns.
+  const aoAt = (x, z) => {
+    let u = (x / TILE) % 1, v = (z / TILE) % 1; if (u < 0) u += 1; if (v < 0) v += 1;
+    const px = Math.min(aoData.w - 1, (u * aoData.w) | 0), py = Math.min(aoData.h - 1, ((1 - v) * aoData.h) | 0);   // textures load flipped: v = 0 is the image's last row
+    return aoData.px[(py * aoData.w + px) * 4] / 255;
   };
-  let HX = 0, HY = 0;
-  const ih = (cx, cy) => pcg((cx + 32768) | 0, (cy + 32768) | 0);
-  function vn(px, py, out) {
-    const ix = Math.floor(px), iy = Math.floor(py), fx_ = px - ix, fy = py - iy, ux = fx_ * fx_ * (3 - 2 * fx_), uy = fy * fy * (3 - 2 * fy);
-    ih(ix, iy); const a0 = HX, a1 = HY; ih(ix + 1, iy); const b0 = HX, b1 = HY; ih(ix, iy + 1); const c0 = HX, c1 = HY; ih(ix + 1, iy + 1);
-    out[0] = ((a0 + (b0 - a0) * ux) * (1 - uy) + (c0 + (HX - c0) * ux) * uy) * 2 - 1;
-    out[1] = ((a1 + (b1 - a1) * ux) * (1 - uy) + (c1 + (HY - c1) * ux) * uy) * 2 - 1;
-  }
-  const V2a = [0, 0], V2b = [0, 0];
-  function plateEdge(x, y) {
-    const nx = Math.floor(x), ny = Math.floor(y), fx_ = x - nx, fy = y - ny;
-    let md = 8, mrx = 0, mry = 0, mgx = 0, mgy = 0;
-    for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
-      ih(nx + i, ny + j); const rx = i + HX - fx_, ry = j + HY - fy, d = rx * rx + ry * ry;
-      if (d < md) { md = d; mrx = rx; mry = ry; mgx = i; mgy = j; }
-    }
-    md = 8;
-    for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
-      const gx = mgx + i, gy = mgy + j; ih(nx + gx, ny + gy);
-      const rx = gx + HX - fx_, ry = gy + HY - fy, dx = rx - mrx, dy = ry - mry, l2 = dx * dx + dy * dy;
-      if (l2 > 1e-5) md = Math.min(md, (0.5 * (mrx + rx) * dx + 0.5 * (mry + ry) * dy) / Math.sqrt(l2));
-    }
-    return md;
-  }
-  function crackEdge(x, z) {                // metres to the nearest drawn crack
-    vn(x * 0.35, z * 0.35, V2a); vn(x * 0.8 + 7.3, z * 0.8 + 7.3, V2b);
-    let wx = x + (V2a[0] + V2b[0] * 0.4) * 0.9, wz = z + (V2a[1] + V2b[1] * 0.4) * 0.9;
-    vn(x * 3.7 + 1.3, z * 3.7 + 1.3, V2a); wx += V2a[0] * 0.06; wz += V2a[1] * 0.06;
-    const eB = plateEdge(wx * 0.62, wz * 0.62) / 0.62;
-    vn(x * 1.1 + 9, z * 1.1 + 9, V2a);
-    const liveS = Math.min(1, Math.max(0, (V2a[0] + 0.15) / 0.45));
-    return liveS > 0.5 ? Math.min(eB, plateEdge(wx * 1.9 + 3, wz * 1.9 + 3) / 1.9) : eB;
-  }
-  // From a strike, walk outward along the cracks: each step tries a fan of headings and takes the one
-  // that stays deepest in a crack, so the arc turns where the crack turns.
   fx.options.crackPath = (x, z, heading, length) => {
-    const step = 0.045, n = Math.min(60, Math.max(4, Math.round(length / step)));
+    if (!aoData) return null;
+    const step = 0.03, n = Math.min(100, Math.max(4, Math.round(length / step)));
     const out = [x, 0, z];
     let a = heading;
     for (let i = 0; i < n; i++) {
       let best = 1e9, ba = a;
       for (let k = -3; k <= 3; k++) {
-        const t = a + k * 0.32, e = crackEdge(x + Math.cos(t) * step, z + Math.sin(t) * step) + Math.abs(k) * 0.004;
+        const t = a + k * 0.35, e = aoAt(x + Math.cos(t) * step, z + Math.sin(t) * step) + Math.abs(k) * 0.012;
         if (e < best) { best = e; ba = t; }
       }
       a = ba; x += Math.cos(a) * step; z += Math.sin(a) * step;
@@ -227,12 +185,12 @@
   const history = [];   // recent body positions, for arcs along a dash
   function record(t) { history.push({ t, p: caster.body.clone() }); while (history.length && t - history[0].t > 0.3) history.shift(); }
   function arcsAlongPath(ticks) {
+    let wait = 0;
     fx.repeat(ticks, () => {
-      if (history.length < 3) return;
-      for (let k = 0; k < 1; k++) {                  // rooted at the orb and thrown back along the path it just tore through
-        const i = (rnd() * (history.length - 2)) | 0;
-        fx.bolt(orb.position, _w.copy(history[i].p).add(randDir(_x).multiplyScalar(0.35)), { levels: 6, jag: 0.22, width: 0.032, minPx: 7, intensity: 0.95, life: 2, branches: 2 });
-      }
+      if (history.length < 3 || --wait > 0) return;
+      wait = 4;                                      // one arc at a time, held, rooted at the orb and thrown back along its path
+      const i = (rnd() * (history.length - 2)) | 0;
+      fx.bolt(orb.position, _w.copy(history[i].p).add(randDir(_x).multiplyScalar(0.35)), { levels: 6, jag: 0.22, width: 0.028, minPx: 6, intensity: 0.9, life: 4, hold: true, branches: 2, fringe: 1.2 });
     });
   }
   function motes(count, radius, cold = false) {
@@ -270,7 +228,7 @@
         orb.radius = 0.1 + 0.4 * easeOut(t / 2.2);
         orb.pressure = t < 1.7 ? 0.35 + 0.35 * k : Math.min(1, 0.7 + (t - 1.7) * 0.6);
         orb.arcRate = t < 1.7 ? 0.8 + 0.5 * k : 1.8;
-        orb.strikeRate = t > 1.9 ? 1 : undefined;          // once it is full, the orb keeps striking the stone under it
+        orb.strikeRate = t > 1.9 ? 0.09 : undefined;       // once it is full, the orb strikes the stone in front of it every half second or so
         orb.strikeAt = at(0.47, 0, -0.59);
         gale = t < 1.7 ? 1 : 1.6;
         fx.attractor.position.copy(orb.position); fx.attractor.strength = t < 2.4 ? 2.5 : 0; fx.attractor.swirl = t < 2.4 ? 1.5 : 0;
@@ -369,8 +327,8 @@
           const c = caster;
           fx.ring(c.body, UP, { radius: 4.2, thick: 0.06, intensity: 0.12, life: 0.3, amp: 0.035 });   // felt as refraction, not drawn as a hoop
           fx.ring(c.body, UP, { radius: 5.6, thick: 0.1, intensity: 0.05, life: 0.42, delay: 0.06, amp: 0.025 });
-          for (let k = 0; k < 9; k++) {
-            const a = -1.35 + 2.7 * (k / 8) + R(-0.1, 0.1);
+          for (let k = 0; k < 4; k++) {
+            const a = -1.35 + 2.7 * (k / 3) + R(-0.15, 0.15);
             const d = _x.copy(c.facing).multiplyScalar(Math.cos(a)).addScaledVector(c.side, Math.sin(a));
             fx.bolt(_v.copy(c.body).addScaledVector(d, 0.6), _w.copy(c.body).addScaledVector(d, R(2.2, 3.8)).addScaledVector(UP, R(-0.3, 0.3)), { levels: 6, jag: 0.18, width: 0.04, minPx: 9, intensity: 1.1, life: 2, branches: 1 });
           }
@@ -387,8 +345,8 @@
           fx.impact({ hold: 0.1, frame: 'full', flash: 0, shake: 0.022, shakeMode: 'axial', at: orb.position });
         }],
       ],
-      swingArcs() { fx.repeat(5, () => { if (orbPath.length < 4) return; fx.bolt(orb.position, _v.copy(pathPoint(3)).add(randDir(_w).multiplyScalar(0.3)), { levels: 6, jag: 0.24, width: 0.035, minPx: 8, life: 2, branches: 1 }); }); },
-      spinArcs() { fx.repeat(8, () => { if (orbPath.length < 5) return; fx.bolt(orb.position, pathPoint(4), { levels: 6, jag: 0.22, width: 0.04, minPx: 9, life: 2, branches: 1 }); fx.bolt(orb.position, _w.copy(orb.position).addScaledVector(caster.aim, R(1.2, 2.2)).add(randDir(_x).multiplyScalar(0.5)), { levels: 6, jag: 0.24, width: 0.03, minPx: 7, life: 2, branches: 1 }); }); },
+      swingArcs() { let n = 0; fx.repeat(5, () => { if (orbPath.length < 4 || n++ % 3) return; fx.bolt(orb.position, _v.copy(pathPoint(3)).add(randDir(_w).multiplyScalar(0.3)), { levels: 6, jag: 0.24, width: 0.03, minPx: 6, life: 3, hold: true, branches: 1, fringe: 1.2 }); }); },
+      spinArcs() { let n = 0; fx.repeat(8, () => { if (orbPath.length < 5 || n++ % 3) return; fx.bolt(orb.position, pathPoint(4), { levels: 6, jag: 0.22, width: 0.032, minPx: 7, life: 3, hold: true, branches: 1, fringe: 1.2 }); }); },
       step(t, dt) {
         const c = caster;
         c.lunge = t < 0.22 ? 0 : t < 0.3 ? 0.55 * easeOut((t - 0.22) / 0.08) : 0.55 - 0.45 * smooth(0.3, 0.7, t);
@@ -424,19 +382,25 @@
           // the discharge: four steep trunks down to the left and one long arm to the right, each a channel
           // re-struck every tick (life 1, so one strand each), and now and then one up out of the orb's top
           const STORM_HITS = [[-0.63, 2.27], [-0.77, 1.59], [-0.9, 1.02], [-0.53, 0.3], [-1.36, -1.0]];
+          // one channel at a time: each strikes, holds 130-230 ms and fades as the next one lands somewhere else
+          let stormT = 0, lastQ = -1, upT = 7;
           fx.repeat(95, () => {
             if (!vortex || !vortex.alive || vortex.t > vortex.duration) return;
-            for (let q = 0; q < STORM_HITS.length; q++) {
-              if (rnd() < 0.15) continue;
+            if (--stormT <= 0) {
+              let q = (rnd() * STORM_HITS.length) | 0; if (q === lastQ) q = (q + 1 + ((rnd() * 3) | 0)) % STORM_HITS.length;
+              lastQ = q;
+              const H = 4 + ((rnd() * 4) | 0);
+              stormT = H;
               const [f, sd] = STORM_HITS[q];
               _w.copy(at(f, 0, sd)).add(_x.set(R(-0.1, 0.1), 0, R(-0.1, 0.1))).setY(0.02);
               _v.subVectors(_w, orb.position).normalize().multiplyScalar(orb.currentRadius).add(orb.position);   // leave from the membrane, not through the core
-              fx.bolt(_v, _w, { levels: 6, jag: 0.21, width: q === 4 ? 0.06 : 0.05, minPx: 10, intensity: 1.15, life: 1, branches: q === 4 ? 2.6 : 1.8, twigK: 1.2 });
+              fx.bolt(_v, _w, { levels: 6, jag: 0.21, width: q === 4 ? 0.045 : 0.038, minPx: 7, intensity: 1.05, life: H, hold: true, branches: q === 4 ? 2.6 : 1.8, twigK: 1.3, fringe: 1.3 });
             }
-            if (rnd() < 0.5) {
+            if (--upT <= 0 && stormT > 2) {                  // now and then one up out of the orb's top, between strikes
+              upT = 9 + ((rnd() * 8) | 0);
               _w.copy(orb.position).addScaledVector(UP, R(0.9, 1.3)).add(randDir(_x).multiplyScalar(0.3));
               _v.copy(orb.position).addScaledVector(UP, orb.currentRadius);
-              fx.bolt(_v, _w, { levels: 5, jag: 0.22, width: 0.04, minPx: 8, intensity: 1, life: 1, branches: 1.2 });
+              fx.bolt(_v, _w, { levels: 5, jag: 0.22, width: 0.032, minPx: 6, intensity: 0.9, life: 3, hold: true, branches: 1.2 });
             }
           });
           fx.attractor.position.copy(c.base).addScaledVector(UP, 0.8); fx.attractor.strength = 0; fx.attractor.swirl = 6; fx.attractor.lift = 1;   // the domain lifts the broken stone
@@ -483,13 +447,15 @@
         converge = []; tsunami = []; this.nextIn = 0; this.nextEmber = 0; this.nextArc = 0;
         // two great channels cross through the orb in an X, corner to corner of the frame
         const X_DIRS = [[-0.67, 0.74], [0.5, -0.87], [0.88, 0.48], [-0.66, -0.75]];
+        let xT = 0;
         fx.repeat(58, () => {
-          if (!orb.visible) return;
+          if (!orb.visible || --xT > 0) return;
+          xT = 3 + ((rnd() * 2) | 0);                        // the X holds each shape 100-130 ms: re-rolled every tick it strobed
           const right = _x.setFromMatrixColumn(camera.matrixWorld, 0), up = new V3().setFromMatrixColumn(camera.matrixWorld, 1);
           for (const [sx, sy] of X_DIRS) {
             const a = Math.atan2(sy, sx) + R(-0.07, 0.07), L = R(2.9, 3.6) * (orb.currentRadius / 0.85);
             _w.copy(orb.position).addScaledVector(right, Math.cos(a) * L).addScaledVector(up, Math.sin(a) * L);
-            fx.bolt(orb.position.clone().addScaledVector(right, -Math.cos(a) * 0.12), _w, { levels: 7, jag: 0.17, width: 0.075, minPx: 13, intensity: 1.15, life: 1, branches: 1.6, twigK: 1.2, core: 0.75, forkLen: 0.45, hit: false });   // life 1: one X at a time; short forks, or they ran alongside as parallel strands
+            fx.bolt(orb.position.clone().addScaledVector(right, -Math.cos(a) * 0.12), _w, { levels: 7, jag: 0.17, width: 0.06, minPx: 10, intensity: 1.05, life: xT, hold: true, branches: 1.6, twigK: 1.3, fringe: 1.3, core: 0.7, forkLen: 0.45, hit: false });   // one X at a time; short forks, or they ran alongside as parallel strands
           }
         });
         fx.repeat(70, () => {
@@ -613,11 +579,21 @@
     if (name === 'all') { run.loop = true; start('charge'); return; }
     run.loop = false; start(name);
   }
+  // The orb's size, pressure and instability follow what each beat asks for through a short ease, so a
+  // beat's first frame never pops it (the charge used to snap the orb from 0.36 m to 0.1 m in one frame).
+  const shown = { r: orb.radius, p: orb.pressure, i: orb.instability, vis: orb.visible };
   function advance(dt) {
     const b = run.beat;
     run.t += dt;
     while (run.fired < b.events.length && b.events[run.fired][0] <= run.t) b.events[run.fired++][1]();
     b.step(run.t, dt);
+    if (orb.visible && !shown.vis) shown.r = orb.radius;   // re-forming from nothing: no ease from the old size
+    shown.vis = orb.visible;
+    if (dt > 0) {
+      const k = 1 - Math.exp(-dt * 9), kp = 1 - Math.exp(-dt * 4);
+      shown.r += (orb.radius - shown.r) * k; shown.p += (orb.pressure - shown.p) * kp; shown.i += (orb.instability - shown.i) * kp;
+      orb.radius = shown.r; orb.pressure = shown.p; orb.instability = shown.i;
+    }
     if (run.t >= b.dur) {
       if (run.loop) {
         const i = ORDER.indexOf(run.name);
@@ -666,7 +642,7 @@
     recordOrb(fx.time);
     updateCamera(fx.holding ? 0 : realDt * Math.max(0.45, fx.timeScale * fx.rampValue));
     sky.material.uniforms.uTime.value = fx.time;
-    sky.material.uniforms.uSkyFlash.value += (fx.skyFlash - sky.material.uniforms.uSkyFlash.value) * 0.5;
+    sky.material.uniforms.uSkyFlash.value += (fx.skyFlash - sky.material.uniforms.uSkyFlash.value) * Math.min(1, realDt * 4);   // the sky swells and settles; following every tick it flickered
     fx.render();
   }
   function loop(now) {

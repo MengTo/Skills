@@ -13,6 +13,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const read = (p) => readFileSync(resolve(here, p), 'utf8');
 
 const moduleSrc = read('../assets/storm-energy.mjs');
+const map = (f) => 'data:image/jpeg;base64,' + readFileSync(resolve(here, 'assets/ground', f)).toString('base64');
+const groundMaps = JSON.stringify({ diff: map('dry_ground_01_diff_1k.jpg'), nor: map('dry_ground_01_nor_gl_1k.jpg'), arm: map('dry_ground_01_arm_1k.jpg') });
 const exported = [...moduleSrc.matchAll(/^export (?:const|function) (\w+)/gm)].map((m) => m[1]);
 const lib = '<script>\n// assets/storm-energy.mjs, inlined\nwindow.StormEnergy = (() => {\n' +
   moduleSrc.replace(/^export /gm, '') + `\nreturn { ${exported.join(', ')} };\n})();\n</script>`;
@@ -34,6 +36,10 @@ ${read('src/ui.css')}</style>
 ${read('src/ui.html')}
 <script src="assets/three.r170.min.js"></script>
 ${lib}
+<script>
+// Poly Haven "Dry Ground 01" by Rob Tuytel, CC0 (polyhaven.com/a/dry_ground_01): 1k maps as data URIs
+window.GROUND_MAPS = ${groundMaps};
+</script>
 <script>
 ${read('src/stage.js')}</script>
 <script>

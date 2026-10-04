@@ -102,3 +102,6 @@ The last judge named these as structural, not tuning, and they match the first s
 - **Lightning that lights the world:** line-light approximations or a light-accumulation pass, so the smoke, sky and ground brighten round the bolts, and halos 2× wider.
 - **Real content for the soft and the solid:** painted or flipbook smoke cards with fibrous edges, sculpted or scanned rocks, and a higher-resolution cloud inside the orb.
 
+## After the loop: the user's notes
+
+The scorecard stopped there; the next pass followed notes from the person the demo is for, not a judge. "The line needs to be less bold, more subtle" and "too much animation, not as in-your-face" led to a fine capped core with hair-fine branchlets, shapes held for 4–9 ticks and faded instead of re-rolled every tick, one discharge at a time, a gentler shake and a slower sky. "The transitions need to be smooth" led to an eased orb between beats, stepped leaders and afterglow. "The floor needs to be more realistic" led to the scanned CC0 floor. "The ball's sliding textures" led to a cloud that churns in place. "More details" in the shadow and frames led to dry-brush fibres and flecks, and tapered ink strokes. None of it was re-scored.

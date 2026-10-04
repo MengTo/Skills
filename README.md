@@ -261,7 +261,7 @@ Files:
 Combat animation and combat skills that read and look like Diablo IV, measured and judged blind, and a reusable effect language for energy skills. See the [game-combat guide](agent-skills/game-combat/README.md).
 - `game-dev-combat-animation` - build, fix and review attacks and move sets to numbered arm, wrist and hand rules, with per-frame tests on the real mesh and blind critics.
 - `game-dev-combat-skill-polish` - score combat skills out of 10 with two blind judges and raise the weakest to a bar, for readability or for art against a reference such as Diablo IV, with stepped-clock filming, contact strips and judging scripts.
-- `lightning-energy-skill-vfx` - a skill's effects as one language in Three.js: lightning re-rolled at 30 Hz, a refracting vortex orb, black afterimage smoke, three-layer air bursts, sparks, landing debris and impact frames, with a reusable module and a five-beat demo.
+- `lightning-energy-skill-vfx` - a skill's effects as one language in Three.js: lightning re-rolled at 30 Hz with forks of forks, a ray-marched energy orb carrying its own torn black shadow, refraction-only air fronts, sparks, landing debris and ink-negative impact frames, with a reusable module, a five-beat demo and a blind-judged scorecard.
 
 ### Game development (20)
 

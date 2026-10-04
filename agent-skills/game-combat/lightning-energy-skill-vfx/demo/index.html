@@ -11,145 +11,146 @@
 <style>
 :root {
   color-scheme: dark;
-  --ink: #e9eef6;
-  --soft: #c2c9d5;
-  --muted: #949eb0;
-  --line: rgba(255, 255, 255, .09);
-  --glass: rgba(9, 11, 17, .58);
+  --ink: #e8edf5;
+  --dim: rgba(232, 237, 245, .46);
+  --faint: rgba(232, 237, 245, .28);
   --accent: #a9d6ff;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; overflow: hidden; background: #04060a; color: var(--ink); font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #04060a; color: var(--ink); font: 12px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
 .app { position: fixed; inset: 0; }
 #stage { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* a faint scrim at the bottom keeps the text legible without a panel */
+.app::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 150px; pointer-events: none; background: linear-gradient(to top, rgba(3, 5, 9, .5), rgba(3, 5, 9, 0)); transition: opacity .3s; }
 
-.panel, .dock, .hide {
-  background: var(--glass);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
-  backdrop-filter: blur(14px) saturate(120%);
-  border: 0;
-  outline: 1px solid var(--line);
-  outline-offset: -1px;
-}
-.panel { position: absolute; top: 20px; left: 20px; width: 288px; padding: 16px 16px 14px; border-radius: 14px; transition: opacity .25s; }
-.kicker { margin: 0 0 7px; font: 500 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-h1 { margin: 0 0 8px; font-size: 27px; line-height: 1.05; letter-spacing: -.012em; font-weight: 650; }
-.lede { margin: 0 0 10px; color: var(--soft); font-size: 12px; line-height: 1.5; }
-.group { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 0; border-top: 1px solid rgba(255, 255, 255, .06); }
-.label { font-size: 12px; color: var(--muted); }
-.pills { display: inline-flex; padding: 2px; border-radius: 999px; background: rgba(255, 255, 255, .035); outline: 1px solid var(--line); outline-offset: -1px; flex: none; }
-.pills button, .beats button {
-  appearance: none; border: 0; background: transparent; color: var(--muted);
-  font: 500 12px/1 inherit; font-family: inherit; padding: 7px 10px; border-radius: 999px; cursor: pointer; white-space: nowrap;
-  transition: background .15s, color .15s, box-shadow .15s;
-}
-.pills button:hover, .beats button:hover { color: var(--ink); }
-.pills button[aria-pressed="true"], .beats button[aria-pressed="true"] { background: rgba(169, 214, 255, .15); color: #eef7ff; box-shadow: inset 0 0 0 1px rgba(169, 214, 255, .36); }
-button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.note { margin: 10px 0 0; font-size: 11.5px; line-height: 1.45; color: #aab3c2; min-height: 3.1em; }
+.title, .caption, .options, .dock, .hide { position: absolute; z-index: 1; transition: opacity .3s; }
+.title { top: 22px; left: 24px; }
+h1 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: .01em; }
+.title p { margin: 3px 0 0; font: 500 11px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+.caption { top: 24px; right: 24px; margin: 0; display: flex; gap: 8px; font: 500 11px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+.caption #capBeat { color: var(--ink); }
+.sep { color: var(--faint); }
 
-.dock { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 999px; max-width: calc(100vw - 32px); transition: opacity .25s; }
-.beats { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
-.beats::-webkit-scrollbar { display: none; }
-.beats button { padding: 9px 12px; }
-kbd { font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); margin-right: 7px; padding: 2px 4px; border-radius: 4px; background: rgba(255, 255, 255, .06); }
-.icon { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, .07); border: 0; color: var(--ink); cursor: pointer; }
-.icon svg { width: 14px; height: 14px; fill: currentColor; }
+button { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; }
+button:focus-visible, input:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.options { left: 24px; bottom: 22px; display: grid; gap: 5px; max-width: 320px; }
+.note { margin: 0 0 6px; font-size: 11px; line-height: 1.45; color: var(--dim); min-height: 2.9em; }
+.row { display: flex; align-items: baseline; gap: 12px; }
+.label { width: 92px; font: 500 11px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+.pills { display: inline-flex; gap: 10px; }
+.pills button { font-size: 12px; color: var(--dim); transition: color .15s; }
+.pills button:hover { color: var(--ink); }
+.pills button[aria-pressed="true"] { color: var(--ink); }
+
+.dock { left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; }
+.icon { width: 22px; height: 22px; display: grid; place-items: center; color: var(--ink); opacity: .8; }
+.icon:hover { opacity: 1; }
+.icon svg { width: 13px; height: 13px; fill: currentColor; }
 .icon .i-play { display: none; }
 .icon[data-paused="true"] .i-play { display: block; }
 .icon[data-paused="true"] .i-pause { display: none; }
-.speed { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 6px; font-size: 12px; color: var(--muted); }
-.speed input { width: 92px; accent-color: var(--accent); }
-output { font: 500 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink); min-width: 3.3em; }
+.beats { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; }
+.beats::-webkit-scrollbar { display: none; }
+.beats button { position: relative; padding: 4px 0; font-size: 12px; color: var(--dim); white-space: nowrap; transition: color .15s; }
+.beats button:hover { color: var(--ink); }
+.beats button[aria-pressed="true"] { color: var(--ink); }
+.beats button[aria-pressed="true"]::after { content: ""; position: absolute; left: 50%; bottom: -3px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--accent); }
+.speed { display: flex; align-items: center; gap: 8px; }
+.speed input { -webkit-appearance: none; appearance: none; width: 64px; height: 12px; margin: 0; background: none; cursor: pointer; }
+.speed input::-webkit-slider-runnable-track { height: 1px; background: var(--faint); }
+.speed input::-moz-range-track { height: 1px; background: var(--faint); }
+.speed input::-webkit-slider-thumb { -webkit-appearance: none; width: 8px; height: 8px; margin-top: -3.5px; border-radius: 50%; background: var(--ink); border: 0; }
+.speed input::-moz-range-thumb { width: 8px; height: 8px; border-radius: 50%; background: var(--ink); border: 0; }
+output { font: 500 11px/1 var(--mono); color: var(--dim); min-width: 3.2em; }
 
-.caption { position: absolute; top: 26px; right: 24px; margin: 0; display: flex; gap: 8px; align-items: center; font: 500 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); transition: opacity .25s; }
-.caption #capBeat { color: var(--ink); }
-.sep { opacity: .5; }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-.hide { position: absolute; right: 20px; bottom: 20px; width: 34px; height: 34px; border-radius: 50%; color: var(--muted); font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; cursor: pointer; }
-.app.hidden .panel, .app.hidden .dock, .app.hidden .caption { opacity: 0; pointer-events: none; }
+.hide { right: 22px; bottom: 22px; width: 22px; height: 22px; font: 500 11px/1 var(--mono); color: var(--faint); }
+.hide:hover { color: var(--ink); }
+.app.hidden .title, .app.hidden .caption, .app.hidden .options, .app.hidden .dock, .app.hidden::after { opacity: 0; pointer-events: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-@media (max-width: 1080px) {
-  .speed span { display: none; }
-  .speed input { width: 70px; }
+@media (max-width: 1180px) {
+  .note { display: none; }
+  .options { bottom: 62px; }
+}
+@media (max-width: 900px) {
+  .dock { left: 24px; right: 24px; transform: none; justify-content: space-between; }
 }
 @media (max-width: 760px) {
-  .panel { top: 12px; left: 12px; right: 12px; width: auto; padding: 12px 12px 10px; }
-  h1 { font-size: 22px; margin-bottom: 6px; }
-  .lede { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; }
-  .groups { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-  .groups::-webkit-scrollbar { display: none; }
-  .group { flex-direction: column; align-items: flex-start; gap: 5px; border-top: 0; padding: 0; }
-  .note { display: none; }
+  .title { top: 16px; left: 16px; }
   .caption { display: none; }
-  .dock { left: 12px; right: 12px; bottom: 12px; transform: none; max-width: none; border-radius: 18px; flex-wrap: wrap; justify-content: space-between; }
-  .beats { order: 3; flex-basis: 100%; }
-  .speed { padding-right: 6px; }
-  .hide { right: 12px; bottom: auto; top: 12px; display: none; }
+  .options { left: 16px; right: 16px; bottom: 58px; max-width: none; display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; }
+  .options::-webkit-scrollbar { display: none; }
+  .row { flex-direction: column; gap: 4px; flex: none; }
+  .label { width: auto; }
+  .dock { left: 16px; right: 16px; bottom: 16px; gap: 12px; }
+  .speed output { display: none; }
+  .hide { display: none; }
+  .app::after { height: 190px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .panel, .dock, .caption, .pills button, .beats button { transition: none; }
+  .title, .caption, .options, .dock, .hide, .pills button, .beats button { transition: none; }
 }
 </style>
 </head>
 <body>
 <main class="app" id="app">
-  <canvas id="stage" role="img" aria-label="Black lightning skill effects over a dark stone plain: a white-blue energy orb ahead of an unseen fist, branching lightning, black afterimage smoke, air bursts, orange sparks and falling debris"></canvas>
+  <canvas id="stage" role="img" aria-label="Black lightning skill effects over a dark stone plain: a white-blue energy orb ahead of an unseen fist, wrapped in black smoke that trails it, with branching lightning, air bursts, orange sparks and falling debris"></canvas>
 
-  <section class="panel" aria-labelledby="title">
-    <p class="kicker">Energy skill VFX · Three.js · WebGL2 · GLSL</p>
-    <h1 id="title">Black Lightning</h1>
-    <p class="lede">One effect language for a close-combat skill. Lightning re-rolled 30 times a second, an orb that bends the air behind it, black afterimage smoke laid over the frame, three-layer air bursts with orange sparks, and impact frames that hold, invert and shake.</p>
-    <div class="groups">
-      <div class="group" role="group" aria-labelledby="g-lightning">
-        <span class="label" id="g-lightning">Lightning</span>
-        <div class="pills">
-          <button type="button" data-opt="lightning" data-val="reroll" aria-pressed="true">Re-rolled</button>
-          <button type="button" data-opt="lightning" data-val="tween" aria-pressed="false">Tweened</button>
-        </div>
-      </div>
-      <div class="group" role="group" aria-labelledby="g-afterimage">
-        <span class="label" id="g-afterimage">Afterimage</span>
-        <div class="pills">
-          <button type="button" data-opt="afterimage" data-val="over" aria-pressed="true">Smoke over</button>
-          <button type="button" data-opt="afterimage" data-val="additive" aria-pressed="false">Additive</button>
-        </div>
-      </div>
-      <div class="group" role="group" aria-labelledby="g-orb">
-        <span class="label" id="g-orb">Orb</span>
-        <div class="pills">
-          <button type="button" data-opt="orb" data-val="lens" aria-pressed="true">Air lens</button>
-          <button type="button" data-opt="orb" data-val="glow" aria-pressed="false">Glow ball</button>
-        </div>
-      </div>
-      <div class="group" role="group" aria-labelledby="g-flashes">
-        <span class="label" id="g-flashes">Flashes</span>
-        <div class="pills">
-          <button type="button" data-opt="flashes" data-val="full" aria-pressed="true">Full</button>
-          <button type="button" data-opt="flashes" data-val="safe" aria-pressed="false">Safe</button>
-        </div>
-      </div>
+  <header class="title">
+    <h1>Black Lightning</h1>
+    <p>Energy skill VFX · Three.js</p>
+  </header>
+
+  <p class="caption" aria-hidden="true"><span id="capBeat">Full cast</span><span class="sep">/</span><span id="capText">Black lightning awakening</span></p>
+
+  <section class="options" aria-label="Compare each failure">
+    <p class="note" id="note">Each switch shows one failure next to the version that works.</p>
+    <div class="row" role="group" aria-labelledby="g-lightning">
+      <span class="label" id="g-lightning">Lightning</span>
+      <span class="pills">
+        <button type="button" data-opt="lightning" data-val="reroll" aria-pressed="true">Re-rolled</button>
+        <button type="button" data-opt="lightning" data-val="tween" aria-pressed="false">Tweened</button>
+      </span>
     </div>
-    <p class="note" id="note">Each switch shows one failure next to the version that works. Play a beat, then flip it.</p>
+    <div class="row" role="group" aria-labelledby="g-afterimage">
+      <span class="label" id="g-afterimage">Afterimage</span>
+      <span class="pills">
+        <button type="button" data-opt="afterimage" data-val="over" aria-pressed="true">Smoke over</button>
+        <button type="button" data-opt="afterimage" data-val="additive" aria-pressed="false">Additive</button>
+      </span>
+    </div>
+    <div class="row" role="group" aria-labelledby="g-orb">
+      <span class="label" id="g-orb">Orb</span>
+      <span class="pills">
+        <button type="button" data-opt="orb" data-val="lens" aria-pressed="true">Air lens</button>
+        <button type="button" data-opt="orb" data-val="glow" aria-pressed="false">Glow ball</button>
+      </span>
+    </div>
+    <div class="row" role="group" aria-labelledby="g-flashes">
+      <span class="label" id="g-flashes">Flashes</span>
+      <span class="pills">
+        <button type="button" data-opt="flashes" data-val="full" aria-pressed="true">Full</button>
+        <button type="button" data-opt="flashes" data-val="safe" aria-pressed="false">Safe</button>
+      </span>
+    </div>
   </section>
-
-  <p class="caption" aria-hidden="true"><span class="dot"></span><span id="capBeat">Full cast</span><span class="sep">|</span><span id="capText">Black lightning awakening</span></p>
 
   <nav class="dock" aria-label="Skill beats">
     <button type="button" class="icon" id="play" aria-label="Pause">
-      <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2.5" width="3" height="11" rx="1"/><rect x="9.5" y="2.5" width="3" height="11" rx="1"/></svg>
-      <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.3-5.2c.5-.3.5-1.1 0-1.4L5.7 2.1c-.5-.3-1.2.1-1.2.7z"/></svg>
+      <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3" width="2.4" height="10" rx=".8"/><rect x="9.6" y="3" width="2.4" height="10" rx=".8"/></svg>
+      <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6c0 .5.6.8 1 .5l7.4-4.8c.4-.3.4-.8 0-1.1L6 2.7c-.4-.3-1 0-1 .5z"/></svg>
     </button>
     <div class="beats">
-      <button type="button" data-beat="all" aria-pressed="true"><kbd>0</kbd>Full cast</button>
-      <button type="button" data-beat="charge" aria-pressed="false"><kbd>1</kbd>Charge</button>
-      <button type="button" data-beat="dash" aria-pressed="false"><kbd>2</kbd>Dash</button>
-      <button type="button" data-beat="barrage" aria-pressed="false"><kbd>3</kbd>Barrage</button>
-      <button type="button" data-beat="storm" aria-pressed="false"><kbd>4</kbd>Storm ring</button>
-      <button type="button" data-beat="ultimate" aria-pressed="false"><kbd>5</kbd>Ultimate</button>
+      <button type="button" data-beat="all" aria-pressed="true" aria-keyshortcuts="0">Full cast</button>
+      <button type="button" data-beat="charge" aria-pressed="false" aria-keyshortcuts="1">Charge</button>
+      <button type="button" data-beat="dash" aria-pressed="false" aria-keyshortcuts="2">Dash</button>
+      <button type="button" data-beat="barrage" aria-pressed="false" aria-keyshortcuts="3">Barrage</button>
+      <button type="button" data-beat="storm" aria-pressed="false" aria-keyshortcuts="4">Storm ring</button>
+      <button type="button" data-beat="ultimate" aria-pressed="false" aria-keyshortcuts="5">Ultimate</button>
     </div>
-    <label class="speed" for="speed"><span>Time</span><input id="speed" type="range" min="0.1" max="1" step="0.05" value="1"><output id="speedOut" for="speed">1.00×</output></label>
+    <label class="speed" for="speed"><span class="sr-only">Time scale</span><input id="speed" type="range" min="0.1" max="1" step="0.05" value="1"><output id="speedOut" for="speed">1.00×</output></label>
   </nav>
 
   <button type="button" class="hide" id="hide" aria-pressed="false" aria-label="Hide controls (H)">H</button>
@@ -209,6 +210,46 @@ float fbm4(vec3 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*snoise(p);p=p*2.03+
 // Four point lights the effect throws onto the world: orb, impact, bolt flash, blast.
 // Add ENERGY_LIGHTS_GLSL to your ground and prop shaders, merge fx.lightUniforms into
 // their uniforms, and add energyLight(...) to their colour.
+// Periodic classic Perlin noise (Ashima / Stefan Gustavson, MIT), used once at start-up to
+// bake a tiling 3D noise texture. Needs NOISE_GLSL's mod289/permute/taylorInvSqrt.
+const PNOISE_GLSL = /* glsl */`
+vec3 fade3(vec3 t){ return t * t * t * (t * (t * 6. - 15.) + 10.); }
+float pnoise(vec3 P, vec3 rep){
+  vec3 Pi0 = mod(floor(P), rep), Pi1 = mod(Pi0 + vec3(1.), rep);
+  Pi0 = mod289(Pi0); Pi1 = mod289(Pi1);
+  vec3 Pf0 = fract(P), Pf1 = Pf0 - vec3(1.);
+  vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x), iy = vec4(Pi0.yy, Pi1.yy);
+  vec4 ixy = permute(permute(ix) + iy);
+  vec4 ixy0 = permute(ixy + Pi0.zzzz), ixy1 = permute(ixy + Pi1.zzzz);
+  vec4 gx0 = ixy0 * (1. / 7.), gy0 = fract(floor(gx0) * (1. / 7.)) - .5; gx0 = fract(gx0);
+  vec4 gz0 = vec4(.5) - abs(gx0) - abs(gy0), sz0 = step(gz0, vec4(0.));
+  gx0 -= sz0 * (step(0., gx0) - .5); gy0 -= sz0 * (step(0., gy0) - .5);
+  vec4 gx1 = ixy1 * (1. / 7.), gy1 = fract(floor(gx1) * (1. / 7.)) - .5; gx1 = fract(gx1);
+  vec4 gz1 = vec4(.5) - abs(gx1) - abs(gy1), sz1 = step(gz1, vec4(0.));
+  gx1 -= sz1 * (step(0., gx1) - .5); gy1 -= sz1 * (step(0., gy1) - .5);
+  vec3 g000 = vec3(gx0.x, gy0.x, gz0.x), g100 = vec3(gx0.y, gy0.y, gz0.y), g010 = vec3(gx0.z, gy0.z, gz0.z), g110 = vec3(gx0.w, gy0.w, gz0.w);
+  vec3 g001 = vec3(gx1.x, gy1.x, gz1.x), g101 = vec3(gx1.y, gy1.y, gz1.y), g011 = vec3(gx1.z, gy1.z, gz1.z), g111 = vec3(gx1.w, gy1.w, gz1.w);
+  vec4 n0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+  g000 *= n0.x; g010 *= n0.y; g100 *= n0.z; g110 *= n0.w;
+  vec4 n1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+  g001 *= n1.x; g011 *= n1.y; g101 *= n1.z; g111 *= n1.w;
+  vec4 nz = mix(vec4(dot(g000, Pf0), dot(g100, vec3(Pf1.x, Pf0.yz)), dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z)), dot(g110, vec3(Pf1.xy, Pf0.z))),
+                vec4(dot(g001, vec3(Pf0.xy, Pf1.z)), dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z)), dot(g011, vec3(Pf0.x, Pf1.yz)), dot(g111, Pf1)), fade3(Pf0).z);
+  vec2 nyz = mix(nz.xy, nz.zw, fade3(Pf0).y);
+  return 2.2 * mix(nyz.x, nyz.y, fade3(Pf0).x);
+}`;
+
+// Four independent noises, baked into a 96³ texture that tiles every 6 units (16 texels a
+// cell: at 8, sharp thresholds showed the trilinear facets as stair-steps). One
+// texture fetch replaces four procedural noise calls: the orb, corona and smoke all
+// sample it, and the frame cost of the largest orb dropped several times over.
+const TNOISE_GLSL = /* glsl */`
+uniform sampler3D tNoise;
+vec4 tn(vec3 p){ return texture(tNoise, p * (1. / 6.)) * 2. - 1.; }
+float tfbm2(vec3 p){ return tn(p).x * .5 + tn(p * 2.03 + 1.7).y * .25; }
+float tfbm3(vec3 p){ return tn(p).x * .5 + tn(p * 2.03 + 1.7).y * .25 + tn(p * 4.07 + 3.1).z * .125; }
+`;
+
 // Heat left in the ground by impacts: up to 4 spots (x, z, radius, heat). Multiply your
 // ground's own crack mask by groundHeat(worldXZ) and add it as emission.
 const GROUND_HEAT_GLSL = /* glsl */`
@@ -243,9 +284,11 @@ attribute vec3 aNext;
 attribute vec4 aData;   // side (-1|1), along or age (0..1), width (world), min width (px)
 attribute vec2 aExtra;  // intensity or distance, seed
 uniform vec2 uResolution;
+uniform float uMaxPx;
 varying vec4 vData;
 varying vec2 vExtra;
 varying float vPx;
+varying float vDepth;
 void main(){
   mat4 vp = projectionMatrix * viewMatrix;
   vec4 c = vp * vec4(position, 1.);
@@ -257,9 +300,9 @@ void main(){
   vec2 d = sb - sa; float L = length(d);
   d = L > 1e-4 ? d / L : vec2(1., 0.);
   vec2 n = vec2(-d.y, d.x);
-  float px = max(aData.z * projectionMatrix[1][1] * hr.y / max(c.w, 1e-3), aData.w);
+  float px = min(max(aData.z * projectionMatrix[1][1] * hr.y / max(c.w, 1e-3), aData.w), uMaxPx);
   c.xy += n * aData.x * px * .5 / hr * c.w;
-  vData = aData; vExtra = aExtra; vPx = px;
+  vData = aData; vExtra = aExtra; vPx = px; vDepth = c.w;
   gl_Position = c;
 }`;
 
@@ -288,7 +331,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     rim: new THREE.Color(0.55, 0.80, 1.00),        // orb fresnel rim
     smoke: new THREE.Color(0.010, 0.011, 0.016),   // afterimage black, faintly blue
     ember: new THREE.Color(0.25, 0.55, 1.00),      // lightning caught in the smoke's torn edge
-    dust: new THREE.Color(0.040, 0.042, 0.048),    // ground dust, low, cool and only a little lighter than the ground
+    dust: new THREE.Color(0.024, 0.028, 0.036),    // ground dust, low, cool, close to the ground's own value
   };
 
   const options = {
@@ -309,6 +352,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     uTime: { value: 0 },
     uResolution: { value: res },
     uDpr: { value: 1 },
+    tNoise: { value: null },          // baked in the post section below
   };
 
   // ---------------------------------------------------------------- clock
@@ -338,7 +382,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   }
 
   // ---------------------------------------------------------------- lightning
-  const MAXP = 65, MAXBOLTS = 220;
+  const MAXP = 129, MAXBOLTS = 260;
   const bolts = [];
   for (let i = 0; i < MAXBOLTS; i++) bolts.push({ alive: false, n: 0, pts: new Float32Array(MAXP * 3), from: new Float32Array(MAXP * 3), gen: { a: new V3(), b: new V3(), bend: new V3(), hasBend: false, levels: 4, jag: 0.2 }, anchor: null, width: 0.04, minPx: 8, I: 1, life: 2, age: 0, seed: 0, branch: false });
   const SA = new Float32Array(MAXP * 3), SB = new Float32Array(MAXP * 3);
@@ -361,15 +405,19 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       for (let i = 0; i < n - 1; i++) {
         const i3 = i * 3;
         out[m++] = src[i3]; out[m++] = src[i3 + 1]; out[m++] = src[i3 + 2];
-        let mx = (src[i3] + src[i3 + 3]) * 0.5, my = (src[i3 + 1] + src[i3 + 4]) * 0.5, mz = (src[i3 + 2] + src[i3 + 5]) * 0.5;
-        if (l === 0 && gen.hasBend) { mx += gen.bend.x; my += gen.bend.y; mz += gen.bend.z; }
+        const f = 0.5 + (rnd() - 0.5) * 0.36;           // an uneven split: equal halves read as even, drawn segments
+        let mx = src[i3] + (src[i3 + 3] - src[i3]) * f, my = src[i3 + 1] + (src[i3 + 4] - src[i3 + 1]) * f, mz = src[i3 + 2] + (src[i3 + 5] - src[i3 + 2]) * f;
         const th = rnd() * 6.2832, g = (rnd() + rnd() + rnd() - 1.5) / 1.5;
-        const cu = Math.cos(th) * amp * g, cw = Math.sin(th) * amp * g;
+        const k0 = l === 0 ? 0.6 : 1;                    // a softer first kink: full strength there bends bolts at right angles
+        const cu = Math.cos(th) * amp * g * k0, cw = Math.sin(th) * amp * g * k0;
         out[m++] = mx + _u.x * cu + _w.x * cw; out[m++] = my + _u.y * cu + _w.y * cw; out[m++] = mz + _u.z * cu + _w.z * cw;
       }
       const l3 = (n - 1) * 3;
       out[m++] = src[l3]; out[m++] = src[l3 + 1]; out[m++] = src[l3 + 2];
       n = n * 2 - 1; src = out; amp *= 0.5;
+    }
+    if (gen.hasBend) {                               // bow along a parabola: a single midpoint kink made brackets
+      for (let i = 0; i < n; i++) { const t = i / (n - 1), k = 4 * t * (1 - t); src[i * 3] += gen.bend.x * k; src[i * 3 + 1] += gen.bend.y * k; src[i * 3 + 2] += gen.bend.z * k; }
     }
     dst.set(src.subarray(0, n * 3));
     return n;
@@ -383,27 +431,32 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   // a, b: world points, or offsets from `anchor` (a Vector3 the bolt follows, e.g. orb.position).
   function bolt(a, b, { levels = 5, jag = 0.2, width = 0.04, minPx = 8, intensity = 1, life = 2, branches = 1, anchor = null, bend = null } = {}) {
     const B = freeBolt();
-    B.alive = true; B.branch = false; B.anchor = anchor; B.width = width; B.minPx = minPx; B.I = intensity;
+    const big = R(0.85, 1.45);                       // not every trunk is the same weight
+    B.alive = true; B.branch = false; B.anchor = anchor; B.width = width * big; B.minPx = minPx * big; B.I = intensity;
     B.life = options.lightning === 'tween' ? life * 5 : life; B.age = 0; B.seed = rnd();
-    B.gen.a.copy(a); B.gen.b.copy(b); B.gen.levels = Math.min(levels, 6); B.gen.jag = jag;
+    B.gen.a.copy(a); B.gen.b.copy(b); B.gen.levels = Math.min(levels + (a.distanceTo(b) > 1.5 ? 1 : 0), 7); B.gen.jag = jag;   // long bolts get a finer level
     B.gen.hasBend = !!bend; if (bend) B.gen.bend.copy(bend);
     B.n = shape(B.pts, B.gen); B.from.set(B.pts.subarray(0, B.n * 3));
     const len = a.distanceTo(b);
     boltFlashEnergy += len * intensity;
     if (len * intensity > 0.6) { _a.addVectors(a, b).multiplyScalar(0.5); if (anchor) _a.add(anchor); flashLight(2, _a, Math.min(len * intensity * 2.2, 26), 18); }
-    // Forks leave from the first two-thirds, thinner and dimmer, and taper to nothing.
-    for (let k = 0; k < branches; k++) {
-      if (B.n < 9 || rnd() < 0.25) continue;
-      const i = Math.floor(B.n * R(0.18, 0.66)), i3 = i * 3;
-      const F = freeBolt(); if (F === B) continue;
-      _b.set(B.pts[i3], B.pts[i3 + 1], B.pts[i3 + 2]);
-      _c.set(B.pts[i3 + 3] - B.pts[i3 - 3], B.pts[i3 + 4] - B.pts[i3 - 2], B.pts[i3 + 5] - B.pts[i3 - 1]).normalize();
-      _d.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(0.7); _c.add(_d).normalize();
-      const fl = len * R(0.22, 0.45);
-      F.alive = true; F.branch = true; F.anchor = anchor; F.width = width * 0.55; F.minPx = minPx * 0.55; F.I = intensity * 0.7;
-      F.life = B.life; F.age = 0; F.seed = rnd();
-      F.gen.a.copy(_b); F.gen.b.copy(_b).addScaledVector(_c, fl); F.gen.levels = Math.max(3, B.gen.levels - 1); F.gen.jag = jag * 1.1; F.gen.hasBend = false;
+    // Forks leave from the first two-thirds, thinner and dimmer, taper to nothing, and fork again.
+    fork(B, branches, len, 0);
+  }
+  function fork(P, count, len, depth) {
+    for (let k = 0; k < count; k++) {
+      if (P.n < 9 || rnd() < 0.2) continue;
+      const i = Math.floor(P.n * R(0.15, 0.7)), i3 = i * 3;
+      const F = freeBolt(); if (F === P) continue;
+      _b.set(P.pts[i3], P.pts[i3 + 1], P.pts[i3 + 2]);
+      _c.set(P.pts[i3 + 3] - P.pts[i3 - 3], P.pts[i3 + 4] - P.pts[i3 - 2], P.pts[i3 + 5] - P.pts[i3 - 1]).normalize();
+      _d.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(0.75); _c.add(_d).normalize();
+      const fl = len * R(0.2, 0.42) * (depth ? 0.6 : 1);
+      F.alive = true; F.branch = true; F.anchor = P.anchor; F.width = P.width * (depth ? 0.6 : 0.42); F.minPx = P.minPx * (depth ? 0.6 : 0.42); F.I = P.I * (depth ? 0.7 : 0.55);
+      F.life = P.life; F.age = 0; F.seed = rnd();
+      F.gen.a.copy(_b); F.gen.b.copy(_b).addScaledVector(_c, fl); F.gen.levels = Math.max(3, P.gen.levels - 1); F.gen.jag = P.gen.jag * 1.1; F.gen.hasBend = false;
       F.n = shape(F.pts, F.gen); F.from.set(F.pts.subarray(0, F.n * 3));
+      if (depth < 1 && fl > 0.25) fork(F, rnd() < 0.6 ? 2 : 1, fl, depth + 1);   // a second generation of fine forks
     }
   }
   const STEP_I = [1.0, 0.55, 0.28, 0.14, 0.07];
@@ -421,17 +474,17 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   boltGeo.setAttribute('position', dyn(bPos, 3)); boltGeo.setAttribute('aPrev', dyn(bPrev, 3)); boltGeo.setAttribute('aNext', dyn(bNext, 3));
   boltGeo.setAttribute('aData', dyn(bData, 4)); boltGeo.setAttribute('aExtra', dyn(bExtra, 2)); boltGeo.setIndex(dyn(bIndex, 1));
   const boltMat = new THREE.ShaderMaterial({
-    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr, uCore: { value: new V3(1, 1, 1) }, uGlow: { value: new V3() } },
+    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr, uMaxPx: { value: 30 }, uCore: { value: new V3(0.9, 0.96, 1) }, uGlow: { value: new V3() } },
     vertexShader: RIBBON_VERT,
     fragmentShader: /* glsl */`
       uniform vec3 uCore; uniform vec3 uGlow; uniform float uDpr;
-      varying vec4 vData; varying vec2 vExtra; varying float vPx;
+      varying vec4 vData; varying vec2 vExtra; varying float vPx; varying float vDepth;
       void main(){
         float px = abs(vData.x) * vPx * .5;
-        float coreR = max(.85 * uDpr, vPx * .065);
+        float coreR = max(.7 * uDpr, vPx * .07);                // thick trunks get thicker cores: hierarchy, not uniform lines
         float core = exp(-(px * px) / (coreR * coreR));
-        float glow = exp(-px / (vPx * .17)) * (1. - abs(vData.x));
-        gl_FragColor = vec4((uCore * core * 7. + uGlow * glow * 1.5) * vExtra.x, 1.);
+        float glow = exp(-px / (vPx * .3)) * (1. - abs(vData.x));
+        gl_FragColor = vec4((uCore * core * 6. + uGlow * glow * 2.4) * vExtra.x * smoothstep(.5, 1.8, vDepth), 1.);   // fade by the lens
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
   });
@@ -462,12 +515,13 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       for (let i = 0; i < n; i++) {
         const i3 = i * 3, p3 = Math.max(i - 1, 0) * 3, n3 = Math.min(i + 1, n - 1) * 3;
         const t = i / (n - 1);
-        const taper = B.branch ? 0.12 + 0.88 * Math.pow(1 - t, 0.8) : 1 - 0.4 * t;
+        // trunks taper hard and swell and pinch along their length; branches thin to nothing
+        const taper = B.branch ? 0.08 + 0.92 * Math.pow(1 - t, 1.2) : (1 - 0.85 * Math.pow(t, 1.3)) * (0.78 + 0.3 * Math.sin(i * 0.9 + B.seed * 40));   // trunks end in a point, not a tube cap
         const w = B.width * taper, mp = B.minPx * taper;
         for (let s = -1; s <= 1; s += 2) {
           writeRibbonVertex(boltArrs, v++, P[i3] + ox, P[i3 + 1] + oy, P[i3 + 2] + oz,
             P[p3] + ox, P[p3 + 1] + oy, P[p3 + 2] + oz, P[n3] + ox, P[n3 + 1] + oy, P[n3 + 2] + oz,
-            s, t, w, mp * dpr, I, B.seed);
+            s, t, w * 1.35, mp * dpr * 1.35, I, B.seed);
         }
       }
       for (let i = 0; i < n - 1; i++) {
@@ -484,9 +538,13 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   // ---------------------------------------------------------------- afterimage smoke trails
   const trails = [];
   const MAXTP = 200;
-  function createTrail({ width = 0.6, life = 0.8, spacing = 0.06, drift = null, jitter = 0.35, shards = 0.5, billows = 0.45, opacity = 1 } = {}) {
+  // erode: extra erosion from birth (0–0.4). Raise it for long-lived streams like a cloak,
+  // which otherwise stay solid enough to read as straight bars at a distance.
+  // chain: lay a billow every `chain` metres along the path (0 = off), chainSize × width across.
+  // Billows give the trail volume; the ribbon stays a thin torn core inside it.
+  function createTrail({ width = 0.6, life = 0.8, spacing = 0.06, drift = null, jitter = 0.35, shards = 0.5, billows = 0.45, opacity = 1, erode = 0, chain = 0, chainSize = 1.6 } = {}) {
     const T = {
-      width, life, spacing, jitter, shards, billows, opacity, active: true, drift: drift ? drift.clone() : new V3(),
+      width, life, spacing, jitter, shards, billows, opacity, erode, chain, chainSize, chainAcc: 0, active: true, drift: drift ? drift.clone() : new V3(),
       n: 0, p: new Float32Array(MAXTP * 3), v: new Float32Array(MAXTP * 3), born: new Float32Array(MAXTP), dist: new Float32Array(MAXTP),
       shed: new Uint8Array(MAXTP), seed: rnd() * 50, total: 0,
       push(pos) {
@@ -499,7 +557,21 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
         }
         if (n >= MAXTP) T.drop(1);
         const k = T.n, k3 = k * 3;
-        if (k > 0) { const j = (k - 1) * 3; T.total += Math.hypot(pos.x - T.p[j], pos.y - T.p[j + 1], pos.z - T.p[j + 2]); }
+        if (k > 0) {
+          const j = (k - 1) * 3, seg = Math.hypot(pos.x - T.p[j], pos.y - T.p[j + 1], pos.z - T.p[j + 2]);
+          T.total += seg;
+          if (T.chain > 0) {
+            T.chainAcc += seg; let made = 0;
+            while (T.chainAcc >= T.chain && made++ < 6) {
+              T.chainAcc -= T.chain;
+              const f = 1 - T.chainAcc / Math.max(seg, 1e-4);
+              _e.set(T.p[j] + (pos.x - T.p[j]) * f, T.p[j + 1] + (pos.y - T.p[j + 1]) * f, T.p[j + 2] + (pos.z - T.p[j + 2]) * f);
+              _sa.set(pos.x - T.p[j], pos.y - T.p[j + 1], pos.z - T.p[j + 2]);
+              const ang = screenAngle(_e, _sa.normalize());
+              spawnSprite(0, _e, _c.copy(T.drift).multiplyScalar(0.5).add(_d.set(R(-0.2, 0.2), R(0, 0.25), R(-0.2, 0.2))), { size: T.width * T.chainSize * R(0.75, 1.2), grow: 1.8, life: T.life * R(0.9, 1.35), opacity: 0.8, drag: 1.8, buoy: 0.12, angle: ang, aspect: 1.8 });
+            }
+          }
+        }
         T.p[k3] = pos.x; T.p[k3 + 1] = pos.y; T.p[k3 + 2] = pos.z;
         // jitter varies smoothly with distance along the trail: random per point folds the ribbon into shards
         const ph = T.total * 1.6 + T.seed;
@@ -553,23 +625,24 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   smokeGeo.setAttribute('position', dyn(sArrs.pos, 3)); smokeGeo.setAttribute('aPrev', dyn(sArrs.prev, 3)); smokeGeo.setAttribute('aNext', dyn(sArrs.next, 3));
   smokeGeo.setAttribute('aData', dyn(sArrs.data, 4)); smokeGeo.setAttribute('aExtra', dyn(sArrs.extra, 2)); smokeGeo.setIndex(dyn(sIndex, 1));
   const smokeMat = new THREE.ShaderMaterial({
-    uniforms: { uResolution: uniforms.uResolution, uTime: uniforms.uTime, uSmoke: { value: new V3() } },
+    uniforms: { uResolution: uniforms.uResolution, uMaxPx: { value: 1e5 }, uTime: uniforms.uTime, tNoise: uniforms.tNoise, uSmoke: { value: new V3() } },
     vertexShader: RIBBON_VERT,
-    fragmentShader: NOISE_GLSL + /* glsl */`
+    fragmentShader: TNOISE_GLSL + /* glsl */`
       uniform float uTime; uniform vec3 uSmoke;
-      varying vec4 vData; varying vec2 vExtra;
+      varying vec4 vData; varying vec2 vExtra; varying float vDepth;
       void main(){
         float v = vData.x, age = vData.y;
         float across = 1. - v * v;
         // warped across, streaked along the motion: torn cloak and speed lines, not a plank
         vec3 q = vec3(vExtra.x * 1.3 - uTime * .2, v * 2.1, vExtra.y + uTime * .25);
-        q.y += fbm2(vec3(vExtra.x * .6, v * 1.1, vExtra.y + uTime * .3)) * 1.3;
-        float n = fbm3(q);
-        float streak = snoise(vec3(vExtra.x * .25, v * 3., vExtra.y * 2. + uTime * .2));
+        q.y += tn(vec3(vExtra.x * .6, v * 1.1, vExtra.y + uTime * .3)).w * 1.1;
+        float n = tfbm3(q);
+        float tatter = tfbm2(vec3(vExtra.x * 3.4 - uTime * .3, v * 3.8, vExtra.y * 1.7 + uTime * .45)) * 1.3;   // fine rips along the edge
         // the noise moves the edge by most of the half-width, so the outline is torn, never the ribbon's side
-        float d = across * 1.45 - .45 + n * 1.05 + streak * .2;   // zero at the ribbon's side whatever the noise
-        float th = mix(.32, 1.05, pow(age, .8));               // erosion rises with age
-        float a = smoothstep(th - .08, th + .3, d) * vData.z;   // vData.z carries opacity here
+        float d = across * 1.45 - .45 + n * .85 + tatter * .55;             // no lengthwise streak term: it drew striations
+        float th = mix(.32 + vData.w, 1.05, pow(age, .8));      // erosion rises with age (vData.w: the trail's erode)
+        float a = smoothstep(th - .08, th + .3, d) * vData.z * smoothstep(.8, 2.6, vDepth);   // vData.z: opacity; fade near the lens
+        a *= smoothstep(0., .16, across);                      // whatever the noise, nothing reaches the ribbon's side
         gl_FragColor = vec4(uSmoke * a, a);
       }`,
     transparent: true, depthWrite: false, side: THREE.DoubleSide,
@@ -598,12 +671,13 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
         // a two-point stencil for the tangent: wide ribbons fold over on single-segment kinks
         const i3 = i * 3, p3 = Math.max(i - 2, 0) * 3, n3 = Math.min(i + 2, T.n - 1) * 3;
         const age = Math.min((t - T.born[i]) / T.life, 1);
-        const head = T.active ? Math.min(1, (T.n - 1 - i) / 3) : 1;          // taper into the emitter
+        const head = T.active && T.taper !== false ? Math.min(1, (T.n - 1 - i) / 3) : 1;   // taper into the emitter
         const sw = 0.65 + 0.35 * Math.sin(T.dist[i] * 1.7 + T.seed) + 0.2 * Math.sin(T.dist[i] * 4.1 + T.seed * 2);
         const w = T.width * (1 + 0.9 * age) * (0.35 + 0.65 * head) * sw;
         for (let s = -1; s <= 1; s += 2) {
-          writeRibbonVertex(sArrs, v, T.p[i3], T.p[i3 + 1], T.p[i3 + 2], T.p[p3], T.p[p3 + 1], T.p[p3 + 2], T.p[n3], T.p[n3 + 1], T.p[n3 + 2], s, age, w, 0, T.dist[i], T.seed);
-          sOpacity[v] = T.opacity; v++;
+          writeRibbonVertex(sArrs, v, T.p[i3], T.p[i3 + 1], T.p[i3 + 2], T.p[p3], T.p[p3 + 1], T.p[p3 + 2], T.p[n3], T.p[n3 + 1], T.p[n3 + 2], s, age, w, T.erode, T.dist[i], T.seed);
+          // fade both ends: a stopped trail's head was a blunt square cut
+          sOpacity[v] = T.opacity * Math.min(1, i / 3) * (T.active ? 1 : Math.min(1, (T.n - 1 - i) / 4)); v++;
         }
       }
       for (let i = 0; i < T.n - 1; i++) {
@@ -619,9 +693,11 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
 
   // ---------------------------------------------------------------- dark sprites: billows, dust, shards
   const MAXSPR = 1600;
-  const spr = { n: 0, alive: new Uint8Array(MAXSPR), type: new Uint8Array(MAXSPR), p: new Float32Array(MAXSPR * 3), v: new Float32Array(MAXSPR * 3), s0: new Float32Array(MAXSPR), s1: new Float32Array(MAXSPR), rot: new Float32Array(MAXSPR), rotV: new Float32Array(MAXSPR), age: new Float32Array(MAXSPR), life: new Float32Array(MAXSPR), drag: new Float32Array(MAXSPR), buoy: new Float32Array(MAXSPR), col: new Float32Array(MAXSPR * 3), op: new Float32Array(MAXSPR), seed: new Float32Array(MAXSPR) };
+  const spr = { n: 0, alive: new Uint8Array(MAXSPR), type: new Uint8Array(MAXSPR), asp: new Float32Array(MAXSPR), p: new Float32Array(MAXSPR * 3), v: new Float32Array(MAXSPR * 3), s0: new Float32Array(MAXSPR), s1: new Float32Array(MAXSPR), rot: new Float32Array(MAXSPR), rotV: new Float32Array(MAXSPR), age: new Float32Array(MAXSPR), life: new Float32Array(MAXSPR), drag: new Float32Array(MAXSPR), buoy: new Float32Array(MAXSPR), col: new Float32Array(MAXSPR * 3), op: new Float32Array(MAXSPR), seed: new Float32Array(MAXSPR) };
   let sprCursor = 0;
-  function spawnSprite(type, pos, vel, { size = 0.5, grow = 2.2, life = 1, drag = 1.6, buoy = 0.3, color = palette.smoke, opacity = 1 } = {}) {
+  // angle/aspect: lay a billow along a direction on screen (screenAngle) and stretch it there,
+  // so a chain of them reads as a stream, not a string of beads
+  function spawnSprite(type, pos, vel, { size = 0.5, grow = 2.2, life = 1, drag = 1.6, buoy = 0.3, color = palette.smoke, opacity = 1, angle = null, aspect = 1 } = {}) {
     let i = -1;
     for (let k = 0; k < MAXSPR; k++) { const j = (sprCursor + k) % MAXSPR; if (!spr.alive[j]) { i = j; break; } }
     if (i < 0) i = sprCursor;
@@ -630,50 +706,54 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     spr.alive[i] = 1; spr.type[i] = type;
     spr.p[i3] = pos.x; spr.p[i3 + 1] = pos.y; spr.p[i3 + 2] = pos.z;
     spr.v[i3] = vel.x; spr.v[i3 + 1] = vel.y; spr.v[i3 + 2] = vel.z;
-    spr.s0[i] = size; spr.s1[i] = size * grow; spr.rot[i] = R(0, 6.28); spr.rotV[i] = R(-2, 2) * (type === 1 ? 3 : 0.4);
+    spr.s0[i] = size; spr.s1[i] = size * grow; spr.asp[i] = aspect;
+    spr.rot[i] = angle === null ? R(0, 6.28) : angle + R(-0.12, 0.12); spr.rotV[i] = angle === null ? R(-2, 2) * (type === 1 ? 3 : 0.4) : 0;
     spr.age[i] = 0; spr.life[i] = life; spr.drag[i] = drag; spr.buoy[i] = buoy;
     spr.col[i3] = color.r; spr.col[i3 + 1] = color.g; spr.col[i3 + 2] = color.b; spr.op[i] = opacity; spr.seed[i] = rnd() * 100;
   }
   const sprGeo = new THREE.InstancedBufferGeometry();
   { const q = new THREE.PlaneGeometry(1, 1); sprGeo.index = q.index; sprGeo.setAttribute('position', q.getAttribute('position')); }
-  const iSprPos = new Float32Array(MAXSPR * 3), iSprA = new Float32Array(MAXSPR * 4), iSprB = new Float32Array(MAXSPR * 4), iSprT = new Float32Array(MAXSPR);
+  const iSprPos = new Float32Array(MAXSPR * 3), iSprA = new Float32Array(MAXSPR * 4), iSprB = new Float32Array(MAXSPR * 4), iSprT = new Float32Array(MAXSPR * 2);
   const idyn = (arr, n) => new THREE.InstancedBufferAttribute(arr, n).setUsage(THREE.DynamicDrawUsage);
-  sprGeo.setAttribute('iPos', idyn(iSprPos, 3)); sprGeo.setAttribute('iA', idyn(iSprA, 4)); sprGeo.setAttribute('iB', idyn(iSprB, 4)); sprGeo.setAttribute('iT', idyn(iSprT, 1));
+  sprGeo.setAttribute('iPos', idyn(iSprPos, 3)); sprGeo.setAttribute('iA', idyn(iSprA, 4)); sprGeo.setAttribute('iB', idyn(iSprB, 4)); sprGeo.setAttribute('iT', idyn(iSprT, 2));
   sprGeo.instanceCount = 0;
   const sprMat = new THREE.ShaderMaterial({
-    uniforms: { uTime: uniforms.uTime, uEmber: { value: new V3() } },
+    uniforms: { uTime: uniforms.uTime, tNoise: uniforms.tNoise, uEmber: { value: new V3() } },
     vertexShader: /* glsl */`
-      attribute vec3 iPos; attribute vec4 iA; attribute vec4 iB; attribute float iT;
-      varying vec2 vQ; varying vec4 vA; varying vec4 vB; varying float vT;
+      attribute vec3 iPos; attribute vec4 iA; attribute vec4 iB; attribute vec2 iT;   // type, aspect
+      varying vec2 vQ; varying vec4 vA; varying vec4 vB; varying float vT; varying float vY;
       void main(){
         vec4 mv = viewMatrix * vec4(iPos, 1.);
         float c = cos(iA.y), s = sin(iA.y);
         vec2 p = position.xy;
-        if (iT > .5) p.x *= .55;                    // flakes are a little longer than wide
+        if (iT.x > .5) p.x *= .55;                  // flakes are a little longer than wide
+        else p *= vec2(iT.y, 1. / sqrt(iT.y));        // billows laid along a path stretch along it
         mv.xy += vec2(c * p.x - s * p.y, s * p.x + c * p.y) * iA.x;
-        vQ = position.xy * 2.; vA = iA; vB = iB; vT = iT;
+        vQ = position.xy * 2.; vA = iA; vB = iB; vT = iT.x;
+        vY = (inverse(viewMatrix) * mv).y;                 // world height of this fragment's quad corner
         gl_Position = projectionMatrix * mv;
       }`,
-    fragmentShader: NOISE_GLSL + /* glsl */`
+    fragmentShader: TNOISE_GLSL + /* glsl */`
       uniform float uTime; uniform vec3 uEmber;
-      varying vec2 vQ; varying vec4 vA; varying vec4 vB; varying float vT;
+      varying vec2 vQ; varying vec4 vA; varying vec4 vB; varying float vT; varying float vY;
       void main(){
         float age = vA.z, seed = vA.w;
         float a;
         if (vT < .5) {
           // billow: soft disc broken by noise, eroding as it ages
           float r = length(vQ);
-          float n = fbm2(vec3(vQ * 1.4, seed + age * 1.2)) * .5 + .5;
-          float th = mix(.12, .75, age);
-          a = smoothstep(th, th + .22, n * smoothstep(1., .25, r));
+          float n = (tfbm3(vec3(vQ * 2.1, seed + age * 1.1)) + tn(vec3(vQ * 6.4, seed * 1.3 + age * 2.)).w * .14) * .5 + .5;
+          float th = mix(.16, .78, age);
+          a = smoothstep(th, th + .07, n * smoothstep(1., .2, r));   // a crisp, torn edge: a soft one read as an out-of-focus smear
         } else {
           // flake: an irregular torn polygon, like ash or a scrap of cloak
           float ang = atan(vQ.y, vQ.x);
-          float lim = .62 + .26 * snoise(vec3(cos(ang) * 1.3, sin(ang) * 1.3, seed)) + .08 * snoise(vec3(cos(ang) * 4., sin(ang) * 4., seed + 5.));
+          float lim = .62 + .26 * tn(vec3(cos(ang) * 1.3, sin(ang) * 1.3, seed)).x + .08 * tn(vec3(cos(ang) * 4., sin(ang) * 4., seed + 5.)).y;
           a = 1. - smoothstep(lim - .05, lim, length(vQ));
-          a *= smoothstep(mix(-.2, .7, age), mix(-.1, .8, age), snoise(vec3(vQ * 2.2, seed)) * .5 + .5);
+          a *= smoothstep(mix(-.2, .7, age), mix(-.1, .8, age), tn(vec3(vQ * 2.2, seed)).z * .5 + .5);
         }
         a *= vB.a * (1. - smoothstep(.75, 1., age));
+        a *= smoothstep(0., .22, vY);                       // a soft particle against the ground plane: no straight cut line
         gl_FragColor = vec4(vB.rgb * a, a);
       }`,
     transparent: true, depthWrite: false,
@@ -682,6 +762,12 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   });
   const sprMesh = new THREE.Mesh(sprGeo, sprMat); sprMesh.frustumCulled = false; sprMesh.renderOrder = 11;
   group.add(sprMesh);
+
+  const _sa = new V3(), _sb = new V3();
+  function screenAngle(pos, dir) {
+    _sa.copy(pos).project(camera); _sb.copy(pos).addScaledVector(dir, 0.2).project(camera);
+    return Math.atan2((_sb.y - _sa.y), (_sb.x - _sa.x) * (W / H));
+  }
 
   // ---------------------------------------------------------------- sparks
   const MAXSPK = 1800;
@@ -738,8 +824,10 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
         float dist = length(vec2(vL.x - x, vL.y));
         float a = 1. - smoothstep(vW * .35, vW, dist);
         vec3 hot = vec3(4.2, 2.5, 1.0), mid = vec3(2.8, .78, .16), cool = vec3(.85, .10, .025);
+        float hh = abs(vHeat);
         vec3 c = vHeat > .5 ? mix(mid, hot, (vHeat - .5) * 2.) : mix(cool, mid, vHeat * 2.);
-        gl_FragColor = vec4(c * a * smoothstep(0., .08, vHeat), 1.);
+        if (vHeat < 0.) c = mix(vec3(.2, .4, 1.2), vec3(2.4, 3.1, 4.2), hh);    // negative heat: cold motes of the orb
+        gl_FragColor = vec4(c * a * smoothstep(0., .08, hh), 1.);
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
   });
@@ -749,13 +837,13 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   // ---------------------------------------------------------------- debris: lit chips that land and rest
   const MAXDEB = 160;
   const rockGeo = (() => {
-    const g = new THREE.DodecahedronGeometry(1, 0);
+    const g = new THREE.DodecahedronGeometry(1, 2);         // subdivided twice, then jittered: a chip, not a low-poly gem
     const p = g.getAttribute('position');
     const key = (x, y, z) => `${x.toFixed(3)},${y.toFixed(3)},${z.toFixed(3)}`;
     const jit = new Map(); const r2 = mulberry32(91);
     for (let i = 0; i < p.count; i++) {
       const k = key(p.getX(i), p.getY(i), p.getZ(i));
-      if (!jit.has(k)) jit.set(k, 0.7 + r2() * 0.5);          // shared corners move together: no cracks
+      if (!jit.has(k)) jit.set(k, 0.62 + r2() * 0.6);          // shared corners move together: no cracks
       const s = jit.get(k); p.setXYZ(i, p.getX(i) * s, p.getY(i) * s * 0.7, p.getZ(i) * s);
     }
     g.computeVertexNormals();
@@ -785,8 +873,8 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       uniform vec3 uAmbient; varying vec3 vW; varying vec3 vN;
       void main(){
         vec3 N = normalize(vN), V = normalize(cameraPosition - vW);
-        vec3 alb = vec3(.075, .072, .07);
-        vec3 c = alb * uAmbient * 8. + energyLight(vW, N, V, alb, .7);
+        vec3 alb = vec3(.045, .044, .046);                   // dark basalt chips, rough: they catch light, they don't sparkle
+        vec3 c = alb * uAmbient * 8. + energyLight(vW, N, V, alb, .92) * .8;
         gl_FragColor = vec4(c, 1.);
       }`,
   });
@@ -795,7 +883,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   group.add(debMesh);
   const deb = [];
   for (let i = 0; i < MAXDEB; i++) deb.push({ alive: false, p: new V3(), v: new V3(), q: new THREE.Quaternion(), axis: new V3(), spin: 0, s: new V3(), age: 0, life: 3, rest: false });
-  function debris(pos, { count = 8, speed = [2.5, 7], size = [0.03, 0.09], dir = null, life = [2.4, 3.6] } = {}) {
+  function debris(pos, { count = 8, speed = [2.5, 7], size = [0.018, 0.055], dir = null, life = [2.4, 3.6] } = {}) {
     for (let k = 0; k < count; k++) {
       const D = deb.find((d) => !d.alive) || deb.reduce((o, d) => (d.age > o.age ? d : o));
       D.alive = true; D.rest = false; D.age = 0; D.life = R(life[0], life[1]);
@@ -863,7 +951,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
           float x = (r - .9) / (uThick * 1.6);
           float prof = -1.7 * x * exp(-x * x);             // push-pull: the edge of a pressure front
           vec2 dir = vRad / max(length(vRad), 1e-5);
-          gl_FragColor = vec4(dir * prof * uAmp, 0., 1.);
+          gl_FragColor = vec4(dir * prof * uAmp, 0., 0.);
         }`,
       transparent: true, depthWrite: false, depthTest: false, side: THREE.DoubleSide,
       blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
@@ -944,7 +1032,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
           vec2 nv = (viewMatrix * vec4(N, 0.)).xy;
           float fade = pow(1. - uAge, 1.2) * smoothstep(0., .1, vAlong) * smoothstep(1., .6, vAlong);
           float shells = .5 + .5 * sin((vAlong * 5. - uAge * 7.) * 6.2832);
-          gl_FragColor = vec4(nv * uAmp * (.35 + e) * (.5 + shells) * fade, 0., 1.);
+          gl_FragColor = vec4(nv * uAmp * (.35 + e) * (.5 + shells) * fade, 0., 0.);
         }`,
       transparent: true, depthWrite: false, depthTest: false, side: THREE.DoubleSide,
       blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
@@ -987,55 +1075,93 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   }
 
   // ---------------------------------------------------------------- orb: compressed, refracting thunderstorm energy
+  // The orb is a ray-marched volume inside a bounding sphere: a hot core, current sheets wound
+  // round the punch axis at two scales, a liquid edge, and a crackling membrane with a crisp rim.
+  // Behind it a black corona stretches into a tail along the orb's motion, and smoke ribbons and
+  // billows leave from its back, so the shadow belongs to the energy and follows it.
   const orbGeo = new THREE.IcosahedronGeometry(1, 20);
   const ORB_VERT = NOISE_GLSL + /* glsl */`
     uniform float uTime, uRadius, uInstab; uniform vec3 uCenter;
     varying vec3 vW; varying vec3 vN; varying vec3 vLocal;
     void main(){
       vec3 n = normalize(position);
-      float wob = snoise(n * 1.8 + vec3(0., uTime * 1.7, uTime * .9)) * (.03 + .11 * uInstab)
-                + snoise(n * 4.3 - uTime * 2.6) * (.012 + .04 * uInstab);
+      float wob = snoise(n * 1.8 + vec3(0., uTime * 1.7, uTime * .9)) * (.03 + .11 * uInstab);
       vLocal = n * (1. + wob); vN = n;
       vW = uCenter + vLocal * uRadius;
       gl_Position = projectionMatrix * viewMatrix * vec4(vW, 1.);
     }`;
+  const ORB_VOLUME_VERT = /* glsl */`
+    uniform float uRadius; uniform vec3 uCenter; varying vec3 vW;
+    void main(){ vW = uCenter + position * uRadius * 1.12; gl_Position = projectionMatrix * viewMatrix * vec4(vW, 1.); }`;
+  const ORB_VOLUME_FRAG = NOISE_GLSL + TNOISE_GLSL + /* glsl */`
+    uniform float uTime, uPressure, uMode, uRadius, uInstab; uniform vec3 uCenter, uAxis, uCore, uRim, uDeep;
+    varying vec3 vW;
+    vec3 rot(vec3 p, vec3 ax, float a){ return p * cos(a) + cross(ax, p) * sin(a) + ax * dot(ax, p) * (1. - cos(a)); }
+    void main(){
+      const float S = 1.12;                                   // bounding radius, in orb radii
+      vec3 ro = (cameraPosition - uCenter) / uRadius, rd = normalize(vW - cameraPosition);
+      float b = dot(ro, rd), h = b * b - (dot(ro, ro) - S * S);
+      if (h <= 0.) discard;
+      h = sqrt(h);
+      float t0 = max(-b - h, 0.), t1 = -b + h;
+      float hs = b * b - (dot(ro, ro) - 1.);
+      if (uMode > .5) {                                       // the failure: a light bulb
+        if (hs <= 0.) discard;
+        vec3 n = normalize(ro + rd * (-b - sqrt(hs)));
+        gl_FragColor = vec4(uCore * (.8 + 2.4 * pow(clamp(-dot(n, rd), 0., 1.), 1.5)) * (1.5 + 2. * uPressure), .95); return;
+      }
+      // march only the sphere itself (r < 1.02), where the density lives, so every step counts
+      float hb = b * b - (dot(ro, ro) - 1.0404);
+      if (hb > 0.) { hb = sqrt(hb); t0 = max(-b - hb, 0.); t1 = -b + hb; }
+      const int N = 22;
+      float dt = (t1 - t0) / float(N);
+      // random per-pixel jitter: an ordered pattern (interleaved gradient noise) showed as a hatch over thin filaments
+      float t = t0 + dt * fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+      float spin = uTime * (1.4 + 2.2 * uPressure);
+      vec3 col = vec3(0.); float trans = 1.;
+      for (int i = 0; i < N; i++) {
+        vec3 p = ro + rd * t; t += dt;
+        float r = length(p);
+        if (r > S) continue;
+        // rigid spin plus a FIXED shear: spin × (1.6 − r) grows without limit and winds the noise into fine rings
+        vec3 q = rot(p, uAxis, spin + 2.2 * (1. - r) + dot(p, uAxis) * 2.4);
+        q += vec3(0., 0., uTime * .35);                                      // the structure evolves by scrolling instead
+        float w = tn(q * 1.5 + vec3(0., 0., uTime * .45)).x;
+        float edge = 1. - smoothstep(.55, 1.0, r + w * (.025 + .1 * uInstab));   // a soft edge, calm unless unstable: a wobbling one read as lumpy
+        if (edge <= 0.) continue;
+        // filaments where two noise fields cross zero: lines of current, like a plasma globe.
+        // Sheets (one zero set) cross every ray many times and integrate to a flat white disc.
+        vec3 qq = q * 1.6 + w * .5;                                          // low frequency: a few long filaments, not yarn
+        // filaments from procedural simplex noise: the baked Perlin is zero on its lattice, and
+        // those zeros lit up as a regular grid of bright cloud that read as a planet
+        float a1 = 1. - abs(snoise(qq)), a2 = 1. - abs(snoise(qq * 1.07 + vec3(17.3, -4.1, 9.7)));
+        float fil = pow(max(a1 * a2, 0.), 20.) * 12. * (1.25 - r);           // brightest toward the core
+        float core = exp(-r * r * 30.) * 1.2 + exp(-r * r * 6.) * .08;   // hot, but small: a blown-out core flattened the filaments
+        vec3 ramp = mix(uCore, mix(uRim, uDeep, smoothstep(.4, 1., r)), smoothstep(.05, .45, r));
+        col += (ramp * fil * edge * (.6 + 2. * uPressure) + uDeep * .045 * edge * (1. - r) + uCore * core * (1. + 2.2 * uPressure)) * dt * trans;   // a faint inner glow, strongest at the centre
+        trans *= exp(-dt * edge * (.12 + .2 * uPressure));                   // see-through: the dark behind it shows
+      }
+      if (hs > 0.) {                                          // the membrane: crisp rim and fine crackle
+        vec3 n = normalize(ro + rd * (-b - sqrt(hs)));
+        float ndv = clamp(-dot(n, rd), 0., 1.);
+        float ra = atan(dot(n, cross(uAxis, vec3(0., 1., 0.)) + vec3(1e-3)), dot(n, uAxis));
+        float feather = .25 + .75 * smoothstep(-.2, .6, tn(vec3(cos(ra) * 2., sin(ra) * 2., uTime * 1.3)).y);   // the rim breaks up by angle: a uniform one read as a hoop
+        col += mix(uRim, uCore, .45) * pow(1. - ndv, 9.) * (1.4 + 2.2 * uPressure) * feather;
+      }
+      gl_FragColor = vec4(col, (1. - trans) * .3);       // mostly additive: a dark absorbing body read as an opaque navy ball
+    }`;
+  const coronaGeo = new THREE.PlaneGeometry(2, 2);
+  const ringGeoOrb = new THREE.TorusGeometry(1, 0.022, 8, 220);
   const orbs = [];
-  function createOrb({ radius = 0.45 } = {}) {
+  function createOrb({ radius = 0.45, shadow = true } = {}) {
     const u = {
       uTime: uniforms.uTime, uRadius: { value: radius }, uInstab: { value: 0.2 }, uCenter: { value: new V3() }, uAxis: { value: new V3(1, 0, 0) },
-      uPressure: { value: 0.6 }, uMode: { value: 0 }, uCore: { value: new V3() }, uRim: { value: new V3() }, uLens: { value: 0 },
+      uPressure: { value: 0.6 }, uMode: { value: 0 }, uCore: { value: new V3() }, uRim: { value: new V3() }, uDeep: { value: new V3() }, uLens: { value: 0 },
+      tNoise: uniforms.tNoise,
     };
     const cm = new THREE.ShaderMaterial({
-      uniforms: u, vertexShader: ORB_VERT,
-      fragmentShader: NOISE_GLSL + /* glsl */`
-        uniform float uTime, uPressure, uMode, uRadius; uniform vec3 uCenter, uAxis, uCore, uRim;
-        varying vec3 vW; varying vec3 vN; varying vec3 vLocal;
-        void main(){
-          vec3 V = normalize(cameraPosition - vW), N = normalize(vN);
-          float ndv = abs(dot(N, V));
-          float fres = pow(1. - ndv, 3.);
-          bool back = !gl_FrontFacing;
-          if (uMode > .5) {                                 // the failure: a light bulb
-            if (back) discard;
-            gl_FragColor = vec4(uCore * (.8 + 2.4 * pow(ndv, 1.5)) * (1.5 + 2. * uPressure), .95); return;
-          }
-          // streaks wound around the punch axis, front shell one way and back shell the other:
-          // two surfaces give the depth of a volume without marching one (marching banded)
-          vec3 p = normalize(vLocal);
-          vec3 b1 = normalize(cross(uAxis, abs(uAxis.y) < .9 ? vec3(0., 1., 0.) : vec3(1., 0., 0.)));
-          vec3 b2 = cross(uAxis, b1);
-          float h = dot(p, uAxis), phi = atan(dot(p, b2), dot(p, b1));
-          float twist = phi + h * 2.8 + uTime * (2.4 + 4. * uPressure) * (back ? -.7 : 1.);
-          vec3 q = vec3(cos(twist) * .75, sin(twist) * .75, h * 4.2 + uTime * .5);
-          float n1 = snoise(q), n2 = snoise(q * vec3(1.6, 1.6, 2.3) + 7.3 - uTime * .4);
-          float streak = pow(1. - abs(n1), 26.) + .35 * pow(1. - abs(n2), 32.);
-          vec3 emit = uRim * fres * (.35 + .8 * uPressure) * (back ? .35 : 1.)
-                    + uCore * streak * (.45 + 1.25 * uPressure) * (back ? .4 : 1.)
-                    + uRim * pow(ndv, 2.) * .05 * (1. + uPressure);
-          float a = back ? 0. : (.05 + .07 * uPressure) * (1. - fres);   // a little density: it darkens what is behind it
-          gl_FragColor = vec4(emit, a);
-        }`,
-      transparent: true, depthWrite: false, side: THREE.DoubleSide,
+      uniforms: u, vertexShader: ORB_VOLUME_VERT, fragmentShader: ORB_VOLUME_FRAG,
+      transparent: true, depthWrite: false,
       blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
     });
     const dm = new THREE.ShaderMaterial({
@@ -1049,7 +1175,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
           vec2 nv = (viewMatrix * vec4(N, 0.)).xy;
           vec2 off = -nv * uLens * thick;                                         // a dense lens: pulls the background in
           off += vec2(-nv.y, nv.x) * uLens * .6 * snoise(vec3(nv * 2.5, uTime * 1.8)) * thick;   // vortex shimmer
-          gl_FragColor = vec4(off, 0., 1.);
+          gl_FragColor = vec4(0., 0., off);                    // zw: bends the air without a chromatic split
         }`,
       transparent: true, depthWrite: false, depthTest: false,
       blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
@@ -1057,12 +1183,100 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     const cmesh = new THREE.Mesh(orbGeo, cm), dmesh = new THREE.Mesh(orbGeo, dm);
     cmesh.renderOrder = 20; dmesh.layers.set(DISTORT_LAYER); cmesh.frustumCulled = dmesh.frustumCulled = false;
     group.add(cmesh, dmesh);
+    // the black corona: a camera-facing disc of dark flames behind the orb, stretched along its tail
+    const cu = { uTime: uniforms.uTime, tNoise: uniforms.tNoise, uCenter: u.uCenter, uRadius: u.uRadius, uTrail: { value: new THREE.Vector2(-1, 0) }, uTrailK: { value: 0.4 }, uDensity: { value: 0.97 }, uSmoke: { value: new V3() }, uGlow: { value: new V3() } };
+    const corona = new THREE.Mesh(coronaGeo, new THREE.ShaderMaterial({
+      uniforms: cu,
+      vertexShader: /* glsl */`
+        uniform vec3 uCenter; uniform float uRadius, uTrailK; uniform vec2 uTrail; varying vec2 vQ; varying vec2 vP;
+        void main(){
+          vP = position.xy;
+          vQ = position.xy * 3.6 + uTrail * 2.2;              // in orb radii, shifted down the tail so the whole teardrop fits
+          vec4 mv = viewMatrix * vec4(uCenter, 1.); mv.xy += vQ * uRadius;
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: TNOISE_GLSL + /* glsl */`
+        uniform float uTime, uTrailK, uDensity; uniform vec2 uTrail; uniform vec3 uSmoke, uGlow; varying vec2 vQ; varying vec2 vP;
+        void main(){
+          float r = length(vQ);
+          vec2 N = vec2(-uTrail.y, uTrail.x);
+          float al = dot(vQ, uTrail), pe = dot(vQ, N);           // along the tail, across it
+          // a teardrop: about the orb's width at the orb, widening a little, then tapering to a point down the tail
+          float L = 1.6 + 2.6 * uTrailK;
+          float t = clamp(al / L, 0., 1.);
+          float halfW = al < 0. ? sqrt(max(1.25 * 1.25 - al * al, 0.)) : 1.25 + 1.1 * t - 2.2 * t * t;
+          // torn tongues: noise squeezed across the tail and streaming down it
+          float tongues = tfbm3(vec3(pe * 2.4, al * .55 - uTime * 2.6, 3.7));
+          float wisps = tn(vec3(pe * 6.5, al * 1.4 - uTime * 3.4, 9.1)).x;
+          float d = abs(pe) - halfW * (1. + .7 * tongues + .35 * wisps * (.3 + t));
+          float mass = 1. - smoothstep(-.02, .035, d);                  // a crisp torn edge: a soft one read as a blurred backdrop
+          mass *= 1. - smoothstep(.7, .95, t + .25 * tongues);          // the tip shreds away
+          mass *= smoothstep(-1.6, -.9, al);
+          float rips = tn(vec3(pe * 4.2, al * 1.1 - uTime * 3., 21.)).z;  // torn holes opening toward the tip
+          mass *= 1. - smoothstep(.15, .35, rips + t * .5 - .35) * smoothstep(.15, .5, t);
+          mass *= smoothstep(3.3, 2.3, r) * (1. - smoothstep(.8, .98, max(abs(vP.x), abs(vP.y))));   // round, never the quad's edge
+          float a = mass * uDensity;
+          gl_FragColor = vec4(uSmoke * a, a);              // pure black: a lit edge read as blue haze
+        }`,
+      transparent: true, depthWrite: false, depthTest: false,
+      blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+    }));
+    corona.renderOrder = 19; corona.frustumCulled = false; group.add(corona);
+    // spiral arms: thin wind streaks wound round the orb, broken into wisps by the noise
+    const su = { uTime: uniforms.uTime, tNoise: uniforms.tNoise, uCenter: u.uCenter, uRadius: u.uRadius, uI: { value: 0 }, uSpin: { value: -6 }, uCore: u.uCore, uRim: u.uRim };
+    const spiral = new THREE.Mesh(coronaGeo, new THREE.ShaderMaterial({
+      uniforms: su,
+      vertexShader: /* glsl */`
+        uniform vec3 uCenter; uniform float uRadius; varying vec2 vQ;
+        void main(){ vQ = position.xy * 2.6; vec4 mv = viewMatrix * vec4(uCenter, 1.); mv.xy += vQ * uRadius; mv.z += uRadius * .9; gl_Position = projectionMatrix * mv; }`,
+      fragmentShader: TNOISE_GLSL + /* glsl */`
+        uniform float uTime, uI, uSpin; uniform vec3 uCore, uRim; varying vec2 vQ;
+        void main(){
+          float r = length(vQ); if (r > 2.6) discard;
+          float th = atan(vQ.y, vQ.x);
+          float arms = .5 + .5 * sin(th * 3. - log(max(r, .05)) * 7. + uTime * uSpin);
+          float n = tn(vec3(vQ * 1.5, uTime * .7)).x;
+          float streak = pow(arms, 34.) * smoothstep(-.1, .5, n);          // thin wind streaks, not crescents
+          float band = smoothstep(.85, 1.05, r) * smoothstep(1.9, 1.1, r);
+          gl_FragColor = vec4(mix(uRim, uCore, pow(arms, 40.)) * streak * band * uI, 1.);
+        }`,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    spiral.renderOrder = 22; spiral.frustumCulled = false;   // kept off: soft spiral arms read as primitive crescents
+    // compression rings: thin currents running round the orb on tilted planes
+    const rings3 = [].map((k, i) => {
+      const m = new THREE.Mesh(ringGeoOrb, new THREE.ShaderMaterial({
+        uniforms: { uTime: uniforms.uTime, uI: { value: 0 }, uSpeed: { value: [0.9, -1.3, 0.7][i] }, uSeed: { value: i * 3.7 }, uGlow: { value: new V3() }, uCore: { value: new V3() } },
+        vertexShader: /* glsl */`varying vec2 vUv; varying float vF;
+          void main(){ vUv = uv; vec4 w = modelMatrix * vec4(position, 1.); vec3 N = normalize(mat3(modelMatrix) * normal);
+            vF = abs(dot(N, normalize(cameraPosition - w.xyz))); gl_Position = projectionMatrix * viewMatrix * w; }`,
+        fragmentShader: /* glsl */`uniform float uTime, uI, uSpeed, uSeed; uniform vec3 uGlow, uCore; varying vec2 vUv; varying float vF;
+          void main(){
+            float s = fract(vUv.x * 2. - uTime * uSpeed + uSeed);
+            float dash = smoothstep(0., .03, s) * pow(1. - s, 5.);          // comet streaks running round
+            float gap = smoothstep(.15, .35, fract(vUv.x * 2. + uSeed * .37)); // broken, never a full hoop
+            gl_FragColor = vec4((uCore * dash * 1.6 + uGlow * dash * .8) * pow(vF, .7) * gap * uI, 1.);
+          }`,
+        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      }));
+      m.renderOrder = 21; m.frustumCulled = false; group.add(m);
+      return { m, k, tilt: [0.32, -0.42, 0.22][i], prec: [0.7, -0.5, 0.35][i] };
+    });
     const O = {
       position: u.uCenter.value, axis: u.uAxis.value, radius, pressure: 0.6, instability: 0.2, visible: true, arcRate: 1, reach: [],
-      scale: 1, vel: 0, nextKick: 0, u, cmesh, dmesh,
+      scale: 1, vel: 0, nextKick: 0, u, cmesh, dmesh, corona, cu, rings: rings3, spiral, su,
+      shadow, velocity: new V3(), prev: null, trail: new V3(-1, 0, 0), billowAcc: 0, moteAcc: 0,
       pulse(k = -0.2) { O.vel += k * 34; },               // compress (negative) or swell; the spring rebounds past rest
       get currentRadius() { return u.uRadius.value; },
     };
+    if (shadow) {
+      O.trails = [
+        createTrail({ width: 0.8, life: 0.75, spacing: 0.04, jitter: 0.15, shards: 0.06, billows: 0.15, erode: 0.24, opacity: 0.8 }),
+        createTrail({ width: 0.5, life: 0.6, spacing: 0.04, jitter: 0.2, shards: 0.12, billows: 0.05, erode: 0.22 }),
+        createTrail({ width: 0.5, life: 0.6, spacing: 0.04, jitter: 0.2, shards: 0.12, billows: 0.05, erode: 0.22 }),
+      ];
+      for (const T of O.trails) T.taper = false;
+    }
     orbs.push(O);
     return O;
   }
@@ -1079,35 +1293,116 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       const r = Math.max(0.001, O.radius * O.scale * breathe);
       O.u.uRadius.value = r; O.u.uInstab.value = O.instability; O.u.uPressure.value = O.pressure;
       O.u.uMode.value = options.orb === 'glow' ? 1 : 0;
-      O.u.uCore.value.set(palette.core.r * 0.78, palette.core.g * 0.9, palette.core.b);   // streaks a touch bluer than a bolt's core
+      O.u.uCore.value.set(palette.core.r * 0.92, palette.core.g * 0.97, palette.core.b);
       O.u.uRim.value.set(palette.rim.r, palette.rim.g, palette.rim.b);
+      O.u.uDeep.value.set(palette.glow.r * 0.45, palette.glow.g * 0.5, palette.glow.b);
       O.u.uLens.value = 0.11 * r / viewUnitsPerUV(O.position);
-      O.cmesh.visible = O.dmesh.visible = O.visible && O.radius > 0.02;
-      if (O.cmesh.visible) flashLight(0, O.position, (1.6 + 5.5 * O.pressure) * (r / 0.45), 30);
+      const on = O.visible && O.radius > 0.02;
+      O.cmesh.visible = O.dmesh.visible = on;
+      O.corona.visible = on && O.shadow;
+      O.spiral.visible = false;
+      O.su.uI.value = 0.25 + 0.75 * O.pressure; O.su.uSpin.value = -(4 + 6 * O.pressure);
+      if (on) flashLight(0, O.position, (1.6 + 5.5 * O.pressure) * (r / 0.45), 30);
+    }
+  }
+  // Runs in render(), after the caller has moved the orb this frame.
+  const _tv = new V3(), _tw = new V3();
+  function updateOrbShadows(dt) {
+    for (const O of orbs) {
+      const on = O.visible && O.radius > 0.02;
+      if (!O.prev) O.prev = O.position.clone();
+      if (dt > 0) {
+        _tv.subVectors(O.position, O.prev).divideScalar(dt);
+        O.velocity.lerp(_tv, 1 - Math.exp(-dt * 20));
+      }
+      O.prev.copy(O.position);
+      const r = O.u.uRadius.value, speed = O.velocity.length();
+      // trailing direction: against the motion when it moves, back along the arm (and a little up) when it holds
+      const k = Math.min(1, Math.max(0, (speed - 1.0) / 4));
+      _tw.copy(O.axis).negate().addScaledVector(UP, 0.3).normalize();
+      if (speed > 1e-3) _tv.copy(O.velocity).negate().divideScalar(speed); else _tv.copy(_tw);
+      O.trail.copy(_tw).lerp(_tv, k).normalize();
+      // the corona's tail, in view space
+      _tv.copy(O.trail).transformDirection(camera.matrixWorldInverse);
+      O.cu.uTrail.value.set(_tv.x, _tv.y); if (O.cu.uTrail.value.lengthSq() > 1e-6) O.cu.uTrail.value.normalize();
+      O.cu.uTrailK.value = 0.65 + 0.35 * k;               // always a tail: a round halo read as a static backdrop
+      O.cu.uSmoke.value.set(palette.smoke.r, palette.smoke.g, palette.smoke.b); O.cu.uGlow.value.set(palette.glow.r, palette.glow.g, palette.glow.b);
+      // compression rings
+      for (const G of O.rings) {
+        G.m.visible = on && options.orb !== 'glow';
+        if (!G.m.visible) continue;
+        basis(O.axis);
+        const a = clock.sim * G.prec;
+        _tv.copy(O.axis).addScaledVector(_u, Math.cos(a) * Math.tan(G.tilt)).addScaledVector(_w, Math.sin(a) * Math.tan(G.tilt)).normalize();
+        G.m.quaternion.setFromUnitVectors(ZAXIS, _tv); G.m.position.copy(O.position); G.m.scale.setScalar(r * G.k);
+        const mu = G.m.material.uniforms;
+        mu.uI.value = 0.35 + 0.9 * O.pressure; mu.uGlow.value.set(palette.glow.r, palette.glow.g, palette.glow.b); mu.uCore.value.set(palette.core.r, palette.core.g, palette.core.b);
+      }
+      if (!O.shadow) continue;
+      for (const T of O.trails) if (!on && T.active) T.stop(); else if (on && !T.active) T.restart();
+      if (!on) continue;
+      // smoke leaves the orb's back: low drift when it moves (so it lays out along the path), a steady stream when it holds
+      basis(O.trail);
+      const drift = _tw.copy(O.trail).multiplyScalar(1.7 * (1 - k)).addScaledVector(UP, 0.3).addScaledVector(O.velocity, 0.06);
+      const widths = [1.0, 0.6, 0.6];
+      for (let i = 0; i < 3; i++) {
+        const T = O.trails[i]; T.width = r * widths[i]; T.drift.copy(drift);
+        const sp = clock.sim * 3 + i * 3.14;
+        _tv.copy(O.position).addScaledVector(O.trail, r * (i ? 0.25 : 0.4));
+        if (i) _tv.addScaledVector(_u, Math.cos(sp) * r * 0.5).addScaledVector(_w, Math.sin(sp) * r * 0.5);
+        T.push(_tv);
+      }
+      if (dt > 0) {
+        const step = r * 0.5;
+        O.pathAcc = (O.pathAcc || 0) + _tv.subVectors(O.position, O.lastBillow || O.position).length();
+        if (!O.lastBillow) O.lastBillow = O.position.clone();
+        while (O.pathAcc >= step) {                    // one billow every third of a radius travelled: smoke that follows the orb
+          O.pathAcc -= step;
+          O.lastBillow.lerp(O.position, Math.min(1, step / Math.max(1e-4, O.lastBillow.distanceTo(O.position))));
+          _tv.copy(O.lastBillow).addScaledVector(O.trail, r * 0.5).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(r * 0.35));
+          const ang = screenAngle(_tv, O.trail);
+          spawnSprite(0, _tv, _d.copy(O.trail).multiplyScalar(R(0.3, 0.8)).addScaledVector(UP, 0.15), { size: r * R(1.2, 2.0), grow: 1.9, life: R(0.6, 1.0), opacity: 0.9, drag: 2.2, buoy: 0.15, angle: ang, aspect: 1 + 0.7 * k });
+        }
+        O.lastBillow.copy(O.position);
+        O.billowAcc += dt * 14 * (0.4 + O.pressure);
+        while (O.billowAcc >= 1) {
+          O.billowAcc -= 1;
+          _tv.copy(O.position).addScaledVector(O.trail, r * R(0.6, 1.2)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(r * 0.45));
+          spawnSprite(0, _tv, _d.copy(O.trail).multiplyScalar(R(0.8, 1.8) * (1 - k * 0.7)).addScaledVector(O.velocity, 0.25).addScaledVector(UP, 0.2), { size: r * R(1.0, 1.8), grow: 2.0, life: R(0.5, 0.9), opacity: 0.85, drag: 1.6, buoy: 0.2 });
+        }
+        O.moteAcc += dt * 55 * O.pressure;           // cold motes caught in the vortex
+        while (O.moteAcc >= 1) {
+          O.moteAcc -= 1;
+          _c.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
+          _tv.copy(O.position).addScaledVector(_c, r * R(1.3, 2.4));
+          _d.crossVectors(O.axis, _c).multiplyScalar(R(2, 4)).addScaledVector(_c, -R(0.5, 1.5)).addScaledVector(O.velocity, 0.9);
+          spawnSpark(_tv, _d, { life: R(0.35, 0.7), size: R(0.003, 0.007), heat: -R(0.6, 1), gravity: 0, drag: 0.8 });
+        }
+      }
     }
   }
   function orbTick(O) {
     if (!O.visible || O.radius < 0.05) return;
     const r = O.u.uRadius.value, rate = O.arcRate;
-    const surf = Math.round((R(0.6, 1.6) + 2 * O.pressure) * rate);
-    for (let k = 0; k < surf; k++) {
+    const surf = Math.round((R(0.1, 0.8) + 0.7 * O.pressure) * rate);
+    for (let k = 0; k < surf; k++) {                 // short crackles leaping outward: arcs laid round the shell read as wire loops
       _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
-      _d.set(R(-1, 1), R(-1, 1), R(-1, 1)).cross(_a).normalize();
-      _b.copy(_a).applyAxisAngle(_d, R(0.6, 1.5));
-      const bend = _c.addVectors(_a, _b).normalize().multiplyScalar(r * R(0.12, 0.42));
-      bolt(_a.multiplyScalar(r * 1.02), _b.multiplyScalar(r * 1.02), { levels: 5, jag: 0.34, width: 0.02 * (r / 0.45), minPx: 5, intensity: 0.85, life: R(1, 2.6) | 0, anchor: O.position, bend, branches: 0 });
+      _b.copy(_a).multiplyScalar(R(1.3, 1.75)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(0.35));
+      bolt(_a.multiplyScalar(r * 0.95), _b.multiplyScalar(r), { levels: 5, jag: 0.3, width: 0.022 * (r / 0.45), minPx: 5, intensity: 0.9, life: R(1, 2.6) | 0, anchor: O.position, branches: 1 });
     }
-    const inner = Math.round(R(0.5, 1.8) * rate);
-    for (let k = 0; k < inner; k++) {
-      _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(r * 0.7); _b.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(r * 0.7);
-      bolt(_a, _b, { levels: 4, jag: 0.25, width: 0.014, minPx: 4, intensity: 0.6, life: 1, anchor: O.position, branches: 0 });
+    if (O.position.y < 2.6 && rnd() < 0.18 + 0.3 * O.pressure) {   // strikes down to the ground under it
+      const a = R(0, 6.28), d = R(0.3, 1.6);
+      const hit = new V3(O.position.x + Math.cos(a) * d, 0.02, O.position.z + Math.sin(a) * d);
+      _b.subVectors(hit, O.position); _a.copy(_b).normalize().multiplyScalar(r);
+      bolt(_a, _b, { levels: 6, jag: 0.24, width: 0.04, minPx: 9, intensity: 1.1, life: 2, anchor: O.position, branches: 2 });
+      addHeat(hit, 0.8, 0.5); sparks(hit, { count: 6, dir: UP, spread: 0.9, speed: [1.5, 4] });
     }
-    if (rnd() < (0.3 + 0.55 * O.pressure) * Math.min(rate, 1.6)) {
+    for (let leap = 0; leap < 2; leap++) if (rnd() < (0.3 + 0.55 * O.pressure) * Math.min(rate, 1.6)) {
       _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
       if (_a.dot(O.axis) > 0.3) _a.addScaledVector(O.axis, -1.2).normalize();   // leap back along the arm or out sideways, not ahead
       const reach = O.reach.length && rnd() < 0.55 ? O.reach[(rnd() * O.reach.length) | 0] : null;
       if (reach) _b.subVectors(reach, O.position); else _b.copy(_a).multiplyScalar(r * R(1.5, 2.8)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(r * 0.4));
-      bolt(_a.multiplyScalar(r), _b, { levels: 5, jag: 0.26, width: 0.03, minPx: 8, intensity: 1, life: 2, anchor: O.position, branches: 1 });
+      bolt(_a.multiplyScalar(r), _b, { levels: 6, jag: 0.24, width: 0.03, minPx: 8, intensity: 1, life: 2, anchor: O.position, branches: 2 });
     }
   }
 
@@ -1134,10 +1429,12 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     const RAD = [2.2, 3.4, 4.8], TH = [0.04, 0.07, 0.11], IN = [0.85, 0.42, 0.24], LF = [0.22, 0.32, 0.46], AMP = [0.035, 0.028, 0.02];
     // a spherical pressure front projects to a circle from any view, so air rings face the camera
     const facing = ground ? UP : (normal === 'camera' ? _e.copy(camera.position).sub(c).normalize().clone() : normal);
-    for (let k = 0; k < layers; k++) ring(c, facing, { radius: RAD[k] * strength, thick: TH[k] * Math.sqrt(strength), intensity: IN[k], life: LF[k] * (0.8 + 0.2 * strength), delay: k * 0.055, amp: AMP[k] * strength });
+    // in the air the front is felt as refraction; a bright band there reads as a HUD hoop
+    for (let k = 0; k < layers; k++) ring(c, facing, { radius: RAD[k] * strength, thick: TH[k] * Math.sqrt(strength), intensity: ground ? IN[k] * 0.9 : IN[k] * 0.12, life: LF[k] * (0.8 + 0.2 * strength), delay: k * 0.055, amp: AMP[k] * strength });
     sparks(c, { count: nSparks, dir: ground ? UP : null, spread: ground ? 1.4 : 1, speed: [3 * Math.sqrt(strength), 11 * Math.sqrt(strength)] });
     if (ground) {
-      if (nDebris) debris(c, { count: nDebris, speed: [2.5 * Math.sqrt(strength), 6.5 * Math.sqrt(strength)] });
+      if (nDebris) debris(c, { count: nDebris, speed: [2.5 * Math.sqrt(strength), 6.5 * Math.sqrt(strength)], size: [0.03, 0.09] });
+      sparks(c, { count: Math.round(30 * strength), dir: UP, spread: 0.45, speed: [5, 11], life: [0.5, 1.0] });   // a fountain straight up off the hit
       for (let k = 0; k < dust; k++) {
         const ang = R(0, 6.28), out = _a.set(Math.cos(ang), 0, Math.sin(ang));
         spawnSprite(0, _b.copy(c).addScaledVector(out, R(0.2, 0.6)).setY(R(0.08, 0.35)), out.multiplyScalar(R(2.5, 6) * strength).setY(R(0.2, 0.9)), { size: R(0.4, 0.9) * Math.sqrt(strength), life: R(0.9, 1.6), color: palette.dust, opacity: 0.6, drag: 2.4, buoy: 0.15, grow: 2.6 });
@@ -1150,7 +1447,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       }
     } else {
       puff(c, { count: Math.round(6 * strength), size: [0.4 * strength, 0.9 * strength] });
-      shards(c, { count: Math.round(14 * strength) });
+      shards(c, { count: Math.round(3 * strength) });
       for (let k = 0; k < nBolts; k++) {
         _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
         bolt(c, _b.copy(c).addScaledVector(_a, R(0.8, 2.2) * strength), { levels: 5, jag: 0.24, width: 0.032, minPx: 7, intensity: 0.9, life: 2, branches: 1 });
@@ -1168,14 +1465,15 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     const d = dir.clone().normalize(), p = pos.clone();
     basis(d); const bu = _u.clone(), bw = _w.clone();       // bolt() rewrites _u/_w, so keep our own
     const spear = () => {
-      for (let k = 0; k < Math.round(3 + 4 * strength); k++) {
-        const th = R(0, 6.28), rr = radius * R(0, 0.85);
-        _b.copy(p).addScaledVector(d, length * R(0.55, 1.0)).addScaledVector(bu, Math.cos(th) * rr).addScaledVector(bw, Math.sin(th) * rr);
-        bolt(_a.copy(p).addScaledVector(d, 0.15), _b, { levels: 6, jag: 0.15, width: 0.045 * Math.sqrt(strength), minPx: 9, intensity: 1.1, life: 2, branches: 2 });
+      const n = Math.round(2 + 2 * strength), th0 = R(0, 6.28);
+      for (let k = 0; k < n; k++) {                    // few and divergent: a parallel bundle read as combed hair
+        const th = th0 + (k / n) * 6.28 + R(-0.4, 0.4), rr = radius * R(0.35, 1.0);
+        _b.copy(p).addScaledVector(d, length * R(0.45, 1.0)).addScaledVector(bu, Math.cos(th) * rr).addScaledVector(bw, Math.sin(th) * rr);
+        bolt(_a.copy(p).addScaledVector(d, 0.15), _b, { levels: 6, jag: 0.2, width: 0.05 * Math.sqrt(strength), minPx: 10, intensity: 1.2, life: 2, branches: 3 });
       }
     };
     spear(); repeat(2, spear);
-    ring(_c.copy(p).addScaledVector(d, length * 0.35), d, { radius: radius * 1.3, thick: 0.08, intensity: 0.3, life: 0.3, amp: 0.05 * strength });
+    ring(_c.copy(p).addScaledVector(d, length * 0.35), d, { radius: radius * 1.3, thick: 0.08, intensity: 0.05, life: 0.3, amp: 0.05 * strength });
     sparks(p, { count: Math.round(70 * strength), dir: d, spread: 0.45, speed: [6, 16] });
     shards(_c.copy(p).addScaledVector(d, 0.4), { count: Math.round(16 * strength), dir: d, spread: 0.6, speed: [3, 8] });
     flashLight(3, _c.copy(p).addScaledVector(d, Math.min(1.5, length * 0.3)), 30 * strength, 7);
@@ -1187,6 +1485,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       if (C.age > C.life) { C.alive = false; C.cmesh.visible = C.dmesh.visible = false; continue; }
       const x = C.age / C.life, e = 1 - Math.pow(1 - x, 3);
       for (const m of [C.cmesh, C.dmesh]) { m.visible = true; m.position.copy(C.pos); m.quaternion.copy(C.q); m.scale.set(C.R * (0.35 + 0.65 * e), C.L * (0.2 + 0.8 * e), C.R * (0.35 + 0.65 * e)); }
+      C.cmesh.visible = false;                         // refraction only: the drawn surface read as grey slabs from inside
       C.cm.uniforms.uAge.value = x; C.cm.uniforms.uI.value = C.I * 0.9;
       C.cm.uniforms.uGlow.value.set(palette.glow.r, palette.glow.g, palette.glow.b); C.cm.uniforms.uCore.value.set(palette.core.r, palette.core.g, palette.core.b);
       C.dm.uniforms.uAge.value = x; C.dm.uniforms.uAmp.value = C.amp * C.R / viewUnitsPerUV(C.pos);
@@ -1199,7 +1498,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   function vortex(center, { radius = 2.6, height = 1.6, duration = 4, bands = 6, speed = 7 } = {}) {
     const V = { center: center.clone(), radius, tilt: 0, intensity: 1, t: 0, duration, emitters: [], pos: new V3(), alive: true };
     for (let k = 0; k < bands; k++) {
-      const T = createTrail({ width: R(0.55, 1.05), life: R(0.38, 0.5), spacing: 0.1, drift: new V3(0, 0.5, 0), jitter: 0.25, shards: 0.35 });
+      const T = createTrail({ width: R(0.32, 0.55), life: R(0.38, 0.5), spacing: 0.1, drift: new V3(0, 0.5, 0), jitter: 0.25, shards: 0.08, erode: 0.12, chain: 0.32, chainSize: 1.9, opacity: 0.45 });
       T.disposable = true;
       V.emitters.push({ T, phase: (k / bands) * 6.28 + R(0, 0.6), r: R(0.78, 1.08), h: R(0.15, height), w: speed * R(0.85, 1.2) * (k % 2 ? 1 : 0.92) });
     }
@@ -1213,15 +1512,19 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       const live = V.t < V.duration;
       for (const E of V.emitters) {
         if (!live) { E.T.stop(); continue; }
-        E.phase += E.w * dt;
-        const r = V.radius * E.r;
+        const r = V.radius * E.r, sub = 4;
         E.pos = E.pos || new V3();
-        E.pos.set(Math.cos(E.phase) * r, E.h + Math.sin(E.phase) * r * V.tilt, Math.sin(E.phase) * r).add(V.center);
-        E.T.push(E.pos);
+        for (let s = 0; s < sub; s++) {                  // sub-steps: a fast circle pushed once a frame turns into a sawtooth
+          E.phase += E.w * dt / sub;
+          E.pos.set(Math.cos(E.phase) * r, E.h + Math.sin(E.phase) * r * V.tilt, Math.sin(E.phase) * r).add(V.center);
+          E.T.push(E.pos);
+        }
       }
-      if (live && dt > 0 && rnd() < dt * 40) {
+      if (live && dt > 0 && rnd() < dt * 12) {          // a few, stretched round the ring: many round ones read as stamps
         const ang = R(0, 6.28), rr = V.radius * R(0.6, 1.2);
-        spawnSprite(0, _a.set(V.center.x + Math.cos(ang) * rr, R(0.05, 0.4), V.center.z + Math.sin(ang) * rr), _b.set(-Math.sin(ang), 0.15, Math.cos(ang)).multiplyScalar(R(3, 6)), { size: R(0.4, 0.8), life: R(0.6, 1.1), color: palette.dust, opacity: 0.8, drag: 1.2, buoy: 0.2 });
+        _a.set(V.center.x + Math.cos(ang) * rr, R(0.05, 0.4), V.center.z + Math.sin(ang) * rr);
+        _b.set(-Math.sin(ang), 0.15, Math.cos(ang));
+        spawnSprite(0, _a, _b.clone().multiplyScalar(R(3, 6)), { size: R(0.4, 0.8), life: R(0.6, 1.1), color: palette.dust, opacity: 0.6, drag: 1.2, buoy: 0.2, angle: screenAngle(_a, _b), aspect: 2 });
       }
       if (!live && V.t > V.duration + 1) { vortices.splice(i, 1); V.alive = false; }
     }
@@ -1232,8 +1535,12 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     for (let k = 0; k < n; k++) {
       const a = E[(rnd() * E.length) | 0], b = E[(rnd() * E.length) | 0];
       if (!a.pos || !b.pos) continue;
-      if (a === b || rnd() < 0.35) bolt(a.pos, _b.copy(a.pos).setY(0.03), { levels: 5, jag: 0.22, width: 0.035, minPx: 8, intensity: 1, life: 2, branches: 1 });
-      else bolt(a.pos, b.pos, { levels: 5, jag: 0.24, width: 0.035, minPx: 8, intensity: 1, life: 2, branches: 1 });
+      if (a === b || rnd() < 0.35) {
+        _b.copy(a.pos).sub(V.center).setY(0).normalize().multiplyScalar(R(0.4, 1.4)).add(a.pos).setY(0.03);   // slanted down and out
+        bolt(a.pos, _b, { levels: 6, jag: 0.26, width: 0.035, minPx: 8, intensity: 1, life: 2, branches: 2 });
+      } else {
+        bolt(a.pos, b.pos, { levels: 6, jag: 0.28, width: 0.035, minPx: 8, intensity: 1, life: 2, branches: 2 });   // jagged chords: a bow read as a bridge
+      }
     }
     flashLight(3, _a.copy(V.center).setY(1), 6 * V.intensity, 8);
   }
@@ -1315,7 +1622,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
       iSprPos[o3] = spr.p[i3]; iSprPos[o3 + 1] = spr.p[i3 + 1]; iSprPos[o3 + 2] = spr.p[i3 + 2];
       iSprA[o4] = spr.s0[i] + (spr.s1[i] - spr.s0[i]) * (1 - Math.exp(-3 * a)); iSprA[o4 + 1] = spr.rot[i]; iSprA[o4 + 2] = a; iSprA[o4 + 3] = spr.seed[i];
       iSprB[o4] = spr.col[i3]; iSprB[o4 + 1] = spr.col[i3 + 1]; iSprB[o4 + 2] = spr.col[i3 + 2]; iSprB[o4 + 3] = spr.op[i] * Math.min(1, spr.age[i] * 12 + 0.2);
-      iSprT[nd] = spr.type[i];
+      iSprT[nd * 2] = spr.type[i]; iSprT[nd * 2 + 1] = spr.asp[i];
       nd++;
     }
     sprGeo.instanceCount = nd;
@@ -1334,6 +1641,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     const safe = options.flashes === 'safe' || (inverts && flashLog.length >= 3);   // never more than 3 flashes a second
     if (inverts && !safe) flashLog.push(now);
     imp.active = true; imp.t = 0; imp.held = hold > 0;
+    compositeMat.uniforms.uSeed.value = rnd() * 100;
     imp.frame = safe ? 'none' : frame; imp.flash = safe ? 0 : flash; imp.dim = safe && inverts ? 0.32 : 0;
     imp.shake = shake * options.shake; imp.mode = shakeMode; imp.fisheye = fisheye * options.fisheye;
     if (shakeDir) imp.dir.copy(shakeDir).normalize(); else imp.dir.set(0, 1);
@@ -1355,8 +1663,29 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   const fsScene = new THREE.Scene();
   const fsMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2)); fsMesh.frustumCulled = false; fsScene.add(fsMesh);
   const pass = (mat, target) => { fsMesh.material = mat; renderer.setRenderTarget(target); renderer.render(fsScene, fsCam); };
+  const noiseRT = new THREE.WebGL3DRenderTarget(96, 96, 96, { type: THREE.HalfFloatType, format: THREE.RGBAFormat, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: false });
+  // WebGL3DRenderTarget replaces its texture with a Data3DTexture that defaults to NEAREST and
+  // 8-bit, ignoring the options above: set them on the texture or every sampler reads mosaic blocks.
+  Object.assign(noiseRT.texture, { type: THREE.HalfFloatType, format: THREE.RGBAFormat, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, generateMipmaps: false });
+  noiseRT.texture.wrapS = noiseRT.texture.wrapT = noiseRT.texture.wrapR = THREE.RepeatWrapping;
+  {
+    const bake = new THREE.ShaderMaterial({
+      uniforms: { uZ: { value: 0 } }, vertexShader: FS_VERT, depthTest: false, depthWrite: false,
+      fragmentShader: NOISE_GLSL + PNOISE_GLSL + /* glsl */`
+        uniform float uZ; varying vec2 vUv;
+        void main(){
+          vec3 p = vec3(vUv, uZ) * 6., r = vec3(6.);
+          gl_FragColor = vec4(pnoise(p, r), pnoise(p + vec3(37., 11., 53.), r), pnoise(p + vec3(5., 71., 23.), r), pnoise(p + vec3(61., 29., 7.), r)) * .5 + .5;
+        }`,
+    });
+    const prev = renderer.getRenderTarget();
+    fsMesh.material = bake;
+    for (let z = 0; z < 96; z++) { bake.uniforms.uZ.value = (z + 0.5) / 96; renderer.setRenderTarget(noiseRT, z); renderer.render(fsScene, fsCam); }
+    renderer.setRenderTarget(prev); bake.dispose();
+  }
+  uniforms.tNoise.value = noiseRT.texture;
   const prefilterMat = new THREE.ShaderMaterial({
-    uniforms: { tSrc: { value: null }, uHalf: { value: new THREE.Vector2() }, uThreshold: { value: 0.9 }, uKnee: { value: 0.5 } },
+    uniforms: { tSrc: { value: null }, uHalf: { value: new THREE.Vector2() }, uThreshold: { value: 1.3 }, uKnee: { value: 0.6 } },
     vertexShader: FS_VERT,
     fragmentShader: /* glsl */`
       uniform sampler2D tSrc; uniform vec2 uHalf; uniform float uThreshold, uKnee; varying vec2 vUv;
@@ -1402,15 +1731,15 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   const compositeMat = new THREE.ShaderMaterial({
     uniforms: {
       tColor: { value: rtColor.texture }, tDistort: { value: rtDistort.texture }, tBloom: { value: up[0].texture },
-      uAspect: { value: 1 }, uBloom: { value: 0.12 }, uExposure: { value: 1 },
+      uAspect: { value: 1 }, uBloom: { value: 0.085 }, uExposure: { value: 1 },
       uShake: { value: new THREE.Vector2() }, uZoom: { value: 1 }, uFisheye: { value: 0 },
       uFrame: { value: 0 }, uFrameFull: { value: 0 }, uNegRadius: { value: 0.42 }, uCenter: { value: new THREE.Vector2(0.5, 0.5) },
-      uFlash: { value: 0 }, uDim: { value: 0 }, uTime: { value: 0 }, uGrain: { value: 0.035 }, uVignette: { value: 0.55 },
+      uFlash: { value: 0 }, uDim: { value: 0 }, uTime: { value: 0 }, uGrain: { value: 0.02 }, uVignette: { value: 0.85 }, uSeed: { value: 0 },
     },
     vertexShader: FS_VERT,
     fragmentShader: /* glsl */`
       uniform sampler2D tColor, tDistort, tBloom;
-      uniform float uAspect, uBloom, uExposure, uZoom, uFisheye, uFrame, uFrameFull, uNegRadius, uFlash, uDim, uTime, uGrain, uVignette;
+      uniform float uAspect, uBloom, uExposure, uZoom, uFisheye, uFrame, uFrameFull, uNegRadius, uFlash, uDim, uTime, uGrain, uVignette, uSeed;
       uniform vec2 uShake, uCenter;
       varying vec2 vUv;
       vec3 aces(vec3 x){ return clamp((x * (2.51 * x + .03)) / (x * (2.43 * x + .59) + .14), 0., 1.); }
@@ -1421,21 +1750,26 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
         p *= (1. + uFisheye * r2 * 1.8) / (1. + uFisheye * .45);       // barrel: the centre swells toward the lens
         p = p / uZoom + uShake;
         vec2 uv = vec2(p.x / uAspect, p.y) + .5;
-        vec2 d = texture2D(tDistort, uv).xy; d.x /= uAspect;
-        float dl = length(d);
-        vec2 dir = dl > 1e-5 ? d / dl : vec2(0.);
-        float ca = min(dl * .2 + uFisheye * .006 * sqrt(r2), .003);   // the split follows the tear in the air
-        vec3 col;
-        col.r = texture2D(tColor, uv + d + dir * ca).r;
-        col.g = texture2D(tColor, uv + d).g;
-        col.b = texture2D(tColor, uv + d - dir * ca).b;
+        vec4 D = texture2D(tDistort, uv);
+        vec2 d = D.xy + D.zw; d.x /= uAspect;                          // xy: fronts and funnels; zw: the orb's lens
+        vec3 col = texture2D(tColor, uv + d).rgb;                     // no chromatic split: it fringed every spark in rainbows
         col += texture2D(tBloom, uv + d).rgb * uBloom;
         col = aces(col * uExposure);
         if (uFrame > 0.) {
           float l = dot(col, vec3(.2126, .7152, .0722));
           float ink = smoothstep(.26, .34, l);
           vec2 q = vUv - uCenter; q.x *= uAspect;
-          float m = uFrameFull > .5 ? 1. : 1. - smoothstep(uNegRadius * .7, uNegRadius, length(q));
+          float qr = length(q), qa = atan(q.y, q.x);
+          // a jagged starburst, not a disc
+          float spikes = .5 * sin(qa * 7. + uSeed) + .3 * sin(qa * 13. + uSeed * 1.7) + .2 * sin(qa * 29. + uSeed * 2.3);
+          float Rn = uNegRadius * (1. + .38 * spikes);
+          float m = uFrameFull > .5 ? 1. : 1. - smoothstep(Rn * .94, Rn, qr);
+          // manga speed lines in ink: random widths, each starting at its own radius
+          float uu = (qa + 3.14159) / 6.28318 * 140.;
+          float hsh = fract(sin(floor(uu) * 12.9898 + uSeed * 78.233) * 43758.5453);
+          float wdt = .08 + .25 * hsh;
+          float ray = step(.45, hsh) * (1. - smoothstep(wdt * .5, wdt, abs(fract(uu) - .5)));
+          ink = max(ink, ray * smoothstep(uNegRadius * (.3 + .5 * hsh), uNegRadius * 1.6, qr) * .9);
           vec3 neg = mix(vec3(.93, .965, 1.), vec3(.012, .014, .022), ink);   // energy turns to ink on white
           col = mix(col, mix(col * .3, neg, m), uFrame);
         }
@@ -1452,6 +1786,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   let W = 1, H = 1, pendingDt = 0;
   function setSize(width, height, pixelRatio = 1) {
     W = Math.max(1, Math.round(width)); H = Math.max(1, Math.round(height)); dpr = pixelRatio;
+    boltMat.uniforms.uMaxPx.value = 26 * pixelRatio;
     res.set(W, H); uniforms.uDpr.value = dpr;
     rtColor.setSize(W, H);
     rtDistort.setSize(Math.ceil(W / 2), Math.ceil(H / 2));
@@ -1550,6 +1885,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
 
   function render() {
     const dt = pendingDt; pendingDt = 0;              // spawns made after update() still get this frame's step
+    updateOrbShadows(dt);
     updateDebris(dt);
     updateParticles(dt);
     buildBolts();
@@ -1604,7 +1940,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     scene.remove(group);
     group.traverse((o) => { if (o.material) o.material.dispose?.(); });
     for (const g of [boltGeo, smokeGeo, sprGeo, spkGeo, rockGeo, ringGeo, coneGeo, scorchGeo, orbGeo]) g.dispose();
-    for (const rt of [rtColor, rtDistort, ...down, ...up]) rt.dispose();
+    for (const rt of [rtColor, rtDistort, noiseRT, ...down, ...up]) rt.dispose();
     for (const m of [prefilterMat, downMat, upMat, compositeMat]) m.dispose();
   }
 
@@ -1613,7 +1949,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
     get time() { return clock.sim; }, get realTime() { return clock.real; }, get holding() { return clock.hold > 0; },
     get timeScale() { return clock.base; }, set timeScale(v) { clock.base = v; },
     get rampValue() { return clock.rampValue; },
-    createOrb, createTrail, bolt, sparks, debris, puff, shards, burst, blast, ring, scorch, vortex, impact, ramp, repeat,
+    createOrb, createTrail, addHeat, bolt, sparks, debris, puff, shards, burst, blast, ring, scorch, vortex, impact, ramp, repeat,
     spawnSpark, spawnSprite,
     update, render, setSize, warmup, dispose,
     stats: () => ({ bolts: bolts.filter((b) => b.alive).length, sparks: spkGeo.instanceCount, sprites: sprGeo.instanceCount, debris: debMesh.count, trails: trails.length }),
@@ -1621,7 +1957,7 @@ function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } = {}) {
   return fx;
 }
 
-return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, createStormEnergy };
+return { DISTORT_LAYER, NOISE_GLSL, TNOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, createStormEnergy };
 })();
 </script>
 <script>
@@ -1639,7 +1975,7 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
   const params = new URLSearchParams(location.search);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: params.has('capture') });
-  const FOG = new THREE.Color(0.046, 0.052, 0.066);   // a storm-grey horizon, so black smoke has something to be black against
+  const FOG = new THREE.Color(0.034, 0.039, 0.05);   // a storm-grey horizon, so black smoke has something to be black against
   renderer.setClearColor(FOG, 1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(46, 1, 0.05, 220);
@@ -1686,8 +2022,9 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
         float big = fbm3(vec3(p * .16, 1.7)) * .5 + .5;
         float n = fbm4(vec3(p * .8, 4.1)) * .5 + .5;
         float fine = snoise(vec3(p * 7., 2.)) * .5 + .5;
-        float crack = 1. - smoothstep(0., .05, cells(p * .5));
-        crack = max(crack, (1. - smoothstep(0., .035, cells(p * 1.6 + 3.))) * .55);
+        vec2 pw = p + vec2(fbm3(vec3(p * .35, 11.)), fbm3(vec3(p * .35, 23.))) * 1.6;   // warped: cracks, not tiles
+        float crack = (1. - smoothstep(0., .05, cells(pw * .5))) * smoothstep(-.2, .25, snoise(vec3(p * .6, 5.)));
+        crack = max(crack, (1. - smoothstep(0., .035, cells(pw * 1.6 + 3.))) * .5 * smoothstep(-.1, .4, snoise(vec3(p * 1.3, 9.))));
         vec3 alb = vec3(.06, .062, .068) * (.68 + .55 * n) * (.86 + .28 * fine);
         alb = mix(alb, vec3(.015, .015, .018), crack * .85);
         float wet = smoothstep(.48, .7, big) * (1. - crack);
@@ -1700,8 +2037,8 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
         col += uSkyFlash * vec3(.008, .013, .024) * (.35 + wet);
         // the hit's heat glows in the stone's own cracks and cools
         float heat = groundHeat(p);
-        float fineCrack = 1. - smoothstep(0., .02 + .03 * heat, cells(p * 1.6 + 3.));
-        col += uGlow * heat * (crack * .9 + fineCrack * .6) * (1.6 + 2.2 * heat);
+        float fineCrack = (1. - smoothstep(0., .02 + .03 * heat, cells(pw * 1.6 + 3.))) * smoothstep(-.1, .4, snoise(vec3(p * 1.3, 9.)));
+        col += uGlow * heat * (crack * .8 + fineCrack * .25) * (1.2 + 1.6 * heat);   // fine cracks kept faint: bright ones read as neon worms
         float d = length(vW.xz - cameraPosition.xz);
         col = mix(col, uFog, 1. - exp(-d * .048));
         gl_FragColor = vec4(col, 1.);
@@ -1727,26 +2064,13 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
   }
   const at = (a, b, c) => new V3().copy(caster.base).addScaledVector(caster.facing, a).addScaledVector(UP, b).addScaledVector(caster.side, c);
 
-  // The cloak: three smoke ribbons streaming back off the body, always on.
-  const cloak = [
-    { T: fx.createTrail({ width: 0.62, life: 0.75, spacing: 0.05, jitter: 0.4, shards: 0.6 }), off: [-0.18, 0.5, 0], wob: 1.3 },
-    { T: fx.createTrail({ width: 0.75, life: 0.85, spacing: 0.05, jitter: 0.45, shards: 0.7 }), off: [-0.22, 0.12, 0.22], wob: 1.7 },
-    { T: fx.createTrail({ width: 0.66, life: 0.8, spacing: 0.05, jitter: 0.45, shards: 0.7 }), off: [-0.2, -0.32, -0.18], wob: 2.1 },
-  ];
+  // The shadow belongs to the orb (fx.createOrb draws its corona, ribbons and billows), so it
+  // follows the energy wherever the fist goes. The stage only keeps a short record of the
+  // orb's path for arcs thrown along a strike.
   let gale = 1;
-  const emitPos = new V3();
-  function pushCloak(t) {
-    for (const C of cloak) {
-      C.T.drift.copy(caster.facing).multiplyScalar(-2.1 * gale).addScaledVector(UP, 0.55).addScaledVector(caster.side, Math.sin(t * C.wob) * 0.3);
-      emitPos.copy(caster.body).addScaledVector(caster.facing, C.off[0]).addScaledVector(UP, C.off[1]).addScaledVector(caster.side, C.off[2] + Math.sin(t * C.wob * 2.3) * 0.06);
-      C.T.push(emitPos);
-    }
-  }
-  // Dash and strike ribbons, restarted each time they are used.
-  const dashTrails = [fx.createTrail({ width: 1.0, life: 0.8, spacing: 0.08, jitter: 0.5, shards: 0.9 }), fx.createTrail({ width: 0.42, life: 0.55, spacing: 0.08, jitter: 0.3, shards: 0.5 }), fx.createTrail({ width: 0.42, life: 0.55, spacing: 0.08, jitter: 0.3, shards: 0.5 })];
-  const swing = fx.createTrail({ width: 0.8, life: 0.5, spacing: 0.05, jitter: 0.3, shards: 0.7 });
-  const spin = fx.createTrail({ width: 0.95, life: 0.6, spacing: 0.05, jitter: 0.3, shards: 0.8 });
-  for (const T of [...dashTrails, swing, spin]) T.stop();
+  const orbPath = [];
+  function recordOrb(t) { orbPath.push({ t, p: orb.position.clone() }); while (orbPath.length && t - orbPath[0].t > 0.3) orbPath.shift(); }
+  const pathPoint = (back) => orbPath[Math.max(0, orbPath.length - 1 - back)].p;
 
   // ------------------------------------------------------------ helpers
   const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -1761,10 +2085,9 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
   function arcsAlongPath(ticks) {
     fx.repeat(ticks, () => {
       if (history.length < 3) return;
-      for (let k = 0; k < 2; k++) {
-        const i = (rnd() * (history.length - 2)) | 0, j = Math.min(history.length - 1, i + 1 + ((rnd() * 4) | 0));
-        _v.copy(history[i].p).add(randDir(_x).multiplyScalar(0.25));
-        fx.bolt(_v, _w.copy(history[j].p).add(randDir(_x).multiplyScalar(0.35)), { levels: 5, jag: 0.3, width: 0.03, minPx: 7, intensity: 0.95, life: 2, branches: 1 });
+      for (let k = 0; k < 1; k++) {                  // rooted at the orb and thrown back along the path it just tore through
+        const i = (rnd() * (history.length - 2)) | 0;
+        fx.bolt(orb.position, _w.copy(history[i].p).add(randDir(_x).multiplyScalar(0.35)), { levels: 6, jag: 0.22, width: 0.032, minPx: 7, intensity: 0.95, life: 2, branches: 2 });
       }
     });
   }
@@ -1791,7 +2114,7 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
       title: 'Charge', caption: 'Black lightning awakening', dur: 3.6,
       start() { orb.visible = true; orb.radius = 0.1; orb.pressure = 0.35; orb.instability = 0.15; orb.arcRate = 0.8; caster.lift = 0; caster.lunge = 0; gale = 1; },
       events: [
-        [1.7, () => { orb.pulse(-0.3); fx.ring(orb.position, _v.copy(camera.position).sub(orb.position).normalize(), { radius: 1.3, thick: 0.05, intensity: 0.5, life: 0.26, amp: 0.03 }); fx.puff(at(-0.4, 1.1, 0), { count: 6, size: [0.5, 0.9], dir: caster.facing.clone().negate(), spread: 0.6 }); }],
+        [1.7, () => { orb.pulse(-0.3); fx.ring(orb.position, _v.copy(camera.position).sub(orb.position).normalize(), { radius: 1.3, thick: 0.05, intensity: 0.06, life: 0.26, amp: 0.03 }); fx.puff(at(-0.4, 1.1, 0), { count: 6, size: [0.5, 0.9], dir: caster.facing.clone().negate(), spread: 0.6 }); }],
         [3.0, () => {
           fx.impact({ hold: 0.05, frame: 'center', shake: 0.006, shakeMode: 'axial' });
           fx.burst(orb.position.clone().addScaledVector(caster.aim, 0.25), { strength: 0.5, layers: 2, sparks: 30, bolts: 3 });
@@ -1807,9 +2130,14 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
         fx.attractor.position.copy(orb.position); fx.attractor.strength = t < 2.4 ? 2.5 : 0; fx.attractor.swirl = t < 2.4 ? 1.5 : 0;
         if (dt > 0 && rnd() < dt * 22) motes(1, 2.6);
         if (t > 1.7) groundDust(26, 0.8, 2.4, dt);
+        fx.addHeat(_v.set(orb.position.x, 0, orb.position.z), 1.1 + orb.radius, 0.25 + 0.55 * orb.pressure * smooth(0.6, 2.2, t));   // the stone under the orb starts to glow
+        if (dt > 0 && rnd() < dt * 18 * orb.pressure) {   // dust drawn round under it
+          const a = R(0, 6.28), rr = R(0.6, 1.8);
+          fx.spawnSprite(0, _v.set(orb.position.x + Math.cos(a) * rr, R(0.05, 0.25), orb.position.z + Math.sin(a) * rr), _w.set(-Math.sin(a), 0.25, Math.cos(a)).multiplyScalar(R(1.2, 2.4)), { size: R(0.35, 0.7), life: R(0.8, 1.3), color: fx.palette.dust, opacity: 0.45, drag: 1, buoy: 0.2, grow: 2 });
+        }
       },
       cam(t) {
-        const yaw = -0.35 + 1.45 * smooth(0.2, 3.3, t), dist = 1.45 + 1.4 * smooth(0.7, 3.1, t);
+        const yaw = -0.35 + 1.45 * smooth(0.2, 3.3, t), dist = 2.1 + 1.3 * smooth(0.7, 3.1, t);
         const look = new V3().lerpVectors(orb.position, caster.body, 0.45 * smooth(0.8, 3, t));
         return { pos: orbit(look, yaw, dist, -0.12 - 0.22 * smooth(0.5, 3, t)), look, fov: 38 + 8 * smooth(0.6, 3, t), k: 5 };
       },
@@ -1832,7 +2160,6 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
         [0.3, () => {
           fx.burst(caster.base.clone(), { strength: 0.8, layers: 2, sparks: 30, debris: 8, dust: 18, bolts: 3 });
           fx.impact({ hold: 0.04, frame: 'none', shake: 0.008 });
-          for (const T of BEATS.dash.trailsOn()) T.restart();
           arcsAlongPath(20);
         }],
         [0.52, () => BEATS.dash.turn(1)],
@@ -1842,12 +2169,10 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
           fx.impact({ hold: 0.06, frame: 'center', shake: 0.012, at: caster.body });
           fx.puff(caster.body.clone(), { count: 10, size: [0.6, 1.2] });
         }],
-        [1.25, () => { for (const T of dashTrails) T.stop(); }],
       ],
-      trailsOn() { return dashTrails; },
       turn(i) {
         const P = this.path, a = P[i][1], d = new V3().subVectors(P[i + 1][1], a).normalize();
-        fx.ring(a, d, { radius: 2.2, thick: 0.06, intensity: 0.45, life: 0.26, amp: 0.035 });
+        fx.ring(a, d, { radius: 2.2, thick: 0.06, intensity: 0, life: 0.26, amp: 0.02 });
         fx.puff(a, { count: 12, size: [0.65, 1.3], speed: [0.4, 1.6] });
         fx.shards(a, { count: 22, speed: [1.5, 5] });
         fx.sparks(a, { count: 26, speed: [4, 10] });
@@ -1867,12 +2192,7 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
           orb.radius = t < 0.95 ? 0.22 : 0.22 + 0.16 * smooth(1.0, 2.0, t);
         }
         pose();
-        if (t > 0.3 && t < 1.25) {
-          record(t);
-          dashTrails[0].push(c.body);
-          dashTrails[1].push(_v.copy(c.body).addScaledVector(c.side, 0.3).addScaledVector(UP, 0.22));
-          dashTrails[2].push(_v.copy(c.body).addScaledVector(c.side, -0.3).addScaledVector(UP, -0.25));
-        }
+        if (t > 0.3 && t < 1.25) record(t);
         if (t > 0.92 && t < 1.25 && dt > 0) {   // skid: sparks off the ground behind the feet
           fx.sparks(c.base.clone().setY(0.03), { count: 3, dir: _v.copy(c.facing).negate().add(UP), spread: 0.6, speed: [2, 6], life: [0.25, 0.5] });
           groundDust(60, 0, 0.4, dt, 0.6);
@@ -1881,7 +2201,7 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
       cam(t) {
         const c = caster;
         if (t < 0.3) return { pos: at(-2.6, 0.5, 1.7), look: c.body.clone().addScaledVector(c.facing, 2), fov: 50, k: 6 };
-        if (t < 0.95) return { pos: new V3().copy(c.body).addScaledVector(c.aim, -3.1).addScaledVector(c.side, 1.1).setY(Math.max(0.32, c.body.y * 0.45)), look: c.body.clone().addScaledVector(c.aim, 1.6), fov: 54, k: 9 };
+        if (t < 0.95) return { pos: new V3().copy(orb.position).addScaledVector(c.aim, -2.1).addScaledVector(c.side, 0.9).setY(Math.max(0.35, orb.position.y * 0.7)), look: orb.position.clone().addScaledVector(c.aim, 1.2), fov: 52, k: 10 };
         return { pos: at(-2.7, 0.85, -2.3), look: c.body.clone().addScaledVector(c.facing, 0.8), fov: 50, k: 4 };
       },
     },
@@ -1896,13 +2216,13 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
           fx.blast(orb.position, c.aim, { length: 4.6, radius: 1.5, strength: 1 });
           fx.burst(orb.position.clone().addScaledVector(c.aim, 0.4), { strength: 0.9, layers: 3, sparks: 70, bolts: 4 });
           fx.burst(c.fist.clone().setY(0), { strength: 0.6, layers: 1, debris: 6, dust: 12, sparks: 10, bolts: 2 });
-          fx.impact({ hold: 0.1, frame: 'center', shake: 0.016, shakeMode: 'axial', at: orb.position });
+          fx.impact({ hold: 0.1, frame: 'full', flash: 0, shake: 0.016, shakeMode: 'axial', at: orb.position });   // no white after the ink: it read as a grey wash
         }],
-        [1.3, () => { swing.restart(); BEATS.barrage.swingArcs(); }],
+        [1.3, () => BEATS.barrage.swingArcs()],
         [1.45, () => {
           const c = caster;
-          fx.ring(c.body, UP, { radius: 4.2, thick: 0.06, intensity: 0.8, life: 0.3, amp: 0.035 });
-          fx.ring(c.body, UP, { radius: 5.6, thick: 0.1, intensity: 0.35, life: 0.42, delay: 0.06, amp: 0.025 });
+          fx.ring(c.body, UP, { radius: 4.2, thick: 0.06, intensity: 0.12, life: 0.3, amp: 0.035 });   // felt as refraction, not drawn as a hoop
+          fx.ring(c.body, UP, { radius: 5.6, thick: 0.1, intensity: 0.05, life: 0.42, delay: 0.06, amp: 0.025 });
           for (let k = 0; k < 9; k++) {
             const a = -1.35 + 2.7 * (k / 8) + R(-0.1, 0.1);
             const d = _x.copy(c.facing).multiplyScalar(Math.cos(a)).addScaledVector(c.side, Math.sin(a));
@@ -1911,20 +2231,18 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
           fx.sparks(c.body, { count: 40, dir: c.facing, spread: 1.2, speed: [4, 11] });
           fx.impact({ hold: 0.05, frame: 'none', shake: 0.012, shakeDir: new THREE.Vector2(1, 0.15) });
         }],
-        [1.6, () => swing.stop()],
-        [2.3, () => { spin.restart(); BEATS.barrage.spinArcs(); }],
+        [2.3, () => BEATS.barrage.spinArcs()],
         [2.56, () => {
           const c = caster;
-          spin.stop();
           fx.burst(c.body.clone().addScaledVector(c.facing, 0.9), { strength: 1.3, layers: 3, sparks: 110, bolts: 6 });
           fx.burst(c.base.clone().addScaledVector(c.facing, 0.9), { strength: 1.2, layers: 3, debris: 14, dust: 22, sparks: 30, bolts: 5 });
           fx.blast(orb.position, c.facing, { length: 3.4, radius: 2.4, strength: 1.1 });
           fx.puff(c.body.clone().addScaledVector(c.facing, -0.5), { count: 12, size: [0.7, 1.4] });
-          fx.impact({ hold: 0.1, frame: 'center', shake: 0.022, shakeMode: 'axial', at: orb.position });
+          fx.impact({ hold: 0.1, frame: 'full', flash: 0, shake: 0.022, shakeMode: 'axial', at: orb.position });
         }],
       ],
-      swingArcs() { fx.repeat(5, () => { const p = swing.n > 2 ? swing : null; if (!p) return; const i = Math.max(0, p.n - 3); _v.set(p.p[i * 3], p.p[i * 3 + 1], p.p[i * 3 + 2]); fx.bolt(orb.position, _v.add(randDir(_w).multiplyScalar(0.3)), { levels: 5, jag: 0.25, width: 0.035, minPx: 8, life: 2, branches: 1 }); }); },
-      spinArcs() { fx.repeat(8, () => { if (spin.n < 3) return; const i = Math.max(0, spin.n - 4); _v.set(spin.p[i * 3], spin.p[i * 3 + 1], spin.p[i * 3 + 2]); fx.bolt(orb.position, _v, { levels: 5, jag: 0.22, width: 0.04, minPx: 9, life: 2, branches: 1 }); fx.bolt(orb.position, _w.copy(orb.position).addScaledVector(caster.aim, R(1.2, 2.2)).add(randDir(_x).multiplyScalar(0.5)), { levels: 5, jag: 0.25, width: 0.03, minPx: 7, life: 2, branches: 0 }); }); },
+      swingArcs() { fx.repeat(5, () => { if (orbPath.length < 4) return; fx.bolt(orb.position, _v.copy(pathPoint(3)).add(randDir(_w).multiplyScalar(0.3)), { levels: 6, jag: 0.24, width: 0.035, minPx: 8, life: 2, branches: 1 }); }); },
+      spinArcs() { fx.repeat(8, () => { if (orbPath.length < 5) return; fx.bolt(orb.position, pathPoint(4), { levels: 6, jag: 0.22, width: 0.04, minPx: 9, life: 2, branches: 1 }); fx.bolt(orb.position, _w.copy(orb.position).addScaledVector(caster.aim, R(1.2, 2.2)).add(randDir(_x).multiplyScalar(0.5)), { levels: 6, jag: 0.24, width: 0.03, minPx: 7, life: 2, branches: 1 }); }); },
       step(t, dt) {
         const c = caster;
         c.lunge = t < 0.22 ? 0 : t < 0.3 ? 0.55 * easeOut((t - 0.22) / 0.08) : 0.55 - 0.45 * smooth(0.3, 0.7, t);
@@ -1933,12 +2251,10 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
         if (t >= 1.3 && t < 1.6) {
           const u = smooth(1.3, 1.44, t), a = Math.PI / 2 - Math.PI * u;
           c.aim.copy(c.facing).multiplyScalar(Math.cos(a)).addScaledVector(c.side, Math.sin(a)).normalize();
-          swing.push(_v.copy(c.body).addScaledVector(c.aim, 1.05).addScaledVector(UP, 0.05));
         } else if (t >= 2.3 && t < 2.56) {
           // spinning elbow: the fist goes all the way round
           const a = 6.2832 * easeOut((t - 2.3) / 0.26);
           c.aim.copy(c.facing).applyAxisAngle(UP, a).normalize();
-          spin.push(_v.copy(c.body).addScaledVector(c.aim, 0.85).addScaledVector(UP, 0.12));
         } else c.aim.lerp(c.facing, 1 - Math.exp(-dt * 10)).normalize();
         pose();
       },
@@ -1958,6 +2274,11 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
           fx.burst(c.base.clone(), { strength: 1.8, layers: 3, debris: 18, dust: 34, sparks: 120, bolts: 8 });
           fx.impact({ hold: 0.08, frame: 'center', shake: 0.02, at: c.base });
           vortex = fx.vortex(c.base.clone(), { radius: 2.8, height: 1.9, duration: 3.5, bands: 6 });
+          fx.repeat(95, () => {                          // the discharge starts at the orb and lands in the ring
+            if (!vortex || !vortex.alive || vortex.t > vortex.duration) return;
+            const E = vortex.emitters[(rnd() * vortex.emitters.length) | 0];
+            if (E.pos && rnd() < 0.6) fx.bolt(orb.position, E.pos, { levels: 6, jag: 0.2, width: 0.04, minPx: 9, intensity: 1.1, life: 2, branches: 2 });
+          });
           fx.attractor.position.copy(c.base).addScaledVector(UP, 0.8); fx.attractor.strength = 0; fx.attractor.swirl = 6;
         }],
         [1.6, () => {
@@ -1994,9 +2315,9 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
     },
 
     ultimate: {
-      title: 'Ultimate', caption: 'Black lightning realm collapse', dur: 6.4,
+      title: 'Ultimate', caption: 'Black lightning realm collapse', dur: 6.2, release: 2.0,
       start() {
-        fx.ramp(0.22, 0.9);
+        fx.ramp(0.4, 0.6);                 // slow enough to feel the pause, short enough not to stall the cut
         orb.visible = true; orb.instability = 1; orb.arcRate = 2.2; orb.pressure = 1;
         fx.attractor.strength = 18; fx.attractor.swirl = 5;
         converge = []; tsunami = []; this.nextIn = 0; this.nextEmber = 0; this.nextArc = 0;
@@ -2008,8 +2329,8 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
         });
       },
       events: [
-        [2.35, () => orb.pulse(-0.5)],
-        [2.5, () => {
+        [1.85, () => orb.pulse(-0.5)],
+        [2.0, () => {
           const c = caster, f = c.facing.clone();
           ultimateAt.copy(orb.position);
           fx.ramp(1, 0.04);
@@ -2022,45 +2343,47 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
           for (let k = 0; k < 10; k++) {
             const a = (k / 10) * 6.2832 + R(-0.2, 0.2);
             const radial = _x.copy(c.side).multiplyScalar(Math.cos(a)).addScaledVector(UP, Math.sin(a) * 0.8);
-            const T = fx.createTrail({ width: R(0.9, 1.4), life: 0.95, spacing: 0.1, jitter: 0.4, shards: 0.9 }); T.disposable = true;
+            const T = fx.createTrail({ width: R(0.5, 0.8), life: 1.4, spacing: 0.1, jitter: 0.4, shards: 0.4, erode: 0.1, chain: 0.45, chainSize: 1.8 }); T.disposable = true;
             tsunami.push({ T, p: orb.position.clone().addScaledVector(radial, 0.5), v: new V3().copy(f).multiplyScalar(0.75).addScaledVector(radial, 0.65).normalize().multiplyScalar(R(11, 15)), age: 0 });
           }
           fx.repeat(4, () => { for (let k = 0; k < 6; k++) { randDir(_v); fx.bolt(ultimateAt, _w.copy(ultimateAt).addScaledVector(_v, R(3, 7)), { levels: 6, jag: 0.18, width: 0.05, minPx: 10, intensity: 1.2, life: 2, branches: 2 }); } });
           fx.impact({ hold: 0.15, frame: 'full', flash: 1, shake: 0.03, shakeMode: 'radial', fisheye: 0.42, at: orb.position });
-          orb.visible = false; gale = 2.4;
+          orb.visible = false; gale = 1.8;
         }],
-        [5.5, () => { orb.visible = true; orb.radius = 0.08; orb.instability = 0.15; orb.arcRate = 0.8; orb.pressure = 0.5; }],
+        [5.3, () => { orb.visible = true; orb.radius = 0.08; orb.instability = 0.15; orb.arcRate = 0.8; orb.pressure = 0.5; }],
       ],
       step(t, dt) {
         const c = caster;
         c.aim.lerp(c.facing, 1 - Math.exp(-dt * 10)).normalize();
-        c.lunge = t < 2.5 ? -0.12 * smooth(0, 1, t) : t < 2.6 ? 0.6 : 0.6 - 0.5 * smooth(2.6, 3.4, t);
-        if (t < 2.5) orb.radius = 0.4 + 0.52 * smooth(0, 2.2, t);
-        else if (t > 5.5) orb.radius = 0.08 + 0.28 * smooth(5.5, 6.4, t);
+        const REL = this.release;
+        c.lunge = t < REL ? -0.12 * smooth(0, 1, t) : t < REL + 0.1 ? 0.6 : 0.6 - 0.5 * smooth(REL + 0.1, REL + 0.9, t);
+        if (t < REL) orb.radius = 0.4 + 0.45 * smooth(0, REL - 0.2, t);
+        else if (t > 5.3) orb.radius = 0.08 + 0.28 * smooth(5.3, 6.2, t);
         pose();
-        if (t < 2.5) {
+        if (t < REL) {
           fx.attractor.position.copy(orb.position);
           // streams of shadow spiralling in from the edges of the frame
-          if (t > this.nextIn && t < 2.2) {
+          if (t > this.nextIn && t < REL - 0.3) {
             this.nextIn = t + 0.22;
-            const T = fx.createTrail({ width: R(0.4, 0.7), life: 0.55, spacing: 0.08, jitter: 0.2, shards: 0.4 }); T.disposable = true;
+            const T = fx.createTrail({ width: R(0.25, 0.4), life: 0.55, spacing: 0.08, jitter: 0.2, shards: 0.15, chain: 0.35, chainSize: 1.6 }); T.disposable = true;
             converge.push({ T, a0: R(0, 6.28), h: R(-0.8, 1.6), r0: R(3.8, 5), age: 0 });
           }
           if (dt > 0) { motes(Math.round(dt * 160), 4.5); groundDust(30, 1.5, 4, dt, 0.4); }
         } else {
-          if (t > 2.6 && dt > 0 && t > this.nextEmber) {   // embers: torn shadow and slow sparks drifting in the after-air
-            this.nextEmber = t + (t < 4 ? 0.03 : 0.12);
+          if (t > REL + 0.1 && dt > 0 && t > this.nextEmber) {   // embers: torn shadow and slow sparks drifting in the after-air
+            this.nextEmber = t + (t < REL + 2 ? 0.02 : 0.06);
             _v.copy(ultimateAt).addScaledVector(c.facing, R(0, 6)).add(_w.set(R(-2.5, 2.5), R(-0.9, 1.8), R(-2.5, 2.5)));
             _v.y = Math.max(0.2, _v.y);
-            fx.spawnSprite(1, _v, _w.set(R(-0.3, 0.3), R(0.1, 0.5), R(-0.3, 0.3)), { size: R(0.05, 0.13), life: R(1.6, 2.6), drag: 0.6, buoy: 0.05, grow: 1 });
+            fx.spawnSprite(1, _v, _w.set(R(-0.3, 0.3), R(0.1, 0.5), R(-0.3, 0.3)), { size: R(0.07, 0.2), life: R(1.8, 3), drag: 0.6, buoy: 0.05, grow: 1 });
+            if (rnd() < 0.18) fx.spawnSprite(0, _v, _w.set(R(-0.4, 0.4), R(0.1, 0.4), R(-0.4, 0.4)), { size: R(0.5, 1.1), grow: 2.4, life: R(2, 3.2), opacity: 0.55, drag: 0.8, buoy: 0.08 });
             if (rnd() < 0.5) fx.spawnSpark(_v, _w.set(R(-0.3, 0.3), R(0.1, 0.6), R(-0.3, 0.3)), { life: R(1.2, 2.2), size: R(0.006, 0.012), heat: R(0.4, 0.75), gravity: 0.04, drag: 0.4 });
           }
-          if (t > 2.9 && t < 5.4 && t > this.nextArc) {     // residual arcs
-            this.nextArc = t + R(0.18, 0.4);
+          if (t > REL + 0.4 && t < 5.4 && t > this.nextArc) {     // residual arcs
+            this.nextArc = t + R(0.12, 0.3);
             _v.copy(ultimateAt).addScaledVector(c.facing, R(0.5, 5)).add(_w.set(R(-1.5, 1.5), R(-1, 1), R(-1.5, 1.5))); _v.y = Math.max(0.1, _v.y);
             fx.bolt(_v, _w.copy(_v).add(randDir(_x).multiplyScalar(R(0.5, 1.3))), { levels: 4, jag: 0.25, width: 0.022, minPx: 5, intensity: 0.6, life: 1, branches: 0 });
           }
-          if (t > 4.4) gale = 1 + 1.4 * (1 - smooth(4.4, 6.2, t));
+          if (t > REL + 1.5) gale = 1 + 0.8 * (1 - smooth(REL + 1.5, 6.2, t));
         }
         for (let i = converge.length - 1; i >= 0; i--) {
           const E = converge[i]; E.age += dt;
@@ -2077,14 +2400,14 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
         }
       },
       cam(t) {
-        const c = caster;
-        if (t < 2.45) {
-          const yaw = 0.15 + 1.0 * smooth(0.6, 2.4, t), dist = Math.max(1.6, orb.currentRadius * 3.6) + 0.6 * smooth(0.9, 2.4, t);
-          const look = orb.position.clone().lerp(c.body, 0.25 * smooth(1, 2.4, t));
-          return { pos: orbit(look, yaw, dist, -0.15), look, fov: 40 + 4 * smooth(1, 2.4, t), k: 4 };
+        const c = caster, REL = this.release;
+        if (t < REL - 0.05) {
+          const yaw = 0.15 + 1.0 * smooth(0.4, REL, t), dist = Math.max(1.9, orb.currentRadius * 4.6) + 0.5 * smooth(0.6, REL, t);
+          const look = orb.position.clone().lerp(c.body, 0.25 * smooth(0.8, REL, t));
+          return { pos: orbit(look, yaw, dist, -0.15), look, fov: 42 + 4 * smooth(0.8, REL, t), k: 4 };
         }
-        if (t < 2.9) return { pos: orb.position.clone().addScaledVector(c.facing, 1.2).addScaledVector(c.side, 1.4).addScaledVector(UP, 0.1), look: c.body.clone().addScaledVector(c.facing, 3), fov: 58, k: 7 };
-        return { pos: at(1.4, 2.5, 7.6), look: at(4.2, 0.9, 0), fov: 64, k: 3.2 };
+        if (t < REL + 0.4) return { pos: orb.position.clone().addScaledVector(c.facing, 1.2).addScaledVector(c.side, 1.4).addScaledVector(UP, 0.1), look: c.body.clone().addScaledVector(c.facing, 3), fov: 58, k: 7 };
+        return { pos: at(1.0, 1.7, 5.6), look: at(3.4, 0.8, 0), fov: 60, k: 3 };
       },
     },
   };
@@ -2108,7 +2431,6 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
   const run = { beat: idle, name: 'idle', t: 0, fired: 0, loop: false, idleLeft: 0, listeners: [] };
   function start(name) {
     const b = name === 'idle' ? idle : BEATS[name];
-    for (const T of [...dashTrails, swing, spin]) T.stop();
     fx.ramp(1, 0.05);
     run.beat = b; run.name = name; run.t = 0; run.fired = 0;
     b.start?.call(b);
@@ -2152,7 +2474,7 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
 
   // ------------------------------------------------------------ size and loop
   let width = 0, height = 0;
-  const dprCap = Number(params.get('dpr')) || 1.75;
+  const dprCap = Number(params.get('dpr')) || 1.5;      // the orb's volume and the smoke are fill-bound: 1.75 cost ~2× at 1440 wide
   function resize() {
     const w = canvas.clientWidth || window.innerWidth || 1280, h = canvas.clientHeight || window.innerHeight || 720;
     const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
@@ -2168,7 +2490,7 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
     resize();
     const simDt = fx.update(realDt);
     advance(simDt);
-    pushCloak(fx.time);
+    recordOrb(fx.time);
     updateCamera(fx.holding ? 0 : realDt * Math.max(0.45, fx.timeScale * fx.rampValue));
     sky.material.uniforms.uTime.value = fx.time;
     sky.material.uniforms.uSkyFlash.value += (fx.skyFlash - sky.material.uniforms.uSkyFlash.value) * 0.5;
@@ -2245,7 +2567,7 @@ return { DISTORT_LAYER, NOISE_GLSL, GROUND_HEAT_GLSL, ENERGY_LIGHTS_GLSL, create
       press(btn.parentElement, btn);
       S.setOption(opt, val);
       note.textContent = NOTES[`${opt}:${val}`];
-      live.textContent = `${btn.closest('.group').querySelector('.label').textContent}: ${btn.textContent}`;
+      live.textContent = `${btn.closest('[role=group]').querySelector('.label').textContent}: ${btn.textContent}`;
     });
   }
   if (S.fx.options.flashes === 'safe') press(document.querySelector('[data-opt="flashes"]').parentElement, document.querySelector('[data-val="safe"]'));

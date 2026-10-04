@@ -30,7 +30,7 @@
       press(btn.parentElement, btn);
       S.setOption(opt, val);
       note.textContent = NOTES[`${opt}:${val}`];
-      live.textContent = `${btn.closest('.group').querySelector('.label').textContent}: ${btn.textContent}`;
+      live.textContent = `${btn.closest('[role=group]').querySelector('.label').textContent}: ${btn.textContent}`;
     });
   }
   if (S.fx.options.flashes === 'safe') press(document.querySelector('[data-opt="flashes"]').parentElement, document.querySelector('[data-val="safe"]'));

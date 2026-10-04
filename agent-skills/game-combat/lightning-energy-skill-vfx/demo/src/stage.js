@@ -12,7 +12,7 @@
   const params = new URLSearchParams(location.search);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: params.has('capture') });
-  const FOG = new THREE.Color(0.046, 0.052, 0.066);   // a storm-grey horizon, so black smoke has something to be black against
+  const FOG = new THREE.Color(0.034, 0.039, 0.05);   // a storm-grey horizon, so black smoke has something to be black against
   renderer.setClearColor(FOG, 1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(46, 1, 0.05, 220);
@@ -59,8 +59,9 @@
         float big = fbm3(vec3(p * .16, 1.7)) * .5 + .5;
         float n = fbm4(vec3(p * .8, 4.1)) * .5 + .5;
         float fine = snoise(vec3(p * 7., 2.)) * .5 + .5;
-        float crack = 1. - smoothstep(0., .05, cells(p * .5));
-        crack = max(crack, (1. - smoothstep(0., .035, cells(p * 1.6 + 3.))) * .55);
+        vec2 pw = p + vec2(fbm3(vec3(p * .35, 11.)), fbm3(vec3(p * .35, 23.))) * 1.6;   // warped: cracks, not tiles
+        float crack = (1. - smoothstep(0., .05, cells(pw * .5))) * smoothstep(-.2, .25, snoise(vec3(p * .6, 5.)));
+        crack = max(crack, (1. - smoothstep(0., .035, cells(pw * 1.6 + 3.))) * .5 * smoothstep(-.1, .4, snoise(vec3(p * 1.3, 9.))));
         vec3 alb = vec3(.06, .062, .068) * (.68 + .55 * n) * (.86 + .28 * fine);
         alb = mix(alb, vec3(.015, .015, .018), crack * .85);
         float wet = smoothstep(.48, .7, big) * (1. - crack);
@@ -73,8 +74,8 @@
         col += uSkyFlash * vec3(.008, .013, .024) * (.35 + wet);
         // the hit's heat glows in the stone's own cracks and cools
         float heat = groundHeat(p);
-        float fineCrack = 1. - smoothstep(0., .02 + .03 * heat, cells(p * 1.6 + 3.));
-        col += uGlow * heat * (crack * .9 + fineCrack * .6) * (1.6 + 2.2 * heat);
+        float fineCrack = (1. - smoothstep(0., .02 + .03 * heat, cells(pw * 1.6 + 3.))) * smoothstep(-.1, .4, snoise(vec3(p * 1.3, 9.)));
+        col += uGlow * heat * (crack * .8 + fineCrack * .25) * (1.2 + 1.6 * heat);   // fine cracks kept faint: bright ones read as neon worms
         float d = length(vW.xz - cameraPosition.xz);
         col = mix(col, uFog, 1. - exp(-d * .048));
         gl_FragColor = vec4(col, 1.);
@@ -100,26 +101,13 @@
   }
   const at = (a, b, c) => new V3().copy(caster.base).addScaledVector(caster.facing, a).addScaledVector(UP, b).addScaledVector(caster.side, c);
 
-  // The cloak: three smoke ribbons streaming back off the body, always on.
-  const cloak = [
-    { T: fx.createTrail({ width: 0.62, life: 0.75, spacing: 0.05, jitter: 0.4, shards: 0.6 }), off: [-0.18, 0.5, 0], wob: 1.3 },
-    { T: fx.createTrail({ width: 0.75, life: 0.85, spacing: 0.05, jitter: 0.45, shards: 0.7 }), off: [-0.22, 0.12, 0.22], wob: 1.7 },
-    { T: fx.createTrail({ width: 0.66, life: 0.8, spacing: 0.05, jitter: 0.45, shards: 0.7 }), off: [-0.2, -0.32, -0.18], wob: 2.1 },
-  ];
+  // The shadow belongs to the orb (fx.createOrb draws its corona, ribbons and billows), so it
+  // follows the energy wherever the fist goes. The stage only keeps a short record of the
+  // orb's path for arcs thrown along a strike.
   let gale = 1;
-  const emitPos = new V3();
-  function pushCloak(t) {
-    for (const C of cloak) {
-      C.T.drift.copy(caster.facing).multiplyScalar(-2.1 * gale).addScaledVector(UP, 0.55).addScaledVector(caster.side, Math.sin(t * C.wob) * 0.3);
-      emitPos.copy(caster.body).addScaledVector(caster.facing, C.off[0]).addScaledVector(UP, C.off[1]).addScaledVector(caster.side, C.off[2] + Math.sin(t * C.wob * 2.3) * 0.06);
-      C.T.push(emitPos);
-    }
-  }
-  // Dash and strike ribbons, restarted each time they are used.
-  const dashTrails = [fx.createTrail({ width: 1.0, life: 0.8, spacing: 0.08, jitter: 0.5, shards: 0.9 }), fx.createTrail({ width: 0.42, life: 0.55, spacing: 0.08, jitter: 0.3, shards: 0.5 }), fx.createTrail({ width: 0.42, life: 0.55, spacing: 0.08, jitter: 0.3, shards: 0.5 })];
-  const swing = fx.createTrail({ width: 0.8, life: 0.5, spacing: 0.05, jitter: 0.3, shards: 0.7 });
-  const spin = fx.createTrail({ width: 0.95, life: 0.6, spacing: 0.05, jitter: 0.3, shards: 0.8 });
-  for (const T of [...dashTrails, swing, spin]) T.stop();
+  const orbPath = [];
+  function recordOrb(t) { orbPath.push({ t, p: orb.position.clone() }); while (orbPath.length && t - orbPath[0].t > 0.3) orbPath.shift(); }
+  const pathPoint = (back) => orbPath[Math.max(0, orbPath.length - 1 - back)].p;
 
   // ------------------------------------------------------------ helpers
   const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -134,10 +122,9 @@
   function arcsAlongPath(ticks) {
     fx.repeat(ticks, () => {
       if (history.length < 3) return;
-      for (let k = 0; k < 2; k++) {
-        const i = (rnd() * (history.length - 2)) | 0, j = Math.min(history.length - 1, i + 1 + ((rnd() * 4) | 0));
-        _v.copy(history[i].p).add(randDir(_x).multiplyScalar(0.25));
-        fx.bolt(_v, _w.copy(history[j].p).add(randDir(_x).multiplyScalar(0.35)), { levels: 5, jag: 0.3, width: 0.03, minPx: 7, intensity: 0.95, life: 2, branches: 1 });
+      for (let k = 0; k < 1; k++) {                  // rooted at the orb and thrown back along the path it just tore through
+        const i = (rnd() * (history.length - 2)) | 0;
+        fx.bolt(orb.position, _w.copy(history[i].p).add(randDir(_x).multiplyScalar(0.35)), { levels: 6, jag: 0.22, width: 0.032, minPx: 7, intensity: 0.95, life: 2, branches: 2 });
       }
     });
   }
@@ -164,7 +151,7 @@
       title: 'Charge', caption: 'Black lightning awakening', dur: 3.6,
       start() { orb.visible = true; orb.radius = 0.1; orb.pressure = 0.35; orb.instability = 0.15; orb.arcRate = 0.8; caster.lift = 0; caster.lunge = 0; gale = 1; },
       events: [
-        [1.7, () => { orb.pulse(-0.3); fx.ring(orb.position, _v.copy(camera.position).sub(orb.position).normalize(), { radius: 1.3, thick: 0.05, intensity: 0.5, life: 0.26, amp: 0.03 }); fx.puff(at(-0.4, 1.1, 0), { count: 6, size: [0.5, 0.9], dir: caster.facing.clone().negate(), spread: 0.6 }); }],
+        [1.7, () => { orb.pulse(-0.3); fx.ring(orb.position, _v.copy(camera.position).sub(orb.position).normalize(), { radius: 1.3, thick: 0.05, intensity: 0.06, life: 0.26, amp: 0.03 }); fx.puff(at(-0.4, 1.1, 0), { count: 6, size: [0.5, 0.9], dir: caster.facing.clone().negate(), spread: 0.6 }); }],
         [3.0, () => {
           fx.impact({ hold: 0.05, frame: 'center', shake: 0.006, shakeMode: 'axial' });
           fx.burst(orb.position.clone().addScaledVector(caster.aim, 0.25), { strength: 0.5, layers: 2, sparks: 30, bolts: 3 });
@@ -180,9 +167,14 @@
         fx.attractor.position.copy(orb.position); fx.attractor.strength = t < 2.4 ? 2.5 : 0; fx.attractor.swirl = t < 2.4 ? 1.5 : 0;
         if (dt > 0 && rnd() < dt * 22) motes(1, 2.6);
         if (t > 1.7) groundDust(26, 0.8, 2.4, dt);
+        fx.addHeat(_v.set(orb.position.x, 0, orb.position.z), 1.1 + orb.radius, 0.25 + 0.55 * orb.pressure * smooth(0.6, 2.2, t));   // the stone under the orb starts to glow
+        if (dt > 0 && rnd() < dt * 18 * orb.pressure) {   // dust drawn round under it
+          const a = R(0, 6.28), rr = R(0.6, 1.8);
+          fx.spawnSprite(0, _v.set(orb.position.x + Math.cos(a) * rr, R(0.05, 0.25), orb.position.z + Math.sin(a) * rr), _w.set(-Math.sin(a), 0.25, Math.cos(a)).multiplyScalar(R(1.2, 2.4)), { size: R(0.35, 0.7), life: R(0.8, 1.3), color: fx.palette.dust, opacity: 0.45, drag: 1, buoy: 0.2, grow: 2 });
+        }
       },
       cam(t) {
-        const yaw = -0.35 + 1.45 * smooth(0.2, 3.3, t), dist = 1.45 + 1.4 * smooth(0.7, 3.1, t);
+        const yaw = -0.35 + 1.45 * smooth(0.2, 3.3, t), dist = 2.1 + 1.3 * smooth(0.7, 3.1, t);
         const look = new V3().lerpVectors(orb.position, caster.body, 0.45 * smooth(0.8, 3, t));
         return { pos: orbit(look, yaw, dist, -0.12 - 0.22 * smooth(0.5, 3, t)), look, fov: 38 + 8 * smooth(0.6, 3, t), k: 5 };
       },
@@ -205,7 +197,6 @@
         [0.3, () => {
           fx.burst(caster.base.clone(), { strength: 0.8, layers: 2, sparks: 30, debris: 8, dust: 18, bolts: 3 });
           fx.impact({ hold: 0.04, frame: 'none', shake: 0.008 });
-          for (const T of BEATS.dash.trailsOn()) T.restart();
           arcsAlongPath(20);
         }],
         [0.52, () => BEATS.dash.turn(1)],
@@ -215,12 +206,10 @@
           fx.impact({ hold: 0.06, frame: 'center', shake: 0.012, at: caster.body });
           fx.puff(caster.body.clone(), { count: 10, size: [0.6, 1.2] });
         }],
-        [1.25, () => { for (const T of dashTrails) T.stop(); }],
       ],
-      trailsOn() { return dashTrails; },
       turn(i) {
         const P = this.path, a = P[i][1], d = new V3().subVectors(P[i + 1][1], a).normalize();
-        fx.ring(a, d, { radius: 2.2, thick: 0.06, intensity: 0.45, life: 0.26, amp: 0.035 });
+        fx.ring(a, d, { radius: 2.2, thick: 0.06, intensity: 0, life: 0.26, amp: 0.02 });
         fx.puff(a, { count: 12, size: [0.65, 1.3], speed: [0.4, 1.6] });
         fx.shards(a, { count: 22, speed: [1.5, 5] });
         fx.sparks(a, { count: 26, speed: [4, 10] });
@@ -240,12 +229,7 @@
           orb.radius = t < 0.95 ? 0.22 : 0.22 + 0.16 * smooth(1.0, 2.0, t);
         }
         pose();
-        if (t > 0.3 && t < 1.25) {
-          record(t);
-          dashTrails[0].push(c.body);
-          dashTrails[1].push(_v.copy(c.body).addScaledVector(c.side, 0.3).addScaledVector(UP, 0.22));
-          dashTrails[2].push(_v.copy(c.body).addScaledVector(c.side, -0.3).addScaledVector(UP, -0.25));
-        }
+        if (t > 0.3 && t < 1.25) record(t);
         if (t > 0.92 && t < 1.25 && dt > 0) {   // skid: sparks off the ground behind the feet
           fx.sparks(c.base.clone().setY(0.03), { count: 3, dir: _v.copy(c.facing).negate().add(UP), spread: 0.6, speed: [2, 6], life: [0.25, 0.5] });
           groundDust(60, 0, 0.4, dt, 0.6);
@@ -254,7 +238,7 @@
       cam(t) {
         const c = caster;
         if (t < 0.3) return { pos: at(-2.6, 0.5, 1.7), look: c.body.clone().addScaledVector(c.facing, 2), fov: 50, k: 6 };
-        if (t < 0.95) return { pos: new V3().copy(c.body).addScaledVector(c.aim, -3.1).addScaledVector(c.side, 1.1).setY(Math.max(0.32, c.body.y * 0.45)), look: c.body.clone().addScaledVector(c.aim, 1.6), fov: 54, k: 9 };
+        if (t < 0.95) return { pos: new V3().copy(orb.position).addScaledVector(c.aim, -2.1).addScaledVector(c.side, 0.9).setY(Math.max(0.35, orb.position.y * 0.7)), look: orb.position.clone().addScaledVector(c.aim, 1.2), fov: 52, k: 10 };
         return { pos: at(-2.7, 0.85, -2.3), look: c.body.clone().addScaledVector(c.facing, 0.8), fov: 50, k: 4 };
       },
     },
@@ -269,13 +253,13 @@
           fx.blast(orb.position, c.aim, { length: 4.6, radius: 1.5, strength: 1 });
           fx.burst(orb.position.clone().addScaledVector(c.aim, 0.4), { strength: 0.9, layers: 3, sparks: 70, bolts: 4 });
           fx.burst(c.fist.clone().setY(0), { strength: 0.6, layers: 1, debris: 6, dust: 12, sparks: 10, bolts: 2 });
-          fx.impact({ hold: 0.1, frame: 'center', shake: 0.016, shakeMode: 'axial', at: orb.position });
+          fx.impact({ hold: 0.1, frame: 'full', flash: 0, shake: 0.016, shakeMode: 'axial', at: orb.position });   // no white after the ink: it read as a grey wash
         }],
-        [1.3, () => { swing.restart(); BEATS.barrage.swingArcs(); }],
+        [1.3, () => BEATS.barrage.swingArcs()],
         [1.45, () => {
           const c = caster;
-          fx.ring(c.body, UP, { radius: 4.2, thick: 0.06, intensity: 0.8, life: 0.3, amp: 0.035 });
-          fx.ring(c.body, UP, { radius: 5.6, thick: 0.1, intensity: 0.35, life: 0.42, delay: 0.06, amp: 0.025 });
+          fx.ring(c.body, UP, { radius: 4.2, thick: 0.06, intensity: 0.12, life: 0.3, amp: 0.035 });   // felt as refraction, not drawn as a hoop
+          fx.ring(c.body, UP, { radius: 5.6, thick: 0.1, intensity: 0.05, life: 0.42, delay: 0.06, amp: 0.025 });
           for (let k = 0; k < 9; k++) {
             const a = -1.35 + 2.7 * (k / 8) + R(-0.1, 0.1);
             const d = _x.copy(c.facing).multiplyScalar(Math.cos(a)).addScaledVector(c.side, Math.sin(a));
@@ -284,20 +268,18 @@
           fx.sparks(c.body, { count: 40, dir: c.facing, spread: 1.2, speed: [4, 11] });
           fx.impact({ hold: 0.05, frame: 'none', shake: 0.012, shakeDir: new THREE.Vector2(1, 0.15) });
         }],
-        [1.6, () => swing.stop()],
-        [2.3, () => { spin.restart(); BEATS.barrage.spinArcs(); }],
+        [2.3, () => BEATS.barrage.spinArcs()],
         [2.56, () => {
           const c = caster;
-          spin.stop();
           fx.burst(c.body.clone().addScaledVector(c.facing, 0.9), { strength: 1.3, layers: 3, sparks: 110, bolts: 6 });
           fx.burst(c.base.clone().addScaledVector(c.facing, 0.9), { strength: 1.2, layers: 3, debris: 14, dust: 22, sparks: 30, bolts: 5 });
           fx.blast(orb.position, c.facing, { length: 3.4, radius: 2.4, strength: 1.1 });
           fx.puff(c.body.clone().addScaledVector(c.facing, -0.5), { count: 12, size: [0.7, 1.4] });
-          fx.impact({ hold: 0.1, frame: 'center', shake: 0.022, shakeMode: 'axial', at: orb.position });
+          fx.impact({ hold: 0.1, frame: 'full', flash: 0, shake: 0.022, shakeMode: 'axial', at: orb.position });
         }],
       ],
-      swingArcs() { fx.repeat(5, () => { const p = swing.n > 2 ? swing : null; if (!p) return; const i = Math.max(0, p.n - 3); _v.set(p.p[i * 3], p.p[i * 3 + 1], p.p[i * 3 + 2]); fx.bolt(orb.position, _v.add(randDir(_w).multiplyScalar(0.3)), { levels: 5, jag: 0.25, width: 0.035, minPx: 8, life: 2, branches: 1 }); }); },
-      spinArcs() { fx.repeat(8, () => { if (spin.n < 3) return; const i = Math.max(0, spin.n - 4); _v.set(spin.p[i * 3], spin.p[i * 3 + 1], spin.p[i * 3 + 2]); fx.bolt(orb.position, _v, { levels: 5, jag: 0.22, width: 0.04, minPx: 9, life: 2, branches: 1 }); fx.bolt(orb.position, _w.copy(orb.position).addScaledVector(caster.aim, R(1.2, 2.2)).add(randDir(_x).multiplyScalar(0.5)), { levels: 5, jag: 0.25, width: 0.03, minPx: 7, life: 2, branches: 0 }); }); },
+      swingArcs() { fx.repeat(5, () => { if (orbPath.length < 4) return; fx.bolt(orb.position, _v.copy(pathPoint(3)).add(randDir(_w).multiplyScalar(0.3)), { levels: 6, jag: 0.24, width: 0.035, minPx: 8, life: 2, branches: 1 }); }); },
+      spinArcs() { fx.repeat(8, () => { if (orbPath.length < 5) return; fx.bolt(orb.position, pathPoint(4), { levels: 6, jag: 0.22, width: 0.04, minPx: 9, life: 2, branches: 1 }); fx.bolt(orb.position, _w.copy(orb.position).addScaledVector(caster.aim, R(1.2, 2.2)).add(randDir(_x).multiplyScalar(0.5)), { levels: 6, jag: 0.24, width: 0.03, minPx: 7, life: 2, branches: 1 }); }); },
       step(t, dt) {
         const c = caster;
         c.lunge = t < 0.22 ? 0 : t < 0.3 ? 0.55 * easeOut((t - 0.22) / 0.08) : 0.55 - 0.45 * smooth(0.3, 0.7, t);
@@ -306,12 +288,10 @@
         if (t >= 1.3 && t < 1.6) {
           const u = smooth(1.3, 1.44, t), a = Math.PI / 2 - Math.PI * u;
           c.aim.copy(c.facing).multiplyScalar(Math.cos(a)).addScaledVector(c.side, Math.sin(a)).normalize();
-          swing.push(_v.copy(c.body).addScaledVector(c.aim, 1.05).addScaledVector(UP, 0.05));
         } else if (t >= 2.3 && t < 2.56) {
           // spinning elbow: the fist goes all the way round
           const a = 6.2832 * easeOut((t - 2.3) / 0.26);
           c.aim.copy(c.facing).applyAxisAngle(UP, a).normalize();
-          spin.push(_v.copy(c.body).addScaledVector(c.aim, 0.85).addScaledVector(UP, 0.12));
         } else c.aim.lerp(c.facing, 1 - Math.exp(-dt * 10)).normalize();
         pose();
       },
@@ -331,6 +311,11 @@
           fx.burst(c.base.clone(), { strength: 1.8, layers: 3, debris: 18, dust: 34, sparks: 120, bolts: 8 });
           fx.impact({ hold: 0.08, frame: 'center', shake: 0.02, at: c.base });
           vortex = fx.vortex(c.base.clone(), { radius: 2.8, height: 1.9, duration: 3.5, bands: 6 });
+          fx.repeat(95, () => {                          // the discharge starts at the orb and lands in the ring
+            if (!vortex || !vortex.alive || vortex.t > vortex.duration) return;
+            const E = vortex.emitters[(rnd() * vortex.emitters.length) | 0];
+            if (E.pos && rnd() < 0.6) fx.bolt(orb.position, E.pos, { levels: 6, jag: 0.2, width: 0.04, minPx: 9, intensity: 1.1, life: 2, branches: 2 });
+          });
           fx.attractor.position.copy(c.base).addScaledVector(UP, 0.8); fx.attractor.strength = 0; fx.attractor.swirl = 6;
         }],
         [1.6, () => {
@@ -367,9 +352,9 @@
     },
 
     ultimate: {
-      title: 'Ultimate', caption: 'Black lightning realm collapse', dur: 6.4,
+      title: 'Ultimate', caption: 'Black lightning realm collapse', dur: 6.2, release: 2.0,
       start() {
-        fx.ramp(0.22, 0.9);
+        fx.ramp(0.4, 0.6);                 // slow enough to feel the pause, short enough not to stall the cut
         orb.visible = true; orb.instability = 1; orb.arcRate = 2.2; orb.pressure = 1;
         fx.attractor.strength = 18; fx.attractor.swirl = 5;
         converge = []; tsunami = []; this.nextIn = 0; this.nextEmber = 0; this.nextArc = 0;
@@ -381,8 +366,8 @@
         });
       },
       events: [
-        [2.35, () => orb.pulse(-0.5)],
-        [2.5, () => {
+        [1.85, () => orb.pulse(-0.5)],
+        [2.0, () => {
           const c = caster, f = c.facing.clone();
           ultimateAt.copy(orb.position);
           fx.ramp(1, 0.04);
@@ -395,45 +380,47 @@
           for (let k = 0; k < 10; k++) {
             const a = (k / 10) * 6.2832 + R(-0.2, 0.2);
             const radial = _x.copy(c.side).multiplyScalar(Math.cos(a)).addScaledVector(UP, Math.sin(a) * 0.8);
-            const T = fx.createTrail({ width: R(0.9, 1.4), life: 0.95, spacing: 0.1, jitter: 0.4, shards: 0.9 }); T.disposable = true;
+            const T = fx.createTrail({ width: R(0.5, 0.8), life: 1.4, spacing: 0.1, jitter: 0.4, shards: 0.4, erode: 0.1, chain: 0.45, chainSize: 1.8 }); T.disposable = true;
             tsunami.push({ T, p: orb.position.clone().addScaledVector(radial, 0.5), v: new V3().copy(f).multiplyScalar(0.75).addScaledVector(radial, 0.65).normalize().multiplyScalar(R(11, 15)), age: 0 });
           }
           fx.repeat(4, () => { for (let k = 0; k < 6; k++) { randDir(_v); fx.bolt(ultimateAt, _w.copy(ultimateAt).addScaledVector(_v, R(3, 7)), { levels: 6, jag: 0.18, width: 0.05, minPx: 10, intensity: 1.2, life: 2, branches: 2 }); } });
           fx.impact({ hold: 0.15, frame: 'full', flash: 1, shake: 0.03, shakeMode: 'radial', fisheye: 0.42, at: orb.position });
-          orb.visible = false; gale = 2.4;
+          orb.visible = false; gale = 1.8;
         }],
-        [5.5, () => { orb.visible = true; orb.radius = 0.08; orb.instability = 0.15; orb.arcRate = 0.8; orb.pressure = 0.5; }],
+        [5.3, () => { orb.visible = true; orb.radius = 0.08; orb.instability = 0.15; orb.arcRate = 0.8; orb.pressure = 0.5; }],
       ],
       step(t, dt) {
         const c = caster;
         c.aim.lerp(c.facing, 1 - Math.exp(-dt * 10)).normalize();
-        c.lunge = t < 2.5 ? -0.12 * smooth(0, 1, t) : t < 2.6 ? 0.6 : 0.6 - 0.5 * smooth(2.6, 3.4, t);
-        if (t < 2.5) orb.radius = 0.4 + 0.52 * smooth(0, 2.2, t);
-        else if (t > 5.5) orb.radius = 0.08 + 0.28 * smooth(5.5, 6.4, t);
+        const REL = this.release;
+        c.lunge = t < REL ? -0.12 * smooth(0, 1, t) : t < REL + 0.1 ? 0.6 : 0.6 - 0.5 * smooth(REL + 0.1, REL + 0.9, t);
+        if (t < REL) orb.radius = 0.4 + 0.45 * smooth(0, REL - 0.2, t);
+        else if (t > 5.3) orb.radius = 0.08 + 0.28 * smooth(5.3, 6.2, t);
         pose();
-        if (t < 2.5) {
+        if (t < REL) {
           fx.attractor.position.copy(orb.position);
           // streams of shadow spiralling in from the edges of the frame
-          if (t > this.nextIn && t < 2.2) {
+          if (t > this.nextIn && t < REL - 0.3) {
             this.nextIn = t + 0.22;
-            const T = fx.createTrail({ width: R(0.4, 0.7), life: 0.55, spacing: 0.08, jitter: 0.2, shards: 0.4 }); T.disposable = true;
+            const T = fx.createTrail({ width: R(0.25, 0.4), life: 0.55, spacing: 0.08, jitter: 0.2, shards: 0.15, chain: 0.35, chainSize: 1.6 }); T.disposable = true;
             converge.push({ T, a0: R(0, 6.28), h: R(-0.8, 1.6), r0: R(3.8, 5), age: 0 });
           }
           if (dt > 0) { motes(Math.round(dt * 160), 4.5); groundDust(30, 1.5, 4, dt, 0.4); }
         } else {
-          if (t > 2.6 && dt > 0 && t > this.nextEmber) {   // embers: torn shadow and slow sparks drifting in the after-air
-            this.nextEmber = t + (t < 4 ? 0.03 : 0.12);
+          if (t > REL + 0.1 && dt > 0 && t > this.nextEmber) {   // embers: torn shadow and slow sparks drifting in the after-air
+            this.nextEmber = t + (t < REL + 2 ? 0.02 : 0.06);
             _v.copy(ultimateAt).addScaledVector(c.facing, R(0, 6)).add(_w.set(R(-2.5, 2.5), R(-0.9, 1.8), R(-2.5, 2.5)));
             _v.y = Math.max(0.2, _v.y);
-            fx.spawnSprite(1, _v, _w.set(R(-0.3, 0.3), R(0.1, 0.5), R(-0.3, 0.3)), { size: R(0.05, 0.13), life: R(1.6, 2.6), drag: 0.6, buoy: 0.05, grow: 1 });
+            fx.spawnSprite(1, _v, _w.set(R(-0.3, 0.3), R(0.1, 0.5), R(-0.3, 0.3)), { size: R(0.07, 0.2), life: R(1.8, 3), drag: 0.6, buoy: 0.05, grow: 1 });
+            if (rnd() < 0.18) fx.spawnSprite(0, _v, _w.set(R(-0.4, 0.4), R(0.1, 0.4), R(-0.4, 0.4)), { size: R(0.5, 1.1), grow: 2.4, life: R(2, 3.2), opacity: 0.55, drag: 0.8, buoy: 0.08 });
             if (rnd() < 0.5) fx.spawnSpark(_v, _w.set(R(-0.3, 0.3), R(0.1, 0.6), R(-0.3, 0.3)), { life: R(1.2, 2.2), size: R(0.006, 0.012), heat: R(0.4, 0.75), gravity: 0.04, drag: 0.4 });
           }
-          if (t > 2.9 && t < 5.4 && t > this.nextArc) {     // residual arcs
-            this.nextArc = t + R(0.18, 0.4);
+          if (t > REL + 0.4 && t < 5.4 && t > this.nextArc) {     // residual arcs
+            this.nextArc = t + R(0.12, 0.3);
             _v.copy(ultimateAt).addScaledVector(c.facing, R(0.5, 5)).add(_w.set(R(-1.5, 1.5), R(-1, 1), R(-1.5, 1.5))); _v.y = Math.max(0.1, _v.y);
             fx.bolt(_v, _w.copy(_v).add(randDir(_x).multiplyScalar(R(0.5, 1.3))), { levels: 4, jag: 0.25, width: 0.022, minPx: 5, intensity: 0.6, life: 1, branches: 0 });
           }
-          if (t > 4.4) gale = 1 + 1.4 * (1 - smooth(4.4, 6.2, t));
+          if (t > REL + 1.5) gale = 1 + 0.8 * (1 - smooth(REL + 1.5, 6.2, t));
         }
         for (let i = converge.length - 1; i >= 0; i--) {
           const E = converge[i]; E.age += dt;
@@ -450,14 +437,14 @@
         }
       },
       cam(t) {
-        const c = caster;
-        if (t < 2.45) {
-          const yaw = 0.15 + 1.0 * smooth(0.6, 2.4, t), dist = Math.max(1.6, orb.currentRadius * 3.6) + 0.6 * smooth(0.9, 2.4, t);
-          const look = orb.position.clone().lerp(c.body, 0.25 * smooth(1, 2.4, t));
-          return { pos: orbit(look, yaw, dist, -0.15), look, fov: 40 + 4 * smooth(1, 2.4, t), k: 4 };
+        const c = caster, REL = this.release;
+        if (t < REL - 0.05) {
+          const yaw = 0.15 + 1.0 * smooth(0.4, REL, t), dist = Math.max(1.9, orb.currentRadius * 4.6) + 0.5 * smooth(0.6, REL, t);
+          const look = orb.position.clone().lerp(c.body, 0.25 * smooth(0.8, REL, t));
+          return { pos: orbit(look, yaw, dist, -0.15), look, fov: 42 + 4 * smooth(0.8, REL, t), k: 4 };
         }
-        if (t < 2.9) return { pos: orb.position.clone().addScaledVector(c.facing, 1.2).addScaledVector(c.side, 1.4).addScaledVector(UP, 0.1), look: c.body.clone().addScaledVector(c.facing, 3), fov: 58, k: 7 };
-        return { pos: at(1.4, 2.5, 7.6), look: at(4.2, 0.9, 0), fov: 64, k: 3.2 };
+        if (t < REL + 0.4) return { pos: orb.position.clone().addScaledVector(c.facing, 1.2).addScaledVector(c.side, 1.4).addScaledVector(UP, 0.1), look: c.body.clone().addScaledVector(c.facing, 3), fov: 58, k: 7 };
+        return { pos: at(1.0, 1.7, 5.6), look: at(3.4, 0.8, 0), fov: 60, k: 3 };
       },
     },
   };
@@ -481,7 +468,6 @@
   const run = { beat: idle, name: 'idle', t: 0, fired: 0, loop: false, idleLeft: 0, listeners: [] };
   function start(name) {
     const b = name === 'idle' ? idle : BEATS[name];
-    for (const T of [...dashTrails, swing, spin]) T.stop();
     fx.ramp(1, 0.05);
     run.beat = b; run.name = name; run.t = 0; run.fired = 0;
     b.start?.call(b);
@@ -525,7 +511,7 @@
 
   // ------------------------------------------------------------ size and loop
   let width = 0, height = 0;
-  const dprCap = Number(params.get('dpr')) || 1.75;
+  const dprCap = Number(params.get('dpr')) || 1.5;      // the orb's volume and the smoke are fill-bound: 1.75 cost ~2× at 1440 wide
   function resize() {
     const w = canvas.clientWidth || window.innerWidth || 1280, h = canvas.clientHeight || window.innerHeight || 720;
     const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
@@ -541,7 +527,7 @@
     resize();
     const simDt = fx.update(realDt);
     advance(simDt);
-    pushCloak(fx.time);
+    recordOrb(fx.time);
     updateCamera(fx.holding ? 0 : realDt * Math.max(0.45, fx.timeScale * fx.rampValue));
     sky.material.uniforms.uTime.value = fx.time;
     sky.material.uniforms.uSkyFlash.value += (fx.skyFlash - sky.material.uniforms.uSkyFlash.value) * 0.5;

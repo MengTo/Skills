@@ -82,16 +82,23 @@ Project specifics (review hooks, harness settings, where each skill's code lives
 
 ## What's inside `lightning-energy-skill-vfx`
 
-- **One clock, one composite.** A hold freezes every layer at once, a time ramp slows them, and lightning keeps a 35% floor so slow motion stays alive. The orb's lens, the ring fronts and the punch funnel all write into one half-resolution distortion buffer. Bloom, one ACES pass, and then the impact frame are drawn over the finished image.
+- **One clock, one composite, and a shadow that belongs to the orb.** A hold freezes every layer at once, and a time ramp slows them. The orb's lens, the pressure fronts and the punch funnel all write into one half-resolution distortion buffer. The orb carries its own black shadow, a torn teardrop with ribbons and billows laid along its path, so the shadow follows wherever the fist goes.
 - **`assets/storm-energy.mjs`**, which takes your own `THREE`, provides:
-  - lightning re-rolled at 30 Hz, with forks, screen-space ribbons and stepped brightness;
-  - a two-shell vortex orb with a spring for pulses;
-  - afterimage trails that shed ash flakes and billows;
-  - camera-facing three-layer air bursts and the punch funnel;
-  - sparks, landing chips, dust and a storm-domain vortex;
+  - lightning re-rolled at 30 Hz, with tapering trunks and forks of forks;
+  - a ray-marched orb (filaments where two noise fields cross zero, a hot core, a feathered rim);
+  - refraction-only air fronts, ground bursts with spark fountains, and chips that land;
+  - smoke trails with billow chains, and a storm-domain vortex;
+  - a baked 96³ noise texture;
   - four energy lights, and ground heat for your own crack mask;
-  - impact frames with a three-flash-a-second limiter and a safe mode.
-- **Demo:** five beats (charge, dash, barrage, storm ring, ultimate) with A/B switches for three failures: tweened lightning, additive black smoke, and a glow-ball orb.
-- **Rules from the build**, each with the capture that went wrong. Clockwise ribbons were culled silently. Black smoke vanished against a near-black sky. Ribbon quad edges showed as planks. Random per-point jitter turned the smoke into glass shards. A marched orb came out banded. A refraction of a quarter of the screen made rainbows. Rings set perpendicular to the punch became bars. Uncapped sparks became dashes. A radial crack decal looked like a sticker. Shaders compiled on first use and hitched.
+  - impact frames (ink negatives with speed lines, shake, fisheye) with a three-flash-a-second limiter.
+- **Demo:** five beats (charge, dash, barrage, storm ring, ultimate) behind a minimal UI, with A/B switches for three failures: tweened lightning, additive black smoke, and a glow-ball orb.
+- **Rules from the build and from seven blind-judged rounds:**
+  - Shadows from an invisible body read as planks; hang them off the orb.
+  - A `WebGL3DRenderTarget`'s texture silently defaults to NEAREST and 8-bit.
+  - Baked Perlin lights the orb up as a planet grid.
+  - Unbounded swirl shear winds the noise into rings.
+  - A bloom threshold of 0.9 washes black smoke blue.
+  - Coloured air rings read as hoops.
+- **Scorecard:** `references/scorecard.md`. Blind judges against AAA skill effects moved the beats from 3–6 to 5–6. The 8/10 target was not reached; the scorecard says what it would take.
 
 Both pair well with [`design-action-combat`](../game-development/design-action-combat/SKILL.md) for timing and contact, and with [`workflow-score-to-target`](../workflow/workflow-score-to-target/SKILL.md) and [`workflow-ship-change`](../workflow/workflow-ship-change/SKILL.md).

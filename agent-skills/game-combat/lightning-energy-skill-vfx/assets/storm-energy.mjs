@@ -44,7 +44,8 @@ float fbm3(vec3 p){float a=.5,s=0.;for(int i=0;i<3;i++){s+=a*snoise(p);p=p*2.03+
 float fbm4(vec3 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*snoise(p);p=p*2.03+17.1;a*=.5;}return s;}
 `;
 
-// Four point lights the effect throws onto the world: orb, impact, bolt flash, blast.
+// Six point lights the effect throws onto the world: orb, impact, bolt flash, blast, and two
+// for the places where bolts strike the ground.
 // Add ENERGY_LIGHTS_GLSL to your ground and prop shaders, merge fx.lightUniforms into
 // their uniforms, and add energyLight(...) to their colour.
 // Periodic classic Perlin noise (Ashima / Stefan Gustavson, MIT), used once at start-up to
@@ -87,6 +88,12 @@ float tfbm2(vec3 p){ return tn(p).x * .5 + tn(p * 2.03 + 1.7).y * .25; }
 float tfbm3(vec3 p){ return tn(p).x * .5 + tn(p * 2.03 + 1.7).y * .25 + tn(p * 4.07 + 3.1).z * .125; }
 `;
 
+// Where the stone is wet. The stage's ground and the bolts' reflections share it, so the
+// reflections land in the puddles the ground draws. Needs NOISE_GLSL.
+export const WET_GLSL = /* glsl */`
+float wetness(vec2 p){ return smoothstep(.38, .66, fbm3(vec3(p * .16, 1.7)) * .5 + .5); }
+`;
+
 // Heat left in the ground by impacts: up to 4 spots (x, z, radius, heat). Multiply your
 // ground's own crack mask by groundHeat(worldXZ) and add it as emission.
 export const GROUND_HEAT_GLSL = /* glsl */`
@@ -98,17 +105,20 @@ float groundHeat(vec2 p){
 }`;
 
 export const ENERGY_LIGHTS_GLSL = /* glsl */`
-uniform vec3 uLightPos[4];
-uniform vec3 uLightCol[4];
+uniform vec3 uLightPos[6];
+uniform vec3 uLightCol[6];
 vec3 energyLight(vec3 P, vec3 N, vec3 V, vec3 albedo, float rough){
   vec3 acc = vec3(0.);
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     vec3 L = uLightPos[i] - P; float d2 = max(dot(L, L), 1e-4); L *= inversesqrt(d2);
-    float att = 1. / (1. + d2 * 1.4);
+    float att = 1. / (1. + d2 * 2.6);
     float ndl = max(dot(N, L), 0.);
     vec3 H = normalize(L + V);
-    float spec = pow(max(dot(N, H), 0.), mix(90., 6., rough)) * (1. - rough) * 2.2;
-    acc += uLightCol[i] * att * ndl * (albedo + spec);
+    // the glint reaches much further than the diffuse light, and grows at grazing angles (Fresnel):
+    // wet stone catches a strike's light across the ground, not only in a pool under it
+    float F = .04 + .96 * pow(1. - max(dot(N, V), 0.), 5.);
+    float spec = pow(max(dot(N, H), 0.), mix(140., 8., rough)) * (1. - rough) * (1.5 + 10. * F);
+    acc += uLightCol[i] * ndl * (att * albedo + spec / (1. + d2 * .45));
   }
   return acc;
 }`;
@@ -143,6 +153,59 @@ void main(){
   gl_Position = c;
 }`;
 
+// The bolt ribbon. Points of anchored bolts are stored relative to their anchor (the orb) and the
+// anchor arrives as a uniform, so the buffers only change when the lightning re-rolls (30 Hz),
+// not every frame the orb moves. Arcs inside the orb dim where they pass behind its core.
+const BOLT_VERT = /* glsl */`
+attribute vec3 aPrev;
+attribute vec3 aNext;
+attribute vec4 aData;   // side (-1|1), along (0..1), width (world), min width (px)
+attribute vec4 aExtra;  // intensity, core share, anchor slot (-1: world), 1: inside the orb, 2: lying on the ground
+uniform vec2 uResolution;
+uniform float uMaxPx;
+uniform vec3 uAnchor[4];
+uniform vec4 uOrb;      // centre, radius of the orb the inner arcs belong to
+varying vec4 vData;
+varying vec2 vExtra;
+varying float vPx;
+varying float vDepth;
+#ifdef MIRROR
+varying vec3 vMirror;
+varying float vWet;
+#endif
+void main(){
+  vec3 off = aExtra.z > -.5 ? uAnchor[int(aExtra.z + .5)] : vec3(0.);
+  vec3 P = position + off, Pa = aPrev + off, Pb = aNext + off;
+#ifdef MIRROR
+  P.y *= -1.5; Pa.y *= -1.5; Pb.y *= -1.5; vMirror = P;    // the bolt reflected in the wet ground, stretched down the way wet stone streaks it
+  vec3 G = cameraPosition + (P - cameraPosition) * (cameraPosition.y / max(cameraPosition.y - P.y, 1e-3));   // the ground point seen there
+  vWet = wetness(G.xz);                // per vertex: the puddles are metres across, and per pixel it cost ms on wide ribbons
+#endif
+  mat4 vp = projectionMatrix * viewMatrix;
+  vec4 c = vp * vec4(P, 1.);
+  vec4 a = vp * vec4(Pa, 1.);
+  vec4 b = vp * vec4(Pb, 1.);
+  vec2 hr = uResolution * .5;
+  vec2 sa = a.xy / max(a.w, 1e-3) * hr;
+  vec2 sb = b.xy / max(b.w, 1e-3) * hr;
+  vec2 d = sb - sa; float L = length(d);
+  d = L > 1e-4 ? d / L : vec2(1., 0.);
+  vec2 n = vec2(-d.y, d.x);
+  float px = min(max(aData.z * projectionMatrix[1][1] * hr.y / max(c.w, 1e-3), aData.w), uMaxPx);
+#ifdef MIRROR
+  px *= 1.3;                           // a little blur; the streak runs down, not sideways
+#endif
+  c.xy += n * aData.x * px * .5 / hr * c.w;
+  float I = aExtra.x;
+  if (aExtra.w > 1.5) c.z -= 6e-4 * c.w;   // lying on the ground: seen at a grazing angle the stone would eat half the ribbon
+  else if (aExtra.w > .5) {            // behind the core the storm cloud hides most of an arc
+    float z = dot(P - uOrb.xyz, normalize(cameraPosition - uOrb.xyz)) / max(uOrb.w, 1e-3);
+    I *= mix(.16, 1., smoothstep(-.75, .35, z));
+  }
+  vData = aData; vExtra = vec2(I, aExtra.y); vPx = px; vDepth = c.w;
+  gl_Position = c;
+}`;
+
 const FS_VERT = /* glsl */`varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }`;
 
 function mulberry32(seed) {
@@ -164,11 +227,13 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
 
   const palette = {
     core: new THREE.Color(1.0, 1.0, 1.0),          // bolt and orb core, linear HDR before gain
-    glow: new THREE.Color(0.30, 0.60, 1.00),       // white-blue halo
-    rim: new THREE.Color(0.55, 0.80, 1.00),        // orb fresnel rim
-    smoke: new THREE.Color(0.010, 0.011, 0.016),   // afterimage black, faintly blue
+    glow: new THREE.Color(0.15, 0.17, 1.00),       // violet-royal halo (linear): cyan read as a neon tube, pale blue as cyan
+    rim: new THREE.Color(0.18, 0.28, 1.00),        // orb fresnel rim
+    cloud: new THREE.Color(0.10, 0.19, 1.00),      // the storm cloud inside the orb, as lit by its core and arcs
+    light: new THREE.Color(0.30, 0.42, 1.00),      // what the lightning casts on stone and smoke: bluer than white, paler than the glow
+    smoke: new THREE.Color(0.003, 0.0035, 0.005),  // afterimage black, faintly blue: darker than the night sky behind it
     ember: new THREE.Color(0.25, 0.55, 1.00),      // lightning caught in the smoke's torn edge
-    dust: new THREE.Color(0.024, 0.028, 0.036),    // ground dust, low, cool, close to the ground's own value
+    dust: new THREE.Color(0.02, 0.023, 0.03),      // ground dust: a lit grey-blue mist, never darker than the stone (that read as ghost shadows)
   };
 
   const options = {
@@ -200,10 +265,11 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   const effectiveScale = () => (clock.hold > 0 ? 0 : clock.base * clock.rampValue);
 
   // ---------------------------------------------------------------- energy lights
-  const lightPos = [new V3(), new V3(), new V3(), new V3()];
-  const lightCol = [new V3(), new V3(), new V3(), new V3()];
+  const NLIGHTS = 6;
+  const lightPos = Array.from({ length: NLIGHTS }, () => new V3());
+  const lightCol = Array.from({ length: NLIGHTS }, () => new V3());
   const lightUniforms = { uLightPos: { value: lightPos }, uLightCol: { value: lightCol } };
-  const lights = [0, 1, 2, 3].map(() => ({ energy: 0, decay: 10, color: new THREE.Color(), warm: 0 }));
+  const lights = lightPos.map(() => ({ energy: 0, decay: 10, color: new THREE.Color(), warm: 0 }));
   function flashLight(slot, pos, energy, decay, warm = 0) {
     const L = lights[slot];
     if (energy >= L.energy * 0.6) lightPos[slot].copy(pos);
@@ -219,11 +285,26 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   }
 
   // ---------------------------------------------------------------- lightning
-  const MAXP = 129, MAXBOLTS = 260;
+  // A bolt is a tree of strips: a trunk, its forks, their forks and hair-fine twigs. Every strip's
+  // points live in one ring buffer and the GPU buffers are sized by a total point budget, so
+  // thousands of short twigs fit where a fixed bolts × max-points layout ran out at a few hundred.
+  const MAXP = 129, MAXBOLTS = 480, RINGP = 1 << 17, RINGS = 1 << 14, POINT_BUDGET = 60000;
+  const ringP = new Float32Array(RINGP * 3);
+  const sOff = new Float64Array(RINGS), sN = new Uint16Array(RINGS), sW = new Float32Array(RINGS), sPx = new Float32Array(RINGS);
+  const sI = new Float32Array(RINGS), sDepth = new Uint8Array(RINGS), sSeed = new Float32Array(RINGS);
+  let pAlloc = 0, sAlloc = 0, boltsDirty = true;
   const bolts = [];
-  for (let i = 0; i < MAXBOLTS; i++) bolts.push({ alive: false, n: 0, pts: new Float32Array(MAXP * 3), from: new Float32Array(MAXP * 3), gen: { a: new V3(), b: new V3(), bend: new V3(), hasBend: false, levels: 4, jag: 0.2 }, anchor: null, width: 0.04, minPx: 8, I: 1, life: 2, age: 0, seed: 0, branch: false });
-  const SA = new Float32Array(MAXP * 3), SB = new Float32Array(MAXP * 3);
+  for (let i = 0; i < MAXBOLTS; i++) bolts.push({ alive: false, s0: 0, sc: 0, p0: 0, gen: { a: new V3(), b: new V3(), bend: new V3(), hasBend: false, levels: 4, jag: 0.2 }, anchor: null, slot: -1, inner: 0, flat: null, shell: 0, inside: 0, width: 0.04, minPx: 8, I: 1, life: 2, age: 0, seed: 0, branches: 1, twigs: 3, jag: 0.2, from: null });
+  const SA = new Float32Array(MAXP * 3), SB = new Float32Array(MAXP * 3), SHP = new Float32Array(MAXP * 3);
   let boltFlashEnergy = 0;
+  // Anchored bolts store points relative to their anchor; the anchor reaches the shader as a uniform.
+  const anchors = [], anchorU = [new V3(), new V3(), new V3(), new V3()];
+  function anchorSlot(v) {
+    if (!v) return -1;
+    let i = anchors.indexOf(v);
+    if (i < 0 && anchors.length < 4) { anchors.push(v); i = anchors.length - 1; }
+    return i;
+  }
 
   function basis(dir) {
     const ref = Math.abs(dir.y) < 0.9 ? UP : X;
@@ -251,13 +332,28 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       }
       const l3 = (n - 1) * 3;
       out[m++] = src[l3]; out[m++] = src[l3 + 1]; out[m++] = src[l3 + 2];
-      n = n * 2 - 1; src = out; amp *= 0.5;
+      n = n * 2 - 1; src = out; amp *= 0.58;   // a little rougher than halving: fine crackle all the way down
     }
     if (gen.hasBend) {                               // bow along a parabola: a single midpoint kink made brackets
       for (let i = 0; i < n; i++) { const t = i / (n - 1), k = 4 * t * (1 - t); src[i * 3] += gen.bend.x * k; src[i * 3 + 1] += gen.bend.y * k; src[i * 3 + 2] += gen.bend.z * k; }
     }
     dst.set(src.subarray(0, n * 3));
     return n;
+  }
+  // Keep a strip where it belongs: flat on the ground, on the orb's inner wall, or inside the orb.
+  function confine(B, P, n) {
+    if (B.flat !== null) for (let i = 0; i < n; i++) P[i * 3 + 1] = B.flat;
+    else if (B.shell > 0) for (let i = 0; i < n; i++) { const i3 = i * 3, l = Math.hypot(P[i3], P[i3 + 1], P[i3 + 2]) || 1, k = B.shell / l; P[i3] *= k; P[i3 + 1] *= k; P[i3 + 2] *= k; }
+    else if (B.inside > 0) for (let i = 0; i < n; i++) { const i3 = i * 3, l = Math.hypot(P[i3], P[i3 + 1], P[i3 + 2]); if (l > B.inside) { const k = B.inside / l; P[i3] *= k; P[i3 + 1] *= k; P[i3 + 2] *= k; } }
+  }
+  function allocStrip(P, n, width, px, I, depth, seed) {
+    let o = pAlloc % RINGP;
+    if (o + n > RINGP) { pAlloc += RINGP - o; o = 0; }      // strips never wrap: they stay contiguous
+    ringP.set(P.subarray(0, n * 3), o * 3);
+    const s = sAlloc % RINGS;
+    sOff[s] = pAlloc; sN[s] = n; sW[s] = width; sPx[s] = px; sI[s] = I; sDepth[s] = depth; sSeed[s] = seed;
+    pAlloc += n;
+    return sAlloc++;
   }
   function freeBolt() {
     for (let i = 0; i < MAXBOLTS; i++) if (!bolts[i].alive) return bolts[i];
@@ -266,35 +362,112 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     return oldest;
   }
   // a, b: world points, or offsets from `anchor` (a Vector3 the bolt follows, e.g. orb.position).
-  function bolt(a, b, { levels = 5, jag = 0.2, width = 0.04, minPx = 8, intensity = 1, life = 2, branches = 1, anchor = null, bend = null } = {}) {
+  // flat: pin every point to this height (arcs crawling over the ground). shell: lay it on a
+  // sphere of this radius round the anchor. inside: keep it within that radius. inner: an arc
+  // inside the orb, dimmed where it passes behind the core. twigs: fork depth (3 = forks of
+  // forks of forks), twigK: how many twigs each fork throws, core: the white core's share.
+  // path: a polyline [x,y,z,...] to follow instead of a generated zigzag (arcs along ground
+  // cracks). hit: false stops a bolt that ends on the ground from striking it.
+  function bolt(a, b, { levels = 5, jag = 0.2, width = 0.04, minPx = 8, intensity = 1, life = 2, branches = 1, anchor = null, bend = null, flat = null, shell = 0, inside = 0, inner = false, twigs = 3, twigK = 1, core = 1, forkLen = 1, path = null, hit = true } = {}) {
     const B = freeBolt();
+    let slot = anchorSlot(anchor);
+    const ax = anchor && slot < 0 ? anchor : null;          // no anchor slot left: bake it in
+    if (ax) { anchor = null; }
     const big = R(0.85, 1.45);                       // not every trunk is the same weight
-    B.alive = true; B.branch = false; B.anchor = anchor; B.width = width * big; B.minPx = minPx * big; B.I = intensity;
-    B.life = options.lightning === 'tween' ? life * 5 : life; B.age = 0; B.seed = rnd();
-    B.gen.a.copy(a); B.gen.b.copy(b); B.gen.levels = Math.min(levels + (a.distanceTo(b) > 1.5 ? 1 : 0), 7); B.gen.jag = jag;   // long bolts get a finer level
+    const tween = options.lightning === 'tween';
+    B.alive = true; B.anchor = anchor; B.slot = anchor ? slot : -1; B.inner = inner ? 1 : 0;
+    B.flat = flat === true ? 0.012 : flat; B.shell = shell; B.inside = inside;
+    B.width = width * big; B.minPx = minPx * big; B.I = intensity; B.branches = branches; B.twigs = twigs; B.twigK = twigK; B.jag = jag; B.coreK = core; B.forkLen = forkLen;
+    B.life = tween ? life * 5 : life; B.age = 0; B.seed = rnd();
+    B.gen.a.copy(a); B.gen.b.copy(b); if (ax) { B.gen.a.add(ax); B.gen.b.add(ax); }
+    let len = B.gen.a.distanceTo(B.gen.b), n;
+    B.gen.levels = Math.min(levels + (len > 1.5 ? 1 : 0), 7); B.gen.jag = jag;   // long bolts get a finer level
     B.gen.hasBend = !!bend; if (bend) B.gen.bend.copy(bend);
-    B.n = shape(B.pts, B.gen); B.from.set(B.pts.subarray(0, B.n * 3));
-    const len = a.distanceTo(b);
+    if (path && path.length >= 6) {
+      n = Math.min(MAXP, (path.length / 3) | 0); len = 0;
+      for (let i = 0; i < n; i++) {                   // the given path, crackling a little across itself
+        const j = Math.max(0, i - 1) * 3, i3 = i * 3;
+        SHP[i3] = path[i3] + (i ? R(-1, 1) * 0.007 : 0); SHP[i3 + 1] = path[i3 + 1]; SHP[i3 + 2] = path[i3 + 2] + (i ? R(-1, 1) * 0.007 : 0);
+        len += Math.hypot(path[i3] - path[j], path[i3 + 1] - path[j + 1], path[i3 + 2] - path[j + 2]);
+      }
+      B.gen.a.set(path[0], path[1], path[2]); B.gen.b.set(path[(n - 1) * 3], path[(n - 1) * 3 + 1], path[(n - 1) * 3 + 2]);
+      B.gen.levels = Math.max(1, Math.round(Math.log2(n - 1)));
+    } else n = shape(SHP, B.gen);
+    confine(B, SHP, n);
+    if (B.from) B.from.set(SHP.subarray(0, n * 3));
+    B.p0 = pAlloc; B.s0 = allocStrip(SHP, n, B.width, B.minPx, 1, 0, B.seed); B.sc = 1;
+    if (!tween && branches > 0 && twigs > 0) grow(B, B.s0, len, 0, len / (1 << B.gen.levels) * 1.3);
+    boltsDirty = true;
     boltFlashEnergy += len * intensity;
-    if (len * intensity > 0.6) { _a.addVectors(a, b).multiplyScalar(0.5); if (anchor) _a.add(anchor); flashLight(2, _a, Math.min(len * intensity * 2.2, 26), 18); }
-    // Forks leave from the first two-thirds, thinner and dimmer, taper to nothing, and fork again.
-    fork(B, branches, len, 0);
+    _hs.copy(B.gen.a); _he.copy(B.gen.b); if (anchor) { _hs.add(anchor); _he.add(anchor); }
+    if (len * intensity > 0.6) { _a.addVectors(_hs, _he).multiplyScalar(0.5); flashLight(2, _a, Math.min(len * intensity * 2.2, 26), 18); }
+    // a bolt that comes down onto the stone strikes it: flash, crawling arcs, lit cracks
+    if (hit && B.flat === null && !inner && _he.y < 0.16 && _hs.y > _he.y + 0.3) groundStrike(_he, intensity, len);
+    return B;
   }
-  function fork(P, count, len, depth) {
+  const _hs = new V3(), _he = new V3(), _hp = new V3(), _hd = new V3(), _hq = new V3(), _ht = new V3();
+  // Forks of forks: every strip throws a few shorter, thinner, dimmer strips from its first 85 %,
+  // with lengths falling off by a power law, so a few long forks carry many short twigs and the
+  // trunk stays clearly the heaviest line.
+  const FORK_I = [1, 0.62, 0.42, 0.3], FORK_W = [1, 0.4, 0.22, 0.13], FORK_PX = [1, 0.46, 0.28, 0.18], FORK_N = [12, 5, 4];
+  function grow(B, si, len, depth, seg) {
+    if (depth >= B.twigs || depth > 2) return;
+    const s = si % RINGS, n = sN[s]; if (n < 3) return;
+    const o = (sOff[s] % RINGP) * 3;
+    const base = depth === 0 ? (1.2 + len * 1.5) * B.branches : (depth === 1 ? 0.8 + len * 4 : len * 7) * B.twigK;
+    const count = Math.min(FORK_N[depth], Math.round(base * R(0.6, 1.3)));
+    _hd.set(ringP[o + (n - 1) * 3] - ringP[o], ringP[o + (n - 1) * 3 + 1] - ringP[o + 1], ringP[o + (n - 1) * 3 + 2] - ringP[o + 2]).normalize();
     for (let k = 0; k < count; k++) {
-      if (P.n < 9 || rnd() < 0.2) continue;
-      const i = Math.floor(P.n * R(0.15, 0.7)), i3 = i * 3;
-      const F = freeBolt(); if (F === P) continue;
-      _b.set(P.pts[i3], P.pts[i3 + 1], P.pts[i3 + 2]);
-      _c.set(P.pts[i3 + 3] - P.pts[i3 - 3], P.pts[i3 + 4] - P.pts[i3 - 2], P.pts[i3 + 5] - P.pts[i3 - 1]).normalize();
-      _d.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(0.75); _c.add(_d).normalize();
-      const fl = len * R(0.2, 0.42) * (depth ? 0.6 : 1);
-      F.alive = true; F.branch = true; F.anchor = P.anchor; F.width = P.width * (depth ? 0.6 : 0.42); F.minPx = P.minPx * (depth ? 0.6 : 0.42); F.I = P.I * (depth ? 0.7 : 0.55);
-      F.life = P.life; F.age = 0; F.seed = rnd();
-      F.gen.a.copy(_b); F.gen.b.copy(_b).addScaledVector(_c, fl); F.gen.levels = Math.max(3, P.gen.levels - 1); F.gen.jag = P.gen.jag * 1.1; F.gen.hasBend = false;
-      F.n = shape(F.pts, F.gen); F.from.set(F.pts.subarray(0, F.n * 3));
-      if (depth < 1 && fl > 0.25) fork(F, rnd() < 0.6 ? 2 : 1, fl, depth + 1);   // a second generation of fine forks
+      const u = 0.05 + 0.8 * Math.pow(rnd(), depth === 0 ? 0.9 : 0.7);
+      const i = Math.min(n - 2, Math.max(1, Math.round(u * (n - 1)))), i3 = o + i * 3;
+      _hp.set(ringP[i3], ringP[i3 + 1], ringP[i3 + 2]);
+      const bias = depth ? 0.15 : 0.4;                // twigs splay; only the first forks hold to the trunk's way
+      _ht.set(ringP[i3 + 3] - ringP[i3 - 3], ringP[i3 + 4] - ringP[i3 - 2], ringP[i3 + 5] - ringP[i3 - 1]).normalize().multiplyScalar(1 - bias).addScaledVector(_hd, bias).normalize();
+      _hq.set(R(-1, 1), R(-1, 1), R(-1, 1)); _hq.addScaledVector(_ht, -_ht.dot(_hq)).normalize();
+      const th = depth ? R(0.45, 1.2) : R(0.3, 0.85);   // forks leave at an acute angle; twigs at any angle, never combed parallel
+      _ht.multiplyScalar(Math.cos(th)).addScaledVector(_hq, Math.sin(th));
+      if (B.flat !== null) _ht.y = 0;
+      else if (B.shell > 0) { _hq.copy(_hp).normalize(); _ht.addScaledVector(_hq, -_hq.dot(_ht)); }
+      _ht.normalize();
+      const fl = len * (depth ? 0.05 + 0.5 * Math.pow(rnd(), 2.4) : (0.1 + 0.55 * Math.pow(rnd(), 2)) * B.forkLen) * (1 - 0.45 * u);
+      if (fl < seg * 2) continue;
+      const F = B.gen;                               // reuse the trunk's generator: forks are shaped once
+      const keepA = _hs.copy(F.a), keepB = _he.copy(F.b), keepL = F.levels, keepBend = F.hasBend;
+      F.a.copy(_hp); F.b.copy(_hp).addScaledVector(_ht, fl); F.levels = Math.min(6, Math.max(1, Math.ceil(Math.log2(fl / seg)))); F.jag = B.jag * (depth ? 1.5 : 1.2); F.hasBend = false;
+      const m = shape(SHP, F); confine(B, SHP, m);
+      F.a.copy(keepA); F.b.copy(keepB); F.levels = keepL; F.jag = B.jag; F.hasBend = keepBend;
+      const d1 = depth + 1, wk = 0.75 + 0.5 * Math.min(1, fl / (len * 0.5));
+      const sj = allocStrip(SHP, m, B.width * FORK_W[d1] * wk, B.minPx * FORK_PX[d1] * wk, FORK_I[d1] * R(0.75, 1.15), d1, rnd());
+      B.sc++;
+      grow(B, sj, fl, d1, seg);
+      _hd.set(ringP[o + (n - 1) * 3] - ringP[o], ringP[o + (n - 1) * 3 + 1] - ringP[o + 1], ringP[o + (n - 1) * 3 + 2] - ringP[o + 2]).normalize();
     }
+  }
+  // Where a bolt meets the stone: a flash, arcs crawling flat away from it, heat in the cracks, light.
+  let strikeSlot = 0, lastChips = -1, strikeLoad = 0;
+  const _gs = new V3(), _gd = new V3();
+  function groundStrike(p, intensity = 1, len = 2) {
+    const k = Math.min(1.4, 0.55 + len * 0.2) * Math.min(1.3, intensity);
+    _gs.set(p.x, 0.012, p.z);
+    glint(_gs, { size: 0.22 * k, intensity: 1.3 * k, type: 0, life: 0.1 });      // a small white-hot point; the pool round it is the light below on wet stone
+    const crawl = strikeLoad > 3 ? 0 : strikeLoad > 1 ? 1 : 2 + ((rnd() * 3) | 0);   // a busy ground gets fewer crawlers: a dozen at once read as a web
+    strikeLoad++;
+    const a0 = R(0, 6.28);
+    for (let c = 0; c < crawl; c++) {                 // arcs crawl away along the stone's cracks (options.crackPath), or flat and free
+      const ang = a0 + (c / crawl) * 6.28 + R(-0.5, 0.5), L = R(0.6, 1.8) * k;
+      const path = options.crackPath ? options.crackPath(_gs.x, _gs.z, ang, L) : null;
+      _gd.set(_gs.x + Math.cos(ang) * L, 0.012, _gs.z + Math.sin(ang) * L);
+      bolt(_gs.clone(), _gd.clone(), { levels: 5, jag: 0.32, width: 0.018, minPx: 4, intensity: 0.85 * intensity, life: 2, branches: 1, twigs: 2, flat: 0.012, path, hit: false });
+    }
+    if (clock.sim - lastChips > 0.3) {               // a spray of chips and dust off the hit (not on every return stroke)
+      lastChips = clock.sim;
+      debris(_gs, { count: 2 + ((rnd() * 3) | 0), speed: [1.5, 4], size: [0.012, 0.04], life: [1.2, 2] });
+      spawnSprite(0, _gd.set(_gs.x, 0.15, _gs.z), _hp.set(R(-0.6, 0.6), R(0.4, 1), R(-0.6, 0.6)), { size: R(0.35, 0.6) * k, life: R(0.5, 0.9), color: palette.dust, opacity: 0.5, drag: 2.4, buoy: 0.2, grow: 2.2 });
+    }
+    addHeat(_gs, 0.9 * k, 0.75);
+    strikeSlot = strikeSlot === 4 ? 5 : 4;
+    flashLight(strikeSlot, _gd.set(_gs.x, 0.14, _gs.z), 15 * k, 14);   // low over the stone: grazing light finds the cracks and pools on the wet
+    if (strikeLoad <= 2) sparks(_gs, { count: 2, dir: UP, spread: 1.1, speed: [1.5, 4.5], life: [0.25, 0.6] });   // a storm of strikes would bury the frame in embers
   }
   const STEP_I = [1.0, 0.55, 0.28, 0.14, 0.07];
   function boltIntensity(B) {
@@ -302,31 +475,53 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     return B.I * STEP_I[Math.min(B.age, 4)] * (0.75 + 0.25 * ((B.seed * 7.31 + B.age * 0.37) % 1));
   }
 
-  const boltCap = MAXBOLTS * MAXP * 2;
+  const BV = POINT_BUDGET * 2;
   const boltGeo = new THREE.BufferGeometry();
-  const bPos = new Float32Array(boltCap * 3), bPrev = new Float32Array(boltCap * 3), bNext = new Float32Array(boltCap * 3);
-  const bData = new Float32Array(boltCap * 4), bExtra = new Float32Array(boltCap * 2);
-  const bIndex = new Uint32Array(MAXBOLTS * (MAXP - 1) * 6);
+  const bPos = new Float32Array(BV * 3), bPrev = new Float32Array(BV * 3), bNext = new Float32Array(BV * 3);
+  const bData = new Float32Array(BV * 4), bExtra = new Float32Array(BV * 4);
+  const bIndex = new Uint32Array(POINT_BUDGET * 6);
   const dyn = (arr, n) => new THREE.BufferAttribute(arr, n).setUsage(THREE.DynamicDrawUsage);
   boltGeo.setAttribute('position', dyn(bPos, 3)); boltGeo.setAttribute('aPrev', dyn(bPrev, 3)); boltGeo.setAttribute('aNext', dyn(bNext, 3));
-  boltGeo.setAttribute('aData', dyn(bData, 4)); boltGeo.setAttribute('aExtra', dyn(bExtra, 2)); boltGeo.setIndex(dyn(bIndex, 1));
+  boltGeo.setAttribute('aData', dyn(bData, 4)); boltGeo.setAttribute('aExtra', dyn(bExtra, 4)); boltGeo.setIndex(dyn(bIndex, 1));
   const boltMat = new THREE.ShaderMaterial({
-    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr, uMaxPx: { value: 30 }, uCore: { value: new V3(0.9, 0.96, 1) }, uGlow: { value: new V3() } },
-    vertexShader: RIBBON_VERT,
+    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr, uMaxPx: { value: 30 }, uCore: { value: new V3(0.92, 0.95, 1) }, uGlow: { value: new V3() }, uAnchor: { value: anchorU }, uOrb: { value: new THREE.Vector4(0, -100, 0, 1) } },
+    vertexShader: BOLT_VERT,
     fragmentShader: /* glsl */`
       uniform vec3 uCore; uniform vec3 uGlow; uniform float uDpr;
       varying vec4 vData; varying vec2 vExtra; varying float vPx; varying float vDepth;
       void main(){
-        float px = abs(vData.x) * vPx * .5;
-        float coreR = max(.7 * uDpr, vPx * .07);                // thick trunks get thicker cores: hierarchy, not uniform lines
+        float s = abs(vData.x), hw = vPx * .5, px = s * hw;
+        float coreR = max(.45 * uDpr, min(hw * .115 * vExtra.y, 2. * uDpr));  // trunks carry wider cores than twigs, but never a fat tube
         float core = exp(-(px * px) / (coreR * coreR));
-        float glow = exp(-px / (vPx * .3)) * (1. - abs(vData.x));
-        gl_FragColor = vec4((uCore * core * 6. + uGlow * glow * 2.4) * vExtra.x * smoothstep(.5, 1.8, vDepth), 1.);   // fade by the lens
+        float glow = exp(-px / max(hw * .22, .8 * uDpr)) * (1. - s);          // a tight blue glow round the core
+        float halo = (1. - s) * (1. - s) * (1. - s);                          // and a wide faint one out to the ribbon's edge
+        vec3 c = uCore * core * 6. * vExtra.y + uGlow * (glow * 2.2 + halo * .55);   // twigs are mostly glow: hair-fine and blue
+        gl_FragColor = vec4(c * vExtra.x * smoothstep(.5, 1.8, vDepth), 1.);   // fade by the lens
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
   });
   const boltMesh = new THREE.Mesh(boltGeo, boltMat); boltMesh.frustumCulled = false; boltMesh.renderOrder = 30;
   group.add(boltMesh);
+  // Wet-stone reflections: the same ribbons again, mirrored under y = 0. The depth test is inverted
+  // (GreaterDepth), so they show only where something nearer was drawn (the ground), never over the
+  // sky, and the wetness mask keeps them to the puddles: soft streaks under every bolt.
+  const reflMat = new THREE.ShaderMaterial({
+    uniforms: { ...boltMat.uniforms, uRefl: { value: 0.55 } },
+    defines: { MIRROR: 1 },
+    vertexShader: NOISE_GLSL + WET_GLSL + BOLT_VERT,
+    fragmentShader: /* glsl */`
+      uniform vec3 uCore; uniform vec3 uGlow; uniform float uDpr, uRefl;
+      varying vec4 vData; varying vec2 vExtra; varying float vPx; varying float vDepth; varying vec3 vMirror; varying float vWet;
+      void main(){
+        float s = abs(vData.x);
+        float k = uRefl * (.15 + .85 * vWet) * exp(vMirror.y * .4) * smoothstep(.05, .25, -vMirror.y);   // fainter the higher the bolt stands; arcs lying on the stone aren't doubled
+        vec3 c = uCore * exp(-s * s * 30.) * 1.2 + uGlow * ((1. - s) * (1. - s) * 1.1);
+        gl_FragColor = vec4(c * vExtra.x * k, 1.);
+      }`,
+    transparent: true, depthWrite: false, depthFunc: THREE.GreaterDepth, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+  });
+  const reflMesh = new THREE.Mesh(boltGeo, reflMat); reflMesh.frustumCulled = false; reflMesh.renderOrder = 28;
+  group.add(reflMesh);
 
   function writeRibbonVertex(arrs, v, x, y, z, px, py, pz, nx, ny, nz, side, d1, d2, d3, e0, e1) {
     const v3 = v * 3, v4 = v * 4, v2 = v * 2;
@@ -336,40 +531,120 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     arrs.data[v4] = side; arrs.data[v4 + 1] = d1; arrs.data[v4 + 2] = d2; arrs.data[v4 + 3] = d3;
     arrs.extra[v2] = e0; arrs.extra[v2 + 1] = e1;
   }
-  const boltArrs = { pos: bPos, prev: bPrev, next: bNext, data: bData, extra: bExtra };
   const TMP = new Float32Array(MAXP * 3);
+  const CORE_SHARE = [1, 0.78, 0.6, 0.48];
   function buildBolts() {
-    let v = 0, idx = 0;
     const tween = options.lightning === 'tween';
+    if (!boltsDirty && !tween) return;
+    boltsDirty = false;
+    let v = 0, idx = 0;
     const ph = clock.arcPhase * clock.arcPhase * (3 - 2 * clock.arcPhase);
-    for (const B of bolts) {
+    outer: for (const B of bolts) {
       if (!B.alive) continue;
-      const I = boltIntensity(B); if (I <= 0.002) continue;
-      const n = B.n, P = tween ? TMP : B.pts;
-      if (tween) for (let i = 0; i < n * 3; i++) TMP[i] = B.from[i] + (B.pts[i] - B.from[i]) * ph;
-      const ox = B.anchor ? B.anchor.x : 0, oy = B.anchor ? B.anchor.y : 0, oz = B.anchor ? B.anchor.z : 0;
-      const base = v;
-      for (let i = 0; i < n; i++) {
-        const i3 = i * 3, p3 = Math.max(i - 1, 0) * 3, n3 = Math.min(i + 1, n - 1) * 3;
-        const t = i / (n - 1);
-        // trunks taper hard and swell and pinch along their length; branches thin to nothing
-        const taper = B.branch ? 0.08 + 0.92 * Math.pow(1 - t, 1.2) : (1 - 0.85 * Math.pow(t, 1.3)) * (0.78 + 0.3 * Math.sin(i * 0.9 + B.seed * 40));   // trunks end in a point, not a tube cap
-        const w = B.width * taper, mp = B.minPx * taper;
-        for (let s = -1; s <= 1; s += 2) {
-          writeRibbonVertex(boltArrs, v++, P[i3] + ox, P[i3 + 1] + oy, P[i3 + 2] + oz,
-            P[p3] + ox, P[p3 + 1] + oy, P[p3 + 2] + oz, P[n3] + ox, P[n3 + 1] + oy, P[n3 + 2] + oz,
-            s, t, w * 1.35, mp * dpr * 1.35, I, B.seed);
+      if (pAlloc - B.p0 > RINGP - 8192 || sAlloc - B.s0 > RINGS - 1024) { B.alive = false; continue; }   // overwritten by newer bolts
+      const I0 = boltIntensity(B); if (I0 <= 0.002) continue;
+      for (let s = 0; s < B.sc; s++) {
+        const si = (B.s0 + s) % RINGS, n = sN[si];
+        if (v + n * 2 > BV) break outer;
+        let P = ringP, o = (sOff[si] % RINGP) * 3;
+        if (tween && s === 0) {
+          for (let i = 0; i < n * 3; i++) TMP[i] = B.from ? B.from[i] + (ringP[o + i] - B.from[i]) * ph : ringP[o + i];
+          P = TMP; o = 0;
         }
-      }
-      for (let i = 0; i < n - 1; i++) {
-        const k = base + i * 2;
-        bIndex[idx++] = k; bIndex[idx++] = k + 2; bIndex[idx++] = k + 1;
-        bIndex[idx++] = k + 1; bIndex[idx++] = k + 2; bIndex[idx++] = k + 3;
+        const depth = sDepth[si], seed = sSeed[si], I = I0 * sI[si], W = sW[si], PX = sPx[si], share = CORE_SHARE[depth];
+        const base = v;
+        for (let i = 0; i < n; i++) {
+          const i3 = o + i * 3, p3 = o + Math.max(i - 1, 0) * 3, n3 = o + Math.min(i + 1, n - 1) * 3;
+          const t = i / (n - 1);
+          // trunks taper and swell along their length; forks thin to nothing at the tip
+          const taper = depth ? 0.12 + 0.88 * Math.pow(1 - t, 1.1) : (1 - 0.8 * Math.pow(t, 1.4)) * (0.8 + 0.25 * Math.sin(i * 0.7 + seed * 40));
+          // brightness pulses along the channel: a real stroke is never one even value
+          const wob = (0.62 + 0.24 * Math.sin(t * 8.3 + seed * 61) + 0.14 * Math.sin(t * 21.7 + seed * 17)) * (depth ? 1 : 1.12 - 0.3 * t);
+          const w = W * taper, mp = PX * taper;
+          for (let sd = -1; sd <= 1; sd += 2) {
+            const v3 = v * 3, v4 = v * 4;
+            bPos[v3] = P[i3]; bPos[v3 + 1] = P[i3 + 1]; bPos[v3 + 2] = P[i3 + 2];
+            bPrev[v3] = P[p3]; bPrev[v3 + 1] = P[p3 + 1]; bPrev[v3 + 2] = P[p3 + 2];
+            bNext[v3] = P[n3]; bNext[v3 + 1] = P[n3 + 1]; bNext[v3 + 2] = P[n3 + 2];
+            bData[v4] = sd; bData[v4 + 1] = t; bData[v4 + 2] = w * 3; bData[v4 + 3] = mp * dpr * 3;
+            bExtra[v4] = I * wob; bExtra[v4 + 1] = share * B.coreK; bExtra[v4 + 2] = B.slot; bExtra[v4 + 3] = B.flat !== null ? 2 : B.inner;
+            v++;
+          }
+        }
+        for (let i = 0; i < n - 1; i++) {
+          const k = base + i * 2;
+          bIndex[idx++] = k; bIndex[idx++] = k + 2; bIndex[idx++] = k + 1;
+          bIndex[idx++] = k + 1; bIndex[idx++] = k + 2; bIndex[idx++] = k + 3;
+        }
       }
     }
     for (const name of ['position', 'aPrev', 'aNext', 'aData', 'aExtra']) { const at = boltGeo.getAttribute(name); at.needsUpdate = true; at.clearUpdateRanges?.(); at.addUpdateRange?.(0, v * at.itemSize); }
     boltGeo.index.needsUpdate = true; boltGeo.index.clearUpdateRanges?.(); boltGeo.index.addUpdateRange?.(0, idx);
     boltGeo.setDrawRange(0, idx);
+    stat.points = v >> 1;
+  }
+  const stat = { points: 0 };
+
+  // ---------------------------------------------------------------- glints: the flash where a bolt lands
+  // type 0 faces the camera (the blinding contact point), type 1 lies on the ground (the stone lit round it).
+  const MAXGL = 64;
+  const gls = { alive: new Uint8Array(MAXGL), p: new Float32Array(MAXGL * 3), size: new Float32Array(MAXGL), I: new Float32Array(MAXGL), type: new Uint8Array(MAXGL), age: new Float32Array(MAXGL), life: new Float32Array(MAXGL), seed: new Float32Array(MAXGL) };
+  let glCursor = 0;
+  function glint(pos, { size = 0.4, intensity = 1, type = 0, life = 0.12 } = {}) {
+    const i = glCursor; glCursor = (glCursor + 1) % MAXGL;
+    gls.alive[i] = 1; gls.p[i * 3] = pos.x; gls.p[i * 3 + 1] = pos.y; gls.p[i * 3 + 2] = pos.z;
+    gls.size[i] = size; gls.I[i] = intensity; gls.type[i] = type; gls.age[i] = 0; gls.life[i] = life; gls.seed[i] = rnd() * 50;
+  }
+  const glGeo = new THREE.InstancedBufferGeometry();
+  { const q = new THREE.PlaneGeometry(2, 2); glGeo.index = q.index; glGeo.setAttribute('position', q.getAttribute('position')); }
+  const iGlPos = new Float32Array(MAXGL * 3), iGlA = new Float32Array(MAXGL * 4);
+  glGeo.setAttribute('iPos', new THREE.InstancedBufferAttribute(iGlPos, 3).setUsage(THREE.DynamicDrawUsage));
+  glGeo.setAttribute('iA', new THREE.InstancedBufferAttribute(iGlA, 4).setUsage(THREE.DynamicDrawUsage));
+  glGeo.instanceCount = 0;
+  const glMat = new THREE.ShaderMaterial({
+    uniforms: { uCore: boltMat.uniforms.uCore, uGlow: boltMat.uniforms.uGlow },
+    vertexShader: /* glsl */`
+      attribute vec3 iPos; attribute vec4 iA;   // size, intensity, type, seed
+      varying vec2 vQ; varying vec4 vA;
+      void main(){
+        vQ = position.xy; vA = iA;
+        if (iA.z > .5) { gl_Position = projectionMatrix * viewMatrix * vec4(iPos + vec3(position.x, 0., position.y) * iA.x, 1.); return; }
+        vec4 mv = viewMatrix * vec4(iPos, 1.); mv.xy += position.xy * iA.x;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: /* glsl */`
+      uniform vec3 uCore, uGlow; varying vec2 vQ; varying vec4 vA;
+      void main(){
+        float r = length(vQ); if (r > 1.) discard;
+        float ang = atan(vQ.y, vQ.x);
+        vec3 c;
+        if (vA.z > .5) {                       // the stone round the hit, lit blue and fading out
+          float fall = exp(-r * r * 7.) * (1. - r) * (1. - r);
+          c = uGlow * fall * 1.6 + uCore * exp(-r * r * 90.) * 2.;
+        } else {                               // a blinding star at the contact
+          c = (uCore * exp(-r * r * 60.) * 9. + uGlow * exp(-r * 4.) * 1.6) * (1. - r) * (1. - r);   // round, and zero at the quad's edge: rays read as a flare star, a cut as a box
+        }
+        gl_FragColor = vec4(c * vA.y, 1.);
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+  });
+  const glMesh = new THREE.Mesh(glGeo, glMat); glMesh.frustumCulled = false; glMesh.renderOrder = 29;
+  group.add(glMesh);
+  function updateGlints(dt) {
+    let n = 0;
+    for (let i = 0; i < MAXGL; i++) {
+      if (!gls.alive[i]) continue;
+      gls.age[i] += dt;
+      if (gls.age[i] > gls.life[i] * 3) { gls.alive[i] = 0; continue; }
+      const x = gls.age[i] / gls.life[i];
+      const flick = 0.75 + 0.25 * Math.sin(gls.seed[i] + clock.real * 90);
+      iGlPos[n * 3] = gls.p[i * 3]; iGlPos[n * 3 + 1] = gls.p[i * 3 + 1]; iGlPos[n * 3 + 2] = gls.p[i * 3 + 2];
+      iGlA[n * 4] = gls.size[i] * (gls.type[i] ? 1 : 1 - 0.3 * Math.min(1, x)); iGlA[n * 4 + 1] = gls.I[i] * Math.exp(-x * 1.6) * flick;
+      iGlA[n * 4 + 2] = gls.type[i]; iGlA[n * 4 + 3] = gls.seed[i];
+      n++;
+    }
+    glGeo.instanceCount = n;
+    glGeo.getAttribute('iPos').needsUpdate = true; glGeo.getAttribute('iA').needsUpdate = true;
   }
 
   // ---------------------------------------------------------------- afterimage smoke trails
@@ -633,10 +908,10 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   spkGeo.setAttribute('iPos', idyn(iSpkPos, 3)); spkGeo.setAttribute('iTail', idyn(iSpkTail, 3)); spkGeo.setAttribute('iS', idyn(iSpkS, 2));
   spkGeo.instanceCount = 0;
   const spkMat = new THREE.ShaderMaterial({
-    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr },
+    uniforms: { uResolution: uniforms.uResolution, uDpr: uniforms.uDpr, uOrb: boltMat.uniforms.uOrb },
     vertexShader: /* glsl */`
       attribute vec3 iPos; attribute vec3 iTail; attribute vec2 iS;   // size (world), heat
-      uniform vec2 uResolution; uniform float uDpr;
+      uniform vec2 uResolution; uniform float uDpr; uniform vec4 uOrb;
       varying vec2 vL; varying float vLen; varying float vW; varying float vHeat;
       void main(){
         mat4 vp = projectionMatrix * viewMatrix;
@@ -652,6 +927,9 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         float hl = L * .5 + w;
         vec2 sp = ctr + dir * position.x * 2. * hl + nrm * position.y * 2. * w;
         vL = vec2(position.x * 2. * hl, position.y * 2. * w); vLen = L * .5; vW = w * .5; vHeat = iS.y;
+        vec3 rv = iPos - cameraPosition; float rl = length(rv); rv /= rl;     // behind the orb's storm cloud a spark is hidden
+        vec3 ro = cameraPosition - uOrb.xyz; float ob = dot(ro, rv), oh = ob * ob - dot(ro, ro) + uOrb.w * uOrb.w * .96;
+        if (oh > 0. && rl > -ob - sqrt(oh)) vHeat = 0.;
         gl_Position = vec4(sp / hr * h.w, h.z, h.w);
       }`,
     fragmentShader: /* glsl */`
@@ -663,7 +941,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         vec3 hot = vec3(4.2, 2.5, 1.0), mid = vec3(2.8, .78, .16), cool = vec3(.85, .10, .025);
         float hh = abs(vHeat);
         vec3 c = vHeat > .5 ? mix(mid, hot, (vHeat - .5) * 2.) : mix(cool, mid, vHeat * 2.);
-        if (vHeat < 0.) c = mix(vec3(.2, .4, 1.2), vec3(2.4, 3.1, 4.2), hh);    // negative heat: cold motes of the orb
+        if (vHeat < 0.) c = mix(vec3(.5, .7, 1.4), vec3(2.8, 3.1, 3.8), hh);    // negative heat: cold motes, white-blue
         gl_FragColor = vec4(c * a * smoothstep(0., .08, hh), 1.);
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -671,77 +949,125 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   const spkMesh = new THREE.Mesh(spkGeo, spkMat); spkMesh.frustumCulled = false; spkMesh.renderOrder = 31;
   group.add(spkMesh);
 
-  // ---------------------------------------------------------------- debris: lit chips that land and rest
-  const MAXDEB = 160;
-  const rockGeo = (() => {
-    const g = new THREE.DodecahedronGeometry(1, 2);         // subdivided twice, then jittered: a chip, not a low-poly gem
-    const p = g.getAttribute('position');
-    const key = (x, y, z) => `${x.toFixed(3)},${y.toFixed(3)},${z.toFixed(3)}`;
-    const jit = new Map(); const r2 = mulberry32(91);
-    for (let i = 0; i < p.count; i++) {
-      const k = key(p.getX(i), p.getY(i), p.getZ(i));
-      if (!jit.has(k)) jit.set(k, 0.62 + r2() * 0.6);          // shared corners move together: no cracks
-      const s = jit.get(k); p.setXYZ(i, p.getX(i) * s, p.getY(i) * s * 0.7, p.getZ(i) * s);
+  // ---------------------------------------------------------------- debris: fractured rocks that land and rest
+  // Each rock is a cube cut by ~16 random planes, so every face is a flat fracture and every edge
+  // is sharp. A jittered sphere read as a smooth pebble; a dodecahedron read as a low-poly gem.
+  const MAXDEB = 240;
+  function fracturedRock(seed) {
+    const r2 = mulberry32(seed), C = [-1, 1];
+    let faces = [];
+    for (let ax = 0; ax < 3; ax++) for (const sg of C) {   // the six faces of the cube, wound outward
+      const n = new V3(); n.setComponent(ax, sg);
+      const u = new V3(), w = new V3(); u.setComponent((ax + 1) % 3, 1); w.crossVectors(n, u);
+      faces.push({ n, v: [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => n.clone().add(u.clone().multiplyScalar(a)).add(w.clone().multiplyScalar(b))) });
     }
-    g.computeVertexNormals();
-    return g;
-  })();
-  const rockHull = (() => {
-    const p = rockGeo.getAttribute('position'), seen = new Set(), out = [];
-    for (let i = 0; i < p.count; i++) { const k = `${p.getX(i).toFixed(4)},${p.getY(i).toFixed(4)},${p.getZ(i).toFixed(4)}`; if (!seen.has(k)) { seen.add(k); out.push(new V3(p.getX(i), p.getY(i), p.getZ(i))); } }
-    return out;
-  })();
+    const cuts = 15 + Math.floor(r2() * 6);
+    for (let k = 0; k < cuts; k++) {
+      const n = new V3(r2() * 2 - 1, (r2() * 2 - 1) * 0.8, r2() * 2 - 1).normalize();
+      const d = 0.5 + r2() * 0.4;                              // deep cuts: big flat fractures, not a rounded chip
+      const out = [], cap = [];
+      for (const F of faces) {
+        const res = [];
+        for (let i = 0; i < F.v.length; i++) {
+          const a = F.v[i], b = F.v[(i + 1) % F.v.length], da = a.dot(n) - d, db = b.dot(n) - d;
+          if (da <= 0) res.push(a);
+          if ((da <= 0) !== (db <= 0)) { const p = a.clone().lerp(b, da / (da - db)); res.push(p); cap.push(p); }
+        }
+        if (res.length >= 3) out.push({ n: F.n, v: res });
+      }
+      if (cap.length >= 3) {
+        const c = cap.reduce((s, p) => s.add(p), new V3()).divideScalar(cap.length);
+        const u = new V3().crossVectors(n, Math.abs(n.y) < 0.9 ? UP : X).normalize(), w = new V3().crossVectors(n, u);
+        const pts = [];
+        for (const p of cap) if (!pts.some((q) => q.distanceToSquared(p) < 1e-8)) pts.push(p);
+        pts.sort((p, q) => Math.atan2(_a.subVectors(p, c).dot(w), _a.dot(u)) - Math.atan2(_b.subVectors(q, c).dot(w), _b.dot(u)));
+        if (pts.length >= 3) out.push({ n, v: pts });
+      }
+      faces = out;
+    }
+    const pos = [], nrm = [], hull = [];
+    for (const F of faces) {
+      for (let i = 1; i < F.v.length - 1; i++) for (const p of [F.v[0], F.v[i], F.v[i + 1]]) { pos.push(p.x, p.y * 0.72, p.z); nrm.push(F.n.x, F.n.y / 0.72, F.n.z); }
+      for (const p of F.v) if (!hull.some((q) => q.distanceToSquared(p) < 1e-8)) hull.push(p);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    const nv = new THREE.Float32BufferAttribute(nrm, 3); for (let i = 0; i < nv.count; i++) _a.fromBufferAttribute(nv, i).normalize(), nv.setXYZ(i, _a.x, _a.y, _a.z);
+    g.setAttribute('normal', nv);
+    return { geo: g, hull: hull.map((p) => new V3(p.x, p.y * 0.72, p.z)) };
+  }
+  const rocks = [fracturedRock(91), fracturedRock(57), fracturedRock(23)];
   // distance from the centre to the lowest corner, for this rotation and scale
-  function rockBottom(q, s) {
+  function rockBottom(q, s, hull) {
     let lo = 0;
-    for (const h of rockHull) { _c.copy(h).multiply(s).applyQuaternion(q); if (_c.y < lo) lo = _c.y; }
+    for (const h of hull) { _c.copy(h).multiply(s).applyQuaternion(q); if (_c.y < lo) lo = _c.y; }
     return -lo;
   }
   const debMat = new THREE.ShaderMaterial({
-    uniforms: { ...lightUniforms, uAmbient: { value: new V3(0.012, 0.014, 0.02) } },
+    uniforms: { ...lightUniforms, uAmbient: { value: new V3(0.012, 0.014, 0.02) }, tNoise: uniforms.tNoise },
     vertexShader: /* glsl */`
-      varying vec3 vW; varying vec3 vN;
+      varying vec3 vW; varying vec3 vN; varying vec3 vL;
       void main(){
         vec4 w = modelMatrix * instanceMatrix * vec4(position, 1.);
-        vW = w.xyz; vN = normalize(mat3(modelMatrix * instanceMatrix) * normal);
+        vW = w.xyz; vN = normalize(mat3(modelMatrix * instanceMatrix) * normal); vL = position * 3.;
         gl_Position = projectionMatrix * viewMatrix * w;
       }`,
-    fragmentShader: ENERGY_LIGHTS_GLSL + /* glsl */`
-      uniform vec3 uAmbient; varying vec3 vW; varying vec3 vN;
+    fragmentShader: ENERGY_LIGHTS_GLSL + TNOISE_GLSL + /* glsl */`
+      uniform vec3 uAmbient; varying vec3 vW; varying vec3 vN; varying vec3 vL;
       void main(){
         vec3 N = normalize(vN), V = normalize(cameraPosition - vW);
-        vec3 alb = vec3(.045, .044, .046);                   // dark basalt chips, rough: they catch light, they don't sparkle
-        vec3 c = alb * uAmbient * 8. + energyLight(vW, N, V, alb, .92) * .8;
+        vec4 g = tn(vL);                                    // grain fixed to the rock, so it turns with it
+        vec3 alb = vec3(.028, .028, .031) * (.65 + .6 * (g.x * .5 + .5));   // dark basalt
+        N = normalize(N + g.yzw * .18);
+        vec3 c = alb * uAmbient * 8. + energyLight(vW, N, V, alb, .9) * .7;
+        // rim: the lightning behind a rock outlines its fractured edges in blue
+        float rim = pow(1. - clamp(dot(N, V), 0., 1.), 4.);
+        c += rim * energyLight(vW, -V, V, vec3(.12), .95) * .7;
         gl_FragColor = vec4(c, 1.);
       }`,
   });
-  const debMesh = new THREE.InstancedMesh(rockGeo, debMat, MAXDEB); debMesh.count = 0; debMesh.frustumCulled = false;
-  debMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  group.add(debMesh);
+  const debMeshes = rocks.map((R0) => {
+    const m = new THREE.InstancedMesh(R0.geo, debMat, MAXDEB); m.count = 0; m.frustumCulled = false;
+    m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); group.add(m); return m;
+  });
   const deb = [];
-  for (let i = 0; i < MAXDEB; i++) deb.push({ alive: false, p: new V3(), v: new V3(), q: new THREE.Quaternion(), axis: new V3(), spin: 0, s: new V3(), age: 0, life: 3, rest: false });
-  function debris(pos, { count = 8, speed = [2.5, 7], size = [0.018, 0.055], dir = null, life = [2.4, 3.6] } = {}) {
+  for (let i = 0; i < MAXDEB; i++) deb.push({ alive: false, kind: i % 3, p: new V3(), v: new V3(), q: new THREE.Quaternion(), axis: new V3(), spin: 0, s: new V3(), age: 0, life: 3, rest: false, hover: 1 });
+  function debris(pos, { count = 8, speed = [2.5, 7], size = [0.03, 0.09], dir = null, life = [2.4, 3.6] } = {}) {
     for (let k = 0; k < count; k++) {
       const D = deb.find((d) => !d.alive) || deb.reduce((o, d) => (d.age > o.age ? d : o));
-      D.alive = true; D.rest = false; D.age = 0; D.life = R(life[0], life[1]);
+      D.alive = true; D.rest = false; D.age = 0; D.life = R(life[0], life[1]); D.hover = rnd() < 0.8 ? R(0.08, 0.8) : R(1.1, 2.1);   // most broken stone hangs just over the ground, a few up in the storm
       D.p.copy(pos).add(_a.set(R(-0.3, 0.3), 0, R(-0.3, 0.3)));
       _b.set(R(-1, 1), R(0.6, 1.6), R(-1, 1)).normalize(); if (dir) _b.addScaledVector(dir, 0.8).normalize();
       D.v.copy(_b).multiplyScalar(R(speed[0], speed[1]));
-      const s = R(size[0], size[1]); D.s.set(s * R(0.7, 1.3), s * R(0.6, 1.0), s * R(0.7, 1.3));
+      const s = R(size[0], size[1]) * (rnd() < 0.2 ? 1.6 : 1);   // a few big chunks among the chips
+      D.s.set(s * R(0.75, 1.25), s * R(0.7, 1.0), s * R(0.75, 1.25));
       D.p.y = Math.max(D.p.y, 0.12);
-      D.q.setFromEuler(new THREE.Euler(R(0, 6), R(0, 6), R(0, 6))); D.axis.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize(); D.spin = R(6, 18);
+      D.q.setFromEuler(new THREE.Euler(R(0, 6), R(0, 6), R(0, 6))); D.axis.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize(); D.spin = R(4, 12) * Math.min(1.5, 0.06 / s);   // big rocks turn slowly
     }
   }
   function updateDebris(dt) {
-    let n = 0;
+    const counts = [0, 0, 0];
     for (const D of deb) {
       if (!D.alive) continue;
       D.age += dt;
       if (D.age > D.life + 0.5) { D.alive = false; continue; }
+      const hull = rocks[D.kind].hull;
+      const at = attractor;
+      if (at.lift > 0 && dt > 0 && Math.hypot(D.p.x - at.position.x, D.p.z - at.position.z) < 4.5) {
+        // inside a storm domain the stone floats: sprung toward its own hover height, drifting round the centre
+        if (D.rest) { D.rest = false; D.v.set(0, 1.2, 0); }
+        D.age = Math.min(D.age, D.life - 0.6);
+        const dx = D.p.x - at.position.x, dz = D.p.z - at.position.z, dd = Math.hypot(dx, dz) + 0.3;
+        D.v.y += (9.8 + (D.hover - D.p.y) * 7 - D.v.y * 2.5) * at.lift * dt;
+        D.v.x += (-dz / dd * at.swirl * 0.12 - D.v.x * 1.5) * at.lift * dt; D.v.z += (dx / dd * at.swirl * 0.12 - D.v.z * 1.5) * at.lift * dt;
+        const cx = D.p.x - camera.position.x, cy = D.p.y - camera.position.y, cz = D.p.z - camera.position.z, cd = Math.hypot(cx, cy, cz);
+        if (cd < 3) { const f = (3 - cd) * 10 * dt / (cd + 1e-3); D.v.x += cx * f; D.v.y += cy * f; D.v.z += cz * f; }   // never drift into the lens
+        D.spin += (1.2 - D.spin) * Math.min(1, dt * 2);
+      }
       if (!D.rest && dt > 0) {
         D.v.y -= 9.8 * dt; D.p.addScaledVector(D.v, dt);
         _q.setFromAxisAngle(D.axis, D.spin * dt); D.q.premultiply(_q);
-        const floor = rockBottom(D.q, D.s);              // its lowest corner touches the ground: not sunk, not floating
+        const floor = rockBottom(D.q, D.s, hull);        // its lowest corner touches the ground: not sunk, not floating
         if (D.p.y < floor) {
           D.p.y = floor;
           if (Math.abs(D.v.y) < 1.0 && Math.hypot(D.v.x, D.v.z) < 0.6) { D.rest = true; D.v.set(0, 0, 0); }
@@ -750,10 +1076,10 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       }
       const shrink = D.age > D.life ? 1 - (D.age - D.life) / 0.5 : 1;
       _s.copy(D.s).multiplyScalar(Math.max(shrink, 0.001));
-      if (D.rest) _a.copy(D.p).setY(rockBottom(D.q, _s)); else _a.copy(D.p);
-      _m.compose(_a, D.q, _s); debMesh.setMatrixAt(n++, _m);
+      if (D.rest) _a.copy(D.p).setY(rockBottom(D.q, _s, hull)); else _a.copy(D.p);
+      _m.compose(_a, D.q, _s); debMeshes[D.kind].setMatrixAt(counts[D.kind]++, _m);
     }
-    debMesh.count = n; debMesh.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < 3; i++) { debMeshes[i].count = counts[i]; debMeshes[i].instanceMatrix.needsUpdate = true; }
   }
 
   // ---------------------------------------------------------------- rings: air bursts and their refraction
@@ -912,80 +1238,122 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   }
 
   // ---------------------------------------------------------------- orb: compressed, refracting thunderstorm energy
-  // The orb is a ray-marched volume inside a bounding sphere: a hot core, current sheets wound
-  // round the punch axis at two scales, a liquid edge, and a crackling membrane with a crisp rim.
-  // Behind it a black corona stretches into a tail along the orb's motion, and smoke ribbons and
-  // billows leave from its back, so the shadow belongs to the energy and follows it.
+  // The orb is a thunderstorm in a membrane: a ray-marched cloud that churns round the punch axis,
+  // lit from inside by a small white-hot core and by the arcs themselves. The arcs are real
+  // lightning ribbons (orbTick throws 10-15 from the core to the inner wall every tick, plus
+  // some crawling along the wall), and the cloud receives their light through uArc. A thin crisp
+  // fresnel rim is the only trace of the membrane. Behind it a black corona stretches into a
+  // tail along the orb's motion, and smoke ribbons and billows leave from its back, so the
+  // shadow belongs to the energy and follows it.
   const orbGeo = new THREE.IcosahedronGeometry(1, 20);
-  const ORB_VERT = NOISE_GLSL + /* glsl */`
-    uniform float uTime, uRadius, uInstab; uniform vec3 uCenter;
-    varying vec3 vW; varying vec3 vN; varying vec3 vLocal;
-    void main(){
-      vec3 n = normalize(position);
-      float wob = snoise(n * 1.8 + vec3(0., uTime * 1.7, uTime * .9)) * (.03 + .11 * uInstab);
-      vLocal = n * (1. + wob); vN = n;
-      vW = uCenter + vLocal * uRadius;
-      gl_Position = projectionMatrix * viewMatrix * vec4(vW, 1.);
-    }`;
+  const MAXARC = 12;
+  // the lens: a shell just larger than the orb that bends only the air round the membrane
+  const ORB_LENS_VERT = /* glsl */`
+    uniform float uRadius; uniform vec3 uCenter; varying vec3 vW;
+    void main(){ vW = uCenter + position * uRadius * 1.3; gl_Position = projectionMatrix * viewMatrix * vec4(vW, 1.); }`;
   const ORB_VOLUME_VERT = /* glsl */`
     uniform float uRadius; uniform vec3 uCenter; varying vec3 vW;
     void main(){ vW = uCenter + position * uRadius * 1.12; gl_Position = projectionMatrix * viewMatrix * vec4(vW, 1.); }`;
-  const ORB_VOLUME_FRAG = NOISE_GLSL + TNOISE_GLSL + /* glsl */`
-    uniform float uTime, uPressure, uMode, uRadius, uInstab; uniform vec3 uCenter, uAxis, uCore, uRim, uDeep;
+  const ORB_VOLUME_FRAG = TNOISE_GLSL + /* glsl */`
+    uniform float uTime, uPressure, uMode, uRadius, uInstab, uArcN;
+    uniform vec3 uCenter, uAxis, uCore, uRim, uDeep, uCoreOff;
+    uniform vec4 uArc[${MAXARC}];
     varying vec3 vW;
     vec3 rot(vec3 p, vec3 ax, float a){ return p * cos(a) + cross(ax, p) * sin(a) + ax * dot(ax, p) * (1. - cos(a)); }
+    float gSpin, gAng;
+    // the storm cloud: domain-warped noise turning round the punch axis, the inside a little faster.
+    // The second and third octaves are billowed (abs): rounded lobes with creases between them.
+    vec3 cloudCoord(vec3 p, float r){
+      gAng = gSpin + (1. - r) * .45;                       // a little faster inside; more shear smeared the billows into streaks
+      vec3 q = rot(p, uAxis, gAng);
+      vec3 w = tn(q * .75 + vec3(0., uTime * .1, 4.2)).xyz;
+      return q * 2.5 + w * .8 + vec3(uTime * .06, 0., uTime * .21);
+    }
+    float cloudAt(vec3 s, bool fine){
+      // a high-contrast field, so billows get crisp edges and bright bodies instead of a uniform fog
+      float n = tn(s).x * 1.5 + abs(tn(s * 2.11 + 3.1).y) * .8 - .3;
+      if (fine) n += abs(tn(s * 4.43 + 7.3).z) * .5 - .12;
+      return n;
+    }
+    float density(float n){ return smoothstep(-.16, .18, n); }
+    // the billow field: positive inside the cloud. It keeps inside the membrane and leaves a clear pocket
+    // round the core, so the core can blaze through
+    float field(vec3 p){
+      float r = length(p); vec3 dc = p - uCoreOff;
+      vec3 s = cloudCoord(p, r);
+      return cloudAt(s, true) + abs(tn(s * 9.1 + 11.1).w) * .28 - .08   // a fine billowed octave: cauliflower, not clay
+           - smoothstep(.93, 1., r) * 1.2 - smoothstep(.05, .0, dot(dc, dc)) * 2.;   // right up to the limb: an inset band read as a glass gap
+    }
+    // the march only has to find the cloud: two octaves (the fine ones average to about -.03), the full
+    // field refines the hit and gives the normal. Half the texture reads where the orb fills the screen.
+    float fieldC(vec3 p){
+      float r = length(p); vec3 dc = p - uCoreOff;
+      return cloudAt(cloudCoord(p, r), false) - .03 - smoothstep(.93, 1., r) * 1.2 - smoothstep(.05, .0, dot(dc, dc)) * 2.;
+    }
     void main(){
-      const float S = 1.12;                                   // bounding radius, in orb radii
       vec3 ro = (cameraPosition - uCenter) / uRadius, rd = normalize(vW - cameraPosition);
-      float b = dot(ro, rd), h = b * b - (dot(ro, ro) - S * S);
-      if (h <= 0.) discard;
-      h = sqrt(h);
-      float t0 = max(-b - h, 0.), t1 = -b + h;
-      float hs = b * b - (dot(ro, ro) - 1.);
+      float b = dot(ro, rd), c = dot(ro, ro);
+      float rho2 = max(c - b * b, 0.), rho = sqrt(rho2);
+      float h1 = 1. - rho2;
       if (uMode > .5) {                                       // the failure: a light bulb
-        if (hs <= 0.) discard;
-        vec3 n = normalize(ro + rd * (-b - sqrt(hs)));
+        if (h1 <= 0.) discard;
+        vec3 n = normalize(ro + rd * (-b - sqrt(h1)));
         gl_FragColor = vec4(uCore * (.8 + 2.4 * pow(clamp(-dot(n, rd), 0., 1.), 1.5)) * (1.5 + 2. * uPressure), .95); return;
       }
-      // march only the sphere itself (r < 1.02), where the density lives, so every step counts
-      float hb = b * b - (dot(ro, ro) - 1.0404);
-      if (hb > 0.) { hb = sqrt(hb); t0 = max(-b - hb, 0.); t1 = -b + hb; }
-      const int N = 22;
-      float dt = (t1 - t0) / float(N);
-      // random per-pixel jitter: an ordered pattern (interleaved gradient noise) showed as a hatch over thin filaments
-      float t = t0 + dt * fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
-      float spin = uTime * (1.4 + 2.2 * uPressure);
       vec3 col = vec3(0.); float trans = 1.;
-      for (int i = 0; i < N; i++) {
-        vec3 p = ro + rd * t; t += dt;
-        float r = length(p);
-        if (r > S) continue;
-        // rigid spin plus a FIXED shear: spin × (1.6 − r) grows without limit and winds the noise into fine rings
-        vec3 q = rot(p, uAxis, spin + 2.2 * (1. - r) + dot(p, uAxis) * 2.4);
-        q += vec3(0., 0., uTime * .35);                                      // the structure evolves by scrolling instead
-        float w = tn(q * 1.5 + vec3(0., 0., uTime * .45)).x;
-        float edge = 1. - smoothstep(.55, 1.0, r + w * (.025 + .1 * uInstab));   // a soft edge, calm unless unstable: a wobbling one read as lumpy
-        if (edge <= 0.) continue;
-        // filaments where two noise fields cross zero: lines of current, like a plasma globe.
-        // Sheets (one zero set) cross every ray many times and integrate to a flat white disc.
-        vec3 qq = q * 1.6 + w * .5;                                          // low frequency: a few long filaments, not yarn
-        // filaments from procedural simplex noise: the baked Perlin is zero on its lattice, and
-        // those zeros lit up as a regular grid of bright cloud that read as a planet
-        float a1 = 1. - abs(snoise(qq)), a2 = 1. - abs(snoise(qq * 1.07 + vec3(17.3, -4.1, 9.7)));
-        float fil = pow(max(a1 * a2, 0.), 20.) * 12. * (1.25 - r);           // brightest toward the core
-        float core = exp(-r * r * 30.) * 1.2 + exp(-r * r * 6.) * .08;   // hot, but small: a blown-out core flattened the filaments
-        vec3 ramp = mix(uCore, mix(uRim, uDeep, smoothstep(.4, 1., r)), smoothstep(.05, .45, r));
-        col += (ramp * fil * edge * (.6 + 2. * uPressure) + uDeep * .045 * edge * (1. - r) + uCore * core * (1. + 2.2 * uPressure)) * dt * trans;   // a faint inner glow, strongest at the centre
-        trans *= exp(-dt * edge * (.12 + .2 * uPressure));                   // see-through: the dark behind it shows
+      col += uRim * exp(-(rho - 1.) / .015) * step(1., rho) * (.03 + .05 * uPressure);     // a faint glow just past the membrane
+      if (h1 > 0.) {
+        float sq = sqrt(h1), t0 = max(-b - sq, 0.), t1 = -b + sq;
+        const int N = 28;
+        float dt = (t1 - t0) / float(N);
+        float t = t0 + dt * fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+        gSpin = uTime * (.45 + .7 * uPressure);
+        vec3 co = uCoreOff;
+        float tc = dot(co - ro, rd), dcore = length(ro + rd * tc - co), transC = 1.;
+        float Ic = (.5 + 1.1 * uPressure);   // the core lights the middle; the walls stay storm-dark
+        // The cloud is a surface of billows: march to where the field first turns solid, refine the hit, and
+        // light it with a normal from the field's gradient. As a soft volume every billow blurred into fog.
+        float ta = t0, tb = -1.;
+        for (int i = 0; i < N; i++) {
+          if (fieldC(ro + rd * t) > 0.) { tb = t; break; }
+          ta = t; t += dt;
+        }
+        vec3 base = vec3(.17, .27, 1.);
+        float glowK = (.55 + .6 * uPressure) * (1. + .9 * uInstab);   // an unstable orb burns brighter
+        if (tb > 0.) {
+          for (int k = 0; k < 5; k++) { float tm = (ta + tb) * .5; if (field(ro + rd * tm) > 0.) tb = tm; else ta = tm; }
+          vec3 p = ro + rd * tb;
+          const vec2 e = vec2(.014, -.014);
+          vec3 N = -normalize(e.xyy * field(p + e.xyy) + e.yyx * field(p + e.yyx) + e.yxy * field(p + e.yxy) + e.xxx * field(p + e.xxx) + 1e-6);
+          vec3 dc = p - co; float d2 = dot(dc, dc);
+          vec3 V = -rd, up = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]), rt = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
+          float key = pow(max(dot(N, normalize(V * .6 + up * .7 - rt * .35)) * .6 + .4, 0.), 1.6);   // the storm's glow from above and in front, wrapped soft
+          float wrapC = .5 + .5 * dot(N, -dc * inversesqrt(d2 + 1e-5));          // the sides that face the core
+          float rimL = pow(1. - max(dot(N, V), 0.), 3.);                          // billow edges, back-lit by the arcs
+          float occ = mix(1., .22, smoothstep(.05, .45, (tb - t0) / max(t1 - t0, 1e-3)));   // deep hits sit in the cavities' shadow
+          float La = 0.;
+          for (int k = 0; k < ${MAXARC}; k++) {
+            if (float(k) >= uArcN) break;
+            vec3 ab = uArc[k].xyz - co; float hh = clamp(dot(dc, ab) / dot(ab, ab), 0., 1.);
+            vec3 dd = dc - ab * hh; float q2 = dot(dd, dd);
+            La += uArc[k].w * (exp(-q2 * 300.) + .1 * exp(-q2 * 25.));   // a tight glow along each arc, little spill
+          }
+          col += base * (.012 + key * .14 * occ + rimL * .06) * glowK
+               + vec3(.42, .52, 1.) * pow(key, 6.) * .07 * glowK * occ                 // the lit tops go blue-white
+               + uDeep * (Ic / (.02 + d2 * 12.) * wrapC * .55 + La * (.4 + .6 * occ));
+          trans = 0.;
+          if (tb < tc) transC = 0.;
+        } else {
+          col += base * .03 * glowK; trans = .08;                                    // a gap all the way through: deep storm haze
+        }
+        col += uDeep * Ic * .22 * exp(-dcore * dcore * 7.);   // the core's light hazes the cloud round it
+        // the white-hot core, seen through whatever cloud lies in front of it
+        col += uCore * (exp(-dcore * dcore * 1400.) * 7. + exp(-dcore * dcore * 120.) * .8 + exp(-dcore * 9.) * .08) * (.4 + .8 * uPressure) * mix(transC, 1., .45);
+        // the membrane: a thin, crisp blue fresnel rim and nothing else, no grey glass
+        float e = 1. - rho;                                   // distance in from the silhouette, in radii
+        col += uRim * (exp(-e / .006) * 1.0 + exp(-e / .05) * .04) * (.6 + .8 * uPressure);   // a hairline, not a neon band
       }
-      if (hs > 0.) {                                          // the membrane: crisp rim and fine crackle
-        vec3 n = normalize(ro + rd * (-b - sqrt(hs)));
-        float ndv = clamp(-dot(n, rd), 0., 1.);
-        float ra = atan(dot(n, cross(uAxis, vec3(0., 1., 0.)) + vec3(1e-3)), dot(n, uAxis));
-        float feather = .25 + .75 * smoothstep(-.2, .6, tn(vec3(cos(ra) * 2., sin(ra) * 2., uTime * 1.3)).y);   // the rim breaks up by angle: a uniform one read as a hoop
-        col += mix(uRim, uCore, .45) * pow(1. - ndv, 9.) * (1.4 + 2.2 * uPressure) * feather;
-      }
-      gl_FragColor = vec4(col, (1. - trans) * .3);       // mostly additive: a dark absorbing body read as an opaque navy ball
+      gl_FragColor = vec4(col, 1. - trans);
     }`;
   const coronaGeo = new THREE.PlaneGeometry(2, 2);
   const ringGeoOrb = new THREE.TorusGeometry(1, 0.022, 8, 220);
@@ -994,6 +1362,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     const u = {
       uTime: uniforms.uTime, uRadius: { value: radius }, uInstab: { value: 0.2 }, uCenter: { value: new V3() }, uAxis: { value: new V3(1, 0, 0) },
       uPressure: { value: 0.6 }, uMode: { value: 0 }, uCore: { value: new V3() }, uRim: { value: new V3() }, uDeep: { value: new V3() }, uLens: { value: 0 },
+      uCoreOff: { value: new V3() }, uArc: { value: Array.from({ length: MAXARC }, () => new THREE.Vector4()) }, uArcN: { value: 0 },
       tNoise: uniforms.tNoise,
     };
     const cm = new THREE.ShaderMaterial({
@@ -1002,17 +1371,18 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
     });
     const dm = new THREE.ShaderMaterial({
-      uniforms: u, vertexShader: ORB_VERT,
-      fragmentShader: NOISE_GLSL + /* glsl */`
-        uniform float uLens, uTime, uMode; varying vec3 vW; varying vec3 vN;
+      uniforms: u, vertexShader: ORB_LENS_VERT,
+      fragmentShader: /* glsl */`
+        uniform float uLens, uMode, uRadius; uniform vec3 uCenter; varying vec3 vW;
         void main(){
           if (uMode > .5) { gl_FragColor = vec4(0.); return; }
-          vec3 V = normalize(cameraPosition - vW), N = normalize(vN);
-          float thick = sqrt(clamp(dot(N, V), 0., 1.));
-          vec2 nv = (viewMatrix * vec4(N, 0.)).xy;
-          vec2 off = -nv * uLens * thick;                                         // a dense lens: pulls the background in
-          off += vec2(-nv.y, nv.x) * uLens * .6 * snoise(vec3(nv * 2.5, uTime * 1.8)) * thick;   // vortex shimmer
-          gl_FragColor = vec4(0., 0., off);                    // zw: bends the air without a chromatic split
+          vec3 rd = normalize(vW - cameraPosition), ro = (cameraPosition - uCenter) / uRadius;
+          float b = dot(ro, rd), rho = sqrt(max(dot(ro, ro) - b * b, 0.));   // the ray's closest approach, in radii
+          // only the air round the membrane bends: bending inside it warped the orb's own arcs,
+          // and sky pulled in over its edge read as a grey glass band
+          float k = smoothstep(1.05, 1.1, rho) * (1. - smoothstep(1.1, 1.3, rho));
+          vec2 dir = normalize((viewMatrix * vec4(vW - uCenter, 0.)).xy + 1e-5);
+          gl_FragColor = vec4(0., 0., dir * uLens * k);    // zw: samples outward, so the sky is drawn in and the orb is never ghosted over its own edge
         }`,
       transparent: true, depthWrite: false, depthTest: false,
       blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
@@ -1041,7 +1411,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
           // a teardrop: about the orb's width at the orb, widening a little, then tapering to a point down the tail
           float L = 1.6 + 2.6 * uTrailK;
           float t = clamp(al / L, 0., 1.);
-          float halfW = al < 0. ? sqrt(max(1.25 * 1.25 - al * al, 0.)) : 1.25 + 1.1 * t - 2.2 * t * t;
+          float halfW = al < 0. ? sqrt(max(.97 * .97 - al * al, 0.)) : .97 + 1.3 * t - 2.2 * t * t;   // the head stays inside the orb's silhouette: wider read as a dark ring round the rim
           // torn tongues: noise squeezed across the tail and streaming down it
           float tongues = tfbm3(vec3(pe * 2.4, al * .55 - uTime * 2.6, 3.7));
           float wisps = tn(vec3(pe * 6.5, al * 1.4 - uTime * 3.4, 9.1)).x;
@@ -1100,7 +1470,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       return { m, k, tilt: [0.32, -0.42, 0.22][i], prec: [0.7, -0.5, 0.35][i] };
     });
     const O = {
-      position: u.uCenter.value, axis: u.uAxis.value, radius, pressure: 0.6, instability: 0.2, visible: true, arcRate: 1, reach: [],
+      position: u.uCenter.value, axis: u.uAxis.value, radius, pressure: 0.6, instability: 0.2, visible: true, arcRate: 1, reach: [], strikes: true,
       scale: 1, vel: 0, nextKick: 0, u, cmesh, dmesh, corona, cu, rings: rings3, spiral, su,
       shadow, velocity: new V3(), prev: null, trail: new V3(-1, 0, 0), billowAcc: 0, moteAcc: 0,
       pulse(k = -0.2) { O.vel += k * 34; },               // compress (negative) or swell; the spring rebounds past rest
@@ -1132,8 +1502,8 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       O.u.uMode.value = options.orb === 'glow' ? 1 : 0;
       O.u.uCore.value.set(palette.core.r * 0.92, palette.core.g * 0.97, palette.core.b);
       O.u.uRim.value.set(palette.rim.r, palette.rim.g, palette.rim.b);
-      O.u.uDeep.value.set(palette.glow.r * 0.45, palette.glow.g * 0.5, palette.glow.b);
-      O.u.uLens.value = 0.11 * r / viewUnitsPerUV(O.position);
+      O.u.uDeep.value.set(palette.cloud.r, palette.cloud.g, palette.cloud.b);
+      O.u.uLens.value = 0.05 * r / viewUnitsPerUV(O.position);   // a light touch: more warped the cracks below into contour rings
       const on = O.visible && O.radius > 0.02;
       O.cmesh.visible = O.dmesh.visible = on;
       O.corona.visible = on && O.shadow;
@@ -1207,32 +1577,85 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
           _tv.copy(O.position).addScaledVector(O.trail, r * R(0.6, 1.2)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(r * 0.45));
           spawnSprite(0, _tv, _d.copy(O.trail).multiplyScalar(R(0.8, 1.8) * (1 - k * 0.7)).addScaledVector(O.velocity, 0.25).addScaledVector(UP, 0.2), { size: r * R(1.0, 1.8), grow: 2.0, life: R(0.5, 0.9), opacity: 0.85, drag: 1.6, buoy: 0.2 });
         }
-        O.moteAcc += dt * 55 * O.pressure;           // cold motes caught in the vortex
+        O.moteAcc += dt * 14 * O.pressure;           // cold motes caught in the vortex: a few; dozens read as blue dashes
         while (O.moteAcc >= 1) {
           O.moteAcc -= 1;
           _c.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
           _tv.copy(O.position).addScaledVector(_c, r * R(1.3, 2.4));
           _d.crossVectors(O.axis, _c).multiplyScalar(R(2, 4)).addScaledVector(_c, -R(0.5, 1.5)).addScaledVector(O.velocity, 0.9);
-          spawnSpark(_tv, _d, { life: R(0.35, 0.7), size: R(0.003, 0.007), heat: -R(0.6, 1), gravity: 0, drag: 0.8 });
+          spawnSpark(_tv, _d, { life: R(0.35, 0.7), size: R(0.002, 0.005), heat: -R(0.6, 1), gravity: 0, drag: 0.8 });
         }
       }
     }
   }
+  const _oa = new V3(), _ob = new V3(), _oc = new V3();
+  const randUnit = (v) => { do v.set(R(-1, 1), R(-1, 1), R(-1, 1)); while (v.lengthSq() > 1 || v.lengthSq() < 0.01); return v.normalize(); };
   function orbTick(O) {
-    if (!O.visible || O.radius < 0.05) return;
+    if (!O.visible || O.radius < 0.05) { O.u.uArcN.value = 0; return; }
     const r = O.u.uRadius.value, rate = O.arcRate;
+    // The storm inside, plasma-globe style: 10-15 jagged arcs from the core to the inner wall. Their
+    // wall ends drift slowly and the shapes re-roll every tick, so each channel flickers in place;
+    // a few arcs crawl along the inner wall from where a channel lands. The cloud gets their light.
+    if (options.orb !== 'glow') {
+      const rPx = r / viewUnitsPerUV(O.position) * (H / dpr);          // the orb's radius on screen, CSS px
+      const want = Math.round((rPx < 120 ? 8 : 10) + 5 * O.pressure);
+      const mpx = Math.min(5.5, Math.max(1.2, rPx * 0.016));           // a small orb gets fine arcs, not a white knot
+      if (!O.channels) { O.channels = []; O.coreOff = new V3(); }
+      while (O.channels.length < want) O.channels.push({ d: randUnit(new V3()), jit: randUnit(new V3()).multiplyScalar(0.3), on: 1 });
+      O.coreOff.lerp(randUnit(_oc).multiplyScalar(R(0, 0.07)), 0.25);
+      O.u.uCoreOff.value.copy(O.coreOff);
+      let k = 0;
+      const lv = r > 0.6 ? 5 : 4, I = 0.75 + 0.45 * O.pressure;
+      for (let i = 0; i < O.channels.length; i++) {
+        const C = O.channels[i];
+        // evenly spread round the core (a slowly turning Fibonacci sphere), each wandering a little off its place
+        const fy = 1 - 2 * (i + 0.5) / want, fr = Math.sqrt(Math.max(0, 1 - fy * fy)), fp = i * 2.39996 + clock.sim * 0.35;
+        _oc.set(Math.cos(fp) * fr, fy, Math.sin(fp) * fr);
+        if (rnd() < 0.06) randUnit(C.jit).multiplyScalar(0.32);
+        C.d.lerp(_oc.add(C.jit).normalize(), 0.35).normalize();
+        C.on = i < want && rnd() > 0.1 ? 1 : 0;
+        if (C.on) {
+          _oa.copy(O.coreOff).multiplyScalar(r); _ob.copy(C.d).multiplyScalar(r * 0.965);
+          bolt(_oa, _ob, { levels: lv, jag: 0.26, width: 0.095 * r, minPx: mpx, intensity: I * R(0.75, 1.15), life: 1, anchor: O.position, inside: r * 0.97, inner: true, branches: 1.2, twigs: 2, twigK: 0.9, core: 0.6, hit: false });
+          if (rnd() < 0.3) {                                               // and crawls on along the inner wall
+            randUnit(_oc); _oc.addScaledVector(C.d, -C.d.dot(_oc)).normalize();
+            const th = R(0.35, 0.9);
+            _oa.copy(C.d).multiplyScalar(r * 0.97); _ob.copy(C.d).multiplyScalar(Math.cos(th)).addScaledVector(_oc, Math.sin(th)).multiplyScalar(r * 0.97);
+            bolt(_oa, _ob, { levels: 4, jag: 0.3, width: 0.035 * r, minPx: mpx * 0.65, intensity: I * 0.8, life: 1, anchor: O.position, shell: r * 0.975, inner: true, branches: 1, twigs: 2, twigK: 1.5, core: 0.5, hit: false });
+          }
+        }
+        if (k < MAXARC) O.u.uArc.value[k++].set(C.d.x * 0.965, C.d.y * 0.965, C.d.z * 0.965, C.on ? 0.9 * I : 0.2);
+      }
+      O.u.uArcN.value = k;
+      // arcs crawling over the outside of the membrane, mostly round the silhouette where they read
+      _ob.copy(camera.position).sub(O.position).normalize();
+      const crawl = Math.round(R(1, 3) * (0.6 + 0.6 * O.pressure));
+      for (let c = 0; c < crawl; c++) {
+        randUnit(_oa); _oa.addScaledVector(_ob, -0.85 * _ob.dot(_oa)).normalize();
+        randUnit(_oc); _oc.addScaledVector(_oa, -_oa.dot(_oc)).normalize();
+        const th = R(0.2, 0.55);
+        const e = _oc.multiplyScalar(Math.sin(th)).addScaledVector(_oa, Math.cos(th)).multiplyScalar(r * 1.03);
+        bolt(_oa.clone().multiplyScalar(r * 1.03), e.clone(), { levels: 4, jag: 0.35, width: 0.03 * r, minPx: mpx * 0.55, intensity: 0.85, life: 2, anchor: O.position, shell: r * 1.03, branches: 1.5, twigs: 2, twigK: 2, core: 0.6, hit: false });
+      }
+    }
     const surf = Math.round((R(0.1, 0.8) + 0.7 * O.pressure) * rate);
     for (let k = 0; k < surf; k++) {                 // short crackles leaping outward: arcs laid round the shell read as wire loops
       _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
       _b.copy(_a).multiplyScalar(R(1.3, 1.75)).add(_c.set(R(-1, 1), R(-1, 1), R(-1, 1)).multiplyScalar(0.35));
-      bolt(_a.multiplyScalar(r * 0.95), _b.multiplyScalar(r), { levels: 5, jag: 0.3, width: 0.022 * (r / 0.45), minPx: 5, intensity: 0.9, life: R(1, 2.6) | 0, anchor: O.position, branches: 1 });
+      bolt(_a.multiplyScalar(r * 0.98), _b.multiplyScalar(r), { levels: 5, jag: 0.3, width: 0.022 * (r / 0.45), minPx: 5, intensity: 0.9, life: R(1, 2.6) | 0, anchor: O.position, branches: 1.2, twigK: 1.5 });
     }
-    if (O.position.y < 2.6 && rnd() < 0.18 + 0.3 * O.pressure) {   // strikes down to the ground under it
-      const a = R(0, 6.28), d = R(0.3, 1.6);
-      const hit = new V3(O.position.x + Math.cos(a) * d, 0.02, O.position.z + Math.sin(a) * d);
+    // strikes down to the ground under it. A real strike is several return strokes down one channel,
+    // so a strike holds its spot for a few ticks, flickering, instead of a new bolt every tick
+    if (O.strikes && O.position.y < 2.6 && !(O.strikeLeft > 0) && rnd() < (O.strikeRate ?? 0.08 + 0.2 * O.pressure)) {
+      const a = R(0, 6.28), d = R(0.05, 0.55);         // nearly straight down: a wide offset drew a diagonal across the frame
+      O.strikeHit = (O.strikeHit || new V3()).set(O.position.x + Math.cos(a) * d, 0.02, O.position.z + Math.sin(a) * d);
+      if (O.strikeAt) O.strikeHit.set(O.strikeAt.x + R(-0.06, 0.06), 0.02, O.strikeAt.z + R(-0.06, 0.06));   // a spot the caller aims at
+      O.strikeLeft = 5 + ((rnd() * 6) | 0);
+    }
+    if (O.strikeLeft > 0 && O.strikes && O.position.y < 2.6 && (O.strikeLeft--, rnd() < 0.8)) {
+      const hit = O.strikeHit;
       _b.subVectors(hit, O.position); _a.copy(_b).normalize().multiplyScalar(r);
-      bolt(_a, _b, { levels: 6, jag: 0.24, width: 0.04, minPx: 9, intensity: 1.1, life: 2, anchor: O.position, branches: 2 });
-      addHeat(hit, 0.8, 0.5); sparks(hit, { count: 6, dir: UP, spread: 0.9, speed: [1.5, 4] });
+      bolt(_a, _b, { levels: 6, jag: 0.24, width: 0.055, minPx: 11, intensity: 1.35, life: 1, anchor: O.position, branches: 2, twigK: 1.5 });   // bolt() strikes the ground; one stroke at a time
     }
     for (let leap = 0; leap < 2; leap++) if (rnd() < (0.3 + 0.55 * O.pressure) * Math.min(rate, 1.6)) {
       _a.set(R(-1, 1), R(-1, 1), R(-1, 1)).normalize();
@@ -1270,7 +1693,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     for (let k = 0; k < layers; k++) ring(c, facing, { radius: RAD[k] * strength, thick: TH[k] * Math.sqrt(strength), intensity: ground ? IN[k] * 0.9 : IN[k] * 0.12, life: LF[k] * (0.8 + 0.2 * strength), delay: k * 0.055, amp: AMP[k] * strength });
     sparks(c, { count: nSparks, dir: ground ? UP : null, spread: ground ? 1.4 : 1, speed: [3 * Math.sqrt(strength), 11 * Math.sqrt(strength)] });
     if (ground) {
-      if (nDebris) debris(c, { count: nDebris, speed: [2.5 * Math.sqrt(strength), 6.5 * Math.sqrt(strength)], size: [0.03, 0.09] });
+      if (nDebris) debris(c, { count: nDebris, speed: [2.5 * Math.sqrt(strength), 6.5 * Math.sqrt(strength)], size: [0.04, 0.12] });
       sparks(c, { count: Math.round(30 * strength), dir: UP, spread: 0.45, speed: [5, 11], life: [0.5, 1.0] });   // a fountain straight up off the hit
       for (let k = 0; k < dust; k++) {
         const ang = R(0, 6.28), out = _a.set(Math.cos(ang), 0, Math.sin(ang));
@@ -1279,8 +1702,8 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       if (scorchMark) { scorch(c, 1.1 * strength); addHeat(c, 1.5 * strength, 1); }
       for (let k = 0; k < nBolts; k++) {
         const ang = R(0, 6.28);
-        _a.set(c.x, 0.05, c.z); _b.set(c.x + Math.cos(ang) * R(1, 2.6) * strength, R(0.02, 0.25), c.z + Math.sin(ang) * R(1, 2.6) * strength);
-        bolt(_a, _b, { levels: 5, jag: 0.22, width: 0.035, minPx: 7, intensity: 1, life: 2, branches: 1 });
+        _a.set(c.x, 0.012, c.z); _b.set(c.x + Math.cos(ang) * R(1, 2.6) * strength, 0.012, c.z + Math.sin(ang) * R(1, 2.6) * strength);
+        bolt(_a, _b, { levels: 5, jag: 0.3, width: 0.03, minPx: 6, intensity: 1, life: 2, branches: 1.3, twigK: 1.5, flat: true });   // arcs crawling flat over the stone
       }
     } else {
       puff(c, { count: Math.round(6 * strength), size: [0.4 * strength, 0.9 * strength] });
@@ -1332,12 +1755,12 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   // A storm domain: black smoke bands orbiting a centre, lightning thrown across them,
   // dust and shards dragged into the spin. Move .center, .radius, .tilt per frame.
   const vortices = [];
-  function vortex(center, { radius = 2.6, height = 1.6, duration = 4, bands = 6, speed = 7 } = {}) {
-    const V = { center: center.clone(), radius, tilt: 0, intensity: 1, t: 0, duration, emitters: [], pos: new V3(), alive: true };
+  function vortex(center, { radius = 2.6, height = 1.6, base = 0.15, duration = 4, bands = 6, speed = 7, chords = true } = {}) {
+    const V = { center: center.clone(), radius, tilt: 0, intensity: 1, t: 0, duration, emitters: [], pos: new V3(), alive: true, chords };
     for (let k = 0; k < bands; k++) {
-      const T = createTrail({ width: R(0.32, 0.55), life: R(0.38, 0.5), spacing: 0.1, drift: new V3(0, 0.5, 0), jitter: 0.25, shards: 0.08, erode: 0.12, chain: 0.32, chainSize: 1.9, opacity: 0.45 });
+      const T = createTrail({ width: R(0.32, 0.55), life: R(0.38, 0.5), spacing: 0.1, drift: new V3(0, 0.5, 0), jitter: 0.25, shards: 0.02, erode: 0.12, chain: 0.32, chainSize: 1.9, opacity: 0.45 });   // few flakes: dozens read as specks littering the sky
       T.disposable = true;
-      V.emitters.push({ T, phase: (k / bands) * 6.28 + R(0, 0.6), r: R(0.78, 1.08), h: R(0.15, height), w: speed * R(0.85, 1.2) * (k % 2 ? 1 : 0.92) });
+      V.emitters.push({ T, phase: (k / bands) * 6.28 + R(0, 0.6), r: R(0.78, 1.08), h: R(base, height), w: speed * R(0.85, 1.2) * (k % 2 ? 1 : 0.92) });
     }
     vortices.push(V);
     return V;
@@ -1367,12 +1790,12 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     }
   }
   function vortexTick(V) {
-    if (V.t >= V.duration) return;
-    const E = V.emitters, n = Math.round(R(1, 2.6) * V.intensity);
+    if (V.t >= V.duration || !V.chords) return;
+    const E = V.emitters, n = Math.round(R(0, 0.9) * V.intensity);   // a few clear strokes: more read as a tangle
     for (let k = 0; k < n; k++) {
       const a = E[(rnd() * E.length) | 0], b = E[(rnd() * E.length) | 0];
       if (!a.pos || !b.pos) continue;
-      if (a === b || rnd() < 0.35) {
+      if (a === b || rnd() < 0.8) {
         _b.copy(a.pos).sub(V.center).setY(0).normalize().multiplyScalar(R(0.4, 1.4)).add(a.pos).setY(0.03);   // slanted down and out
         bolt(a.pos, _b, { levels: 6, jag: 0.26, width: 0.035, minPx: 8, intensity: 1, life: 2, branches: 2 });
       } else {
@@ -1382,7 +1805,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     flashLight(3, _a.copy(V.center).setY(1), 6 * V.intensity, 8);
   }
   // Pull sparks, smoke billows and shards toward a point, with a swirl (ultimate charge-up).
-  const attractor = { position: new V3(), strength: 0, swirl: 0, axis: new V3(0, 1, 0) };
+  const attractor = { position: new V3(), strength: 0, swirl: 0, lift: 0, axis: new V3(0, 1, 0) };   // lift: debris floats in it (0..1)
 
   // ---------------------------------------------------------------- arc ticks and repeats
   const repeats = [];
@@ -1392,11 +1815,17 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
       if (!B.alive) continue;
       B.age++;
       if (B.age >= B.life) { B.alive = false; continue; }
-      if (options.lightning === 'tween') { B.from.set(B.pts.subarray(0, B.n * 3)); B.n = shape(B.pts, B.gen); }
+      if (options.lightning === 'tween') {                // the noodle failure: one trunk morphing between shapes
+        const si = B.s0 % RINGS, o = (sOff[si] % RINGP) * 3, n = sN[si];
+        B.from = B.from || new Float32Array(MAXP * 3); B.from.set(ringP.subarray(o, o + n * 3));
+        const m = shape(SHP, B.gen); confine(B, SHP, m); if (m === n) ringP.set(SHP.subarray(0, n * 3), o);
+      }
     }
+    boltsDirty = true;
     for (let i = repeats.length - 1; i >= 0; i--) { repeats[i].fn(); if (--repeats[i].ticks <= 0) repeats.splice(i, 1); }
     for (const O of orbs) orbTick(O);
     for (const V of vortices) vortexTick(V);
+    strikeLoad = 0;
     fx.skyFlash = Math.min(1, boltFlashEnergy * 0.05);
     boltFlashEnergy = 0;
   }
@@ -1568,14 +1997,15 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   const compositeMat = new THREE.ShaderMaterial({
     uniforms: {
       tColor: { value: rtColor.texture }, tDistort: { value: rtDistort.texture }, tBloom: { value: up[0].texture },
-      uAspect: { value: 1 }, uBloom: { value: 0.085 }, uExposure: { value: 1 },
+      uAspect: { value: 1 }, uBloom: { value: 0.34 }, uBloomTint: { value: new V3(0.38, 0.42, 1.0) }, uExposure: { value: 1 },
       uShake: { value: new THREE.Vector2() }, uZoom: { value: 1 }, uFisheye: { value: 0 },
       uFrame: { value: 0 }, uFrameFull: { value: 0 }, uNegRadius: { value: 0.42 }, uCenter: { value: new THREE.Vector2(0.5, 0.5) },
-      uFlash: { value: 0 }, uDim: { value: 0 }, uTime: { value: 0 }, uGrain: { value: 0.02 }, uVignette: { value: 0.85 }, uSeed: { value: 0 },
+      uFlash: { value: 0 }, uDim: { value: 0 }, uTime: { value: 0 }, uGrain: { value: 0.03 }, uVignette: { value: 0.85 }, uSeed: { value: 0 },
     },
     vertexShader: FS_VERT,
     fragmentShader: /* glsl */`
       uniform sampler2D tColor, tDistort, tBloom;
+      uniform vec3 uBloomTint;
       uniform float uAspect, uBloom, uExposure, uZoom, uFisheye, uFrame, uFrameFull, uNegRadius, uFlash, uDim, uTime, uGrain, uVignette, uSeed;
       uniform vec2 uShake, uCenter;
       varying vec2 vUv;
@@ -1590,7 +2020,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
         vec4 D = texture2D(tDistort, uv);
         vec2 d = D.xy + D.zw; d.x /= uAspect;                          // xy: fronts and funnels; zw: the orb's lens
         vec3 col = texture2D(tColor, uv + d).rgb;                     // no chromatic split: it fringed every spark in rainbows
-        col += texture2D(tBloom, uv + d).rgb * uBloom;
+        col += texture2D(tBloom, uv + d).rgb * uBloom * uBloomTint;   // lightning light scatters blue: a white halo read as grey haze
         col = aces(col * uExposure);
         if (uFrame > 0.) {
           float l = dot(col, vec3(.2126, .7152, .0722));
@@ -1623,7 +2053,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   let W = 1, H = 1, pendingDt = 0;
   function setSize(width, height, pixelRatio = 1) {
     W = Math.max(1, Math.round(width)); H = Math.max(1, Math.round(height)); dpr = pixelRatio;
-    boltMat.uniforms.uMaxPx.value = 26 * pixelRatio;
+    boltMat.uniforms.uMaxPx.value = 40 * pixelRatio;
     res.set(W, H); uniforms.uDpr.value = dpr;
     rtColor.setSize(W, H);
     rtDistort.setSize(Math.ceil(W / 2), Math.ceil(H / 2));
@@ -1667,10 +2097,10 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   }
 
   function updateLights(dt) {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < NLIGHTS; i++) {
       const L = lights[i];
       if (i !== 0) L.energy *= Math.exp(-L.decay * dt);
-      L.color.copy(palette.glow);
+      L.color.copy(palette.light);
       if (L.warm > 0) L.color.lerp(WARM, Math.min(1, L.warm * L.energy / 6));
       lightCol[i].set(L.color.r, L.color.g, L.color.b).multiplyScalar(L.energy);
       if (i === 0) L.energy = 0;            // orb light is re-asserted every frame while the orb is visible
@@ -1725,7 +2155,10 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     updateOrbShadows(dt);
     updateDebris(dt);
     updateParticles(dt);
+    updateGlints(dt);
     buildBolts();
+    for (let i = 0; i < anchors.length; i++) anchorU[i].copy(anchors[i]);
+    if (orbs[0]) boltMat.uniforms.uOrb.value.set(orbs[0].position.x, orbs[0].position.y, orbs[0].position.z, orbs[0].u.uRadius.value);
     buildSmoke();
     boltMat.uniforms.uGlow.value.set(palette.glow.r, palette.glow.g, palette.glow.b);
     smokeMat.uniforms.uSmoke.value.set(palette.smoke.r, palette.smoke.g, palette.smoke.b);
@@ -1776,7 +2209,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
   function dispose() {
     scene.remove(group);
     group.traverse((o) => { if (o.material) o.material.dispose?.(); });
-    for (const g of [boltGeo, smokeGeo, sprGeo, spkGeo, rockGeo, ringGeo, coneGeo, scorchGeo, orbGeo]) g.dispose();
+    for (const g of [boltGeo, glGeo, smokeGeo, sprGeo, spkGeo, ...rocks.map((k) => k.geo), ringGeo, coneGeo, scorchGeo, orbGeo]) g.dispose();
     for (const rt of [rtColor, rtDistort, noiseRT, ...down, ...up]) rt.dispose();
     for (const m of [prefilterMat, downMat, upMat, compositeMat]) m.dispose();
   }
@@ -1789,7 +2222,7 @@ export function createStormEnergy(THREE, { renderer, scene, camera, seed = 7 } =
     createOrb, createTrail, addHeat, bolt, sparks, debris, puff, shards, burst, blast, ring, scorch, vortex, impact, ramp, repeat,
     spawnSpark, spawnSprite,
     update, render, setSize, warmup, dispose,
-    stats: () => ({ bolts: bolts.filter((b) => b.alive).length, sparks: spkGeo.instanceCount, sprites: sprGeo.instanceCount, debris: debMesh.count, trails: trails.length }),
+    stats: () => ({ bolts: bolts.filter((b) => b.alive).length, points: stat.points, sparks: spkGeo.instanceCount, sprites: sprGeo.instanceCount, debris: debMeshes.reduce((n, m) => n + m.count, 0), trails: trails.length }),
   };
   return fx;
 }

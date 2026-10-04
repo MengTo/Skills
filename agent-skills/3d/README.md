@@ -1,10 +1,11 @@
 # 3D Rendering Skills
 
-Fifteen reusable skills for atmospheric, detailed 3D scenes, open water and interactive walkthroughs. Most of the techniques draw on [Seijaku](https://mengto.github.io/seijaku/); the water comes from Pirate Ship Sunset. Each includes implementation guidance, performance considerations and verification steps.
+Sixteen reusable skills for atmospheric, detailed 3D scenes, open water, underwater light and interactive walkthroughs. Most of the techniques draw on [Seijaku](https://mengto.github.io/seijaku/); the water comes from Pirate Ship Sunset, and the underwater light from Blue Hour. Each includes implementation guidance, performance considerations and verification steps.
 
 | Skill | Use it for |
 | --- | --- |
 | [3D Ultra-Realistic Water](3d-ultra-realistic-water/SKILL.md) | Open oceans with per-pixel Gerstner waves, sun glitter, lace foam, a Kelvin wake and a seamless horizon, plus a runnable demo. |
+| [3D Underwater God Rays](3d-underwater-god-rays/SKILL.md) | Volumetric light shafts through water that converge on the sun and parallax with the camera, with caustic streaks, a rippling surface and dappled fish, plus a runnable demo. |
 | [3D Virtual Tour](3d-virtual-tour/SKILL.md) | Guided walkthroughs, room and floor-plan navigation, orbit inspection, and smooth return to the tour. |
 | [3D Sky Rays](3d-sky-rays/SKILL.md) | Sunlight shafts shaped by roofs, foliage, and scene occlusion. |
 | [3D Sky Background](3d-sky-background/SKILL.md) | Procedural or panoramic skies with a coherent horizon, sunlight, and environment lighting. |
@@ -40,6 +41,10 @@ Use $3d-virtual-tour to add a guided walkthrough with room navigation and orbit 
 
 ```text
 Use $3d-ultra-realistic-water to add an open ocean with sun glitter, lace foam and a ship's wake.
+```
+
+```text
+Use $3d-underwater-god-rays to add sunbeams and caustic ripples through the water in this reef scene.
 ```
 
 Use the narrowest skill that fits the task, or combine them when the scene requires it. Preserve the project's renderer, camera behavior, and intended visual style.

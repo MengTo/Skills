@@ -1,0 +1,31 @@
+<div id="ocean-backdrop" aria-hidden="true"></div><div class="ocean-shade" aria-hidden="true"></div>
+<main>
+<header class="header"><p class="model-name">Blue Hour <span>Living ocean</span></p></header>
+<section class="pose-panel" aria-labelledby="demo-title">
+ <div class="pose-heading">
+  <p class="eyebrow">THREE.JS · WEBGL2 · GLSL</p>
+  <h1 id="demo-title">Underwater God Rays</h1>
+ </div>
+ <div class="pose-list">
+  <fieldset class="pose-group">
+   <legend>Shaft pattern</legend>
+   <button class="pose-option liquid-glass" type="button" data-compare="pattern" data-value="0" aria-pressed="true"><span class="glass-optic" aria-hidden="true"></span><svg class="pose-icon" viewBox="0 0 24 24" aria-hidden="true"><path opacity=".42" d="M9.6 3h1.8L8 21H4.2z"/><path d="M12.4 3h1.6l4.6 18h-4.2z"/><path opacity=".7" d="M15.6 3h1.2l5.2 12.2v3.6z"/></svg><span>Sparse peaks</span><span class="pose-dot" aria-hidden="true"></span></button>
+   <button class="pose-option liquid-glass" type="button" data-compare="pattern" data-value="1" aria-pressed="false"><span class="glass-optic" aria-hidden="true"></span><svg class="pose-icon" viewBox="0 0 24 24" aria-hidden="true"><path opacity=".3" d="M4 4h16v16H4z"/><path opacity=".55" d="M4 9.5c4-1.6 12-1.6 16 0V12c-4-1.6-12-1.6-16 0z"/><path d="M4 15c4-1.6 12-1.6 16 0v2.2c-4-1.6-12-1.6-16 0z"/></svg><span>Ridge web</span><span class="pose-dot" aria-hidden="true"></span></button>
+  </fieldset>
+  <fieldset class="pose-group">
+   <legend>Caustic ripples</legend>
+   <button class="pose-option liquid-glass" type="button" data-compare="ripples" data-value="0" aria-pressed="true"><span class="glass-optic" aria-hidden="true"></span><svg class="pose-icon" viewBox="0 0 24 24" aria-hidden="true"><path opacity=".42" d="M10 3h4l6 18H4z"/><path d="M11.3 6h1.1l-.9 15h-1.6zM13.4 8h.9l1.5 13h-1.4zM9.2 10h.8l-1.8 11H6.9z"/></svg><span>Inside the march</span><span class="pose-dot" aria-hidden="true"></span></button>
+   <button class="pose-option liquid-glass" type="button" data-compare="ripples" data-value="1" aria-pressed="false"><span class="glass-optic" aria-hidden="true"></span><svg class="pose-icon" viewBox="0 0 24 24" aria-hidden="true"><path opacity=".3" d="M3 5h18v14H3z"/><path d="M3 9.2c2.6.9 4-1.8 6.4-.5 2.1 1.1 3.9-1.4 6.2-.3 2 .9 3.3.2 5.4-.6v1.6c-2.1.8-3.4 1.5-5.4.6-2.3-1.1-4.1 1.4-6.2.3C7 9 5.6 11.7 3 10.8zM3 14.2c2.6.9 4-1.8 6.4-.5 2.1 1.1 3.9-1.4 6.2-.3 2 .9 3.3.2 5.4-.6v1.6c-2.1.8-3.4 1.5-5.4.6-2.3-1.1-4.1 1.4-6.2.3C7 14 5.6 16.7 3 15.8z"/></svg><span>Painted on screen</span><span class="pose-dot" aria-hidden="true"></span></button>
+  </fieldset>
+ </div>
+ <p class="pose-description" id="mechanism">Each beam is a column of water lit where one drifting swell field focuses the sun. Marching that field along every view ray turns it into shafts that converge on the sun and slide past the fish as you orbit. Switch to <b>ridges</b> and the same march averages into flat haze; <b>paint</b> the ripples on the screen and the water reads as a pool floor.</p>
+</section>
+<div class="ocean-caption" aria-hidden="true"><span class="live-dot"></span><span>BLUE HOUR</span><span class="caption-divider"></span><span>Living ocean</span></div>
+<div class="hint" id="hint" aria-hidden="true">Hover to orbit · Drag on touch</div>
+<footer class="bottom"><div class="dock liquid-glass"><span class="glass-optic" aria-hidden="true"></span><button class="play liquid-glass" id="play" type="button" aria-label="Pause animation" title="Play / pause (Space)"><span class="glass-optic" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg></button><span class="studio-play-label" id="play-label">Living ocean</span><div class="fold-control"><label for="sun">Sun</label><input id="sun" type="range" min="12" max="58" value="21" step="1" aria-describedby="mechanism"><output id="sun-angle" for="sun">21°</output></div></div></footer>
+<div class="utility"><button class="icon-button" id="focus-view" type="button" aria-label="Hide controls" title="Hide controls (H)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div>
+<button id="restore-ui" class="icon-button restore-ui" type="button" aria-label="Show controls" title="Show controls (H)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h5V3m13 5h-5V3M8 21v-5H3m13 5v-5h5"/></svg></button>
+<p class="sr-only" id="status" role="status" aria-live="polite"></p>
+</main>
+<svg class="filter-defs" aria-hidden="true"><defs><filter id="glass-lens" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage id="glass-displacement" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="lens"/><feDisplacementMap in="SourceGraphic" in2="lens" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+<div class="loading" id="loading">PREPARING OCEAN</div>

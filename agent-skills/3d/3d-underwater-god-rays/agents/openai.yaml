@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Underwater God Rays"
+  short_description: "Volumetric underwater light shafts with caustic ripples and dappled fish"
+  default_prompt: "Use $3d-underwater-god-rays to add sunlight through the water: march one drifting swell field across the sun direction along every view ray, with sparse-peak shafts, caustic streaks inside the march, a rippling surface underside and dappled fish."

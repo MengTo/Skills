@@ -23,7 +23,7 @@ Portable by default. Each skill should work for any user, repo, or workspace unl
 
 Browse [all runnable demos and recreation prompts](DEMOS.md).
 
-Explore the [3D rendering skills](agent-skills/3d/README.md) for ultra-realistic water, virtual tours, sky rays, sky backgrounds, falling leaves, four seasons, detailed textures and models, and Retina rendering at 200%.
+Explore the [3D rendering skills](agent-skills/3d/README.md) for ultra-realistic water, underwater god rays, virtual tours, sky rays, sky backgrounds, falling leaves, four seasons, detailed textures and models, and Retina rendering at 200%.
 
 Use these skills when you want:
 - repeatable design direction
@@ -78,6 +78,7 @@ agent-skills/
   3d/
     README.md
     3d-ultra-realistic-water/
+    3d-underwater-god-rays/
     3d-virtual-tour/
     3d-sky-rays/
     3d-sky-background/

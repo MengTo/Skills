@@ -1,0 +1,61 @@
+<main class="app" id="app">
+  <canvas id="stage" role="img" aria-label="Black lightning skill effects over a dark stone plain: a white-blue energy orb ahead of an unseen fist, branching lightning, black afterimage smoke, air bursts, orange sparks and falling debris"></canvas>
+
+  <section class="panel" aria-labelledby="title">
+    <p class="kicker">Energy skill VFX · Three.js · WebGL2 · GLSL</p>
+    <h1 id="title">Black Lightning</h1>
+    <p class="lede">One effect language for a close-combat skill. Lightning re-rolled 30 times a second, an orb that bends the air behind it, black afterimage smoke laid over the frame, three-layer air bursts with orange sparks, and impact frames that hold, invert and shake.</p>
+    <div class="groups">
+      <div class="group" role="group" aria-labelledby="g-lightning">
+        <span class="label" id="g-lightning">Lightning</span>
+        <div class="pills">
+          <button type="button" data-opt="lightning" data-val="reroll" aria-pressed="true">Re-rolled</button>
+          <button type="button" data-opt="lightning" data-val="tween" aria-pressed="false">Tweened</button>
+        </div>
+      </div>
+      <div class="group" role="group" aria-labelledby="g-afterimage">
+        <span class="label" id="g-afterimage">Afterimage</span>
+        <div class="pills">
+          <button type="button" data-opt="afterimage" data-val="over" aria-pressed="true">Smoke over</button>
+          <button type="button" data-opt="afterimage" data-val="additive" aria-pressed="false">Additive</button>
+        </div>
+      </div>
+      <div class="group" role="group" aria-labelledby="g-orb">
+        <span class="label" id="g-orb">Orb</span>
+        <div class="pills">
+          <button type="button" data-opt="orb" data-val="lens" aria-pressed="true">Air lens</button>
+          <button type="button" data-opt="orb" data-val="glow" aria-pressed="false">Glow ball</button>
+        </div>
+      </div>
+      <div class="group" role="group" aria-labelledby="g-flashes">
+        <span class="label" id="g-flashes">Flashes</span>
+        <div class="pills">
+          <button type="button" data-opt="flashes" data-val="full" aria-pressed="true">Full</button>
+          <button type="button" data-opt="flashes" data-val="safe" aria-pressed="false">Safe</button>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="note">Each switch shows one failure next to the version that works. Play a beat, then flip it.</p>
+  </section>
+
+  <p class="caption" aria-hidden="true"><span class="dot"></span><span id="capBeat">Full cast</span><span class="sep">|</span><span id="capText">Black lightning awakening</span></p>
+
+  <nav class="dock" aria-label="Skill beats">
+    <button type="button" class="icon" id="play" aria-label="Pause">
+      <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2.5" width="3" height="11" rx="1"/><rect x="9.5" y="2.5" width="3" height="11" rx="1"/></svg>
+      <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.3-5.2c.5-.3.5-1.1 0-1.4L5.7 2.1c-.5-.3-1.2.1-1.2.7z"/></svg>
+    </button>
+    <div class="beats">
+      <button type="button" data-beat="all" aria-pressed="true"><kbd>0</kbd>Full cast</button>
+      <button type="button" data-beat="charge" aria-pressed="false"><kbd>1</kbd>Charge</button>
+      <button type="button" data-beat="dash" aria-pressed="false"><kbd>2</kbd>Dash</button>
+      <button type="button" data-beat="barrage" aria-pressed="false"><kbd>3</kbd>Barrage</button>
+      <button type="button" data-beat="storm" aria-pressed="false"><kbd>4</kbd>Storm ring</button>
+      <button type="button" data-beat="ultimate" aria-pressed="false"><kbd>5</kbd>Ultimate</button>
+    </div>
+    <label class="speed" for="speed"><span>Time</span><input id="speed" type="range" min="0.1" max="1" step="0.05" value="1"><output id="speedOut" for="speed">1.00×</output></label>
+  </nav>
+
+  <button type="button" class="hide" id="hide" aria-pressed="false" aria-label="Hide controls (H)">H</button>
+  <p class="sr-only" id="live" aria-live="polite"></p>
+</main>

@@ -4,7 +4,7 @@ How to make character combat animation look right: attacks, skills and whole mov
 
 Each rule is a number, every number has a test, and every critic's claim is checked against full-resolution frames before anything changes.
 
-The body is half of a skill; the other half is what it throws, raises or tears open, and what it does to the target. `game-dev-combat-skill-polish` scores and rebuilds whole skills, body, effect and result, from filmed casts, against a readability bar and an art bar.
+The body is half of a skill; the other half is what it throws, raises or tears open, and what it does to the target. `game-dev-combat-skill-polish` scores and rebuilds whole skills, body, effect and result, from filmed casts, against a readability bar and an art bar. `lightning-energy-skill-vfx` builds the effect half itself: a reusable Three.js module for lightning, an energy orb, black afterimage smoke, air bursts, sparks and impact frames.
 
 ## Choose the right skill
 
@@ -12,6 +12,7 @@ The body is half of a skill; the other half is what it throws, raises or tears o
 | --- | --- |
 | Build, fix or review attacks and move sets to a written standard; fix "the arms look stretched or weird"; score animations or get them to 8 out of 10 | [`game-dev-combat-animation`](game-dev-combat-animation/SKILL.md) |
 | Score every combat skill or spell out of 10 with blind judges and raise the weakest to a bar: readability (does it read as itself, does the blow land on the beat) or art (detail, light, trails, impact, art direction, against a reference such as Diablo IV) | [`game-dev-combat-skill-polish`](game-dev-combat-skill-polish/SKILL.md) |
+| Give a skill its effects: white-blue lightning, a refracting energy orb, black afterimage smoke, three-layer air bursts, orange sparks and debris, and impact frames (hold, two-tone negative, flash, shake, fisheye) capped at three flashes a second | [`lightning-energy-skill-vfx`](lightning-energy-skill-vfx/SKILL.md) |
 
 ## What's inside `game-dev-combat-animation`
 
@@ -78,5 +79,19 @@ All inside `game-dev-combat-skill-polish/`, with no dependencies beyond Node, Py
 - `scripts/beforeafter.py` makes a labelled before/after sheet for the scorecard.
 
 Project specifics (review hooks, harness settings, where each skill's code lives, scores so far) go in a local `references/<project>.md` next to the skill.
+
+## What's inside `lightning-energy-skill-vfx`
+
+- **One clock, one composite.** A hold freezes every layer at once, a time ramp slows them, and lightning keeps a 35% floor so slow motion stays alive. The orb's lens, the ring fronts and the punch funnel all write into one half-resolution distortion buffer. Bloom, one ACES pass, and then the impact frame are drawn over the finished image.
+- **`assets/storm-energy.mjs`**, which takes your own `THREE`, provides:
+  - lightning re-rolled at 30 Hz, with forks, screen-space ribbons and stepped brightness;
+  - a two-shell vortex orb with a spring for pulses;
+  - afterimage trails that shed ash flakes and billows;
+  - camera-facing three-layer air bursts and the punch funnel;
+  - sparks, landing chips, dust and a storm-domain vortex;
+  - four energy lights, and ground heat for your own crack mask;
+  - impact frames with a three-flash-a-second limiter and a safe mode.
+- **Demo:** five beats (charge, dash, barrage, storm ring, ultimate) with A/B switches for three failures: tweened lightning, additive black smoke, and a glow-ball orb.
+- **Rules from the build**, each with the capture that went wrong. Clockwise ribbons were culled silently. Black smoke vanished against a near-black sky. Ribbon quad edges showed as planks. Random per-point jitter turned the smoke into glass shards. A marched orb came out banded. A refraction of a quarter of the screen made rainbows. Rings set perpendicular to the punch became bars. Uncapped sparks became dashes. A radial crack decal looked like a sticker. Shaders compiled on first use and hitched.
 
 Both pair well with [`design-action-combat`](../game-development/design-action-combat/SKILL.md) for timing and contact, and with [`workflow-score-to-target`](../workflow/workflow-score-to-target/SKILL.md) and [`workflow-ship-change`](../workflow/workflow-ship-change/SKILL.md).

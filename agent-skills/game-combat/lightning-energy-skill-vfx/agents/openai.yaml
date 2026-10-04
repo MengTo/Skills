@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lightning Energy Skill VFX"
+  short_description: "Lightning, energy orb, black smoke and impact-frame skill VFX"
+  default_prompt: "Use $lightning-energy-skill-vfx to give this skill its effects: white-blue lightning re-rolled at 30 Hz, a compressed orb that refracts the air, black afterimage smoke drawn over the frame, three-layer air bursts with orange sparks and landing debris, and impact frames that hold, invert, flash and shake within three flashes a second."

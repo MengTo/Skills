@@ -106,6 +106,10 @@ agent-skills/
       references/
       scripts/
       templates/
+    lightning-energy-skill-vfx/
+      SKILL.md
+      assets/
+      demo/
   game-development/
     README.md
     build-isometric-arpg/
@@ -252,11 +256,12 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Game combat (2)
+### Game combat (3)
 
-Combat animation and combat skills that read and look like Diablo IV, measured and judged blind. See the [game-combat guide](agent-skills/game-combat/README.md).
+Combat animation and combat skills that read and look like Diablo IV, measured and judged blind, and a reusable effect language for energy skills. See the [game-combat guide](agent-skills/game-combat/README.md).
 - `game-dev-combat-animation` - build, fix and review attacks and move sets to numbered arm, wrist and hand rules, with per-frame tests on the real mesh and blind critics.
 - `game-dev-combat-skill-polish` - score combat skills out of 10 with two blind judges and raise the weakest to a bar, for readability or for art against a reference such as Diablo IV, with stepped-clock filming, contact strips and judging scripts.
+- `lightning-energy-skill-vfx` - a skill's effects as one language in Three.js: lightning re-rolled at 30 Hz, a refracting vortex orb, black afterimage smoke, three-layer air bursts, sparks, landing debris and impact frames, with a reusable module and a five-beat demo.
 
 ### Game development (20)
 

@@ -1,0 +1,54 @@
+<main class="app" id="app">
+  <canvas id="stage" role="img" aria-label="A water and crystal skill on a moonlit shore of wet shingle and tide pools: water rises from the pools into a living orb over an unseen palm, lashes out as a stream that splashes down, crystals erupt where it lands, ring with light and shatter into shards that fall and rest while the orb breaks into rain"></canvas>
+
+  <header class="title">
+    <h1>Tide Glass</h1>
+    <p>Water and crystal skill VFX · Three.js</p>
+  </header>
+
+  <p class="caption" aria-hidden="true"><span id="capBeat">Full cast</span><span class="sep">/</span><span id="capText">Water rises from the tide pools</span></p>
+
+  <section class="options" aria-label="Compare each failure">
+    <p class="note" id="note">Each switch shows one failure next to the version that works.</p>
+    <div class="row" role="group" aria-labelledby="g-water">
+      <span class="label" id="g-water">Water</span>
+      <span class="pills">
+        <button type="button" data-opt="water" data-val="living" aria-pressed="true">Living surface</button>
+        <button type="button" data-opt="water" data-val="sliding" aria-pressed="false">Sliding texture</button>
+      </span>
+    </div>
+    <div class="row" role="group" aria-labelledby="g-crystal">
+      <span class="label" id="g-crystal">Crystal</span>
+      <span class="pills">
+        <button type="button" data-opt="crystal" data-val="traced" aria-pressed="true">Traced</button>
+        <button type="button" data-opt="crystal" data-val="flat" aria-pressed="false">Painted glass</button>
+      </span>
+    </div>
+    <div class="row" role="group" aria-labelledby="g-flashes">
+      <span class="label" id="g-flashes">Flashes</span>
+      <span class="pills">
+        <button type="button" data-opt="flashes" data-val="full" aria-pressed="true">Full</button>
+        <button type="button" data-opt="flashes" data-val="safe" aria-pressed="false">Safe</button>
+      </span>
+    </div>
+  </section>
+
+  <nav class="dock" aria-label="Skill beats">
+    <button type="button" class="icon" id="play" aria-label="Pause">
+      <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3" width="2.4" height="10" rx=".8"/><rect x="9.6" y="3" width="2.4" height="10" rx=".8"/></svg>
+      <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6c0 .5.6.8 1 .5l7.4-4.8c.4-.3.4-.8 0-1.1L6 2.7c-.4-.3-1 0-1 .5z"/></svg>
+    </button>
+    <div class="beats">
+      <button type="button" data-beat="all" aria-pressed="true" aria-keyshortcuts="0">Full cast</button>
+      <button type="button" data-beat="gather" aria-pressed="false" aria-keyshortcuts="1">Gather</button>
+      <button type="button" data-beat="current" aria-pressed="false" aria-keyshortcuts="2">Current</button>
+      <button type="button" data-beat="crystallize" aria-pressed="false" aria-keyshortcuts="3">Crystallize</button>
+      <button type="button" data-beat="resonance" aria-pressed="false" aria-keyshortcuts="4">Resonance</button>
+      <button type="button" data-beat="shatter" aria-pressed="false" aria-keyshortcuts="5">Shatter</button>
+    </div>
+    <label class="speed" for="speed"><span class="sr-only">Time scale</span><input id="speed" type="range" min="0.1" max="1" step="0.05" value="1"><output id="speedOut" for="speed">1.00×</output></label>
+  </nav>
+
+  <button type="button" class="hide" id="hide" aria-pressed="false" aria-label="Hide controls (H)">H</button>
+  <p class="sr-only" id="live" aria-live="polite"></p>
+</main>

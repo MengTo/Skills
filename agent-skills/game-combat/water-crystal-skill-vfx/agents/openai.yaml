@@ -1,0 +1,4 @@
+interface:
+  display_name: "Water and Crystal Skill VFX"
+  short_description: "Clear water orb, beaded streams, splash crowns, ray-traced crystals, shatter and moonlit tide-pool skill VFX"
+  default_prompt: "Use $water-crystal-skill-vfx to give this skill its water and crystal: a sphere-traced water orb that refracts the frame with a crisp inverted horizon, silver rims and sharp highlights, beaded streams wound up out of the pools and a lash that whips into a torn, lopsided splash crown, analytic ripple rings and rain on flat mirror pools with a moon-glitter column, quartz crystals traced against their own planes (total internal reflection, dispersion, fractures, a white-hot root glow and a resonance band) that grow out of the water and shatter into shards that rest on the rock with real contact, caustics on the pool floor, and gentle impact frames within three flashes a second."

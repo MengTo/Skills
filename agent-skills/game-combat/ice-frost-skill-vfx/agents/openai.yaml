@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ice and Frost Skill VFX"
+  short_description: "Grown frost, traced ice spikes that crack and shatter, mist banks and a blizzard column"
+  default_prompt: "Use $ice-frost-skill-vfx to give this skill its ice and frost: dendritic frost grown from a seed point and revealed by its arrival time, faceted ice spikes ray-traced against their own planes that erupt, crack along visible planes and shatter into pieces that land and rest, low freezing mist banks that churn in place, a blizzard column of fine powder on helical strands, glinting diamond dust, a scanned snow floor lit by a raking moon, and gentle impact frames within three flashes a second."

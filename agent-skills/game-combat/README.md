@@ -4,7 +4,7 @@ How to make character combat animation look right: attacks, skills and whole mov
 
 Each rule is a number, every number has a test, and every critic's claim is checked against full-resolution frames before anything changes.
 
-The body is half of a skill; the other half is what it throws, raises or tears open, and what it does to the target. `game-dev-combat-skill-polish` scores and rebuilds whole skills, body, effect and result, from filmed casts, against a readability bar and an art bar. `lightning-energy-skill-vfx` builds the effect half itself: a reusable Three.js module for lightning, an energy orb, black afterimage smoke, air bursts, sparks and impact frames. `fire-smoke-skill-vfx` does the same for fire: ray-marched flames, walls and whirls of fire, charcoal smoke, embers, heat haze and burning ground.
+The body is half of a skill; the other half is what it throws, raises or tears open, and what it does to the target. `game-dev-combat-skill-polish` scores and rebuilds whole skills, body, effect and result, from filmed casts, against a readability bar and an art bar. `lightning-energy-skill-vfx` builds the effect half itself: a reusable Three.js module for lightning, an energy orb, black afterimage smoke, air bursts, sparks and impact frames. `fire-smoke-skill-vfx` does the same for fire: ray-marched flames, walls and whirls of fire, charcoal smoke, embers, heat haze and burning ground. `water-crystal-skill-vfx` does the same for water: a clear water orb, streams, a lash and splash, ripples and rain, ray-traced crystals that grow, resonate and shatter, and a moonlit tidal flat of mirror pools. `ice-frost-skill-vfx` does the same for ice: grown frost, traced ice spikes that crack and shatter, mist banks, a blizzard column and a snow floor that glints.
 
 ## Choose the right skill
 
@@ -14,6 +14,8 @@ The body is half of a skill; the other half is what it throws, raises or tears o
 | Score every combat skill or spell out of 10 with blind judges and raise the weakest to a bar: readability (does it read as itself, does the blow land on the beat) or art (detail, light, trails, impact, art direction, against a reference such as Diablo IV) | [`game-dev-combat-skill-polish`](game-dev-combat-skill-polish/SKILL.md) |
 | Give a skill its effects: white-blue lightning, a refracting energy orb, black afterimage smoke, three-layer air bursts, orange sparks and debris, and impact frames (hold, two-tone negative, flash, shake, fisheye) capped at three flashes a second | [`lightning-energy-skill-vfx`](lightning-energy-skill-vfx/SKILL.md) |
 | Give a fire skill its effects: ray-marched flames that rise with buoyancy, walls and rings of fire broken into unequal tongues, a fire tornado, charcoal smoke lit by the fire, embers that cool to ash, heat haze, a burning ground and gentle impact frames | [`fire-smoke-skill-vfx`](fire-smoke-skill-vfx/SKILL.md) |
+| Give a water or crystal skill its effects: a clear water orb that refracts and wobbles in place, beaded streams, a whipping lash and a torn splash crown, ripple rings and rain on mirror pools, ray-traced quartz that grows out of the water, rings with light and shatters into shards that land and rest, caustics, moon glitter and gentle impact frames | [`water-crystal-skill-vfx`](water-crystal-skill-vfx/SKILL.md) |
+| Give an ice or frost skill its effects: dendritic frost that grows across the ground, faceted ice spikes ray-traced against their own planes that erupt, crack and shatter into pieces that land and rest, low freezing mist banks, a blizzard column of powder, glinting snow and gentle impact frames | [`ice-frost-skill-vfx`](ice-frost-skill-vfx/SKILL.md) |
 
 ## What's inside `game-dev-combat-animation`
 
@@ -124,5 +126,45 @@ Project specifics (review hooks, harness settings, where each skill's code lives
   - March bounds cut the gas into dark boxes unless it fades before them.
   - Cell patterns read as flagstones, and film grain inflates the backdrop's high-frequency energy.
 - **Scorecard:** `references/scorecard.md`. Against GPT Image edits of its own frames the page went 4.63 → 4.80 → 5.50 out of 10 and did not reach 8. It records the round-1 regressions and their causes, the last judge's shortfalls, what it would take, and the user's notes it was built to.
+
+## What's inside `water-crystal-skill-vfx`
+
+- **Water is what it bends and what it mirrors; crystal is light caught between planes.** Every water surface refracts a copy of the frame and takes colour only from its path length, with silver rims and highlights that are never dimmed by its 2% reflectance. The orb is a sphere-traced field that deforms in place. Each crystal is a convex hull of half-spaces traced exactly inside. The ground is wet rock banks standing out of one flat water plane with a mirror pass, on a terrain the CPU physics shares. It shares the lightning skill's clock, composite, impact frames and flash limiter.
+- **`assets/tide-crystal.mjs`**, which takes your own `THREE`, provides:
+  - a water orb (`createOrb`): drop modes on springs, capillary rings, a drifting warp, a neck to a stream, refraction through its real far surface with a clamped dispersion fringe, a sharp inverted horizon and a caustic web on its far wall;
+  - streams (`createTube`): tubes rebuilt every frame with parallel-transported frames, ripples and foam lines that ride with the flow, clear-water shading;
+  - splash crowns (`crown`), drops and spray (`drop`, `spray`) as round screen-space beads that land on your ground, and a vortex field for gathering water;
+  - analytic ripple packets and rain (`ripple`, `RIPPLE_GLSL`), caustics (`CAUSTIC_GLSL`), foam lace and frost for your own ground and pools, with a half-resolution planar mirror (`mirrorUniforms`);
+  - crystals (`createCrystal`, `shatter`): quartz habits with bevels, traced with total internal reflection, dispersion, Beer-Lambert, fracture discs, a root glow, a resonance band, a draining water film and rime, broken into Voronoi splinters that run as rigid bodies with corner contact;
+  - a moonlit night environment (`ENV_GLSL`) with a moon disc, maria, haze and a cloud deck; eight eased point lights; refraction fronts; impact frames limited to three flashes a second; and a bloom capped per pixel, a star-glint pass, the vignette before ACES, and FXAA.
+- **Demo:** five beats (gather, current, crystallize, resonance, shatter and rain) on a scanned CC0 floor (Poly Haven's Low Tide Rocks, embedded so the page opens from disk) laid out by a map traced from target images, behind a minimal UI, with A/B switches for two failures: a sliding texture on the orb and painted glass instead of traced crystals.
+- **Rules from the build and a three-round dream loop:**
+  - Clear water is not a teal fill; light it with refraction, silver rims and highlights that are not scaled by Fresnel.
+  - The moon's reflection on a smooth mirror read as a "≡" glyph; make it a column of micro-facet glints.
+  - A vignette after the tone curve capped every highlight at about 225; apply it in linear light first.
+  - Trace the pool and rock layout from the target images through each shot's camera onto a world grid.
+  - Test shard contact at every corner on lumpy ground, and keep the CPU terrain identical to the GPU's.
+  - Re-encode the scan at quality 85 with its own chroma: the page went from 6.2 to 2.6 MB.
+- **Scorecard:** `references/scorecard.md`. Against GPT Image edits of its own frames the page went 3.13 → 5.05 → 5.33 → 5.52 out of 10 and did not reach 8. It records what moved and what regressed, the last judge's shortfalls, what it would take, the GPU cost per beat, and the user's notes it was built to.
+
+## What's inside `ice-frost-skill-vfx`
+
+- **Frost is grown once and drawn by its arrival time; ice is traced against its own planes; the air is marched where the cold pools.** A small growth on the CPU (stems, barbs and sub-barbs competing in one time-ordered queue, side branches then leaned toward their tips) is baked into a distance field the ground shader reveals as the frost clock runs. Each spike is a convex hull of planes, traced exactly inside, cracked and shattered along planes the viewer watched form. Mist banks are ray-marched over their own spans and churn in place. It shares the lightning skill's clock, composite, impact frames and flash limiter.
+- **`assets/frost-growth.mjs`** grows the frost tree (`growFrost`): segments with arrival times, the spine and seed stems for lights that ride the front, and branch tips for glints.
+- **`assets/frost-energy.mjs`**, which takes your own `THREE`, provides:
+  - frost on any ground (`growFrostField`, `FROST_GLSL`): hairline feathers with fine needles finer than the bake, beads, rime, crystal-facet glints, a contact shadow, a blazing growth tip, a crystal heap at the seed and halos on the far arm tips;
+  - ice spikes (`createSpike`, `crackSpike`, `shatterSpike`): faceted hulls with blades, chips and lopsided tips, traced with refraction, internal reflection, Beer-Lambert blue, bubbles, a fracture network and moonlit edges, rising out of the snow, cracking and bursting into rigid-body pieces that land on a face;
+  - snow lumps and ice chips that settle into the crust (`spawnChunks`);
+  - mist banks (`setBanks`) and a low base mist that parts round the ice, with a mist-only debug view;
+  - a wind field with a column vortex, powder, flakes, streaks, streamers and a fibrous veil for a blizzard;
+  - eight eased point lights shared with the world, refraction rings, impact frames with a three-flash-a-second limiter, and FXAA on the traced ice only.
+- **Demo:** five beats (chill, frost creep, ice spikes, blizzard, shatter) on a scanned CC0 floor (Poly Haven's Snow 02, embedded so the page opens from disk), behind a minimal UI, with an A/B switch for one failure: shaded rather than traced ice.
+- **Rules from the build and a three-round dream loop:**
+  - No MSAA on a HalfFloat target; run FXAA on the ice pixels in the composite.
+  - Judge glitter by fine high-frequency energy and strong glint count separately, or it flip-flops between salt and satin.
+  - Render the mist alone to calibrate it; march each bank over its own span with white jitter and a blur, or plumes vanish and stripes appear.
+  - Changing the barbs through the shared random stream moved every spike; lean them as a post-transform instead.
+  - Drive every change from a region-stats harness against the target.
+- **Scorecard:** `references/scorecard.md`. Against GPT Image edits of its own frames the page went 4.90 → 5.88 → 5.95 → 6.25 out of 10 and did not reach 8. It records what moved and what regressed, the last judge's shortfalls, what it would take, and the user's notes it was built to.
 
 These skills pair well with [`design-action-combat`](../game-development/design-action-combat/SKILL.md) for timing and contact, and with [`workflow-score-to-target`](../workflow/workflow-score-to-target/SKILL.md) and [`workflow-ship-change`](../workflow/workflow-ship-change/SKILL.md).

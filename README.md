@@ -110,7 +110,15 @@ agent-skills/
       references/
       scripts/
       templates/
+    ice-frost-skill-vfx/
+      SKILL.md
+      assets/
+      demo/
     lightning-energy-skill-vfx/
+      SKILL.md
+      assets/
+      demo/
+    water-crystal-skill-vfx/
       SKILL.md
       assets/
       demo/
@@ -260,13 +268,15 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Game combat (4)
+### Game combat (6)
 
-Combat animation and combat skills that read and look like Diablo IV, measured and judged blind, and reusable effect languages for energy and fire skills. See the [game-combat guide](agent-skills/game-combat/README.md).
+Combat animation and combat skills that read and look like Diablo IV, measured and judged blind, and reusable effect languages for energy, fire, water and ice skills. See the [game-combat guide](agent-skills/game-combat/README.md).
 - `fire-smoke-skill-vfx` - a fire skill's effects as one language in Three.js: ray-marched flames whose turbulence rises with buoyancy, from a white-hot core to deep red tips, with detail band-limited to the flame buffer; walls of fire broken into clumps of unequal tongues with detaching licks; a fire whirl in helical sheets; charcoal smoke lit only by the fire (a streaked curtain, cauliflower billows with hot cracks, wisps); embers that cool to ash, heat haze, and a burned ground whose needles smoulder where it is hot, with a reusable module, a five-beat demo on a scanned CC0 floor and a target-image scorecard.
 - `game-dev-combat-animation` - build, fix and review attacks and move sets to numbered arm, wrist and hand rules, with per-frame tests on the real mesh and blind critics.
 - `game-dev-combat-skill-polish` - score combat skills out of 10 with two blind judges and raise the weakest to a bar, for readability or for art against a reference such as Diablo IV, with stepped-clock filming, contact strips and judging scripts.
+- `ice-frost-skill-vfx` - an ice and frost skill's effects as one language in Three.js: dendritic frost grown on the CPU as a competing tree and revealed on the ground by its arrival time, with hairline feathers, rime, crystal glints and a blazing growth tip; faceted ice spikes ray-traced against their own planes (refraction, total internal reflection, Beer-Lambert blue, bubbles, a fracture network) that erupt along the frost line, crack along visible planes and shatter into pieces that land on a face and rest; low mist banks that churn in place, a blizzard column of fine powder on helical strands, and a scanned snow floor with dunes, crust, a raking moon and two populations of glints, with two reusable modules, a five-beat demo on a scanned CC0 floor and a target-image scorecard.
 - `lightning-energy-skill-vfx` - a skill's effects as one language in Three.js: lightning that reaches out as a stepped leader, flares, holds and fades, one discharge at a time, with forks of forks and hair-fine branchlets; a storm-cloud orb with plasma-globe arcs that churns in place and carries its own torn black shadow; ground strikes that crawl along the stone's cracks; refraction-only air fronts, sparks, fractured debris and ink-negative impact frames, with a reusable module, a five-beat demo on a scanned CC0 floor and a blind-judged scorecard.
+- `water-crystal-skill-vfx` - a water and crystal skill's effects as one language in Three.js: clear water that bends and mirrors instead of glowing teal; a sphere-traced water orb whose drop modes, capillary rings and drifting warp deform it in place, with a crisp inverted horizon and a silver rim; beaded streams wound up out of tide pools, a lash that whips into a torn, lopsided splash crown, and analytic ripple rings and rain; quartz traced against its own planes (total internal reflection, a clamped dispersion fringe, fracture discs, a white-hot root glow and a climbing resonance band) that grows out of the water and shatters into splinters resting on the rock with real contact; flat mirror pools with a moon-glitter column on a tidal rock flat laid out from target images, with a reusable module, a five-beat demo on a scanned CC0 floor and a target-image scorecard.
 
 ### Game development (20)
 

@@ -1,0 +1,47 @@
+<main class="app" id="app">
+  <canvas id="stage" role="img" aria-label="Ice and frost skill effects on a snowfield at night: a frost crystal blooms in an unseen hand, dendritic frost races across the snow, faceted ice spikes erupt along the frost lines, a blizzard spirals round them, and they crack and shatter into pieces that land on the snow"></canvas>
+
+  <header class="title">
+    <h1>Ice &amp; Frost</h1>
+    <p>Frost skill VFX · Three.js</p>
+  </header>
+
+  <p class="caption" aria-hidden="true"><span id="capBeat">Full cast</span><span class="sep">/</span><span id="capText">Frost blooms in the hand</span></p>
+
+  <section class="options" aria-label="Compare each failure">
+    <p class="note" id="note">Each switch shows one failure next to the version that works.</p>
+    <div class="row" role="group" aria-labelledby="g-ice">
+      <span class="label" id="g-ice">Ice</span>
+      <span class="pills">
+        <button type="button" data-opt="ice" data-val="traced" aria-pressed="true">Traced</button>
+        <button type="button" data-opt="ice" data-val="flat" aria-pressed="false">Shaded</button>
+      </span>
+    </div>
+    <div class="row" role="group" aria-labelledby="g-flashes">
+      <span class="label" id="g-flashes">Flashes</span>
+      <span class="pills">
+        <button type="button" data-opt="flashes" data-val="full" aria-pressed="true">Full</button>
+        <button type="button" data-opt="flashes" data-val="safe" aria-pressed="false">Safe</button>
+      </span>
+    </div>
+  </section>
+
+  <nav class="dock" aria-label="Skill beats">
+    <button type="button" class="icon" id="play" aria-label="Pause">
+      <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3" width="2.4" height="10" rx=".8"/><rect x="9.6" y="3" width="2.4" height="10" rx=".8"/></svg>
+      <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6c0 .5.6.8 1 .5l7.4-4.8c.4-.3.4-.8 0-1.1L6 2.7c-.4-.3-1 0-1 .5z"/></svg>
+    </button>
+    <div class="beats">
+      <button type="button" data-beat="all" aria-pressed="true" aria-keyshortcuts="0">Full cast</button>
+      <button type="button" data-beat="chill" aria-pressed="false" aria-keyshortcuts="1">Chill</button>
+      <button type="button" data-beat="creep" aria-pressed="false" aria-keyshortcuts="2">Frost creep</button>
+      <button type="button" data-beat="spikes" aria-pressed="false" aria-keyshortcuts="3">Ice spikes</button>
+      <button type="button" data-beat="vortex" aria-pressed="false" aria-keyshortcuts="4">Blizzard</button>
+      <button type="button" data-beat="shatter" aria-pressed="false" aria-keyshortcuts="5">Shatter</button>
+    </div>
+    <label class="speed" for="speed"><span class="sr-only">Time scale</span><input id="speed" type="range" min="0.1" max="1" step="0.05" value="1"><output id="speedOut" for="speed">1.00×</output></label>
+  </nav>
+
+  <button type="button" class="hide" id="hide" aria-pressed="false" aria-label="Hide controls (H)">H</button>
+  <p class="sr-only" id="live" aria-live="polite"></p>
+</main>

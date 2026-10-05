@@ -84,14 +84,15 @@ Project specifics (review hooks, harness settings, where each skill's code lives
 
 - **One clock, one composite, and a shadow that belongs to the orb.** A hold freezes every layer at once, and a time ramp slows them. The orb's lens, the pressure fronts and the punch funnel all write into one half-resolution distortion buffer. The orb carries its own black shadow, a torn teardrop with ribbons and billows laid along its path, so the shadow follows wherever the fist goes.
 - **`assets/storm-energy.mjs`**, which takes your own `THREE`, provides:
-  - lightning re-rolled at 30 Hz, with tapering trunks and forks of forks;
-  - a ray-marched orb (filaments where two noise fields cross zero, a hot core, a feathered rim);
+  - lightning as trees of strips (trunk, forks of forks, hair-fine branchlets) with a fine white core in a violet-blue glow; each channel reaches out as a stepped leader, flares as it connects, holds its shape and fades through an afterglow, and the orb fires one discharge at a time;
+  - a storm-cloud orb: a lit billow surface that churns in place, 10–15 plasma-globe arcs from a small white core to its inner wall, crawlers on the rim and a hairline fresnel;
+  - ground strikes that flash when the leader arrives, crawl along the stone's own cracks and reflect in wet stone;
   - refraction-only air fronts, ground bursts with spark fountains, and chips that land;
   - smoke trails with billow chains, and a storm-domain vortex;
   - a baked 96³ noise texture;
   - four energy lights, and ground heat for your own crack mask;
-  - impact frames (ink negatives with speed lines, shake, fisheye) with a three-flash-a-second limiter.
-- **Demo:** five beats (charge, dash, barrage, storm ring, ultimate) behind a minimal UI, with A/B switches for three failures: tweened lightning, additive black smoke, and a glow-ball orb.
+  - impact frames (ink negatives with a bleeding starburst edge and tapered speed lines, shake, fisheye) with a three-flash-a-second limiter.
+- **Demo:** five beats (charge, dash, barrage, storm ring, ultimate) on a scanned CC0 floor (Poly Haven's Dry Ground 01, embedded so the page opens from disk), with eased transitions between beats, behind a minimal UI, with A/B switches for three failures: tweened lightning, additive black smoke, and a glow-ball orb.
 - **Rules from the build and from seven blind-judged rounds:**
   - Shadows from an invisible body read as planks; hang them off the orb.
   - A `WebGL3DRenderTarget`'s texture silently defaults to NEAREST and 8-bit.
@@ -99,6 +100,8 @@ Project specifics (review hooks, harness settings, where each skill's code lives
   - Unbounded swirl shear winds the noise into rings.
   - A bloom threshold of 0.9 washes black smoke blue.
   - Coloured air rings read as hoops.
-- **Scorecard:** `references/scorecard.md`. Blind judges against AAA skill effects moved the beats from 3–6 to 5–6. The 8/10 target was not reached; the scorecard says what it would take.
+  - Lightning that re-rolls its whole shape every tick reads as flicker; hold each channel and let it fade.
+  - Bending the scene inside the orb warped its own arcs; refract only the air just outside it.
+- **Scorecard:** `references/scorecard.md`. Blind judges against AAA skill effects moved the beats from 3–6 to 5–6, and a second loop against target images stalled at about 4; neither reached 8/10. It records what it would take, and the user's notes that shaped the calmer, finer final version.
 
 Both pair well with [`design-action-combat`](../game-development/design-action-combat/SKILL.md) for timing and contact, and with [`workflow-score-to-target`](../workflow/workflow-score-to-target/SKILL.md) and [`workflow-ship-change`](../workflow/workflow-ship-change/SKILL.md).

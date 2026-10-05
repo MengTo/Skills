@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fire and Smoke Skill VFX"
+  short_description: "Ray-marched flames, charcoal smoke, embers, heat haze and burning-ground skill VFX"
+  default_prompt: "Use $fire-smoke-skill-vfx to give this skill its fire: ray-marched flames whose turbulence rises with buoyancy and runs from a white-hot core to deep red tips, walls of fire broken into clumps of separate tongues, a fire whirl wound in helical sheets, charcoal smoke drawn over the frame and lit only by the fire, embers that cool to ash, heat haze, a ground whose needles smoulder where it is hot, and gentle impact frames within three flashes a second."

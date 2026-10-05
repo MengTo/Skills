@@ -4,7 +4,7 @@ How to make character combat animation look right: attacks, skills and whole mov
 
 Each rule is a number, every number has a test, and every critic's claim is checked against full-resolution frames before anything changes.
 
-The body is half of a skill; the other half is what it throws, raises or tears open, and what it does to the target. `game-dev-combat-skill-polish` scores and rebuilds whole skills, body, effect and result, from filmed casts, against a readability bar and an art bar. `lightning-energy-skill-vfx` builds the effect half itself: a reusable Three.js module for lightning, an energy orb, black afterimage smoke, air bursts, sparks and impact frames.
+The body is half of a skill; the other half is what it throws, raises or tears open, and what it does to the target. `game-dev-combat-skill-polish` scores and rebuilds whole skills, body, effect and result, from filmed casts, against a readability bar and an art bar. `lightning-energy-skill-vfx` builds the effect half itself: a reusable Three.js module for lightning, an energy orb, black afterimage smoke, air bursts, sparks and impact frames. `fire-smoke-skill-vfx` does the same for fire: ray-marched flames, walls and whirls of fire, charcoal smoke, embers, heat haze and burning ground.
 
 ## Choose the right skill
 
@@ -13,6 +13,7 @@ The body is half of a skill; the other half is what it throws, raises or tears o
 | Build, fix or review attacks and move sets to a written standard; fix "the arms look stretched or weird"; score animations or get them to 8 out of 10 | [`game-dev-combat-animation`](game-dev-combat-animation/SKILL.md) |
 | Score every combat skill or spell out of 10 with blind judges and raise the weakest to a bar: readability (does it read as itself, does the blow land on the beat) or art (detail, light, trails, impact, art direction, against a reference such as Diablo IV) | [`game-dev-combat-skill-polish`](game-dev-combat-skill-polish/SKILL.md) |
 | Give a skill its effects: white-blue lightning, a refracting energy orb, black afterimage smoke, three-layer air bursts, orange sparks and debris, and impact frames (hold, two-tone negative, flash, shake, fisheye) capped at three flashes a second | [`lightning-energy-skill-vfx`](lightning-energy-skill-vfx/SKILL.md) |
+| Give a fire skill its effects: ray-marched flames that rise with buoyancy, walls and rings of fire broken into unequal tongues, a fire tornado, charcoal smoke lit by the fire, embers that cool to ash, heat haze, a burning ground and gentle impact frames | [`fire-smoke-skill-vfx`](fire-smoke-skill-vfx/SKILL.md) |
 
 ## What's inside `game-dev-combat-animation`
 
@@ -104,4 +105,24 @@ Project specifics (review hooks, harness settings, where each skill's code lives
   - Bending the scene inside the orb warped its own arcs; refract only the air just outside it.
 - **Scorecard:** `references/scorecard.md`. Blind judges against AAA skill effects moved the beats from 3–6 to 5–6, and a second loop against target images stalled at about 4; neither reached 8/10. It records what it would take, and the user's notes that shaped the calmer, finer final version.
 
-Both pair well with [`design-action-combat`](../game-development/design-action-combat/SKILL.md) for timing and contact, and with [`workflow-score-to-target`](../workflow/workflow-score-to-target/SKILL.md) and [`workflow-ship-change`](../workflow/workflow-ship-change/SKILL.md).
+## What's inside `fire-smoke-skill-vfx`
+
+- **Fire is a field that rises, cools and lights the world; smoke is what the fire lights.** One ray-marched flame shader covers plumes, walls along an arc and teardrop balls. Its noise rises with buoyancy instead of scrolling, one temperature per sample picks the colour, decides what hides the background and where soot absorbs, and every octave is band-limited to the reduced-resolution flame buffer, which comes up with a B-spline. Eight firelights light the ground, the smoke and the haze, swelling and settling. It shares the lightning skill's clock, composite, impact frames and flash limiter.
+- **`assets/fire-fx.mjs`**, which takes your own `THREE`, provides:
+  - flames (`flame`, `flameArc`): a temperature ramp from a white-hot core a little above the fuel to deep red tips, broad brighter licks, fronts broken into clumps of unequal tongues with gaps and detaching licks, a fire whirl in helical sheets with a waist and a blue root, and a burst that cools unevenly into hot pockets;
+  - smoke drawn premultiplied over the frame and lit only by the fire: cauliflower billows, a thin streaked curtain for a fire front, fibrous wisps, and ragged hot cracks inside a burst's smoke;
+  - embers and sparks on an analytic curl field that cool from white through orange to red and fall as ash;
+  - heat haze and refraction-only pressure rings in a half-resolution distortion buffer;
+  - firelight GLSL and a world-space heat map for your own ground, so its cracks and needles glow where it is hot;
+  - impact frames (ink starbursts with tapered speed lines, shake, fisheye) limited to three flashes a second.
+- **Demo:** five beats (ignition, fire wave, pillar, impact, aftermath) on a scanned CC0 floor (Poly Haven's Burned Ground 01, embedded so the page opens from disk), behind a minimal UI, with A/B switches for two failures: scrolled flame noise and additive smoke.
+- **Rules from the build and a two-round dream loop:**
+  - `fract(sin)` is not random on Metal: every tongue came out tall.
+  - Shared random streams reshuffle approved layouts; give each feature its own.
+  - Detail finer than the flame buffer turns into a mosaic; band-limit it and upsample with a B-spline, never sharpened.
+  - Smoke puffs off a front read as floating boulders; walls read as curtains or combs.
+  - March bounds cut the gas into dark boxes unless it fades before them.
+  - Cell patterns read as flagstones, and film grain inflates the backdrop's high-frequency energy.
+- **Scorecard:** `references/scorecard.md`. Against GPT Image edits of its own frames the page went 4.63 → 4.80 → 5.50 out of 10 and did not reach 8. It records the round-1 regressions and their causes, the last judge's shortfalls, what it would take, and the user's notes it was built to.
+
+These skills pair well with [`design-action-combat`](../game-development/design-action-combat/SKILL.md) for timing and contact, and with [`workflow-score-to-target`](../workflow/workflow-score-to-target/SKILL.md) and [`workflow-ship-change`](../workflow/workflow-ship-change/SKILL.md).

@@ -96,6 +96,10 @@ agent-skills/
       SKILL.md
   game-combat/
     README.md
+    fire-smoke-skill-vfx/
+      SKILL.md
+      assets/
+      demo/
     game-dev-combat-animation/
       SKILL.md
       references/
@@ -256,9 +260,10 @@ Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
 
-### Game combat (3)
+### Game combat (4)
 
-Combat animation and combat skills that read and look like Diablo IV, measured and judged blind, and a reusable effect language for energy skills. See the [game-combat guide](agent-skills/game-combat/README.md).
+Combat animation and combat skills that read and look like Diablo IV, measured and judged blind, and reusable effect languages for energy and fire skills. See the [game-combat guide](agent-skills/game-combat/README.md).
+- `fire-smoke-skill-vfx` - a fire skill's effects as one language in Three.js: ray-marched flames whose turbulence rises with buoyancy, from a white-hot core to deep red tips, with detail band-limited to the flame buffer; walls of fire broken into clumps of unequal tongues with detaching licks; a fire whirl in helical sheets; charcoal smoke lit only by the fire (a streaked curtain, cauliflower billows with hot cracks, wisps); embers that cool to ash, heat haze, and a burned ground whose needles smoulder where it is hot, with a reusable module, a five-beat demo on a scanned CC0 floor and a target-image scorecard.
 - `game-dev-combat-animation` - build, fix and review attacks and move sets to numbered arm, wrist and hand rules, with per-frame tests on the real mesh and blind critics.
 - `game-dev-combat-skill-polish` - score combat skills out of 10 with two blind judges and raise the weakest to a bar, for readability or for art against a reference such as Diablo IV, with stepped-clock filming, contact strips and judging scripts.
 - `lightning-energy-skill-vfx` - a skill's effects as one language in Three.js: lightning that reaches out as a stepped leader, flares, holds and fades, one discharge at a time, with forks of forks and hair-fine branchlets; a storm-cloud orb with plasma-globe arcs that churns in place and carries its own torn black shadow; ground strikes that crawl along the stone's cracks; refraction-only air fronts, sparks, fractured debris and ink-negative impact frames, with a reusable module, a five-beat demo on a scanned CC0 floor and a blind-judged scorecard.

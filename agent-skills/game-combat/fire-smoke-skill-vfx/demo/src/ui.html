@@ -1,0 +1,54 @@
+<main class="app" id="app">
+  <canvas id="stage" role="img" aria-label="Fire skill effects over burned forest ground at night: a flame held in an unseen hand, a wave of fire rolling across the ground, a fire tornado under a column of black smoke, a burst with a ring of fire, and the ground left smouldering with drifting embers"></canvas>
+
+  <header class="title">
+    <h1>Fire and Smoke</h1>
+    <p>Fire skill VFX · Three.js</p>
+  </header>
+
+  <p class="caption" aria-hidden="true"><span id="capBeat">Full cast</span><span class="sep">/</span><span id="capText">A spark becomes a held flame</span></p>
+
+  <section class="options" aria-label="Compare each failure">
+    <p class="note" id="note">Each switch shows one failure next to the version that works.</p>
+    <div class="row" role="group" aria-labelledby="g-noise">
+      <span class="label" id="g-noise">Flame</span>
+      <span class="pills">
+        <button type="button" data-opt="noise" data-val="advected" aria-pressed="true">Rising</button>
+        <button type="button" data-opt="noise" data-val="scrolled" aria-pressed="false">Scrolled</button>
+      </span>
+    </div>
+    <div class="row" role="group" aria-labelledby="g-smoke">
+      <span class="label" id="g-smoke">Smoke</span>
+      <span class="pills">
+        <button type="button" data-opt="smoke" data-val="over" aria-pressed="true">Over</button>
+        <button type="button" data-opt="smoke" data-val="additive" aria-pressed="false">Additive</button>
+      </span>
+    </div>
+    <div class="row" role="group" aria-labelledby="g-flashes">
+      <span class="label" id="g-flashes">Flashes</span>
+      <span class="pills">
+        <button type="button" data-opt="flashes" data-val="full" aria-pressed="true">Full</button>
+        <button type="button" data-opt="flashes" data-val="safe" aria-pressed="false">Safe</button>
+      </span>
+    </div>
+  </section>
+
+  <nav class="dock" aria-label="Skill beats">
+    <button type="button" class="icon" id="play" aria-label="Pause">
+      <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3" width="2.4" height="10" rx=".8"/><rect x="9.6" y="3" width="2.4" height="10" rx=".8"/></svg>
+      <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6c0 .5.6.8 1 .5l7.4-4.8c.4-.3.4-.8 0-1.1L6 2.7c-.4-.3-1 0-1 .5z"/></svg>
+    </button>
+    <div class="beats">
+      <button type="button" data-beat="all" aria-pressed="true" aria-keyshortcuts="0">Full cast</button>
+      <button type="button" data-beat="ignition" aria-pressed="false" aria-keyshortcuts="1">Ignition</button>
+      <button type="button" data-beat="wave" aria-pressed="false" aria-keyshortcuts="2">Fire wave</button>
+      <button type="button" data-beat="pillar" aria-pressed="false" aria-keyshortcuts="3">Pillar</button>
+      <button type="button" data-beat="impact" aria-pressed="false" aria-keyshortcuts="4">Impact</button>
+      <button type="button" data-beat="aftermath" aria-pressed="false" aria-keyshortcuts="5">Aftermath</button>
+    </div>
+    <label class="speed" for="speed"><span class="sr-only">Time scale</span><input id="speed" type="range" min="0.1" max="1" step="0.05" value="1"><output id="speedOut" for="speed">1.00×</output></label>
+  </nav>
+
+  <button type="button" class="hide" id="hide" aria-pressed="false" aria-label="Hide controls (H)">H</button>
+  <p class="sr-only" id="live" aria-live="polite"></p>
+</main>

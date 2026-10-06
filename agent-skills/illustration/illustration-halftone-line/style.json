@@ -1,0 +1,26 @@
+{
+  "skill": "illustration-halftone-line",
+  "num": "10",
+  "name": "Halftone line",
+  "blurb": "Black line, halftone dots, open contours",
+  "mechanism": "Black line and black dots on warm paper, nothing else: every grey is a field of jittered halftone dots whose size tracks the tone, and the line around it is left open.",
+  "background": "#f4f1ea",
+  "palette": [
+    { "name": "Paper", "hex": "#f4f1ea", "role": "full-bleed card rect, hiding fills, highlight strokes inside black shapes" },
+    { "name": "Ink", "hex": "#111111", "role": "every line, every halftone dot, solid black masses (hair, leaves, bags, garments)" }
+  ],
+  "line": "Black #111 line 2.0 at 480 wide (secondary 1.6-1.7, creases 1.3-1.6, tiny marks 1.1-1.3), round caps and joins, outlines left open with 1-3 gaps, one wobble filter (displacement 2.3 + 0.8) on the art group; tones are stipple dots at pitch 2.58, tone 0.19 or 0.36-0.38.",
+  "rules": [
+    "Two inks only: black #111 on warm paper #f4f1ea",
+    "Every grey is jittered halftone dots, never a grey fill",
+    "Leave outlines open: gaps at corners, lines stop short",
+    "Dot tones 0.19 and 0.36; darker than 0.4 becomes solid black",
+    "Rubbery long-limbed profiles with dot eyes and nose wedges",
+    "Floor is short strokes plus dotted pools, never a full line"
+  ],
+  "cards": [
+    { "file": "pair-programming.svg", "title": "Pair Programming", "subject": "A developer types at a desk monitor while a colleague leans in and points at the code with a pencil." },
+    { "file": "train-ride.svg", "title": "Train Ride", "subject": "A developer codes on a laptop balanced on her raised knee on a metro bench." },
+    { "file": "design-critique.svg", "title": "Design Critique", "subject": "A designer circles a button on a printout while a reviewer considers it, chin in hand." }
+  ]
+}

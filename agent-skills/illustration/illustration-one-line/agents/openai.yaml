@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: One-line"
+  short_description: "One continuous line, off-register colour patches"
+  default_prompt: "Use $illustration-one-line to draw a Ship Day card: a developer rides a rocket with a </> porthole, one fist on a grab handle and the other arm thrown up, an exhaust squiggle and a small cloud."

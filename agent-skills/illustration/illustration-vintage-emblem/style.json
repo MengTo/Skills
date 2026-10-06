@@ -1,0 +1,31 @@
+{
+  "skill": "illustration-vintage-emblem",
+  "num": "09",
+  "name": "Vintage emblem",
+  "blurb": "Limited palette, keylines, condensed wordmark",
+  "mechanism": "One chunky object, outlined in thick green-black ink and shaded with carved ink wedges, stands on a terracotta sun disc that a 7.5 px cream keyline cuts it free from, while a hard horizontal edge slices the scene into a dark splash band with cream droplets punched out, all locked up over a heavy condensed wordmark.",
+  "background": "#f8f0e3",
+  "palette": [
+    { "name": "Cream", "hex": "#f8f0e3", "role": "card, keyline, cream highlights, droplets punched into the ink" },
+    { "name": "Ink", "hex": "#1f2b25", "role": "outlines, shadow wedges, splash band, gulls, wordmark, tagline" },
+    { "name": "Terracotta", "hex": "#c8693f", "role": "sun disc, one repeat on the hero" },
+    { "name": "Sand", "hex": "#d9a873", "role": "main fill of the hero" },
+    { "name": "Tan", "hex": "#b5824f", "role": "darker fill, shaded tone under sand" },
+    { "name": "Pale", "hex": "#ecd2a8", "role": "highlight streaks, rock faces, glass" },
+    { "name": "Teal", "hex": "#3f8273", "role": "one small accent: band, ring, collar or node dots" }
+  ],
+  "line": "Hero outlines 3.6 px ink #1f2b25 with round joins (inner parts 2.2-2.8), union outlines as a 7.2 ink underlay, a 15 px cream keyline stroke around every silhouette, no strokes on gulls or splash.",
+  "rules": [
+    "Seven flat colours on cream; teal only as one small accent",
+    "One chunky hero breaking a terracotta sun disc",
+    "Cut the hero free with a 7.5 px cream keyline",
+    "Shade with carved ink wedges, light with pale streaks",
+    "Slice the scene on a hard edge into an ink splash band",
+    "Heavy condensed wordmark over a small serif tagline"
+  ],
+  "cards": [
+    { "file": "ship-it.svg", "title": "Ship It", "subject": "A rocket with a code-glyph porthole lifts off a cream cloud billow." },
+    { "file": "open-source.svg", "title": "Open Source", "subject": "An old tree on a rocky knoll whose roots branch like a git graph." },
+    { "file": "debug-club.svg", "title": "Debug Club", "subject": "A carved beetle under a big magnifying glass, with code braces in the splash." }
+  ]
+}

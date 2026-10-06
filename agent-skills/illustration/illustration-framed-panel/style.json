@@ -1,0 +1,401 @@
+{
+  "skill": "illustration-framed-panel",
+  "num": "06",
+  "name": "Framed panel",
+  "blurb": "Pastel card, violet frame, pieces breaking out",
+  "mechanism": "A fixed violet panel with a thin navy frame sits on a pastel card, with outline clouds and a dashed lavender floor inside it, and the scene's white bubbles, UI cards and leaves break out across its edge.",
+  "background": "#F7D8B5",
+  "palette": [
+    {
+      "name": "Card peach",
+      "hex": "#F7D8B5",
+      "role": "card background option"
+    },
+    {
+      "name": "Card orchid",
+      "hex": "#DFA5D4",
+      "role": "card background option"
+    },
+    {
+      "name": "Card sky cyan",
+      "hex": "#A7E0ED",
+      "role": "card background option"
+    },
+    {
+      "name": "Bracket on peach",
+      "hex": "#9C878C",
+      "role": "corner brackets and outside marks on the peach card"
+    },
+    {
+      "name": "Bracket on orchid",
+      "hex": "#A3739B",
+      "role": "corner brackets and outside marks on the orchid card"
+    },
+    {
+      "name": "Bracket on cyan",
+      "hex": "#6E9FAD",
+      "role": "corner brackets and outside marks on the cyan card"
+    },
+    {
+      "name": "Navy line",
+      "hex": "#2E2A5C",
+      "role": "every outline, clouds, hatch, eyes, bold UI text"
+    },
+    {
+      "name": "Panel violet",
+      "hex": "#8A80EA",
+      "role": "panel fill; slider and swatch accent"
+    },
+    {
+      "name": "Floor band",
+      "hex": "#D0CCF4",
+      "role": "floor rect inside the panel; off toggles"
+    },
+    {
+      "name": "Floor dash",
+      "hex": "#8F88D6",
+      "role": "short floor dashes"
+    },
+    {
+      "name": "Contact shadow",
+      "hex": "#B5AEEA",
+      "role": "flat ellipses under feet and furniture"
+    },
+    {
+      "name": "Bush",
+      "hex": "#BACCA6",
+      "role": "bush back layer"
+    },
+    {
+      "name": "Bush front",
+      "hex": "#A9C094",
+      "role": "bush front layer"
+    },
+    {
+      "name": "Hair",
+      "hex": "#433D71",
+      "role": "hair, small dark devices"
+    },
+    {
+      "name": "Hair highlight",
+      "hex": "#7C74C4",
+      "role": "hair highlight strokes, folds on dark trousers"
+    },
+    {
+      "name": "Skin rosy",
+      "hex": "#EDB0A2",
+      "role": "skin tone"
+    },
+    {
+      "name": "Skin peach",
+      "hex": "#F0BFA4",
+      "role": "skin tone"
+    },
+    {
+      "name": "Skin tan",
+      "hex": "#D49A80",
+      "role": "skin tone"
+    },
+    {
+      "name": "Blush",
+      "hex": "#E8878A",
+      "role": "cheek blush (opacity 0.5-0.6), tongue line"
+    },
+    {
+      "name": "Blush on tan",
+      "hex": "#C46A5C",
+      "role": "cheek blush on tan skin"
+    },
+    {
+      "name": "Mouth",
+      "hex": "#9A3E52",
+      "role": "open smile"
+    },
+    {
+      "name": "Mouth on tan",
+      "hex": "#8A3A48",
+      "role": "open smile on tan skin"
+    },
+    {
+      "name": "Mustard",
+      "hex": "#EDB24F",
+      "role": "tops, earrings, swatches, code tokens"
+    },
+    {
+      "name": "Mustard cuff",
+      "hex": "#E0A23E",
+      "role": "cuffs on mustard sleeves"
+    },
+    {
+      "name": "Mint top",
+      "hex": "#95D1B3",
+      "role": "sweaters"
+    },
+    {
+      "name": "Mint shade",
+      "hex": "#79BC9C",
+      "role": "cuffs and shade panels on mint"
+    },
+    {
+      "name": "Orange top",
+      "hex": "#EE8A6E",
+      "role": "hoodies"
+    },
+    {
+      "name": "Orange shade",
+      "hex": "#D9735A",
+      "role": "hood, cuffs and shade panels on orange"
+    },
+    {
+      "name": "Jeans",
+      "hex": "#6A63B0",
+      "role": "trousers"
+    },
+    {
+      "name": "Jeans fold",
+      "hex": "#A29DDA",
+      "role": "fold strokes on #6A63B0"
+    },
+    {
+      "name": "Jeans dark",
+      "hex": "#4A4488",
+      "role": "darker trousers"
+    },
+    {
+      "name": "Cream",
+      "hex": "#FCF6EA",
+      "role": "tees, socks, mugs, drawer handles"
+    },
+    {
+      "name": "Cream white",
+      "hex": "#FCFAF3",
+      "role": "shoe uppers, code windows, boards"
+    },
+    {
+      "name": "White",
+      "hex": "#FFFFFF",
+      "role": "bubbles and UI cards, glyphs on colour"
+    },
+    {
+      "name": "Red",
+      "hex": "#E35D5B",
+      "role": "shoe soles, tags, buttons, hearts, error lines"
+    },
+    {
+      "name": "Red shadow",
+      "hex": "#B8434A",
+      "role": "raised copy under red parts"
+    },
+    {
+      "name": "Pale red",
+      "hex": "#E9A3A0",
+      "role": "secondary red UI lines"
+    },
+    {
+      "name": "Error row",
+      "hex": "#F8CCC8",
+      "role": "highlighted error row, button highlight"
+    },
+    {
+      "name": "Drop slot",
+      "hex": "#F4E0E8",
+      "role": "dashed target slots"
+    },
+    {
+      "name": "Pink token",
+      "hex": "#F29CA0",
+      "role": "code tokens on dark screens"
+    },
+    {
+      "name": "Green",
+      "hex": "#5FA77A",
+      "role": "check badges, toggles, success lines"
+    },
+    {
+      "name": "Green dark",
+      "hex": "#3E8E5E",
+      "role": "raised copy under green, check strokes"
+    },
+    {
+      "name": "Pale green",
+      "hex": "#CDEBD6",
+      "role": "success row, image placeholder sky"
+    },
+    {
+      "name": "Mint chip",
+      "hex": "#8FD0B0",
+      "role": "icon chips, image hills, LEDs"
+    },
+    {
+      "name": "Sage",
+      "hex": "#6FB585",
+      "role": "traffic light, image hills"
+    },
+    {
+      "name": "Avatar shirt",
+      "hex": "#79C2A8",
+      "role": "avatar shirts"
+    },
+    {
+      "name": "Orange swatch",
+      "hex": "#F09A5E",
+      "role": "colour swatch"
+    },
+    {
+      "name": "UI line",
+      "hex": "#BDB8D6",
+      "role": "placeholder text lines"
+    },
+    {
+      "name": "UI dark line",
+      "hex": "#6E6A8E",
+      "role": "heading placeholder lines"
+    },
+    {
+      "name": "UI dark line 2",
+      "hex": "#7D79A0",
+      "role": "code placeholder lines"
+    },
+    {
+      "name": "Raised white shadow",
+      "hex": "#C9C5DE",
+      "role": "raised copy under white parts"
+    },
+    {
+      "name": "Line numbers",
+      "hex": "#CFCBE0",
+      "role": "code line numbers"
+    },
+    {
+      "name": "Device body",
+      "hex": "#C9C7DA",
+      "role": "laptop lid, monitor bezel"
+    },
+    {
+      "name": "Device edge",
+      "hex": "#9F9CB8",
+      "role": "dark device edges, stands, desk legs"
+    },
+    {
+      "name": "Device mid",
+      "hex": "#B7B5CC",
+      "role": "device side faces, stands"
+    },
+    {
+      "name": "Device base",
+      "hex": "#A9A7C0",
+      "role": "laptop base front"
+    },
+    {
+      "name": "Keyboard",
+      "hex": "#DCDAE8",
+      "role": "keyboard decks"
+    },
+    {
+      "name": "Keys",
+      "hex": "#A9A6C2",
+      "role": "key marks"
+    },
+    {
+      "name": "Screen",
+      "hex": "#3A3570",
+      "role": "dark screens"
+    },
+    {
+      "name": "Screen active line",
+      "hex": "#524C98",
+      "role": "highlighted line on dark screens"
+    },
+    {
+      "name": "Screen line numbers",
+      "hex": "#6E68AA",
+      "role": "line numbers on dark screens"
+    },
+    {
+      "name": "Code light",
+      "hex": "#E8E6F8",
+      "role": "code tokens on dark screens"
+    },
+    {
+      "name": "Code violet",
+      "hex": "#BDB8F0",
+      "role": "code tokens on dark screens"
+    },
+    {
+      "name": "Furniture",
+      "hex": "#C9C5E8",
+      "role": "chairs, drawers"
+    },
+    {
+      "name": "Furniture seam",
+      "hex": "#A9A4D8",
+      "role": "chair seams, raised copy under lavender parts"
+    },
+    {
+      "name": "Board side",
+      "hex": "#B9B4DE",
+      "role": "board sides and feet"
+    },
+    {
+      "name": "Grid",
+      "hex": "#D8D3F0",
+      "role": "grid lines on boards"
+    },
+    {
+      "name": "Desk top",
+      "hex": "#F6E7D2",
+      "role": "desk top"
+    },
+    {
+      "name": "Desk edge",
+      "hex": "#E3B98E",
+      "role": "desk front edge"
+    },
+    {
+      "name": "Lamp glow",
+      "hex": "#FFF4D6",
+      "role": "ring light and glow ticks"
+    },
+    {
+      "name": "Avatar background",
+      "hex": "#FBE3CC",
+      "role": "avatar circles"
+    },
+    {
+      "name": "Avatar skin",
+      "hex": "#F1B9A2",
+      "role": "avatar faces"
+    },
+    {
+      "name": "Avatar hair",
+      "hex": "#D9774E",
+      "role": "ginger avatar hair"
+    }
+  ],
+  "line": "Navy #2E2A5C strokes over flat fills: panel 1.35, body and props 1.25, hands, shoes and bushes 1.05-1.15, folds 0.9-1.1, hatch pairs 0.85-0.9, round caps.",
+  "rules": [
+    "Panel fixed at 110,46 262x266, violet fill, 1.35 navy frame.",
+    "Two white breakouts cross the left and right frame edges.",
+    "Outline-only clouds and a dashed lavender floor inside the panel.",
+    "Corner brackets top-right and bottom-left in the card's darker tone.",
+    "One seated or kneeling figure with a lean, shared 3/4 face.",
+    "Texture is paired navy hatch slashes, never gradients or filters."
+  ],
+  "cards": [
+    {
+      "file": "support.svg",
+      "title": "Support",
+      "subject": "A support engineer cross-legged on a beanbag fixes a user's bug on her laptop."
+    },
+    {
+      "file": "design-system.svg",
+      "title": "Design System",
+      "subject": "A designer kneels to press a button component into its slot on a component board."
+    },
+    {
+      "file": "live-coding.svg",
+      "title": "Live Coding",
+      "subject": "A streamer at his desk points at code on his monitor while chatting with viewers."
+    }
+  ]
+}

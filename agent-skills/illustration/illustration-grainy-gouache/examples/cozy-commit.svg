@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg role="img" aria-label="Cozy Commit, Grainy gouache style" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360">
+  <defs>
+    <!-- fine dark multiply grain that gathers toward each form's edges -->
+    <filter id="s7-grain" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="2.1" numOctaves="1" seed="5" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.3  0 0 0 0 0.08  0 0 0 0 0.14  0 -2.0 0 0 0.98" result="dk"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="b"/>
+      <feComposite in="SourceAlpha" in2="b" operator="arithmetic" k1="0" k2="2.0" k3="-1.8" k4="0" result="w"/>
+      <feComposite in="dk" in2="w" operator="in" result="g"/>
+      <feBlend in="g" in2="SourceGraphic" mode="multiply"/>
+    </filter>
+    <!-- chalky pooled shadow -->
+    <filter id="s7-chalk" x="-10%" y="-80%" width="120%" height="260%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="3" result="fine"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="b"/>
+      <feDisplacementMap in="b" in2="fine" scale="6" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.22 0.5" numOctaves="3" seed="12" result="mott"/>
+      <feColorMatrix in="mott" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.3 0 0 0 0.3" result="ma"/>
+      <feComposite in="d" in2="ma" operator="in"/>
+    </filter>
+
+    <!-- gradients -->
+    <radialGradient id="s7-gBody" cx="0.42" cy="0.3" r="0.78">
+      <stop offset="0" stop-color="#FF5A26"/><stop offset="0.45" stop-color="#FB4714"/><stop offset="0.8" stop-color="#D9380C"/><stop offset="1" stop-color="#9C2406"/>
+    </radialGradient>
+    <radialGradient id="s7-gThigh" cx="0.45" cy="0.4" r="0.55">
+      <stop offset="0" stop-color="#FF6A36" stop-opacity="0.8"/><stop offset="0.6" stop-color="#FF5A26" stop-opacity="0.35"/>
+      <stop offset="0.86" stop-color="#B92D08" stop-opacity="0.28"/><stop offset="1" stop-color="#B92D08" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="s7-gHead" cx="0.5" cy="0.4" r="0.62">
+      <stop offset="0" stop-color="#FF5826"/><stop offset="0.6" stop-color="#FB4614"/><stop offset="1" stop-color="#D4380C"/>
+    </radialGradient>
+    <linearGradient id="s7-gCrown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E2650B" stop-opacity="0.85"/><stop offset="0.45" stop-color="#E2650B" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="s7-gTail" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E86A0E"/><stop offset="0.3" stop-color="#FF521C"/><stop offset="0.7" stop-color="#F4430F"/><stop offset="1" stop-color="#9A2306"/>
+    </linearGradient>
+    <linearGradient id="s7-gOcc" gradientUnits="userSpaceOnUse" x1="0" y1="192" x2="0" y2="212">
+      <stop offset="0" stop-color="#7A1A04" stop-opacity="0"/><stop offset="1" stop-color="#7A1A04" stop-opacity="0.78"/>
+    </linearGradient>
+    <radialGradient id="s7-gCream" cx="0.5" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#FFE3BD"/><stop offset="0.7" stop-color="#FAD0A0"/><stop offset="1" stop-color="#E9B07A"/>
+    </radialGradient>
+    <radialGradient id="s7-gBlack" cx="0.4" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#3A2A2C"/><stop offset="1" stop-color="#0B0708"/>
+    </radialGradient>
+    <radialGradient id="s7-gScreen" cx="0.42" cy="0.38" r="0.75">
+      <stop offset="0" stop-color="#7A1E2A"/><stop offset="0.6" stop-color="#5A1220"/><stop offset="1" stop-color="#3A0A14"/>
+    </radialGradient>
+    <linearGradient id="s7-gDeck" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A2124"/><stop offset="1" stop-color="#4A3C40"/>
+    </linearGradient>
+    <linearGradient id="s7-gSlab" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A2E31"/><stop offset="1" stop-color="#0D0809"/>
+    </linearGradient>
+    <linearGradient id="s7-gMaroon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8A220A"/><stop offset="0.45" stop-color="#701001"/><stop offset="1" stop-color="#4A0901"/>
+    </linearGradient>
+    <linearGradient id="s7-gOchre" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E38C1E"/><stop offset="0.5" stop-color="#C96E05"/><stop offset="1" stop-color="#9E5004"/>
+    </linearGradient>
+    <linearGradient id="s7-gIvy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17592C"/><stop offset="1" stop-color="#08301A"/>
+    </linearGradient>
+    <linearGradient id="s7-gPages" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE3BE"/><stop offset="1" stop-color="#EBBC88"/>
+    </linearGradient>
+    <linearGradient id="s7-gEnds" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1A0402" stop-opacity="0.45"/><stop offset="0.09" stop-color="#1A0402" stop-opacity="0"/>
+      <stop offset="0.91" stop-color="#1A0402" stop-opacity="0"/><stop offset="1" stop-color="#1A0402" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="s7-gMug" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#B02B08"/><stop offset="0.2" stop-color="#F2440F"/><stop offset="0.42" stop-color="#FF5A24"/><stop offset="0.72" stop-color="#F0420E"/><stop offset="1" stop-color="#9C2306"/>
+    </linearGradient>
+    <linearGradient id="s7-gMugBase" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5A0E02" stop-opacity="0"/><stop offset="1" stop-color="#5A0E02" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- scarf pattern: { } and little ivy leaves -->
+    <pattern id="s7-pScarf" patternUnits="userSpaceOnUse" width="22" height="19" patternTransform="scale(1.08)">
+      <rect width="22" height="19" fill="#545C01"/>
+      <g fill="none" stroke="#FDD5A8" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3.6 1.6 C2.4 1.6 2.6 3.2 2.6 3.9 C2.6 4.6 2.2 5 1.4 5 C2.2 5 2.6 5.4 2.6 6.1 C2.6 6.8 2.4 8.4 3.6 8.4"/>
+        <path d="M6.4 1.6 C7.6 1.6 7.4 3.2 7.4 3.9 C7.4 4.6 7.8 5 8.6 5 C7.8 5 7.4 5.4 7.4 6.1 C7.4 6.8 7.6 8.4 6.4 8.4"/>
+      </g>
+      <path d="M16.5 17.4 C13.6 15 14.2 11.6 16.5 9.8 C18.8 11.6 19.4 15 16.5 17.4 Z" fill="#0C3F1D"/>
+      <path d="M16.5 18.4 L16.5 12" stroke="#071F0E" stroke-width="0.55" stroke-linecap="round"/>
+    </pattern>
+
+    <!-- leaves (base at 0,0, tip up) -->
+    <linearGradient id="s7-gIvyLeaf" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#16592C"/><stop offset="0.5" stop-color="#0F4A23"/><stop offset="0.5" stop-color="#0C3F1D"/><stop offset="1" stop-color="#082F15"/>
+    </linearGradient>
+    <linearGradient id="s7-gOak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E08A1C"/><stop offset="0.5" stop-color="#D47A0C"/><stop offset="0.5" stop-color="#C96E05"/><stop offset="1" stop-color="#A85A05"/>
+    </linearGradient>
+    <linearGradient id="s7-gOlv" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6E6716"/><stop offset="0.5" stop-color="#625C14"/><stop offset="0.5" stop-color="#4B4210"/><stop offset="1" stop-color="#3C350C"/>
+    </linearGradient>
+    <g id="s7-ivy">
+      <path d="M0 6 C0 3 0.4 0 0 -1" fill="none" stroke="#0A1A0E" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M0 -1 C-4 2 -9 3.5 -13 2.5 C-12.5 -1 -15.5 -5 -21 -10.5 C-16 -13 -12 -13.5 -8.5 -13 C-9.5 -18.5 -5.5 -23.5 0 -27 C5.5 -23.5 9.5 -18.5 8.5 -13 C12 -13.5 16 -13 21 -10.5 C15.5 -5 12.5 -1 13 2.5 C9 3.5 4 2 0 -1 Z" fill="url(#s7-gIvyLeaf)"/>
+      <path d="M0 -1 L0 -23 M0 -1 L-17 -10 M0 -1 L17 -10 M0 -1 L-10 1.6 M0 -1 L10 1.6 M0 -9 L-4 -14 M0 -9 L4 -14" fill="none" stroke="#06150A" stroke-width="0.7" stroke-linecap="round"/>
+    </g>
+    <g id="s7-oak">
+      <path d="M0 7 C0.3 4 0 1 0 -1" fill="none" stroke="#3A1404" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M0 -1 Q-6 -1.5 -8 -5 Q-13.5 -6 -9.5 -10 Q-15.5 -13 -9.5 -17 Q-14.5 -21.5 -7.5 -24.5 Q-9.5 -30.5 0 -32 Q9.5 -30.5 7.5 -24.5 Q14.5 -21.5 9.5 -17 Q15.5 -13 9.5 -10 Q13.5 -6 8 -5 Q6 -1.5 0 -1 Z" fill="url(#s7-gOak)"/>
+      <path d="M0 -1 L0 -29 M0 -5 L-9 -6.5 M0 -10 L-11 -13 M0 -16 L-10.5 -19.5 M0 -21 L-6 -25 M0 -5 L9 -6.5 M0 -10 L11 -13 M0 -16 L10.5 -19.5 M0 -21 L6 -25" fill="none" stroke="#3A1404" stroke-width="0.7" stroke-linecap="round"/>
+    </g>
+    <g id="s7-olv">
+      <path d="M0 7 C0 4 0 1 0 0" fill="none" stroke="#1C1804" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M0 0 C-7.5 -7 -7.5 -22 0 -31 C7.5 -22 7.5 -7 0 0 Z" fill="url(#s7-gOlv)"/>
+      <path d="M0 0 L0 -28 M0 -5 L-4 -9 M0 -10 L-4.8 -14.5 M0 -15 L-4.6 -19.5 M0 -20 L-3.4 -24 M0 -5 L4 -9 M0 -10 L4.8 -14.5 M0 -15 L4.6 -19.5 M0 -20 L3.4 -24" fill="none" stroke="#1C1804" stroke-width="0.6" stroke-linecap="round"/>
+    </g>
+    <path id="s7-star" d="M0 -7 C0.9 -2.2 2.2 -0.9 7 0 C2.2 0.9 0.9 2.2 0 7 C-0.9 2.2 -2.2 0.9 -7 0 C-2.2 -0.9 -0.9 -2.2 0 -7 Z" fill="#FDD5A8"/>
+    <g id="s7-burst" stroke="#FDD5A8" stroke-width="1.3" stroke-linecap="round">
+      <path d="M0 -2 L0 -11 M0 2 L0 10 M2 0 L11 0 M-2 0 L-10 0 M1.5 -1.5 L7.5 -7.5 M-1.5 1.5 L-7 7 M1.5 1.5 L7 7 M-1.5 -1.5 L-7.5 -7.5"/>
+    </g>
+    <!-- paw with toe notches (centre 0,0) -->
+    <path id="s7-paw" d="M-9.5 3 C-10.5 -4 -5.5 -7.5 0 -7.5 C5.5 -7.5 10.5 -4 9.5 3 C9 5.6 6.6 6.2 5 5.2 L3.6 3.2 L2.3 5.4 C1 6.2 -1 6.2 -2.3 5.4 L-3.6 3.2 L-5 5.2 C-6.6 6.2 -9 5.6 -9.5 3 Z"/>
+
+    <clipPath id="s7-cTail"><path d="M303 184 C316 194 317 226 296 236 C266 241 200 240 146 238 C112 237 92 228 90 212 C88 199 95 188 106 184 C113 182 119 184 121 189 C116 195 116 204 122 210 C136 216 170 216 200 215 C238 214 266 212 284 206 C295 202 301 195 303 184 Z"/></clipPath>
+    <clipPath id="s7-cEarL"><path d="M-40 -22 C-46 -42 -48 -58 -43 -72 C-32 -66 -20 -55 -11 -41 Z"/></clipPath>
+    <clipPath id="s7-cEarR"><path d="M40 -22 C46 -42 48 -58 43 -72 C32 -66 20 -55 11 -41 Z"/></clipPath>
+    <clipPath id="s7-cEyeL"><circle cx="-21" cy="-4" r="14.2"/></clipPath>
+    <clipPath id="s7-cEyeR"><circle cx="21" cy="-4" r="14.2"/></clipPath>
+    <clipPath id="s7-cScarfEnd"><path d="M228 214 C228 226 228 236 229 244 C229 252 230 258 230 264 L254 264 C253 256 252 250 251 244 C250 236 248 226 246 214 Z"/></clipPath>
+  </defs>
+
+  <!-- background -->
+  <rect x="0" y="0" width="480" height="360" fill="#FF81BE"/>
+
+  <!-- background decor: sparkles + dots, clustered with calm areas -->
+  <g>
+    <use href="#s7-burst" transform="translate(26 34) scale(0.9)"/>
+    <use href="#s7-star" transform="translate(118 28) scale(0.95)"/>
+    <use href="#s7-star" transform="translate(100 132) scale(0.65)"/>
+    <use href="#s7-star" transform="translate(372 64) scale(0.8)"/>
+    <use href="#s7-burst" transform="translate(452 64) scale(0.8) rotate(12)"/>
+    <use href="#s7-star" transform="translate(468 214) scale(0.6)"/>
+    <use href="#s7-star" transform="translate(24 214) scale(0.85)"/>
+    
+    <use href="#s7-star" transform="translate(74 326) scale(0.6)"/>
+    <g fill="#FDD5A8">
+      <circle cx="58" cy="22" r="1.4"/><circle cx="96" cy="48" r="1.1"/><circle cx="20" cy="88" r="1.3"/>
+      <circle cx="132" cy="96" r="1.1"/><circle cx="40" cy="168" r="1.2"/><circle cx="182" cy="20" r="1.3"/>
+      <circle cx="244" cy="14" r="1.1"/><circle cx="340" cy="30" r="1.4"/><circle cx="410" cy="22" r="1.1"/>
+      <circle cx="404" cy="96" r="1.2"/><circle cx="470" cy="128" r="1.3"/><circle cx="436" cy="206" r="1.1"/>
+      <circle cx="18" cy="262" r="1.2"/><circle cx="54" cy="236" r="1"/><circle cx="460" cy="290" r="1.3"/>
+      <circle cx="434" cy="336" r="1.1"/><circle cx="196" cy="346" r="1.2"/><circle cx="120" cy="342" r="1"/>
+    </g>
+  </g>
+
+  <!-- falling leaves: a left cluster, a right pair, a few strays -->
+  <g filter="url(#s7-grain)">
+    <use href="#s7-ivy" transform="translate(48 104) rotate(-22) scale(1.4)"/>
+    <use href="#s7-oak" transform="translate(70 52) rotate(32) scale(0.78)"/>
+    <use href="#s7-olv" transform="translate(30 140) rotate(-52) scale(0.72)"/>
+    <use href="#s7-oak" transform="translate(432 124) rotate(24) scale(1.2)"/>
+    <use href="#s7-ivy" transform="translate(456 176) rotate(16) scale(0.78)"/>
+    <use href="#s7-olv" transform="translate(40 276) rotate(-28) scale(1.02)"/>
+    <use href="#s7-olv" transform="translate(222 30) rotate(52) scale(0.62)"/>
+    <use href="#s7-oak" transform="translate(458 314) rotate(18) scale(0.66)"/>
+  </g>
+
+  <g transform="translate(0 -20)">
+    <!-- pooled shadow -->
+    <path d="M64 318 C72 309 160 306 240 306 C320 305 404 304 418 312 C428 320 406 330 350 332 C270 335 160 332 98 328 C74 326 60 323 64 318 Z" fill="#B95A93" filter="url(#s7-chalk)"/>
+    <path d="M72 314 C104 311 286 311 316 313 C322 316 320 321 300 322 C240 324 130 324 82 321 C70 320 68 316 72 314 Z" fill="#A04A80" filter="url(#s7-chalk)" opacity="0.8"/>
+    <path d="M330 314 C342 311 380 311 392 314 C397 318 390 322 362 322 C342 322 326 318 330 314 Z" fill="#A04A80" filter="url(#s7-chalk)" opacity="0.8"/>
+
+    <!-- book A: maroon, spine out -->
+    <g filter="url(#s7-grain)">
+      <path d="M74 288 L314 288 C318.5 293 319 309 314 314 L74 314 C69.5 309 69.5 293 74 288 Z" fill="url(#s7-gMaroon)"/>
+      <path d="M74 288 L314 288 C318.5 293 319 309 314 314 L74 314 C69.5 309 69.5 293 74 288 Z" fill="url(#s7-gEnds)"/>
+    </g>
+    <g fill="#D88A1E">
+      <rect x="86" y="289" width="1.6" height="24"/><rect x="91" y="289" width="1.6" height="24"/>
+      <rect x="296" y="289" width="1.6" height="24"/><rect x="301" y="289" width="1.6" height="24"/>
+      <rect x="166" y="295" width="56" height="12" rx="2"/>
+      <circle cx="104" cy="292" r="0.9"/><circle cx="111" cy="292" r="0.9"/><circle cx="118" cy="292" r="0.9"/><circle cx="125" cy="292" r="0.9"/><circle cx="132" cy="292" r="0.9"/><circle cx="139" cy="292" r="0.9"/><circle cx="146" cy="292" r="0.9"/><circle cx="153" cy="292" r="0.9"/><circle cx="235" cy="292" r="0.9"/><circle cx="242" cy="292" r="0.9"/><circle cx="249" cy="292" r="0.9"/><circle cx="256" cy="292" r="0.9"/><circle cx="263" cy="292" r="0.9"/><circle cx="270" cy="292" r="0.9"/><circle cx="277" cy="292" r="0.9"/><circle cx="284" cy="292" r="0.9"/>
+      <circle cx="104" cy="310" r="0.9"/><circle cx="111" cy="310" r="0.9"/><circle cx="118" cy="310" r="0.9"/><circle cx="125" cy="310" r="0.9"/><circle cx="132" cy="310" r="0.9"/><circle cx="139" cy="310" r="0.9"/><circle cx="146" cy="310" r="0.9"/><circle cx="153" cy="310" r="0.9"/><circle cx="235" cy="310" r="0.9"/><circle cx="242" cy="310" r="0.9"/><circle cx="249" cy="310" r="0.9"/><circle cx="256" cy="310" r="0.9"/><circle cx="263" cy="310" r="0.9"/><circle cx="270" cy="310" r="0.9"/><circle cx="277" cy="310" r="0.9"/><circle cx="284" cy="310" r="0.9"/>
+    </g>
+    <path d="M174 299.5 L204 299.5 M174 303 L196 303" stroke="#701001" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- book B: ivy covers, page block out -->
+    <g filter="url(#s7-grain)">
+      <path d="M86 266 L308 266 L308 288 L86 288 C80 286 78 268 86 266 Z" fill="url(#s7-gIvy)"/>
+    </g>
+    <g filter="url(#s7-grain)">
+      <rect x="90" y="269" width="216" height="16" rx="1.5" fill="url(#s7-gPages)"/>
+    </g>
+    <path d="M91 273.4 L305 273.4 M91 277.4 L305 277.4 M91 281.4 L305 281.4" stroke="#E2AE76" stroke-width="0.6"/>
+    <path d="M280 285 L286 285 L286 302 L283 299 L280 302 Z" fill="#FF4816"/>
+
+    <!-- book C: ochre, spine out -->
+    <g filter="url(#s7-grain)">
+      <path d="M88 247 L308 247 C312 251 312.5 262 308 266 L88 266 C83.5 262 83.5 251 88 247 Z" fill="url(#s7-gOchre)"/>
+      <path d="M88 247 L308 247 C312 251 312.5 262 308 266 L88 266 C83.5 262 83.5 251 88 247 Z" fill="url(#s7-gEnds)"/>
+    </g>
+    <g fill="#701001">
+      <rect x="98" y="248" width="1.6" height="17"/><rect x="103" y="248" width="1.6" height="17"/>
+      <rect x="292" y="248" width="1.6" height="17"/><rect x="297" y="248" width="1.6" height="17"/>
+      <rect x="116" y="251.5" width="44" height="11" rx="2"/>
+    </g>
+    <path d="M122 255.5 L148 255.5 M122 259 L140 259" stroke="#FDD5A8" stroke-width="1.1" stroke-linecap="round"/>
+
+    <!-- open laptop: screen -->
+    <g filter="url(#s7-grain)">
+      <path d="M96 70 L296 70 C301 70 304 73 304 78 L304 217 L88 217 L88 78 C88 73 91 70 96 70 Z" fill="#191113"/>
+    </g>
+    <rect x="95" y="77" width="202" height="133" rx="2.5" fill="url(#s7-gScreen)"/>
+    <!-- editor: window dots, code, cursor -->
+    <circle cx="102.5" cy="84.5" r="1.9" fill="#FF4816"/><circle cx="108.5" cy="84.5" r="1.9" fill="#D88A1E"/><circle cx="114.5" cy="84.5" r="1.9" fill="#8A9416"/>
+    <g stroke-width="2.6" stroke-linecap="round" fill="none">
+      <path d="M103 95 L117 95 M109 103 L125 103 M115 111 L138 111 M115 119 L131 119 M103 135 L122 135 M109 143 L134 143 M115 151 L127 151 M109 159 L116 159 M103 175 L112 175 M109 183 L124 183 M115 191 L121 191 M103 199 L110 199" stroke="#E7A13A"/>
+      <path d="M121 95 L150 95 M129 103 L172 103 M142 111 L178 111 M135 119 L160 119 M126 135 L152 135 M131 151 L150 151 M116 175 L134 175 M115 183 L102 183" stroke="#FDD5A8"/>
+      <path d="M154 95 L166 95 M109 127 L118 127 M138 143 L160 143 M128 191 L140 191" stroke="#FF6A3A"/>
+    </g>
+    <rect x="122" y="124" width="2.2" height="6" fill="#FDD5A8"/>
+    <!-- commit graph -->
+    <g fill="none" stroke-width="1.7" stroke-linecap="round">
+      <path d="M250 90 L250 156" stroke="#D88A1E"/>
+      <path d="M250 140 C250 133 262 134 262 127 L262 117 C262 110 250 111 250 104" stroke="#A8B030"/>
+    </g>
+    <g fill="#FDD5A8">
+      <circle cx="250" cy="104" r="2.6"/><circle cx="262" cy="122" r="2.5"/><circle cx="250" cy="140" r="2.6"/><circle cx="250" cy="155" r="2.6"/>
+    </g>
+    <circle cx="250" cy="90" r="4.2" fill="#FDD5A8"/><circle cx="250" cy="90" r="2.6" fill="#FF4816"/>
+    <g stroke-width="2.4" stroke-linecap="round" fill="none">
+      <path d="M260 90 L290 90 M272 122 L290 122 M260 155 L284 155" stroke="#FDD5A8"/>
+      <path d="M260 104 L282 104 M260 140 L276 140" stroke="#E7A13A"/>
+    </g>
+
+    <!-- laptop base / keyboard deck -->
+    <g filter="url(#s7-grain)">
+      <path d="M86 216 L306 216 L310 237 C310 239 309 240 307 240 L85 240 C83 240 82 239 82 237 Z" fill="url(#s7-gDeck)"/>
+      <path d="M82 239 L310 239 L310 244 C310 246 308 247 306 247 L86 247 C84 247 82 246 82 244 Z" fill="url(#s7-gSlab)"/>
+    </g>
+    <path d="M83 239.6 L309 239.6" stroke="#6A5A5F" stroke-width="0.9"/>
+    <path d="M88 217 L304 217" stroke="#0A0607" stroke-width="1.2"/>
+
+    <!-- fox torso + haunch -->
+    <g filter="url(#s7-grain)">
+      <path d="M214 214 C210 196 214 176 232 168 C246 162 262 160 276 162 C296 166 308 184 306 204 C305 220 298 232 286 236 L222 236 Z" fill="url(#s7-gBody)"/>
+      <path d="M214 214 C210 196 214 176 232 168 C246 162 262 160 276 162 C296 166 308 184 306 204 L214 204 Z" fill="url(#s7-gCrown)" opacity="0.75"/>
+      <ellipse cx="281" cy="196" rx="24" ry="22" fill="url(#s7-gThigh)"/>
+      <path d="M236 192 C256 200 280 200 304 190 L306 212 L236 212 Z" fill="url(#s7-gOcc)"/>
+    </g>
+    <!-- scarf band around the neck -->
+    <g filter="url(#s7-grain)">
+      <path d="M224 186 C236 184 248 178 258 170 L266 184 C254 196 242 206 232 214 C228 206 226 196 224 186 Z" fill="url(#s7-pScarf)"/>
+    </g>
+
+    <!-- bushy tail sweeping round the front -->
+    <g filter="url(#s7-grain)">
+      <path d="M303 184 C316 194 317 226 296 236 C266 241 200 240 146 238 C112 237 92 228 90 212 C88 199 95 188 106 184 C113 182 119 184 121 189 C116 195 116 204 122 210 C136 216 170 216 200 215 C238 214 266 212 284 206 C295 202 301 195 303 184 Z" fill="url(#s7-gTail)"/>
+      <g clip-path="url(#s7-cTail)">
+        <path d="M142 198 C134 210 133 228 141 246 L76 246 L76 170 L142 170 Z" fill="url(#s7-gCream)"/>
+      </g>
+    </g>
+    <!-- front paws -->
+    <g filter="url(#s7-grain)" fill="url(#s7-gBlack)">
+      <use href="#s7-paw" transform="translate(185 220.5)"/>
+      <use href="#s7-paw" transform="translate(207 219.5)"/>
+    </g>
+
+    <!-- head -->
+    <g filter="url(#s7-grain)">
+      <g transform="translate(196 175) rotate(-5) scale(0.88)">
+        <path d="M-40 -22 C-46 -42 -48 -58 -43 -72 C-32 -66 -20 -55 -11 -41 Z" fill="url(#s7-gHead)"/>
+        <path d="M40 -22 C46 -42 48 -58 43 -72 C32 -66 20 -55 11 -41 Z" fill="url(#s7-gHead)"/>
+        <g clip-path="url(#s7-cEarL)"><path d="M-60 -80 L-14 -80 L-24 -60 C-32 -58 -40 -57 -60 -55 Z" fill="url(#s7-gBlack)"/></g>
+        <g clip-path="url(#s7-cEarR)"><path d="M60 -80 L14 -80 L24 -60 C32 -58 40 -57 60 -55 Z" fill="url(#s7-gBlack)"/></g>
+        <path d="M-36 -28 C-40 -42 -41 -52 -39 -59 C-32 -55 -25 -48 -19 -39 Z" fill="#C2300A"/>
+        <path d="M36 -28 C40 -42 41 -52 39 -59 C32 -55 25 -48 19 -39 Z" fill="#C2300A"/>
+        <path d="M0 -44 C22 -44 38 -34 42 -16 C44 -6 46 2 48 8 C30 14 -30 14 -48 8 C-46 2 -44 -6 -42 -16 C-38 -34 -22 -44 0 -44 Z" fill="url(#s7-gHead)"/>
+        <path d="M0 -44 C22 -44 38 -34 42 -16 C43 -11 44 -6 45 -2 L-45 -2 C-44 -6 -43 -11 -42 -16 C-38 -34 -22 -44 0 -44 Z" fill="url(#s7-gCrown)"/>
+        <!-- cream cheek flare -->
+        <path d="M-46 3 C-38 10 -30 14 -20 15 C-12 16 -7 12 -4 8 C-2 6 2 6 4 8 C7 12 12 16 20 15 C30 14 38 10 46 3 C50 8 53 11 57 13 C54 16 52 17 50 18.5 C53 22 55 25 56 28.5 C49 30 43 32 37 34 C27 41 13 43 0 43 C-13 43 -27 41 -37 34 C-43 32 -49 30 -56 28.5 C-55 25 -53 22 -50 18.5 C-52 17 -54 16 -57 13 C-53 11 -50 8 -46 3 Z" fill="url(#s7-gCream)"/>
+      </g>
+    </g>
+    <!-- face details (crisp) -->
+    <g transform="translate(196 175) rotate(-5) scale(0.88)">
+      <g stroke="#FDD5A8" stroke-width="1.1" stroke-linecap="round" fill="none">
+        <path d="M-32 -34 L-35 -44 M-27 -33 L-29 -41"/>
+        <path d="M32 -34 L35 -44 M27 -33 L29 -41"/>
+      </g>
+      <circle cx="-21" cy="-4" r="13.6" fill="#F7D6A6"/>
+      <circle cx="-21" cy="-4" r="11" fill="#0D0809"/>
+      <circle cx="21" cy="-4" r="13.6" fill="#F7D6A6"/>
+      <circle cx="21" cy="-4" r="11" fill="#0D0809"/>
+      <use href="#s7-star" transform="translate(-17.4 -0.6) scale(0.78)"/>
+      <use href="#s7-star" transform="translate(24.6 -0.6) scale(0.78)"/>
+      <circle cx="-26.4" cy="3.6" r="1.6" fill="#FDD5A8"/>
+      <circle cx="15.6" cy="3.6" r="1.6" fill="#FDD5A8"/>
+      <g clip-path="url(#s7-cEyeL)"><path d="M-38 -23 L-4 -23 L-4 -7 C-9 -11.6 -15 -13.2 -21 -13.2 C-27 -13.2 -33 -11.6 -38 -7 Z" fill="#F94714"/></g>
+      <g clip-path="url(#s7-cEyeR)"><path d="M4 -23 L38 -23 L38 -7 C33 -11.6 27 -13.2 21 -13.2 C15 -13.2 9 -11.6 4 -7 Z" fill="#F94714"/></g>
+      <g fill="none" stroke="#120A0B" stroke-width="1.3" stroke-linecap="round">
+        <path d="M-35.2 -8.4 C-31.8 -11.6 -27 -12.8 -21 -12.8 C-15 -12.8 -10.2 -11.6 -6.800000000000001 -8.4 M-35 -8.6 L-37.8 -7"/>
+        <path d="M6.800000000000001 -8.4 C10.2 -11.6 15 -12.8 21 -12.8 C27 -12.8 31.8 -11.6 35.2 -8.4 M35 -8.6 L37.8 -7"/>
+      </g>
+      <ellipse cx="-32" cy="19" rx="6.6" ry="3.4" fill="#FF7FB0" opacity="0.6"/>
+      <ellipse cx="32" cy="19" rx="6.6" ry="3.4" fill="#FF7FB0" opacity="0.6"/>
+      <path d="M-5 14 C-5 11.6 5 11.6 5 14 C5 17 2 19.6 0 19.6 C-2 19.6 -5 17 -5 14 Z" fill="#0D0809"/>
+      <ellipse cx="-1.6" cy="13.6" rx="1.4" ry="0.8" fill="#6A5A5C"/>
+      <path d="M0 19.6 L0 22 M-5.5 22.5 C-3.5 25 -1 25 0 22 C1 25 3.5 25 5.5 22.5" fill="none" stroke="#120A0B" stroke-width="1.05" stroke-linecap="round"/>
+      <g fill="none" stroke="#1A0E0F" stroke-width="0.8" stroke-linecap="round">
+        <path d="M-11 19 C-36 15 -60 15 -86 11"/>
+        <path d="M-11 22.5 C-36 22.5 -58 25 -82 28"/>
+        <path d="M11 19 C36 15 60 15 86 11"/>
+        <path d="M11 22.5 C36 22.5 58 25 82 28"/>
+      </g>
+    </g>
+
+    <!-- scarf knot + hanging end over tail and deck edge -->
+    <g filter="url(#s7-grain)">
+      <path d="M228 214 C228 226 228 236 229 244 C229 252 230 258 230 264 L254 264 C253 256 252 250 251 244 C250 236 248 226 246 214 Z" fill="url(#s7-pScarf)"/>
+      <g clip-path="url(#s7-cScarfEnd)">
+        <path d="M220 238 C232 241 244 241 260 238 L260 246 C244 249 232 249 220 246 Z" fill="#283000" opacity="0.4"/>
+        <path d="M220 231 C232 234 244 234 260 231 L260 238 C244 241 232 241 220 238 Z" fill="#8A9416" opacity="0.28"/>
+      </g>
+      <path d="M228 206 C228 199 235 196.5 241 197.5 C248 198.5 251 204 249.5 210.5 C248 216 233 217 230 213.5 C228.5 211.5 228 209 228 206 Z" fill="url(#s7-pScarf)"/>
+    </g>
+    <g stroke="#D88A1E" stroke-width="1.15" stroke-linecap="round">
+      <path d="M231 264 L230.6 271 M234.3 264 L234.1 272 M237.6 264 L237.7 271 M240.9 264 L241.2 272 M244.2 264 L244.7 271 M247.5 264 L248.2 272 M250.8 264 L251.7 271"/>
+    </g>
+
+    <!-- mug of cocoa -->
+    <g filter="url(#s7-grain)"><g transform="translate(362 314) scale(1.24) translate(-402 -317)">
+      <path d="M424 276 C441 273 443 302 424 303 L424 296.5 C434 296 434 282 424 282.5 Z" fill="#C3330B"/>
+      <path d="M380 268 L380 309 C380 314.5 388 317 402 317 C416 317 424 314.5 424 309 L424 268 Z" fill="url(#s7-gMug)"/>
+      <path d="M380 296 L380 309 C380 314.5 388 317 402 317 C416 317 424 314.5 424 309 L424 296 Z" fill="url(#s7-gMugBase)"/>
+      <ellipse cx="402" cy="268" rx="22" ry="5.6" fill="#FF6A36"/>
+      <ellipse cx="402" cy="268.6" rx="19" ry="4.2" fill="#4A1405"/>
+    </g></g>
+    <g transform="translate(362 314) scale(1.24) translate(-402 -317)">
+      <rect x="393" y="265.4" width="5" height="4" rx="1.2" fill="#FDD5A8" transform="rotate(-12 395.5 267.4)"/>
+      <rect x="401" y="266.2" width="4.5" height="3.6" rx="1.2" fill="#FDD5A8" transform="rotate(10 403 268)"/>
+      <g fill="none" stroke="#FDD5A8" stroke-width="1.35" stroke-linecap="round">
+        <path d="M386 292 L397.6 292 M406.4 292 L418 292"/>
+        <circle cx="402" cy="292" r="4.4"/>
+      </g>
+      <g fill="none" stroke="#FDD5A8" stroke-width="1.15" stroke-linecap="round">
+        <path d="M397 259 C393 251 399 245 398 237 C397 229 389 228 389 234 C389 240 399 240 400 231 C401 221 394 213 398 203 C400 198 403 195 406 193"/>
+        <path d="M410 259 C414 252 409 247 411 240 C413 233 421 233 421 238 C421 243 413 243 413 236 C413 229 418 225 417 218"/>
+      </g>
+    </g>
+  </g>
+</svg>

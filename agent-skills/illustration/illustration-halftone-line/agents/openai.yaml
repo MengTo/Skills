@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Halftone line"
+  short_description: "Black line and halftone dots on warm paper"
+  default_prompt: "Use $illustration-halftone-line to draw a 480x360 SVG card of a developer reading a code review on a tablet in a park-bench break."

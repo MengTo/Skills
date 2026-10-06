@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Outlined cartoon"
+  short_description: "Inked-outline cartoon spots with big-headed characters"
+  default_prompt: "Use $illustration-outlined-cartoon to draw a 480 x 360 SVG card of a developer high-fiving a giant green check badge."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Flat with black"
+  short_description: "Flat people art with solid black, denim and green"
+  default_prompt: "Use $illustration-flat-with-black to draw a 480x360 card of a developer sprinting to catch a falling build badge."

@@ -1,0 +1,29 @@
+{
+  "skill": "illustration-one-line",
+  "num": "11",
+  "name": "One-line",
+  "blurb": "Continuous loop line, off-register colour",
+  "mechanism": "One continuous black line draws the whole figure, and flat coral, periwinkle and white patches sit behind it, deliberately knocked 2-6 px out of register.",
+  "background": "#ece7da",
+  "palette": [
+    { "name": "Paper", "hex": "#ece7da", "role": "full-bleed card background" },
+    { "name": "Ink", "hex": "#1d1b1a", "role": "the one line, props, code glyphs, speed strokes, dots" },
+    { "name": "Coral", "hex": "#f2846e", "role": "skin patches (face, hands), stripes on tops, sun, accent patches, code dashes" },
+    { "name": "Periwinkle", "hex": "#8790f4", "role": "trousers, hair, screens, ground and prop patches, code dashes" },
+    { "name": "White", "hex": "#ffffff", "role": "tops, sleeves, shoes, cups, cloud and ground patches; mask fill" }
+  ],
+  "line": "Ink #1d1b1a stroke 2.3, round caps and joins, one long smooth cubic path per figure; code glyphs 1.8; coral stripes 1.9; code dashes 2.3.",
+  "rules": [
+    "Draw the figure as one wandering line, with an eye stroke apart.",
+    "Colour patches sit behind the line, offset 2-6 px, wobbly.",
+    "Coral, periwinkle and white only, on warm beige paper.",
+    "Stripes on tops are coral lines that stop short of the contour.",
+    "No ground plane: a squiggle or a curl under the feet.",
+    "Big joyful action poses; hands and feet as small loose loops."
+  ],
+  "cards": [
+    { "file": "flow-state.svg", "title": "Flow State", "subject": "A developer in headphones leaps between two code braces, laptop under one arm, the other arm flung back." },
+    { "file": "hackathon-sprint.svg", "title": "Hackathon Sprint", "subject": "A runner sprints left with a </> baton in one fist, a stopwatch tied into a motion squiggle behind." },
+    { "file": "juggling-tasks.svg", "title": "Juggling Tasks", "subject": "A developer on one leg juggles a laptop, a coffee cup and a bug along one looping motion path." }
+  ]
+}

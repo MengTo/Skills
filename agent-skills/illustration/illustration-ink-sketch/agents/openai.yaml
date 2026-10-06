@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Ink sketch"
+  short_description: "Brush-inked googly-eyed critters with hatching"
+  default_prompt: "Use $illustration-ink-sketch to draw a 480x360 SVG card of a googly-eyed rubber duck debugging a tangle of code on a grass patch."

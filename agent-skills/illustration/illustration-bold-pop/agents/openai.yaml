@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Bold pop"
+  short_description: "Navy-outlined pop spots with down-right extrusions"
+  default_prompt: "Use $illustration-bold-pop to draw a 480x360 SVG card of a developer watching a deploy progress bar fill on a giant browser window."

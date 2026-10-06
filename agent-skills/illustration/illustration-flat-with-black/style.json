@@ -1,0 +1,161 @@
+{
+  "skill": "illustration-flat-with-black",
+  "num": "05",
+  "name": "Flat with black",
+  "blurb": "Solid black shapes, denim and leaf green",
+  "mechanism": "Flat, outline-free colour shapes in four saturated mid-tones, anchored by large solid black masses (20-40% of the painted area), with black reused as thin 0.75-1.6 detail lines and white as thin seams on the black.",
+  "background": "#ffffff",
+  "palette": [
+    {
+      "name": "Ink",
+      "hex": "#15202f",
+      "role": "hair, trousers, shoes, devices, thin detail lines, ground line"
+    },
+    {
+      "name": "Ink shadow",
+      "hex": "#26313f",
+      "role": "far trouser leg, far shoe, paws"
+    },
+    {
+      "name": "Slate",
+      "hex": "#4b5662",
+      "role": "cuffs on black trousers, laptop deck, far table legs"
+    },
+    {
+      "name": "Skin",
+      "hex": "#fadfb9",
+      "role": "faces, necks, hands"
+    },
+    {
+      "name": "Skin shade",
+      "hex": "#efc9a0",
+      "role": "ear curve, hidden side of a hand"
+    },
+    {
+      "name": "Blush",
+      "hex": "#f3ad8f",
+      "role": "cheek ellipse, cat nose"
+    },
+    {
+      "name": "Nose",
+      "hex": "#e29771",
+      "role": "nose-tip stroke"
+    },
+    {
+      "name": "Mouth in beard",
+      "hex": "#f0a58c",
+      "role": "open mouth inside a black beard"
+    },
+    {
+      "name": "Denim",
+      "hex": "#65aacb",
+      "role": "jeans, beanies, desk tops, mugs, blue star"
+    },
+    {
+      "name": "Denim shade",
+      "hex": "#5b9bb6",
+      "role": "far jeans leg, desk-top underside"
+    },
+    {
+      "name": "Denim deep",
+      "hex": "#4a8bab",
+      "role": "knee folds on near jeans, beanie ribs"
+    },
+    {
+      "name": "Denim fold",
+      "hex": "#3f7894",
+      "role": "knee folds on far jeans"
+    },
+    {
+      "name": "Pale denim",
+      "hex": "#97c8df",
+      "role": "rolled jeans cuffs, sweat drops"
+    },
+    {
+      "name": "Sky",
+      "hex": "#a5d1e1",
+      "role": "envelopes, notes, screens, underline rules"
+    },
+    {
+      "name": "Leaf green",
+      "hex": "#a6cf6e",
+      "role": "tees, shirts, envelopes, bubbles"
+    },
+    {
+      "name": "Green shade",
+      "hex": "#8fbb57",
+      "role": "far sleeve, green fold lines"
+    },
+    {
+      "name": "Green light",
+      "hex": "#c6e1a0",
+      "role": "hems, collars"
+    },
+    {
+      "name": "Sun yellow",
+      "hex": "#f9db74",
+      "role": "hoodies, envelopes, notes, yellow star, sparkles"
+    },
+    {
+      "name": "Yellow mid",
+      "hex": "#eec55a",
+      "role": "hood, far sleeve"
+    },
+    {
+      "name": "Yellow shade",
+      "hex": "#d9ab3c",
+      "role": "hem band, folds, loafer soles"
+    },
+    {
+      "name": "Tomato",
+      "hex": "#e56355",
+      "role": "tops, bubbles, badges, calendar header, tongues"
+    },
+    {
+      "name": "Tomato shade",
+      "hex": "#c94d42",
+      "role": "far sleeve, hem band, dome underside"
+    },
+    {
+      "name": "Coffee",
+      "hex": "#6b4a3a",
+      "role": "coffee surface in a mug"
+    },
+    {
+      "name": "Rule grey",
+      "hex": "#d9dde2",
+      "role": "hairline dividers on a white board"
+    },
+    {
+      "name": "Paper",
+      "hex": "#ffffff",
+      "role": "paper props, seams and welts on black"
+    }
+  ],
+  "line": "No outlines on coloured fills; ink #15202f detail lines 0.73-1.6 (fingers 0.75, flaps 1.05, glasses 1.5), white seams 0.85-1.0 on black, ground line 1.25, round caps and joins.",
+  "rules": [
+    "No outline on any coloured shape; only white shapes get an ink edge.",
+    "Make hair, trousers, shoes or a device solid black.",
+    "Far limbs take the same hue one step darker.",
+    "Figures 5.2-5.5 heads tall with big shoes on the ground line.",
+    "Exactly two stars and two plus-sparkles, nothing else floats.",
+    "Centre the group; side margins near 90 px."
+  ],
+  "cards": [
+    {
+      "file": "messages.svg",
+      "title": "Messages",
+      "subject": "A developer runs from a swarm of envelopes and chat bubbles, glancing back, laptop clamped under one arm."
+    },
+    {
+      "file": "friday-deploy.svg",
+      "title": "Friday Deploy",
+      "subject": "A sweating developer leans over a desk, one finger hovering over a big red DEPLOY button, beside a FRI calendar and a cat."
+    },
+    {
+      "file": "stand-up.svg",
+      "title": "Stand-up",
+      "subject": "Two teammates with mugs face each other at a sticky-note board, one presenting, one nodding."
+    }
+  ]
+}

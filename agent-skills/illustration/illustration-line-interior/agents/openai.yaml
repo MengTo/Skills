@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Line interior"
+  short_description: "Thin indigo line rooms, white fills, sparse colour"
+  default_prompt: "Use $illustration-line-interior to draw an Onboarding card: a new hire with a backpack presses Next on a tall onboarding kiosk, a plant at the left and a welcome box on a cabinet at the right."

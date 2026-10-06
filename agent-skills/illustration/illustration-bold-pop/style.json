@@ -1,0 +1,40 @@
+{
+  "skill": "illustration-bold-pop",
+  "num": "03",
+  "name": "Bold pop",
+  "blurb": "Navy extrusions, hatching, saturated geometry",
+  "mechanism": "Every shape wears the same thick navy outline and sits on a solid navy extrusion stepped down-right, so the whole cluster reads as chunky pop-art blocks stacked toward the viewer.",
+  "background": "transparent",
+  "palette": [
+    { "name": "Navy", "hex": "#1f1c4d", "role": "every outline, extrusions, iso shadow faces, hatching, dots, eyes, mouths, curly hair" },
+    { "name": "White", "hex": "#ffffff", "role": "window bodies, pinwheel facets, sneakers, teeth, tee stripes" },
+    { "name": "Hot pink", "hex": "#ff5fa8", "role": "hero blocks, buttons, cones, hair, tongue, progress stripes" },
+    { "name": "Lemon", "hex": "#ffe36e", "role": "bolts, hard hats, padlocks, caution boards, highlighted lines" },
+    { "name": "Orange", "hex": "#ffb547", "role": "crane steel, keys, arrows, flames, shoe uppers" },
+    { "name": "Cream", "hex": "#fff4d8", "role": "dotted footers and gutters, cube tops, shoe soles, digit tiles" },
+    { "name": "Violet", "hex": "#8f5cff", "role": "title bars, phones, tees, leggings, pinwheel blade" },
+    { "name": "Periwinkle", "hex": "#7d7ff7", "role": "title bars, wireframe text pills, sleeves, grid lines" },
+    { "name": "Mint", "hex": "#34e2c4", "role": "overalls, shields, pinwheel blade, traffic dots" },
+    { "name": "Lime", "hex": "#b9f14d", "role": "tees, plates, gears, hills, confirm buttons" },
+    { "name": "Aqua", "hex": "#4fe3ec", "role": "title bars, arrow bands, hairbands, glass" },
+    { "name": "Sky", "hex": "#5bb8f7", "role": "tools, jeans, image placeholders, iso cube left faces" },
+    { "name": "Skin light", "hex": "#ffd0b0", "role": "faces, arms, hands" },
+    { "name": "Skin shade", "hex": "#f4a385", "role": "shadowed half of a fist" },
+    { "name": "Skin deep", "hex": "#c68660", "role": "alternative skin tone" },
+    { "name": "Blush", "hex": "#ff9cc8", "role": "one cheek circle per face" }
+  ],
+  "line": "Navy #1f1c4d outline 3.0 author units (2.34 px after the 0.78 card scale) on every shape, inner parts 2.2-2.6, marks 1.8, folds and finger contours 1.3-1.6, hatch 1.25 on a 5 grid; round caps and joins; extrusions 3-8 units stepped down-right.",
+  "rules": [
+    "One navy outline, 3.0 author units, on every shape",
+    "Every extrusion is solid navy and steps down-right",
+    "Flat saturated fills textured with navy hatch, dots, grids, stripes",
+    "Hatch the right or far side; light comes from the top-left",
+    "A slim 3/4 character beside a dense overlapping prop cluster",
+    "Scatter #, //, + and rings in the margins, never gradients"
+  ],
+  "cards": [
+    { "file": "page-under-construction.svg", "title": "Page Under Construction", "subject": "A worker hauls a wrench on a browser window while a tower crane lowers a code block." },
+    { "file": "two-factor-auth.svg", "title": "Two-Factor Auth", "subject": "A man holds a phone showing a one-time code beside a login window and an open padlock." },
+    { "file": "hot-reload.svg", "title": "Hot Reload", "subject": "A runner rides a flaming refresh arrow that loops round a live code window." }
+  ]
+}

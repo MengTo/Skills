@@ -1,0 +1,35 @@
+{
+  "skill": "illustration-teal-spot",
+  "num": "13",
+  "name": "Teal spot",
+  "blurb": "Teal ramp, hard drop shadow, floating extras",
+  "mechanism": "A single white object in one fixed oblique projection, teal only on its right-facing sides, outlined in 1.2 px dark teal and dropped onto flat grey by a hard, unblurred deep-teal shadow that always falls down and to the right.",
+  "background": "#ebebeb",
+  "palette": [
+    { "name": "Background", "hex": "#ebebeb", "role": "full-bleed card background" },
+    { "name": "Ink", "hex": "#0e3f3d", "role": "every outline, glyphs on pale faces" },
+    { "name": "Deep teal", "hex": "#0e4a48", "role": "hard shadows, sparkles, dark glyphs, right side of teal parts" },
+    { "name": "Teal dark", "hex": "#299c96", "role": "front and left sides of teal parts, recess walls" },
+    { "name": "Teal", "hex": "#36c3b0", "role": "right side of white parts, accent tops, LEDs, highlighted UI rows" },
+    { "name": "Mid teal", "hex": "#7fd8ca", "role": "sides of pale parts, recess floors, coin sides" },
+    { "name": "Pale-mid", "hex": "#a8e5e0", "role": "arc ticks" },
+    { "name": "Pale teal", "hex": "#d8f2ed", "role": "key and card sides, highlight streaks on white" },
+    { "name": "White", "hex": "#ffffff", "role": "hero top, front and left faces; card tops; glyphs on teal" },
+    { "name": "Grey", "hex": "#d5d8d8", "role": "label pills, placeholder text bars" },
+    { "name": "Grey dark", "hex": "#b9c0c0", "role": "right side of small grey parts" }
+  ],
+  "line": "#0e3f3d outlines at 1.2 px (UI 1.0-1.1, LEDs 0.8), round joins; plate sides drawn with a 2.9 ink stroke behind; no gradients or blur.",
+  "rules": [
+    "One hero object, no people, in the fixed -25/36 degree projection.",
+    "White top and front faces; teal only on right-facing sides.",
+    "Every shadow is hard, flat #0e4a48 and falls down-right.",
+    "Two to four floating extras, each with its own hard shadow.",
+    "Three deep-teal sparkles and up to three pale arc ticks.",
+    "Group centred, 58-90% of the card wide, 30 px margins."
+  ],
+  "cards": [
+    { "file": "command-k.svg", "title": "Command K", "subject": "A keyboard case whose Command and K keys pop out above their sockets, under a command-palette card." },
+    { "file": "git-merge.svg", "title": "Git Merge", "subject": "A thick white tile carrying a git graph whose teal branch arches up and merges back into a check disc." },
+    { "file": "backup.svg", "title": "Backup", "subject": "A database drum wearing a lifebuoy, with a shield, a cloud upload and two data coins." }
+  ]
+}

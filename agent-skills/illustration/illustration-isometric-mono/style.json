@@ -1,0 +1,31 @@
+{
+  "skill": "illustration-isometric-mono",
+  "num": "12",
+  "name": "Isometric mono",
+  "blurb": "True isometric, green ramp, platform slab",
+  "mechanism": "A true-isometric diorama on one rounded, bevelled off-white slab, every face filled from a single five-step green ramp by the direction it faces (top lightest, right darkest), every edge outlined in 0.9 deep green, with fine 0.35-0.6 repeated detail lines and soft green floor shadows and glows.",
+  "background": "#ffffff",
+  "palette": [
+    { "name": "Outline", "hex": "#0f3d30", "role": "every edge, 0.9 silhouettes and 0.35-0.55 detail" },
+    { "name": "Off-white", "hex": "#fbf8f1", "role": "slab top, top faces of light objects, label plates" },
+    { "name": "Pale mint", "hex": "#c9f3d6", "role": "top-face accents, slab chamfer, highlights, lit LEDs" },
+    { "name": "Mint", "hex": "#8de8a6", "role": "left (+y) faces of light objects, slab band, code lines" },
+    { "name": "Mid green", "hex": "#5cc58a", "role": "right (+x) faces, left faces of mid objects, glows, detail lines" },
+    { "name": "Deep green", "hex": "#2f9e6c", "role": "right faces of mid objects, keys, shadows, fine ribs" },
+    { "name": "Very deep", "hex": "#0b4a3a", "role": "screens, keypads, rack units, mug interiors" }
+  ],
+  "line": "Outline #0f3d30 0.9 on object edges and silhouettes; 0.5-0.55 for insets and panels; 0.35-0.45 for tiny parts; detail lines 0.4-1.2 in ramp greens; round joins and caps.",
+  "rules": [
+    "True isometric: plan x and y at 30 degrees, z straight up, no vanishing points.",
+    "Fill each face by orientation: top lightest, left mid, right darkest.",
+    "Outline every edge in deep green at 0.9; details at 0.35-0.6.",
+    "Everything stands on one rounded, bevelled off-white slab.",
+    "Every object casts a soft shadow toward the lower right.",
+    "Seven to nine objects, tall ones at the back."
+  ],
+  "cards": [
+    { "file": "dev-stack.svg", "title": "Dev Stack", "subject": "A laptop with code cabled to two server racks, with a database stack, a container, a terminal card, a cloud badge, books and a mug." },
+    { "file": "design-studio.svg", "title": "Design Studio", "subject": "A monitor running a design tool with a drawing tablet, bookshelf, mood board, sketchbook, swatches, pen cup, plant and mug." },
+    { "file": "ci-pipeline.svg", "title": "CI Pipeline", "subject": "Code boxes ride a conveyor through build and test gates to a robot arm that stacks them for shipping, watched by a status tower." }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Grainy gouache"
+  short_description: "Cosy grainy animal scenes on hot pink"
+  default_prompt: "Use $illustration-grainy-gouache to draw a hedgehog in a knit scarf reviewing a pull request on a laptop, with a cocoa mug and falling leaves."

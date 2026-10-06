@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Two-colour brush"
+  short_description: "Black marker and mint second-plate scenes"
+  default_prompt: "Use $illustration-two-colour-brush to draw a developer on a scooter racing to a stand-up with a laptop under one arm and a coffee in the other hand."

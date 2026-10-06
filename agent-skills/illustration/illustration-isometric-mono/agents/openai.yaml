@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Isometric mono"
+  short_description: "Green-ramp isometric dioramas on a bevelled slab"
+  default_prompt: "Use $illustration-isometric-mono to draw a 480x360 card of a deploy dashboard with servers, a database and a rocket badge on one slab."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Vintage emblem"
+  short_description: "Screen-print badges with sun disc and condensed wordmark"
+  default_prompt: "Use $illustration-vintage-emblem to draw a 480 x 360 SVG badge reading \"PAIR PROGRAMMING\" with two coffee mugs on a sun disc."

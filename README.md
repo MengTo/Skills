@@ -25,6 +25,8 @@ Browse [all runnable demos and recreation prompts](DEMOS.md).
 
 Explore the [3D rendering skills](agent-skills/3d/README.md) for ultra-realistic water, underwater god rays, virtual tours, sky rays, sky backgrounds, falling leaves, four seasons, detailed textures and models, and Retina rendering at 200%.
 
+Explore the [illustration skills](agent-skills/illustration/README.md) for 14 hand-written SVG illustration styles, from flat and outlined cartoon to halftone, one-line, isometric and vintage emblem, each with example cards, a palette, a drawing kit and a render-and-lint loop.
+
 Use these skills when you want:
 - repeatable design direction
 - reusable game architecture and gameplay QA
@@ -138,6 +140,22 @@ agent-skills/
       SKILL.md
     test-playable-web-games/
       SKILL.md
+  illustration/
+    README.md
+    illustration-flat/
+    illustration-outlined-cartoon/
+    illustration-bold-pop/
+    illustration-line-interior/
+    illustration-flat-with-black/
+    illustration-framed-panel/
+    illustration-grainy-gouache/
+    illustration-ink-sketch/
+    illustration-vintage-emblem/
+    illustration-halftone-line/
+    illustration-one-line/
+    illustration-isometric-mono/
+    illustration-teal-spot/
+    illustration-two-colour-brush/
   media/
     aura-asset-images/
       SKILL.md
@@ -225,7 +243,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **157 skills** across eight categories.
+This snapshot contains **176 skills** across nine categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -267,6 +285,24 @@ Design-first UI prompting system:
 Files:
 - `agent-skills/ui/design-first-ui-prompting/SKILL.md`
 - `agent-skills/ui/design-first-ui-prompting/ARTICLE.md`
+
+### Illustration (14)
+
+Original spot illustrations as hand-written SVG, one skill per style, each with three example cards, a measured palette, a drawing kit, a headless renderer and a linter. See the [illustration guide](agent-skills/illustration/README.md).
+- `illustration-flat` - no outlines, lavender and sunshine fills, floating confetti.
+- `illustration-outlined-cartoon` - inked outlines, big heads, sparkle crosses.
+- `illustration-bold-pop` - navy extrusions, hatching, saturated geometry.
+- `illustration-line-interior` - thin indigo line, white fills, sparse accents.
+- `illustration-flat-with-black` - solid black shapes, denim and leaf green.
+- `illustration-framed-panel` - pastel card, violet frame, pieces breaking out.
+- `illustration-grainy-gouache` - riso grain, soft shading, cosy animals.
+- `illustration-ink-sketch` - wobbly brush line, hatching, googly eyes.
+- `illustration-vintage-emblem` - limited palette, keylines, condensed wordmark.
+- `illustration-halftone-line` - black line, halftone dots, open contours.
+- `illustration-one-line` - continuous loop line, off-register colour.
+- `illustration-isometric-mono` - true isometric, green ramp, platform slab.
+- `illustration-teal-spot` - teal ramp, hard drop shadow, floating extras.
+- `illustration-two-colour-brush` - black brush marker, mint blocks, squiggle camo.
 
 ### Game combat (6)
 

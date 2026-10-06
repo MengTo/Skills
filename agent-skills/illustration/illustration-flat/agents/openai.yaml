@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Flat"
+  short_description: "Flat, outline-free people with white folds and confetti"
+  default_prompt: "Use $illustration-flat to draw a 480x360 SVG card of a developer dragging a giant cursor onto a browser window, for an onboarding screen."

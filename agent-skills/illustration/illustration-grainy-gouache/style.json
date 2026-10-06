@@ -1,0 +1,681 @@
+{
+ "skill": "illustration-grainy-gouache",
+ "num": "07",
+ "name": "Grainy gouache",
+ "blurb": "Riso grain, soft shading, cosy animals",
+ "mechanism": "Outline-free shapes, each filled with a soft light-to-dark gradient and then speckled with a fine dark grain that thickens toward the shape's edges and into its shadows, sitting on hot pink #FF81BE with a chalky purple pool beneath.",
+ "background": "#FF81BE",
+ "palette": [
+  {
+   "name": "Background pink",
+   "hex": "#FF81BE",
+   "role": "full-bleed card background, every card"
+  },
+  {
+   "name": "Cream",
+   "hex": "#FDD5A8",
+   "role": "sparkles, bursts, dots, steam, code text, rain, fur ticks"
+  },
+  {
+   "name": "Cream light 1",
+   "hex": "#FFF3E2",
+   "role": "tiny glints on drops, pompom, mug edge"
+  },
+  {
+   "name": "Cream light 2",
+   "hex": "#FFF0DC",
+   "role": "tiny glints on drops, pompom, mug edge"
+  },
+  {
+   "name": "Pool shadow",
+   "hex": "#B95A93",
+   "role": "chalky floor pool under the group"
+  },
+  {
+   "name": "Pool core",
+   "hex": "#A04A80",
+   "role": "darker pool core at opacity 0.8"
+  },
+  {
+   "name": "Blush",
+   "hex": "#FF7FB0",
+   "role": "cheek ellipses at opacity 0.6"
+  },
+  {
+   "name": "Vermilion",
+   "hex": "#FF4816",
+   "role": "flat accents: editor dot, bookmark, commit node"
+  },
+  {
+   "name": "Vermilion cylinder 1",
+   "hex": "#B02B08",
+   "role": "mugs and pots, horizontal 5-stop ramp"
+  },
+  {
+   "name": "Vermilion cylinder 2",
+   "hex": "#F2440F",
+   "role": "mugs and pots, horizontal 5-stop ramp"
+  },
+  {
+   "name": "Vermilion cylinder 3",
+   "hex": "#FF5A24",
+   "role": "mugs and pots, horizontal 5-stop ramp"
+  },
+  {
+   "name": "Vermilion cylinder 4",
+   "hex": "#F0420E",
+   "role": "mugs and pots, horizontal 5-stop ramp"
+  },
+  {
+   "name": "Vermilion cylinder 5",
+   "hex": "#9C2306",
+   "role": "mugs and pots, horizontal 5-stop ramp"
+  },
+  {
+   "name": "Vermilion fur 1",
+   "hex": "#FF5A26",
+   "role": "fox body radial ramp"
+  },
+  {
+   "name": "Vermilion fur 2",
+   "hex": "#FB4714",
+   "role": "fox body radial ramp"
+  },
+  {
+   "name": "Vermilion fur 3",
+   "hex": "#D9380C",
+   "role": "fox body radial ramp"
+  },
+  {
+   "name": "Vermilion fur 4",
+   "hex": "#9C2406",
+   "role": "fox body radial ramp"
+  },
+  {
+   "name": "Vermilion deep 1",
+   "hex": "#C2300A",
+   "role": "inner ears, mug handle, gilt-rule ink"
+  },
+  {
+   "name": "Vermilion deep 2",
+   "hex": "#7A1A04",
+   "role": "inner ears, mug handle, gilt-rule ink"
+  },
+  {
+   "name": "Coral 1",
+   "hex": "#FF6A3A",
+   "role": "code accent, mug rim, sticky note"
+  },
+  {
+   "name": "Coral 2",
+   "hex": "#FF6A36",
+   "role": "code accent, mug rim, sticky note"
+  },
+  {
+   "name": "Knit 1",
+   "hex": "#EE430F",
+   "role": "knit chevron pattern base + stitch"
+  },
+  {
+   "name": "Knit 2",
+   "hex": "#C2320A",
+   "role": "knit chevron pattern base + stitch"
+  },
+  {
+   "name": "Knit dark 1",
+   "hex": "#D2360B",
+   "role": "shaded knit for the torso back"
+  },
+  {
+   "name": "Knit dark 2",
+   "hex": "#A42807",
+   "role": "shaded knit for the torso back"
+  },
+  {
+   "name": "Rib 1",
+   "hex": "#E03A0C",
+   "role": "rib stripes: cuffs, collar, hem, beanie brim"
+  },
+  {
+   "name": "Rib 2",
+   "hex": "#A8290A",
+   "role": "rib stripes: cuffs, collar, hem, beanie brim"
+  },
+  {
+   "name": "Rib 3",
+   "hex": "#D8380C",
+   "role": "rib stripes: cuffs, collar, hem, beanie brim"
+  },
+  {
+   "name": "Sleeve light",
+   "hex": "#FF8A50",
+   "role": "inner-sleeve light overlay at 0.12-0.22"
+  },
+  {
+   "name": "Ochre",
+   "hex": "#E7A13A",
+   "role": "code keywords, sticky notes, band borders"
+  },
+  {
+   "name": "Gold",
+   "hex": "#D88A1E",
+   "role": "gilt rules, fringe, owl toes, editor dot"
+  },
+  {
+   "name": "Ochre ramp 1",
+   "hex": "#E38C1E",
+   "role": "window frames, book covers (vertical)"
+  },
+  {
+   "name": "Ochre ramp 2",
+   "hex": "#C96E05",
+   "role": "window frames, book covers (vertical)"
+  },
+  {
+   "name": "Ochre ramp 3",
+   "hex": "#9E5004",
+   "role": "window frames, book covers (vertical)"
+  },
+  {
+   "name": "Wood top 1",
+   "hex": "#F0A23C",
+   "role": "desk tops and sills (vertical)"
+  },
+  {
+   "name": "Wood top 2",
+   "hex": "#D98418",
+   "role": "desk tops and sills (vertical)"
+  },
+  {
+   "name": "Wood edge",
+   "hex": "#F6B860",
+   "role": "0.9 highlight line on a top front edge"
+  },
+  {
+   "name": "Wood contact",
+   "hex": "#7A3A04",
+   "role": "contact ellipses under objects at 0.38"
+  },
+  {
+   "name": "Maroon ramp 1",
+   "hex": "#8A220A",
+   "role": "books, desk and sill fronts, round frames"
+  },
+  {
+   "name": "Maroon ramp 2",
+   "hex": "#701001",
+   "role": "books, desk and sill fronts, round frames"
+  },
+  {
+   "name": "Maroon ramp 3",
+   "hex": "#4A0901",
+   "role": "books, desk and sill fronts, round frames"
+  },
+  {
+   "name": "Maroon deep 1",
+   "hex": "#5A0E02",
+   "role": "aprons, base and sweat overlays"
+  },
+  {
+   "name": "Maroon deep 2",
+   "hex": "#3A0601",
+   "role": "aprons, base and sweat overlays"
+  },
+  {
+   "name": "End shade",
+   "hex": "#1A0402",
+   "role": "end-shade overlay on boxes and spines"
+  },
+  {
+   "name": "Screen 1",
+   "hex": "#8A2632",
+   "role": "screen radial ramp"
+  },
+  {
+   "name": "Screen 2",
+   "hex": "#621626",
+   "role": "screen radial ramp"
+  },
+  {
+   "name": "Screen 3",
+   "hex": "#3A0A14",
+   "role": "screen radial ramp"
+  },
+  {
+   "name": "Night sky 1",
+   "hex": "#3A1424",
+   "role": "night window radial"
+  },
+  {
+   "name": "Night sky 2",
+   "hex": "#1C0910",
+   "role": "night window radial"
+  },
+  {
+   "name": "Rain pane 1",
+   "hex": "#22090F",
+   "role": "rainy window pane (vertical)"
+  },
+  {
+   "name": "Rain pane 2",
+   "hex": "#3A0E18",
+   "role": "rainy window pane (vertical)"
+  },
+  {
+   "name": "Rain pane 3",
+   "hex": "#4E1420",
+   "role": "rainy window pane (vertical)"
+  },
+  {
+   "name": "Bezel",
+   "hex": "#191113",
+   "role": "laptop and monitor bezels"
+  },
+  {
+   "name": "Black ramp 1",
+   "hex": "#3A2E31",
+   "role": "lamps, decks, stands, ear tips, paws"
+  },
+  {
+   "name": "Black ramp 2",
+   "hex": "#0D0809",
+   "role": "lamps, decks, stands, ear tips, paws"
+  },
+  {
+   "name": "Black edge",
+   "hex": "#6A5A5F",
+   "role": "highlight line on a black edge, lamp joints"
+  },
+  {
+   "name": "Face ink 1",
+   "hex": "#120A0B",
+   "role": "mouth, lid line, whiskers"
+  },
+  {
+   "name": "Face ink 2",
+   "hex": "#1A0E0F",
+   "role": "mouth, lid line, whiskers"
+  },
+  {
+   "name": "Nose shine",
+   "hex": "#6A5A5C",
+   "role": "shine ellipse on the nose"
+  },
+  {
+   "name": "Eye ring",
+   "hex": "#F7D6A6",
+   "role": "cream ring of every eye"
+  },
+  {
+   "name": "Cream fur 1",
+   "hex": "#FFE6C4",
+   "role": "muzzles, chests, tail tips (radial)"
+  },
+  {
+   "name": "Cream fur 2",
+   "hex": "#FCD9AE",
+   "role": "muzzles, chests, tail tips (radial)"
+  },
+  {
+   "name": "Cream fur 3",
+   "hex": "#F0BF88",
+   "role": "muzzles, chests, tail tips (radial)"
+  },
+  {
+   "name": "Cream fur alt 1",
+   "hex": "#FFE3BD",
+   "role": "belly and cheek ramp variant"
+  },
+  {
+   "name": "Cream fur alt 2",
+   "hex": "#FBD3A2",
+   "role": "belly and cheek ramp variant"
+  },
+  {
+   "name": "Cream fur alt 3",
+   "hex": "#EDB27A",
+   "role": "belly and cheek ramp variant"
+  },
+  {
+   "name": "Cream cylinder 1",
+   "hex": "#E2A872",
+   "role": "cream mugs, horizontal ramp"
+  },
+  {
+   "name": "Cream cylinder 2",
+   "hex": "#FAD4A6",
+   "role": "cream mugs, horizontal ramp"
+  },
+  {
+   "name": "Cream cylinder 3",
+   "hex": "#FFE6C6",
+   "role": "cream mugs, horizontal ramp"
+  },
+  {
+   "name": "Cream cylinder 4",
+   "hex": "#F6CC98",
+   "role": "cream mugs, horizontal ramp"
+  },
+  {
+   "name": "Cream cylinder 5",
+   "hex": "#D89A62",
+   "role": "cream mugs, horizontal ramp"
+  },
+  {
+   "name": "Cream cylinder 6",
+   "hex": "#FFE9CC",
+   "role": "cream mugs, horizontal ramp"
+  },
+  {
+   "name": "Ivy 1",
+   "hex": "#16592C",
+   "role": "ivy leaf halves, vines"
+  },
+  {
+   "name": "Ivy 2",
+   "hex": "#0F4A23",
+   "role": "ivy leaf halves, vines"
+  },
+  {
+   "name": "Ivy 3",
+   "hex": "#0C3F1D",
+   "role": "ivy leaf halves, vines"
+  },
+  {
+   "name": "Ivy 4",
+   "hex": "#082F15",
+   "role": "ivy leaf halves, vines"
+  },
+  {
+   "name": "Ivy ink 1",
+   "hex": "#06150A",
+   "role": "ivy veins and stem"
+  },
+  {
+   "name": "Ivy ink 2",
+   "hex": "#0A1A0E",
+   "role": "ivy veins and stem"
+  },
+  {
+   "name": "Olive 1",
+   "hex": "#7A7318",
+   "role": "olive leaf halves, plant"
+  },
+  {
+   "name": "Olive 2",
+   "hex": "#6A6416",
+   "role": "olive leaf halves, plant"
+  },
+  {
+   "name": "Olive 3",
+   "hex": "#524810",
+   "role": "olive leaf halves, plant"
+  },
+  {
+   "name": "Olive 4",
+   "hex": "#3C350C",
+   "role": "olive leaf halves, plant"
+  },
+  {
+   "name": "Olive ink",
+   "hex": "#1C1804",
+   "role": "olive veins and stems"
+  },
+  {
+   "name": "Olive cylinder 1",
+   "hex": "#5E5712",
+   "role": "olive mugs and handles"
+  },
+  {
+   "name": "Olive cylinder 2",
+   "hex": "#352F0A",
+   "role": "olive mugs and handles"
+  },
+  {
+   "name": "Olive cylinder 3",
+   "hex": "#4B4210",
+   "role": "olive mugs and handles"
+  },
+  {
+   "name": "Olive cylinder 4",
+   "hex": "#8A8420",
+   "role": "olive mugs and handles"
+  },
+  {
+   "name": "Olive accent 1",
+   "hex": "#A8B030",
+   "role": "code green, editor dot, scarf base"
+  },
+  {
+   "name": "Olive accent 2",
+   "hex": "#8A9416",
+   "role": "code green, editor dot, scarf base"
+  },
+  {
+   "name": "Olive accent 3",
+   "hex": "#545C01",
+   "role": "code green, editor dot, scarf base"
+  },
+  {
+   "name": "Oak 1",
+   "hex": "#E08A1C",
+   "role": "oak leaf halves"
+  },
+  {
+   "name": "Oak 2",
+   "hex": "#D47A0C",
+   "role": "oak leaf halves"
+  },
+  {
+   "name": "Oak 3",
+   "hex": "#A85A05",
+   "role": "oak leaf halves"
+  },
+  {
+   "name": "Oak ink",
+   "hex": "#3A1404",
+   "role": "oak veins and stems"
+  },
+  {
+   "name": "Fur amber 1",
+   "hex": "#E59240",
+   "role": "brown fur, radial"
+  },
+  {
+   "name": "Fur amber 2",
+   "hex": "#CF7426",
+   "role": "brown fur, radial"
+  },
+  {
+   "name": "Fur amber 3",
+   "hex": "#A9531A",
+   "role": "brown fur, radial"
+  },
+  {
+   "name": "Fur amber 4",
+   "hex": "#7A3510",
+   "role": "brown fur, radial"
+  },
+  {
+   "name": "Fur amber limb 1",
+   "hex": "#B85E1E",
+   "role": "legs, arms, tail (vertical)"
+  },
+  {
+   "name": "Fur amber limb 2",
+   "hex": "#8E4414",
+   "role": "legs, arms, tail (vertical)"
+  },
+  {
+   "name": "Fur amber limb 3",
+   "hex": "#5E280C",
+   "role": "legs, arms, tail (vertical)"
+  },
+  {
+   "name": "Fur amber limb 4",
+   "hex": "#D47A2C",
+   "role": "legs, arms, tail (vertical)"
+  },
+  {
+   "name": "Paw dark 1",
+   "hex": "#6A3418",
+   "role": "paws, foot pads, toes"
+  },
+  {
+   "name": "Paw dark 2",
+   "hex": "#32150A",
+   "role": "paws, foot pads, toes"
+  },
+  {
+   "name": "Paw dark 3",
+   "hex": "#5A2A12",
+   "role": "paws, foot pads, toes"
+  },
+  {
+   "name": "Paw dark 4",
+   "hex": "#3E1A0A",
+   "role": "paws, foot pads, toes"
+  },
+  {
+   "name": "Fur ink 1",
+   "hex": "#3A1A0C",
+   "role": "otter whiskers, creases, muzzle dots, inner ear"
+  },
+  {
+   "name": "Fur ink 2",
+   "hex": "#1A0A04",
+   "role": "otter whiskers, creases, muzzle dots, inner ear"
+  },
+  {
+   "name": "Fur ink 3",
+   "hex": "#7A4A30",
+   "role": "otter whiskers, creases, muzzle dots, inner ear"
+  },
+  {
+   "name": "Fur ink 4",
+   "hex": "#5A2408",
+   "role": "otter whiskers, creases, muzzle dots, inner ear"
+  },
+  {
+   "name": "Fur owl 1",
+   "hex": "#F0962E",
+   "role": "orange fur, radial"
+  },
+  {
+   "name": "Fur owl 2",
+   "hex": "#DC7A14",
+   "role": "orange fur, radial"
+  },
+  {
+   "name": "Fur owl 3",
+   "hex": "#B85A08",
+   "role": "orange fur, radial"
+  },
+  {
+   "name": "Fur owl 4",
+   "hex": "#8A3E04",
+   "role": "orange fur, radial"
+  },
+  {
+   "name": "Owl wing 1",
+   "hex": "#7E2A06",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl wing 2",
+   "hex": "#641E04",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl wing 3",
+   "hex": "#461402",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl wing 4",
+   "hex": "#E8832A",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl wing 5",
+   "hex": "#C86416",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl wing 6",
+   "hex": "#B4520E",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl wing 7",
+   "hex": "#94400A",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl wing 8",
+   "hex": "#A04610",
+   "role": "wing base, covert tiers, feather lines"
+  },
+  {
+   "name": "Owl disk 1",
+   "hex": "#FBC07A",
+   "role": "facial disk, belly chevrons"
+  },
+  {
+   "name": "Owl disk 2",
+   "hex": "#F4A850",
+   "role": "facial disk, belly chevrons"
+  },
+  {
+   "name": "Owl disk 3",
+   "hex": "#E48C2C",
+   "role": "facial disk, belly chevrons"
+  },
+  {
+   "name": "Owl disk 4",
+   "hex": "#B8600E",
+   "role": "facial disk, belly chevrons"
+  },
+  {
+   "name": "Cocoa 1",
+   "hex": "#4A1405",
+   "role": "drink inside mugs, beak"
+  },
+  {
+   "name": "Cocoa 2",
+   "hex": "#7A3A0C",
+   "role": "drink inside mugs, beak"
+  },
+  {
+   "name": "Cocoa 3",
+   "hex": "#3A1A08",
+   "role": "drink inside mugs, beak"
+  }
+ ],
+ "line": "No outlines; fills only. Detail lines 0.6-1.3 px round-capped in dark brown (veins 0.6-0.7, whiskers 0.75-0.8, mouth 1.05); cream decor lines 1.1-1.35; screen code 2.2-2.6.",
+ "rules": [
+  "Hot pink #FF81BE background on every card, even at night",
+  "No outlines: shapes separate by value steps and grain",
+  "Every big shape gets a gradient plus edge-gathered grain",
+  "Big glossy eyes: cream ring, offset pupil, star highlight",
+  "Chalky purple-pink pool under the group; nothing floats",
+  "7-8 grained leaves and cream sparkles, margins only"
+ ],
+ "cards": [
+  {
+   "file": "cozy-commit.svg",
+   "title": "Cozy Commit",
+   "subject": "A fox in a { } scarf curled on an open laptop on a book stack, with cocoa"
+  },
+  {
+   "file": "rainy-refactor.svg",
+   "title": "Rainy Refactor",
+   "subject": "An otter in a knit sweater on a rainy window sill, tea in both paws, a diff on a laptop"
+  },
+  {
+   "file": "night-shift.svg",
+   "title": "Night Shift",
+   "subject": "An owl in a beanie perched on a desk-lamp arm, watching a monitor at 02:14"
+  }
+ ]
+}

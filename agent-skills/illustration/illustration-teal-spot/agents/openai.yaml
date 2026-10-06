@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Teal spot"
+  short_description: "Teal 3/4 spot objects with hard drop shadows"
+  default_prompt: "Use $illustration-teal-spot to draw a card of a white server tile whose teal deploy button is pressed, with a rocket coin floating beside it."

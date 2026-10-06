@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustration: Framed panel"
+  short_description: "Pastel cards, violet frame, scenes breaking out"
+  default_prompt: "Use $illustration-framed-panel to draw a card of a developer kneeling to plug a cable into a server rack, with a status bubble breaking out of the frame."

@@ -1,0 +1,35 @@
+{
+  "skill": "illustration-flat",
+  "num": "01",
+  "name": "Flat",
+  "blurb": "No outlines, lavender and sunshine fills, floating confetti",
+  "mechanism": "Big shapes carry no outline at all: form is described only by thin white fold strokes laid on flat fills, plus a handful of navy hairlines, so the figure reads as cut paper with chalk creases.",
+  "background": "#ffffff",
+  "palette": [
+    { "name": "Navy", "hex": "#011B5C", "role": "hair, sneaker outline and heel tab, hairline contours, laptops, motion marks" },
+    { "name": "Lavender", "hex": "#9E91E1", "role": "sweaters, browser title bars, decor" },
+    { "name": "Indigo-violet", "hex": "#6A6CEB", "role": "trousers, tags, screens" },
+    { "name": "Sunshine yellow", "hex": "#FEC600", "role": "tops, hero props, decor dots" },
+    { "name": "Skin", "hex": "#FD9999", "role": "the one skin tone" },
+    { "name": "Coral pink", "hex": "#FF7F91", "role": "socks, trousers, decor rings and squiggles, UI pills" },
+    { "name": "Mint", "hex": "#93D7D5", "role": "tees, ladders, image placeholders, decor triangles" },
+    { "name": "White", "hex": "#FFFFFF", "role": "sneakers, fold strokes, keylines, window bodies" },
+    { "name": "Pale lavender", "hex": "#CDC6EF", "role": "smoke, clouds, soft secondary masses" },
+    { "name": "Palest lavender", "hex": "#E4E0F7", "role": "front puffs over pale-lavender smoke" },
+    { "name": "Tape yellow", "hex": "#FFE58A", "role": "masking tape, pale highlight props (one-off)" },
+    { "name": "Warning red", "hex": "#FF6378", "role": "one alert prop per card at most (one-off)" }
+  ],
+  "line": "No stroke on any fill; white fold strokes 1.2-1.4; navy hairlines 0.8-1.4; sneaker outline 1.17; round caps and joins.",
+  "rules": [
+    "No outlines on big shapes; white fold strokes do all the shading.",
+    "Navy only for hair, sneakers, face features and a few hairlines.",
+    "Slim figures 205-235 px tall with 35 px heads and tapered legs.",
+    "One hero prop, in a colour the clothes don't use.",
+    "Six or seven confetti pieces; no ground line, no shadows."
+  ],
+  "cards": [
+    { "file": "broken-link.svg", "title": "Broken Link", "subject": "A kneeling woman pulls apart a snapped yellow chain link." },
+    { "file": "fatal-error.svg", "title": "Fatal Error", "subject": "A man recoils as a warning triangle bursts out of his smoking laptop." },
+    { "file": "coming-soon.svg", "title": "Coming Soon", "subject": "A woman on a step ladder presses a browser-window poster to the wall, tagged SOON." }
+  ]
+}

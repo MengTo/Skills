@@ -1,0 +1,42 @@
+{
+  "skill": "illustration-line-interior",
+  "num": "04",
+  "name": "Line interior",
+  "blurb": "Thin indigo line, white fills, sparse accents",
+  "mechanism": "One thin uniform indigo outline (1.4 px) around white-filled shapes in a wide, airy room, with flat colour on under 7% of the card.",
+  "background": "#ffffff",
+  "palette": [
+    { "name": "Indigo ink", "hex": "#3a2d66", "role": "every outline, indigo hair, eye dots, floor line" },
+    { "name": "Wall line", "hex": "#cfc9e0", "role": "background decor strokes only: bricks, lamps, posters, clouds, skyline" },
+    { "name": "White", "hex": "#ffffff", "role": "default fill: furniture, shirts, screens, pots, sneakers, books" },
+    { "name": "Peach wood", "hex": "#f9c99a", "role": "wood: shelf rails, posts, stools, crates, a pot" },
+    { "name": "Mustard", "hex": "#f5c35a", "role": "a book, a duck, bulbs, sneakers, sticky notes, earring, a top" },
+    { "name": "Orange", "hex": "#f6a85e", "role": "a pot, trousers, code dash, shine on brown hair" },
+    { "name": "Coral", "hex": "#ef5b5b", "role": "sneakers or soles, labels, marker tip, a mug band, a code dash" },
+    { "name": "Teal", "hex": "#3fa58a", "role": "a book, a top, a mug band, hammock stripe, check marks" },
+    { "name": "Sage", "hex": "#8cc79b", "role": "light leaves, a sticky note" },
+    { "name": "Leaf", "hex": "#5fae7a", "role": "dark leaves" },
+    { "name": "Lavender", "hex": "#ab9ee6", "role": "a book, a top, page lines, keyboard lines, a sneaker sole" },
+    { "name": "Purple", "hex": "#7f6cc4", "role": "a book, trousers, shine on indigo hair, code dash" },
+    { "name": "Denim", "hex": "#7f9fdc", "role": "jeans" },
+    { "name": "Brown", "hex": "#7b4b3a", "role": "brown hair, coffee" },
+    { "name": "Skin light", "hex": "#f3cdb0", "role": "skin" },
+    { "name": "Skin medium", "hex": "#e2a57c", "role": "skin" },
+    { "name": "Skin deep", "hex": "#b47852", "role": "skin" },
+    { "name": "Skin dark", "hex": "#7a4b33", "role": "skin" }
+  ],
+  "line": "Indigo #3a2d66 stroke 1.4 round caps and joins on every filled shape; details 1 (folds, veins, brows), finger lines 0.9; background decor #cfc9e0 at 1, unfilled.",
+  "rules": [
+    "Fill shapes white; colour covers under 7% of the card.",
+    "One outline weight: 1.4 indigo, details 1, no shading.",
+    "Background decor in pale lavender line only: bricks, lamps, posters.",
+    "Floor line at y 308 with short dashes at both ends.",
+    "Slim realistic people, head about one seventh of height, calm faces.",
+    "The figure acts out the subject; plants and props frame it."
+  ],
+  "cards": [
+    { "file": "books.svg", "title": "Books", "subject": "A developer leans in to pull a JS book off a ladder shelf, an open book in her other hand." },
+    { "file": "remote-work.svg", "title": "Remote Work", "subject": "A developer types on a laptop in a hammock strung between posts on a city terrace." },
+    { "file": "whiteboard.svg", "title": "Whiteboard", "subject": "One developer draws a system diagram on a wheeled whiteboard while a colleague on a stool watches with a coffee." }
+  ]
+}

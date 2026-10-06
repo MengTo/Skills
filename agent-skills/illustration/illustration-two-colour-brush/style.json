@@ -1,0 +1,28 @@
+{
+ "skill": "illustration-two-colour-brush",
+ "num": "14",
+ "name": "Two-colour brush",
+ "blurb": "Black brush marker, mint blocks, squiggle camo",
+ "mechanism": "Every line is a fat, wobbling, blob-ended black marker ribbon, and the only other ink is flat mint green laid as a second plate that slips a few pixels off those lines, on cream paper.",
+ "background": "#f1ede3",
+ "palette": [
+  { "name": "Paper", "hex": "#f1ede3", "role": "card background, skin, knockout halos" },
+  { "name": "Ink", "hex": "#141412", "role": "every line; solid hair, trousers, shoes, hoodies, lids" },
+  { "name": "Mint", "hex": "#4fd592", "role": "offset second plate, highlight dashes, floor bands, stickers" },
+  { "name": "Off-white", "hex": "#f7f4ec", "role": "shirts and upholstery under camo, toe caps, glints, bubbles" }
+ ],
+ "line": "Filled marker ribbons, never strokes: outlines 5.7-6.8 px, hands and small props 3.3-4.9, details and camo 2.2-3.1, floor 7.4-8.2; width wobbles ±34% with blob ends 26-78% wider.",
+ "rules": [
+  "Two inks only: black #141412 and mint #4fd592 on cream",
+  "Every line is a wobbly filled ribbon with blobby ends",
+  "Mint blocks slip 2-10 px off the outline",
+  "Solid black hair, trousers, shoes with mint highlight dashes",
+  "Crinkly squiggle camo only on off-white areas",
+  "Chunky profile people: big nose, dot eye, big hands and feet"
+ ],
+ "cards": [
+  { "file": "rubber-ducking.svg", "title": "Rubber Ducking", "subject": "A developer sitting cross-legged on a cushion, explaining code to a giant rubber duck" },
+  { "file": "coffee-driven.svg", "title": "Coffee-Driven", "subject": "A developer striding along with a laptop carrying a toppling, spilling stack of coffee cups" },
+  { "file": "night-owl.svg", "title": "Night Owl", "subject": "A tired developer slumped in a camo armchair at 3 a.m. with a laptop and a mug" }
+ ]
+}

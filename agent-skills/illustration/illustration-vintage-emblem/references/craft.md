@@ -64,6 +64,8 @@ A designer rejected a whole pass of hands because the thumbs were on the wrong s
 - No tangents: two contours that just touch read as a mistake. Overlap them clearly or separate them clearly.
 - Arms connect. Every hand traces back through a forearm and an elbow to a shoulder. *Failure prevented:* "one hand has no arm".
 - Legs taper from hip to ankle. Boxy Π-shaped trousers read as stiff.
+- A shin enters the shoe at the collar, above the heel, never over the toe. With the foot flat on the ground, the shin leans at most about 20° off vertical; a foot tucked further back has to point its toe down. Both shins are about the same length. *Failure prevented:* a tucked-back far leg drawn as one long diagonal that plugged into the toe of a shoe.
+- Check furniture against the body before putting a foot on it. A stool's footring 35 px below the seat can't take a foot when the knees sit 70 px in front of the post; plant that foot on the floor instead.
 - Heads have a neck.
 
 ## Composition

@@ -10,16 +10,16 @@ Fil's video editor (a Video edit node) cuts canvas videos, pictures, sounds, HTM
 
 ## The creator's placeholder in the camera layouts
 
-The placeholder is a 9:16 ink drawing of the creator (in Fil: an image node, Nano Banana editing a photo of them, "a clean black ink line drawing on warm cream paper, a camera placeholder for a talking-head video, head and shoulders, looking straight into the lens"). Add it over the story with `overlay: true` once per layout, `motion: null`, then `set`:
+The placeholder is a 9:16 backlit studio silhouette (in Fil: an image node, Nano Banana editing a photo of the creator or of any model, "a backlit studio silhouette photograph, lit only from behind against a softly glowing warm cream backdrop, the face in shadow with its features faint, head and shoulders looking straight into the lens, the nose at the frame's centre"). The ink drawing it replaced works the same way. Add it over the story with `overlay: true` once per layout, `motion: null`, then `set`:
 
 | layout | set |
 | --- | --- |
-| full camera | `fit: "fill"`, `scale: 1`, `y: 0`: it covers the frame, the drawing's nose at y 960, where the captions sit on the seam. Give its time a caption range under the chin instead of moving the face (Captions, below), so a take that replaces it (an upright phone take frames the same at `scale: 1`, `y: 0`) needs no reframing |
+| full camera | `fit: "fill"`, `scale: 1`, `y: 0`: it covers the frame, the silhouette's nose at y 960, where the captions sit on the seam. Give its time a caption range under the chin instead of moving the face (Captions, below), so a take that replaces it (an upright phone take frames the same at `scale: 1`, `y: 0`) needs no reframing |
 | bubble, bottom right (268 × 375) | `fit: "fit"`, `crop: [0.18, 0.12, 0.815, 0.62]`, `scale: 0.248`, `x: 315`, `y: 300`, `corner_radius: 30` |
 | the bottom half (split) | `fit: "fit"`, `crop: [0, 0.15, 1, 0.65]`, `scale: 1`, `y: 480` |
 | the top half (the ask) | the same, `y: -480` |
 
-Use the one full drawing in every layout, cropped by `set`, rather than pictures cut to each layout's shape: a cut bubble or half can't grow back to full frame for a shrink, and a take replaces the full drawing with the same crops. The drawing's face sits a little above the middle, so the halves' crop keeps the head and shoulders.
+Use the one full picture in every layout, cropped by `set`, rather than pictures cut to each layout's shape: a cut bubble or half can't grow back to full frame for a shrink, and a take replaces the full drawing with the same crops. The drawing's face sits a little above the middle, so the halves' crop keeps the head and shoulders.
 
 Before laying it in, preview the whole reel locally (`scripts/preview-reel.mjs`, its plan using these same layouts and set values): a wrong crop or a caption on a face shows in a minute there.
 

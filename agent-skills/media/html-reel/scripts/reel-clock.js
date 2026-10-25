@@ -123,9 +123,12 @@
       every element from t (and may return a promise), `setup()` runs once
       before the first frame (measure, build), `anchors` retimes it to a
       real take ([[τ, t], …], or none), `shape` its frame ('9:16', '4:5',
-      '1:1' or '16:9'), `stage` its root (#stage). Puts __frame, __dur,
-      __bounds, __shape and __ready on the window, fits the stage to the
-      window, and plays it live unless something drives it. */
+      '1:1' or '16:9'), `stage` its root (#stage), `cover` the t of its
+      best moment, which its first `coverHold` seconds (0.2) show: the
+      reel's first frame, the still its grid and feed show. Puts __frame,
+      __dur, __cover, __bounds, __shape and __ready on the window, fits
+      the stage to the window, and plays it live unless something drives
+      it. */
   function scene(o) {
     const doc = root.document;
     const $ = (s) => doc.querySelector(s);
@@ -167,7 +170,9 @@
       })());
 
     let driven = q.has('frame') || root.__driven === true;
-    const at = (tau) => clamp(map(tau), 0, dur);
+    const coverFor = o.cover == null ? 0 : (o.coverHold ?? 0.2);
+    const at = (tau) => clamp(tau < coverFor ? o.cover : map(tau), 0, dur);
+    root.__cover = coverFor ? o.cover : null;
     root.__dur = length;
     root.__ready = prepare;
     /** Draws the frame at τ, the real take's seconds (the scratch voice's

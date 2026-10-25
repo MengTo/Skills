@@ -14,7 +14,7 @@ The placeholder is a 9:16 ink drawing of the creator (in Fil: an image node, Nan
 
 | layout | set |
 | --- | --- |
-| full camera | `fit: "fill"`, `scale: 1.3`, `y: -290`: it covers the frame with the drawing's face above the captions on the seam (at scale 1 its nose sits at y 960, under them). A take that replaces it keeps these: reframe the take so its chin is above y 900 (an upright phone take is often `scale: 1`, `y: 0`) |
+| full camera | `fit: "fill"`, `scale: 1`, `y: 0`: it covers the frame, the drawing's nose at y 960, where the captions sit on the seam. Give its time a caption range under the chin instead of moving the face (Captions, below), so a take that replaces it (an upright phone take frames the same at `scale: 1`, `y: 0`) needs no reframing |
 | bubble, bottom right (268 × 375) | `fit: "fit"`, `crop: [0.18, 0.12, 0.815, 0.62]`, `scale: 0.248`, `x: 315`, `y: 300`, `corner_radius: 30` |
 | the bottom half (split) | `fit: "fit"`, `crop: [0, 0.15, 1, 0.65]`, `scale: 1`, `y: 480` |
 | the top half (the ask) | the same, `y: -480` |
@@ -29,17 +29,26 @@ The shrink from full to the bubble: the bubble's settings with keyframes on `sca
 
 A hook whose big type sits over the demo is made locally: the demo as boxed or full pieces (`frame-video.mjs`) with the type as a see-through layer over them (`render-frames.mjs --alpha`, `--overlay`), one picture. A full-frame `insert` covers the video, so it's for a title card on its own ground, not type over moving footage.
 
+## The cover
+
+A reel's cover is its first frame: the grids, the feed before it plays and the video edit's node on Fil's canvas all show it (the node draws the edit's frame at 0 s until it's exported, then the export's). So the picture opens on its cover: `frame-video.mjs --cover 3.6` holds the hook's best moment (its whole title landed over its best picture) for the first 0.2 s, or `HTMLReel.scene({ cover })` in a full HTML hook. In the edit:
+
+- nothing over it at 0 s but what the cover needs: the camera layouts start after the hook;
+- no caption on it: `{"op":"caption","caption":<the first>,"start":0.2}` when the voice starts sooner;
+- an existing picture made cover-first: put the new one in with `replace` (it keeps its place, mute and captions), then `remove_node` the old one;
+- for the platforms' own cover upload, save the export's first frame (`ffmpeg -i reel.mp4 -frames:v 1 cover.jpg`).
+
 ## A faceless reel
 
 The picture is made locally (`frame-video.mjs` with its title layer, plus any full HTML scenes), so the edit is simple:
 
-1. Upload the picture (one MP4: frame-video's body with its titles) and the voice (`upload_file`, then `add_file` to put them on the canvas), and the documents (`add_document`: Source.md, Look.md, the script).
+1. Upload the picture (one MP4: frame-video's body with its titles, opening on its cover) and the voice (`upload_file`, then `add_file` to put them on the canvas), and the documents (`add_document`: Source.md, Look.md, the script).
 2. `make_video` from the picture node, shape 9:16, then `add` the voice node at 0 on its own lane with `set: { sound: "voice" }`, and `set` the picture `mute: true`. With the creator in it, lay in the placeholder (above).
 3. Sound effects at their absolute times, volume 0.1–0.2.
 4. Captions under the framed video. Mute the picture clip first (a soundless video still counts as a sound to transcribe and doubles the price), then `generate` (price first with `max_credits: 0`), then a look from Look.md: `position: "middle"` with an `offset`, which moves the caption's centre down from the frame's middle (y 960 of 1920); one line is 1.28 × its size tall. Under frame-video's default box (its bottom at y 1295): `size: 66, max_lines: 1, offset: 400` puts the line at about y 1320–1400. Up to 3 words, the spoken word in the accent, a font from the source's family.
    - An uploaded voice is transcribed, not aligned to a script: names and numbers come out as heard ("Canberg", "Morludo"). Fix each with `{"op":"caption", …, "text"}`.
    - Splitting, rewording or removing a caption renumbers them: read `get_video` with `captions: "list"` again before the next caption command. A removal also stretches the line before it over the gap ("HTML file." ran on under the next card): set that line's `end` back.
-   - Remove the lines under big type that says the same words (the hook, a credit, the ask) (`{"op":"caption","caption":…,"remove":true}`): the type already says them. The captions are one track at one height, so they also land on a full-frame face: keep full camera short or in a pause, or remove its lines too. A line on the split's seam may cover the top video's bottom edge; that's fine.
+   - Remove the lines under big type that says the same words (the hook, a credit, the ask) (`{"op":"caption","caption":…,"remove":true}`): the type already says them. A full-frame face keeps its lines, under the chin: a caption range for its time (Captions, below). A line on the split's seam may cover the top video's bottom edge; that's fine.
    - For a local preview with the same sounds, Fil's sound effects are at `https://fil.design/video-kit/3/sfx/<id>.mp3` (`click`, `pop-soft`, `toggle`, `ting`…).
 5. Chapters for the beats, then export.
 6. A re-rendered picture: upload it, `add_file`, `{"op":"replace","clip":…,"node":…}` (the clip keeps its place, its mute and the captions), then `remove_node` the old one.
@@ -61,6 +70,7 @@ The picture is made locally (`frame-video.mjs` with its title layer, plus any fu
 - For word times: generate with `look: { max_words: 1 }`, then `get_video` with `captions: "list"`: one line per word, `- id · start–end s · “word”`. `scripts/fil-words.py` turns that into a words file. Set `max_words` back to 3 afterwards.
 - The cinematic look (the default): Inter Tight 78 px, weight 800, white, the spoken word in the accent (#efb36c in the shipped reel), a 5 px outline in #08080a, position `middle` (on the split's seam, offset 0), animation `words`, up to 3 words and 22 characters on one line. Take the font from the source when Fil's caption list has its heavy face (Geist, Space Grotesk, Archivo, Funnel Display…), never smaller than about 70 px.
 - Fix the transcription's slips one by one with `{"op":"caption","caption":…,"text":…}` (names, the product, "fil dot design" → "fil.design").
+- Under the chin on full camera: one range per full-frame beat, all in one command (each `ranges` replaces the ones before; `[]` takes them off): `{"op":"captions","ranges":[{"start":6.23,"end":7.33,"position":"bottom","offset":-380},{"start":25.65,"end":27.1,"position":"bottom","offset":-380}]}`. Each range runs from the cut that brings the full frame in to the one that takes it out (the shrink to the bubble's end, the split's flip); a caption showing across a cut moves with it. Bottom puts a 78 px line's centre at 1920 − 144 − 50 − 14 = y 1712, so −380 is y 1332, under the drawing's chin at scale 1. `get_video` lists the ranges after the caption look; they stay on their scenes when the edit is trimmed or cut. One caption alone: `{"op":"caption","caption":…,"position":"bottom","offset":-380}` (`"position":"default"` puts it back). `scripts/preview-reel.mjs` takes the same `ranges` in its plan's `captions`.
 
 ## The voice
 

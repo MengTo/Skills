@@ -11,7 +11,7 @@
 // Usage:
 //   frame-video.mjs --pieces pieces.json --out body.mp4 [--video demo.mp4] [--times T.json] [--start 0]
 //                   [--size 1080x1920] [--box x,y,w,h] [--radius 28] [--backdrop blur|dim|#0b0b0d]
-//                   [--overlay titles.mov] [--stills 1.2,4.5] [--fps 30] [--crf 16]
+//                   [--overlay titles.mov] [--cover 3.6[:0.2]] [--stills 1.2,4.5] [--fps 30] [--crf 16]
 //
 // pieces.json, in order:
 //   { "from": 3.2, "to": 7.0, "until": "comment" }   the source's seconds from → to, until a word
@@ -51,6 +51,10 @@
 // once (ffmpeg -vf scale=1440:-2,fps=30).
 // Speeds outside 0.5–2.2 are flagged: fast-forward or slow motion shows on
 // anything that moves, not on a still page.
+// --cover T[:HOLD] opens the body on its cover: its first HOLD seconds
+// (0.2) show its frame at T (a second of the reel, like the words'), titles
+// and all, the moment the hook looks its best, as the reel's first frame
+// and the still Reels, TikTok and Shorts show for it.
 // The film is BT.709, limited range, with a contact sheet of the whole of
 // it beside it (<out>-sheet.jpg, a frame every half-second) and, with
 // --stills, those moments as PNGs (<out>-stills/).
@@ -66,7 +70,7 @@ const { values: o } = parseArgs({
   options: {
     video: { type: 'string' }, pieces: { type: 'string' }, out: { type: 'string', default: 'body.mp4' }, times: { type: 'string' }, start: { type: 'string', default: '0' },
     size: { type: 'string', default: '1080x1920' }, box: { type: 'string' }, radius: { type: 'string', default: '28' }, backdrop: { type: 'string', default: 'blur' },
-    overlay: { type: 'string' }, stills: { type: 'string' }, fps: { type: 'string', default: '30' }, crf: { type: 'string', default: '16' }, help: { type: 'boolean', short: 'h' },
+    overlay: { type: 'string' }, cover: { type: 'string' }, stills: { type: 'string' }, fps: { type: 'string', default: '30' }, crf: { type: 'string', default: '16' }, help: { type: 'boolean', short: 'h' },
   },
 });
 if (o.help || !o.pieces) { console.log(USAGE); process.exit(o.help ? 0 : 1); }
@@ -181,8 +185,16 @@ if (o.overlay) {
   inputs.push('-i', path.resolve(o.overlay));
   parts.push(`[${nIn}:v]fps=${fps},format=rgba,scale=${FW}:${FH}[ov];[v0][ov]overlay=0:0:eof_action=pass[v1]`);
 } else parts.push('[v0]null[v1]');
+let body = 'v1';
+if (o.cover) {
+  // Its cover frame held, then the rest from there: as many frames in all.
+  const [at, hold = 0.2] = o.cover.split(':').map(Number);
+  const f = Math.max(0, Math.min(N - 1, Math.round((at - t0) * fps))), k = Math.max(1, Math.round(hold * fps));
+  parts.push(`[v1]split[cv0][cv1];[cv0]trim=start_frame=${f}:end_frame=${f + 1},setpts=PTS-STARTPTS,loop=loop=${k - 1}:size=1:start=0,setpts=N/${fps}/TB[cvc];[cv1]trim=start_frame=${k},setpts=PTS-STARTPTS[cvr];[cvc][cvr]concat=n=2:v=1:a=0[v2]`);
+  body = 'v2';
+}
 // BT.709, limited range, as every player expects.
-parts.push('[v1]scale=out_range=tv:out_color_matrix=bt709,format=yuv420p[v]');
+parts.push(`[${body}]scale=out_range=tv:out_color_matrix=bt709,format=yuv420p[v]`);
 
 run('ffmpeg', ['-v', 'error', '-y', ...inputs, '-filter_complex', parts.join(';'), '-map', '[v]', '-frames:v', String(N), '-r', String(fps),
   '-c:v', 'libx264', '-preset', 'slow', '-crf', o.crf, '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',

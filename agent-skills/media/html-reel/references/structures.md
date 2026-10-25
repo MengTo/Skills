@@ -34,7 +34,7 @@ On a 1080 × 1920 frame unless the shape says otherwise. Faceless layouts need n
 
 ### With the camera
 
-7. **Full camera.** The talking head fills the frame, its chin above the captions on the seam (the ink drawing at scale 1.3, y −290 in Fil); or, when it can't be framed so, no captions for that beat.
+7. **Full camera.** The talking head fills the frame as the take frames it (the ink drawing at scale 1, y 0 in Fil), the captions under its chin for that beat: a caption range at the bottom, offset −380 (fil-editor.md, Captions), back on the seam when the split returns.
 8. **Screen + bubble.** The screen in the top half (frame-video's `"box": "top"`), the camera in a rounded bubble (268 × 375, 30 px corners) at the bottom right, captions on the seam, and the space left of the bubble for a card, the post being credited or a label block. A centred box would sit under the captions.
 9. **50/50 split.** The screen on top, the camera's middle below, a hard edge at y 960, captions on the seam; flipped for the ask. A half is 1080 × 960 (9:8): a crop at its shape is w = 0.844 × h of a 4:3 source and 0.633 × h of a 16:9 one, so a wide video loses its sides: choose each piece's crop for what it shows.
 10. **Camera + card.** The camera in the top half, a card drawn in HTML below.
@@ -53,6 +53,7 @@ The camera is the creator's ink placeholder until their takes are in.
 
 ### Choosing
 
+- Every structure opens on its cover, the hook's best moment held for the first 0.2 s: its whole title over its best picture, inside the 3:4 crop the grids show (y 280–1640 of 1920). It's the first frame, so it's what the grid, the feed and Fil's canvas show.
 - The face, when there is one, gets bigger as the ask gets bigger: none in the hook, a bubble for the proof, half for the demo, full for the ask. A default, not a law: a reel about a face starts on it.
 - Faceless reels change layout or framing every 2–4 s: a new piece, a crop, a title card. A box that never changes reads as a screen recording with captions.
 - Titles and captions never cover what the picture is showing: above and below the box, or over a gradient.

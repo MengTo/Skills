@@ -1230,6 +1230,11 @@
             <code>window.__frame</code>.
           </li>
           <li>
+            Its first 0.2 s are the reel's cover: <code>cover</code> holds the
+            hook's best moment, “This looks like a screen RECORDING.” landed, as
+            the first frame the grid, the feed and Fil's canvas show.
+          </li>
+          <li>
             The creator recorded the lines. Their words were matched to the
             scratch's: 23 anchors, <code>[τ, t]</code>. <code>anchors</code> turns
             them into W, straight lines between them, and the hook plays 7.77 s
@@ -1297,6 +1302,8 @@
           VOICE.map((w) => w[1]);
         /** The hook, on the scratch voice's clock: “HTML.” and a breath. */
         const DUR = 8.6;
+        /** Its cover, the reel's first frame: “This looks like a screen RECORDING.” landed. */
+        const COVER = RECORDING + 0.6;
         /** The voice's next word, past the hook: it places the hook's end on the take. */
         const NEXT = ['I', 8.742, 8.812];
 
@@ -1671,9 +1678,9 @@
         // ---------- Two clocks for one scene ----------
         // The same draw, on the scratch voice's seconds and on the take's (t = W(τ)).
         // Each scene() puts __frame on the window; keep both, expose the one asked for.
-        const scratch = scene({ dur: DUR, draw, setup });
+        const scratch = scene({ dur: DUR, draw, setup, cover: COVER });
         const F = { scratch: [window.__frame, window.__dur, window.__ready] };
-        const take = scene({ dur: DUR, draw, setup, anchors: TAKE });
+        const take = scene({ dur: DUR, draw, setup, anchors: TAKE, cover: COVER });
         F.take = [window.__frame, window.__dur, window.__ready];
         const CLOCKS = { scratch, take };
         const first = Q.has('take') ? 'take' : 'scratch';

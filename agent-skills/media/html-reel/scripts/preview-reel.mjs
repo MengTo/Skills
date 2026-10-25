@@ -18,10 +18,11 @@
 //                   "set": { "fit": "fit", "crop": [0, 0.15, 1, 0.65], "y": 480 } } ],
 //     "voice": "voice/voice.mp3", "voice_at": 0, "picture_sound": false,
 //     "sfx": [ { "id": "click", "at": 3.09, "volume": 0.15 }, { "file": "whoosh.mp3", "at": 6.2 } ],
-//     "captions": { "words": "voice/words.json", "list": "captions.txt", "off": [[0, 6.2]],
+//     "captions": { "words": "voice/words.json", "list": "captions.txt", "off": [[0, 6.2]], "from": 0.2,
 //                   "font": "Inter Tight", "size": 78, "weight": 800, "ink": "#ffffff",
 //                   "accent": "#efb36c", "outline": 5, "outline_color": "#08080a",
-//                   "offset": 0, "max_words": 3, "max_chars": 22 },
+//                   "offset": 0, "max_words": 3, "max_chars": 22,
+//                   "ranges": [ { "start": 6.23, "end": 7.33, "position": "bottom", "offset": -380 } ] },
 //     "loudness": -14 }
 //
 // A camera layer's layout is one of fil-editor.md's: full (fit fill, scale
@@ -39,8 +40,13 @@
 // both, the list gives the lines and the words light up on their own
 // times; with the list alone, they're spread through the line by letters.
 // Each word appears as it's said, the spoken one in the accent, and the
-// line's centre sits `offset` px below the frame's middle, as in Fil.
-// `off` ranges hide the captions (under the hook's or the ask's big type).
+// line's centre sits `offset` px below the frame's middle (or `position`
+// "bottom" or "top", as Fil lays one line out), as in Fil. `ranges` are
+// Fil's caption ranges (edit_video {"op":"captions","ranges":[…]}): from
+// start to end the line sits at that position and offset instead, so a
+// full-frame face has it under the chin while a split keeps it on the seam.
+// `off` ranges hide the captions (under the hook's or the ask's big type);
+// `from` holds them back until the cover's first frames are over (0.2).
 // Sound effects by id come from fil.design/video-kit/3/sfx/<id>.mp3.
 // Writes the MP4 (libx264 -preset veryfast -crf 18, BT.709, AAC), a contact sheet at exact
 // half-seconds (<out>-sheet.jpg) and any --stills as full-size JPEGs.
@@ -144,7 +150,9 @@ function captionLines(C) {
     lines.forEach((l, i) => { const n = lines[i + 1]; l.e = n ? Math.min(n.s, l.e + 0.5) : l.e + 0.5; });
   }
   const off = C.off || [];
-  return lines.filter((l) => !off.some(([a, b]) => l.s >= a - 0.01 && l.s < b));
+  // None over the cover: a line starts once its frames are over (`from`).
+  for (const l of lines) l.s = Math.max(l.s, C.from || 0);
+  return lines.filter((l) => l.e - l.s > 0.05 && !off.some(([a, b]) => l.s >= a - 0.01 && l.s < b));
 }
 
 async function chromium() {
@@ -158,12 +166,24 @@ async function captionLayer(C) {
   const lines = captionLines(C);
   if (!lines.length) return null;
   const font = C.font || 'Inter Tight', size = C.size ?? 78, weight = C.weight ?? 800, outline = C.outline ?? 5;
+  // The line's centre at `t`, as Fil's captions.js cueLayout has one line:
+  // 7.5% of the frame from its top or foot (plus the line's half and its
+  // padding), or the middle; then the offset. A range's position left out
+  // is the look's, its offset 0 (or the look's, with no position either).
+  const lh = size * 1.28, m = FH * 0.075;
+  const cyOf = (pos, y) => (pos === 'top' ? m + lh / 2 + size * 0.18 : pos === 'bottom' ? FH - m - lh / 2 - size * 0.18 : FH / 2) + (y || 0);
+  const ranges = C.ranges || [];
+  const edges = [...new Set(ranges.flatMap((r) => [r.start, r.end]))];
+  const cyAt = (t) => {
+    const r = ranges.findLast((x) => t >= x.start - 1e-6 && t < x.end - 1e-6);
+    return r ? cyOf(r.position ?? C.position, r.offset ?? (r.position == null ? C.offset : 0)) : cyOf(C.position, C.offset);
+  };
   const fam = encodeURIComponent(font).replace(/%20/g, '+');
   const html = `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=${fam}:wght@${weight}&display=block" rel="stylesheet">
 <style>html,body{margin:0;background:transparent}
 #f{position:relative;width:${FW}px;height:${FH}px;overflow:hidden}
-#cap{position:absolute;left:0;right:0;top:${FH / 2 + (C.offset || 0)}px;transform:translateY(-50%);text-align:center;white-space:nowrap;
+#cap{position:absolute;left:0;right:0;top:${cyAt(0)}px;transform:translateY(-50%);text-align:center;white-space:nowrap;
  font-family:'${font}',sans-serif;font-weight:${weight};font-size:${size}px;line-height:1.28;color:${C.ink || '#ffffff'};letter-spacing:-0.01em;
  -webkit-text-stroke:${outline * 2}px ${C.outline_color || '#08080a'};paint-order:stroke fill}
 #cap span{margin:0 0.12em}#cap .now{color:${C.accent || '#efb36c'}}</style></head>
@@ -184,13 +204,20 @@ async function captionLayer(C) {
     for (let i = 0; i < l.words.length; i++) {
       const s = Math.max(l.s, l.words[i].s), e = i + 1 < l.words.length ? Math.max(l.s, l.words[i + 1].s) : l.e;
       if (e - s < 0.5 / FPS) continue;
-      const file = path.join(dir, `c${String(n++).padStart(4, '0')}.png`);
-      await page.evaluate(({ ws, cur }) => {
-        const esc = (x) => x.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
-        document.getElementById('cap').innerHTML = ws.slice(0, cur + 1).map((w, j) => `<span class="${j === cur ? 'now' : ''}">${esc(w)}</span>`).join('');
-      }, { ws: l.words.map((w) => w.w), cur: i });
-      await page.screenshot({ path: file, omitBackground: true });
-      seq.push([file, s]);
+      // A range starting or ending while the word shows moves the line there.
+      const cuts = [s, ...edges.filter((x) => x > s + 1e-6 && x < e - 1e-6).sort((a, b) => a - b), e];
+      for (let k = 0; k + 1 < cuts.length; k++) {
+        if (k && cuts[k + 1] - cuts[k] < 0.5 / FPS) continue;
+        const file = path.join(dir, `c${String(n++).padStart(4, '0')}.png`);
+        await page.evaluate(({ ws, cur, top }) => {
+          const esc = (x) => x.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+          const el = document.getElementById('cap');
+          el.style.top = top + 'px';
+          el.innerHTML = ws.slice(0, cur + 1).map((w, j) => `<span class="${j === cur ? 'now' : ''}">${esc(w)}</span>`).join('');
+        }, { ws: l.words.map((w) => w.w), cur: i, top: cyAt(cuts[k]) });
+        await page.screenshot({ path: file, omitBackground: true });
+        seq.push([file, cuts[k]]);
+      }
     }
     seq.push([blank, l.e]);
   }

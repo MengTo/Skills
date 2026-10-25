@@ -49,6 +49,33 @@ Fill each line from what was measured, then look at the frames and screens befor
 
 The defaults in `reel-clock.css` (a cinematic serif, a heavy condensed payoff, an orange dot) are one reel's look. Use them only when the source has no look of its own.
 
+## A cursor in the video
+
+A screen recording of a 3D scene, a map or a canvas shows the macOS hand cursor wherever it was dragged, and blind judges name it before anything else: in two reels made from posts of 3D scenes, all four did. Paint it out before framing the pieces. `scripts/decursor.py` needs OpenCV and numpy, which the Mac doesn't have, so make a venv once:
+
+```bash
+python3 -m venv ~/.venvs/decursor
+~/.venvs/decursor/bin/pip install opencv-python-headless numpy
+```
+
+Then, with the pieces chosen (frame-video's `pieces.json`), scan only what the reel plays, look, and clean:
+
+```bash
+PY=~/.venvs/decursor/bin/python
+$PY scripts/decursor.py scan src.mp4 track.json --pieces pieces.json   # or seconds: 1.5 3.1 13.4 14.8 …
+$PY scripts/decursor.py sheet src.mp4 track.json --out decursor-sheet.jpg
+$PY scripts/decursor.py clean src.mp4 track.json --out src-clean.mp4
+```
+
+and frame `src-clean.mp4` from then on (`frame-video.mjs --video src-clean.mp4`, or each piece's `"video"`).
+
+- **How it finds it.** Templates of the grab hand and the open hand (`scripts/cursors/`, cut from real recordings), each at six sizes from 0.8 to 1.4, because recordings zoom. A place counts by how it looks: q = the smaller of the share of the hand's fill brighter than 190 and the share of its outline ring darker than 75, sure at 0.55 if the place also looks like the hand's picture (zero-mean correlation inside its mask, 0.5 or more; 1,679 of 1,680 real finds did). It searches near the last find at full size first, then the whole frame at a quarter size, at about 25 frames a second on a 1920 × 1440 recording.
+- **Fast moves.** A cursor moving fast blurs and stops matching. Gaps of up to 16 frames (at 30 fps) between two sure finds less than 700 px apart are filled in between them and painted wider; frames between two spans that weren't scanned are never filled. Where a span starts or ends mid-move there's no sure find on the far side, so each run of sure finds is also followed out through the frames next to it found at 0.5 or more, each within 300 px of the last, painted wider too.
+- **Things that look like a hand.** A paper lantern in the valley video, cream with a dark edge, passed as a sure find for a frame while the cursor changed from the grab to the open hand (q 0.57; its correlation was 0.43 with the open hand, but 0.61 with the grab hand at 1.4). A cursor doesn't jump 700 px and straight back, so a run of up to 5 sure finds that lands at least 300 px off the path between the sure finds either side of it is dropped, and that gap is filled along the path. A thing that looks like a hand and stays there with no cursor near isn't caught: that's what the sheet is for.
+- **The paint.** OpenCV's Telea inpaint over the hand grown about 10 px past its outline, which takes its soft shadow too. It reads and writes through ffmpeg with exact rounding, so the colours come back as they went in, at the source's frame rate, with its sound.
+- **Look at the sheet.** About 30 finds through the video and 12 of the filled or followed ones (marked `*`), each before and after: a wrong find shows as a smear where no hand was, a hand left half painted as an edge of its outline. A hand it missed shows in frame-video's contact sheet of the body.
+- **Another size or cursor.** `--scale` sizes the search for a recording whose cursor is bigger or smaller than the templates' (the grab hand is about 60 px wide in them, outline and all): measure one hand in a frame and divide, and `test` a frame to check (a 1280-wide copy of the 1920-wide recordings they came from takes 0.667). A cursor it doesn't know, white with a dark outline (the pointing hand), gets a template cut from a frame of the same recording, a few px past its outline: `decursor.py template frame.png x y w h point`. Never ship Apple's own cursor files. The arrow (black with a white outline) isn't one it finds.
+
 ## The three posts this was tested on
 
 - **MiniMax M3.1 Flash landing pages** (a 51 s 4:3 screen recording of six sites): six looks in one video, so the reel's look comes from the creator's favourite one (the exploded-keyboard pages), and each site gets its moment.

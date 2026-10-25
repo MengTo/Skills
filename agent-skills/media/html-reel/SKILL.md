@@ -11,7 +11,7 @@ A reel is a voice with pictures cut to it. This skill makes one from a source so
 
 **Boundary.** Use `html-demo` for a live app window on a web page (no video file). Use `browser-video-recording` for a polished screen recording on its own. Use `website-to-motion-design` to turn a page into a fixed-length motion piece with no voice. Use this skill when the deliverable is a vertical video cut to a voice, from a source.
 
-**Provenance.** Extracted from Meng To's launch reel for HTML Demo (fil.design/skills/html-demo), October 2026: a 24.7 s reference reel's eight layouts studied, a scratch voice in his cloned ElevenLabs voice, four DreamCut recordings of the skill page, an HTML hook and tail rendered frame by frame, three drafts in Fil's video editor, two blind judges a round, then his two phone takes cut into one 33.7 s reel on his own word timings. Then made general: each of three of his posts (MiniMax landing pages, a reverse-engineered smart home, the Anatomy skill) turned into a reel in its own look, first faceless, then again with a placeholder in the camera layouts (first an ink drawing of him, then a backlit studio silhouette), cinematic type and captions, previewed locally before Fil. The files and numbers below are from those runs.
+**Provenance.** Extracted from Meng To's launch reel for HTML Demo (fil.design/skills/html-demo), October 2026: a 24.7 s reference reel's eight layouts studied, a scratch voice in his cloned ElevenLabs voice, four DreamCut recordings of the skill page, an HTML hook and tail rendered frame by frame, three drafts in Fil's video editor, two blind judges a round, then his two phone takes cut into one 33.7 s reel on his own word timings, and later one landscape take, its pauses cut, retimed the same way into 37.5 s. Then made general: each of three of his posts (MiniMax landing pages, a reverse-engineered smart home, the Anatomy skill) turned into a reel in its own look, first faceless, then again with a placeholder in the camera layouts (first an ink drawing of him, then a backlit studio silhouette), cinematic type and captions, previewed locally before Fil. The files and numbers below are from those runs.
 
 ## The mechanism
 
@@ -48,6 +48,7 @@ HTMLReel.scene({
    Ask before any spend over $1.
 5. **Build the picture in the source's look**, every scene on `scripts/reel-clock.js` with Look.md's variables in its `:root` and `HTMLReel.scene({ shape })`:
    - its cover first: the hook at its best moment (its whole title landed over its best picture) as the reel's first 0.2 s, then the hook from there (`HTMLReel.scene({ cover: T.payoffEnd })` in a full scene, `scripts/frame-video.mjs --cover 3.6` on a body with a title layer), its title inside the 3:4 crop the grids show;
+   - the cursor out of a screen recording before it's framed: a recording of a 3D scene or a canvas usually shows the macOS hand, and `scripts/decursor.py` finds it (the grab and open hands, six sizes) only in the spans the pieces play (`scan src.mp4 track.json --pieces pieces.json`), tiles its finds before and after (`sheet`), and paints it out into `src-clean.mp4` (`clean`), the video frame-video frames from then on (`--video src-clean.mp4`); it needs OpenCV in a venv (`references/source.md`);
    - a demo video framed and cut to words: its pieces (`from`, `to`, and the word each lasts until) into `scripts/frame-video.mjs`, several videos in one body (a post's and the post it quotes), a full-frame card spliced in as a piece, a title layer drawn from t over it (`scripts/render-frames.mjs --alpha`), checked as stills over the body first (`--test … --under body.mp4`);
    - full scenes for the hook, a title card or the tail, rendered with `scripts/render-frames.mjs`; a hook that shows the source's video inside its own frame draws the video's frames as pictures (extracted once at 60 fps, decoded in `setup`, `draw` setting the one for t and awaiting it), so it retimes like the rest;
    - a product the source doesn't show, recorded with DreamCut (`scripts/record-window.mjs`, `scripts/flash-crop.mjs`), the pointer's moves timed to words.
@@ -74,6 +75,7 @@ HTMLReel.scene({
 - **The demo is the picture; change the framing every 2–4 s.** A new piece, a crop on the detail, a title card. One box that never changes reads as a screen recording with captions. A list said fast ("lights, doors, AC, robot") is the exception: one piece per item, on its word, however short.
 - **Check what the voice said before building on it.** A cloned voice reads "5.0" as "five", a name as another word, a capitalised word as letters. Read its words back (Fil's captions or whisper) against the script; fixing a word after the scenes are timed to it costs a render.
 - **Mind the source's own glitches.** A demo video can hide a dropped frame or a flash between pages. read-source lists its scene cuts (`cuts`), but not a short glitch or scan lines inside a shot (Anatomy's had both, at 15.8 s and from 20.6 s); look at every piece's ends at 0.1 s steps, and through it at 0.25 s, before keeping it.
+- **Paint the cursor out of a post's video.** The cursor in a post's screen recording is the first thing blind judges name: in the drafts of two reels made from Meng's posts (the Opus 5.5 ship and the valley boat scene), all four named the macOS hand first, before the type, the layout or the ask. `scripts/decursor.py` found it in 854 and 1,138 frames and painted it out with its soft shadow. Look at its sheet before cleaning. Another white cursor outlined dark (the pointing hand) gets a template cut from a frame of the same recording first (`template`), never from Apple's own cursor files. It doesn't find the arrow (black, outlined white).
 - **Cut to words, never to guesses.** Draft 1 was timed by reading speed and every beat landed early or late; draft 2, cut to the scratch voice's word timestamps, landed on all of them. Name every time after its word (`T.zoom`, `T.html`) so the script reads like the voiceover.
 - **Draw scenes from t alone.** No CSS animations, transitions, timers or `Math.random` on the stage: a scene that keeps time anywhere else renders differently every run and can't be retimed. reel-clock.css turns animations and transitions off on `#stage`.
 - **Retime by anchors, not by stretching.** Stretching a whole scene to a new length moves every beat by a different error. Word anchors (24 in the 8.6 s hook) pin each beat to its word and only the gaps between stretch. Keep the map monotone; add manual pairs where the creator reworded a line ("happens", "jumps", "demos", "fil").
@@ -109,8 +111,8 @@ HTMLReel.scene({
 
 | what | value |
 | --- | --- |
-| length | 33.7 s, 1080 × 1920, 30 fps, −14 LUFS |
-| sections | Hook 0–4.74 · Twist –7.77 · Proof –11.70 · Demo –16.33 · Benefit –22.04 · Offer –25.65 · Value stack –31.06 · CTA –33.70 |
+| length | 37.5 s, 1080 × 1920, 30 fps, −14 LUFS |
+| sections | Hook 0–5.12 · Twist –8.53 · Proof –12.50 · Demo –18.72 · Benefit –25.24 · Offer –28.97 · Value stack –35.08 · CTA –37.50 |
 | pace | about 2.6 words a second; scratch voice 37.8 s, real takes cut to 33.4 s |
 | takes | two upright phone takes; pauses over 0.45 s trimmed; 15 ms fades; 0.8 s beat after "it's HTML" |
 | stage | 540 × 960 CSS at 2×; safe area y 280–1640 of 1920 |
@@ -127,7 +129,7 @@ HTMLReel.scene({
 
 - [ ] The first frame is the cover: the whole title over the hook's best picture, inside the 3:4 crop, readable at 360 px wide, no caption on it.
 - [ ] Every beat lands on its word in the export (scrub a few at 0.25× with the sound on).
-- [ ] Frames every 0.5 s: no title outside y 280–1640 or within 16 px of the sides, no caption on a face or over what the video shows, no bubble over a window's controls.
+- [ ] Frames every 0.5 s: no title outside y 280–1640 or within 16 px of the sides, no caption on a face or over what the video shows, no bubble over a window's controls, no cursor in a demo piece.
 - [ ] Every name, number and handle on screen matches Source.md, and every other person's work is credited.
 - [ ] A frame rendered twice at the same t is the same picture.
 - [ ] Lip sync holds at the start, middle and end (a plosive: p, b, m).
@@ -140,6 +142,7 @@ HTMLReel.scene({
 - `scripts/read-source.mjs`: a tweet, page, YouTube video or file read into its words, media, frames, measured look, Source.md and Look.md.
 - `scripts/reel-clock.js`, `scripts/reel-clock.css`: the scene engine: `HTMLReel.scene({ dur, draw, anchors, shape })`, the warp, the stage in four shapes, type as three roles in variables, `fit` for a line of unknown length, `cover` for the first frames, the controls.
 - `scripts/frame-video.mjs`: a demo video framed in the reel's shape over a blurred copy, its pieces cut to words, a title layer over it, opening on its cover (`--cover`).
+- `scripts/decursor.py`, `scripts/cursors/`: the macOS hand cursor found in a screen recording (templates of the grab and open hands, cut from recordings) and painted out, into `src-clean.mp4`.
 - `scripts/render-frames.mjs`: a `__frame` page to MP4 (or a see-through title layer, `--alpha`), frame by frame, warped or not, with the safe-area check.
 - `scripts/timemap.py`: scratch and real word times into anchors, the map W, and a scene's local anchors.
 - `scripts/vo-words.py`: an ElevenLabs voiceover with word timestamps, its reply saved, its pace printed.

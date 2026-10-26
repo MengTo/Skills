@@ -2,7 +2,7 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 87
+- Captured demos: 88
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
@@ -716,3 +716,13 @@ Create a fixed full-screen WebGL laser background effect with a thin white-hot v
 [Open demo](agent-skills/web-design/webgl-laser/demo/index.html) · [Skill](agent-skills/web-design/webgl-laser/SKILL.md) · [Prompt](agent-skills/web-design/webgl-laser/demo/PROMPT.md) · Neuform #1 · 351 views
 
 ![webgl-laser preview screenshot](agent-skills/web-design/webgl-laser/demo/preview.jpg)
+
+## workflow (1)
+
+### agent-qa
+
+Use when running selected web or mobile regressions with agent-qa, reviewing an existing agent-qa run, or tracing the memidex knowledge behind a result in a configured project.
+
+[Open demo](agent-skills/workflow/agent-qa/demo/index.html) · [Skill](agent-skills/workflow/agent-qa/SKILL.md) · [Prompt](agent-skills/workflow/agent-qa/demo/PROMPT.md) · Local demo
+
+![agent-qa preview screenshot](agent-skills/workflow/agent-qa/demo/preview.jpg)

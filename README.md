@@ -243,7 +243,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **176 skills** across nine categories.
+This snapshot contains **177 skills** across nine categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -267,9 +267,10 @@ Operational skills for repeatable Codex work:
 - `write-like-meng-on-x` - calibrate concise X drafts against an authored voice corpus.
 - `x-bookmark-quote-posts` - turn recent X bookmarks into source-backed quote-post drafts.
 
-### Media (2)
+### Media (3)
 
-Image sourcing skills:
+Image sourcing and generation skills:
+- `atlas-image-generation` - generate original images through a live, schema-validated Atlas Cloud workflow.
 - `aura-asset-images` - use Aura Assets for stock-style design and marketing imagery.
 - `unsplash-asset-images` - pick high-quality Unsplash assets by use case, crop, and ratio.
 

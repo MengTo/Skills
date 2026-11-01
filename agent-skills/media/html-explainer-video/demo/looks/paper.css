@@ -1,0 +1,78 @@
+/* Paper: a magazine page. A serif that talks in a column beside the picture,
+   hairlines, figures with their captions under them, nothing floats. Slow fades. */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=block');
+[data-look='paper'] {
+  --x-ground: #f3ecdf;
+  --x-ground-image: linear-gradient(transparent, transparent);
+  --x-panel: #fbf7ee;
+  --x-panel-2: #efe7d7;
+  --x-ink: #1d1a15;
+  --x-dim: #766d5c;
+  --x-line: rgba(29, 26, 21, 0.18);
+  --x-accent: #b5381f;
+  --x-accent-ink: #fbf7ee;
+  --x-ring: #b5381f;
+  --x-head-font: 'Newsreader', Georgia, serif;
+  --x-head-weight: 400;
+  --x-head-at: side;
+  --x-head-size: 66px;
+  --x-head-line: 1.05;
+  --x-head-track: -0.018em;
+  --x-head-case: none;
+  --x-hero-size: 136px;
+  --x-hero-track: -0.03em;
+  --x-body-font: 'Newsreader', Georgia, serif;
+  --x-label-font: 'Hanken Grotesk', system-ui, sans-serif;
+  --x-label-weight: 500;
+  --x-mono-font: 'IBM Plex Mono', ui-monospace, monospace;
+  --x-radius: 2px;
+  --x-radius-s: 2px;
+  --x-edge: 1px;
+  --x-edge-color: rgba(29, 26, 21, 0.5);
+  --x-shadow: none;
+  --x-bar: transparent;
+  --x-bar-ink: #5d5648;
+  --x-bar-order: 2;
+  --x-lights: none;
+  --x-pointer: #1d1a15;
+  --x-pointer-edge: #fbf7ee;
+  --x-pic-filter: sepia(0.14) saturate(0.9);
+  --x-motion: fade;
+  --x-motion-dur: 0.6;
+  --x-motion-dist: 14;
+  --x-cap-font: 'Hanken Grotesk', system-ui, sans-serif;
+  --x-pic-ground: #fbf7ee;
+  --x-cap-ink: #1d1a15;
+  --x-cap-word: #b5381f;
+  --x-cap-edge: #f3ecdf;
+  --x-name-face: Newsreader;
+  --x-name-moves: Slow;
+}
+[data-look='paper'] .x-head .x-lead {
+  display: block;
+  margin-bottom: 0.14em;
+  font-size: 0.72em;
+  font-style: italic;
+  letter-spacing: -0.005em;
+}
+[data-look='paper'] .x-bar {
+  height: 42px;
+  padding: 0 2px;
+  border-top: 1px solid rgba(29, 26, 21, 0.3);
+  border-bottom: 0;
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+}
+[data-look='paper'] .x-win {
+  padding: 12px 12px 0;
+}
+[data-look='paper'][data-head='side'] .x-scene:has(> .x-head) > .x-ground::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--pic-x) - 22px);
+  top: var(--pic-y);
+  height: var(--pic-h);
+  width: 1px;
+  background: rgba(29, 26, 21, 0.3);
+}

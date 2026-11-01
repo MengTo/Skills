@@ -1,0 +1,286 @@
+{
+ "from": "earshot 0.4.0 launch kit, by Leon Lin (MIT)",
+ "bed": "levels are for a music bed at volume 0.12 under the voice",
+ "roles": {
+  "click": {
+   "align": "onset",
+   "offset_ms": -11.0,
+   "min_gap_ms": 85.0,
+   "takes": [
+    {
+     "file": "click_1.mp3",
+     "onset": 0.005,
+     "peak": 0.0061,
+     "dur": 0.132,
+     "volume": 0.273
+    },
+    {
+     "file": "click_2.mp3",
+     "onset": 0.0056,
+     "peak": 0.0062,
+     "dur": 0.132,
+     "volume": 0.334
+    }
+   ]
+  },
+  "key": {
+   "align": "onset",
+   "offset_ms": 8.0,
+   "min_gap_ms": 87.0,
+   "takes": [
+    {
+     "file": "key_1.mp3",
+     "onset": 0.0112,
+     "peak": 0.0207,
+     "dur": 0.194,
+     "volume": 0.249
+    },
+    {
+     "file": "key_2.mp3",
+     "onset": 0.0099,
+     "peak": 0.0199,
+     "dur": 0.187,
+     "volume": 0.314
+    },
+    {
+     "file": "key_3.mp3",
+     "onset": 0.0092,
+     "peak": 0.0191,
+     "dur": 0.219,
+     "volume": 0.307
+    }
+   ]
+  },
+  "key.return": {
+   "align": "onset",
+   "offset_ms": 8.0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "key-return_1.mp3",
+     "onset": 0.0096,
+     "peak": 0.0195,
+     "dur": 0.21,
+     "volume": 0.282
+    }
+   ]
+  },
+  "pop": {
+   "align": "onset",
+   "offset_ms": 4.0,
+   "min_gap_ms": 114.0,
+   "takes": [
+    {
+     "file": "pop_1.mp3",
+     "onset": 0.0097,
+     "peak": 0.0423,
+     "dur": 0.18,
+     "volume": 0.123
+    },
+    {
+     "file": "pop_2.mp3",
+     "onset": 0.0103,
+     "peak": 0.0254,
+     "dur": 0.172,
+     "volume": 0.123
+    }
+   ]
+  },
+  "land": {
+   "align": "onset",
+   "offset_ms": 30.0,
+   "min_gap_ms": 159.0,
+   "takes": [
+    {
+     "file": "land_1.mp3",
+     "onset": 0.0021,
+     "peak": 0.0192,
+     "dur": 0.172,
+     "volume": 0.168
+    },
+    {
+     "file": "land_2.mp3",
+     "onset": 0.0021,
+     "peak": 0.0219,
+     "dur": 0.172,
+     "volume": 0.12
+    }
+   ]
+  },
+  "land.light": {
+   "align": "onset",
+   "offset_ms": -60.0,
+   "min_gap_ms": 115.0,
+   "takes": [
+    {
+     "file": "land-light_1.mp3",
+     "onset": 0.0021,
+     "peak": 0.0043,
+     "dur": 0.121,
+     "volume": 0.098
+    }
+   ]
+  },
+  "tick.crisp": {
+   "align": "onset",
+   "offset_ms": 0,
+   "min_gap_ms": 66.0,
+   "takes": [
+    {
+     "file": "tick-crisp_1.mp3",
+     "onset": 0.0,
+     "peak": 0.003,
+     "dur": 0.037,
+     "volume": 0.059
+    }
+   ]
+  },
+  "whoosh.short": {
+   "align": "peak",
+   "offset_ms": 37.0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "whoosh-short_1.mp3",
+     "onset": 0.0379,
+     "peak": 0.1362,
+     "dur": 1.057,
+     "volume": 0.135
+    },
+    {
+     "file": "whoosh-short_2.mp3",
+     "onset": 0.0936,
+     "peak": 0.1465,
+     "dur": 1.031,
+     "volume": 0.208
+    }
+   ]
+  },
+  "whoosh.long": {
+   "align": "peak",
+   "offset_ms": 3.0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "whoosh-long_1.mp3",
+     "onset": 0.077,
+     "peak": 0.162,
+     "dur": 1.03,
+     "volume": 0.153
+    }
+   ]
+  },
+  "riser": {
+   "align": "peak",
+   "offset_ms": -23.0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "riser_1.mp3",
+     "onset": 0.2927,
+     "peak": 0.6977,
+     "dur": 0.951,
+     "volume": 0.213
+    }
+   ]
+  },
+  "swell": {
+   "align": "peak",
+   "offset_ms": 42.0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "swell_1.mp3",
+     "onset": 0.2798,
+     "peak": 0.5573,
+     "dur": 0.919,
+     "volume": 0.168
+    }
+   ]
+  },
+  "hit": {
+   "align": "onset",
+   "offset_ms": 0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "hit_1.mp3",
+     "onset": 0.0003,
+     "peak": 0.05,
+     "dur": 0.282,
+     "volume": 0.113
+    }
+   ]
+  },
+  "drop": {
+   "align": "onset",
+   "offset_ms": 0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "drop_1.mp3",
+     "onset": 0.0003,
+     "peak": 0.0042,
+     "dur": 0.325,
+     "volume": 0.111
+    }
+   ]
+  },
+  "click.confirm": {
+   "align": "onset",
+   "offset_ms": 0,
+   "min_gap_ms": 0,
+   "takes": [
+    {
+     "file": "click-confirm_1.mp3",
+     "onset": 0.0074,
+     "peak": 0.0386,
+     "dur": 0.425,
+     "volume": 0.113
+    }
+   ]
+  },
+  "snap": {
+   "align": "onset",
+   "offset_ms": 9.0,
+   "min_gap_ms": 66.0,
+   "takes": [
+    {
+     "file": "snap_1.mp3",
+     "onset": 0.0051,
+     "peak": 0.04,
+     "dur": 0.242,
+     "volume": 0.135
+    }
+   ]
+  },
+  "bell": {
+   "align": "onset",
+   "offset_ms": -20.0,
+   "min_gap_ms": 110.0,
+   "takes": [
+    {
+     "file": "bell_A4.mp3",
+     "onset": 0.0004,
+     "peak": 0.0201,
+     "dur": 0.459,
+     "volume": 0.124
+    },
+    {
+     "file": "bell_C5.mp3",
+     "onset": 0.0005,
+     "peak": 0.0235,
+     "dur": 0.453,
+     "volume": 0.112
+    },
+    {
+     "file": "bell_E5.mp3",
+     "onset": 0.0005,
+     "peak": 0.0429,
+     "dur": 0.44,
+     "volume": 0.099
+    }
+   ]
+  }
+ }
+}

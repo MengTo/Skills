@@ -1,0 +1,102 @@
+/* Poster: flat colour fields, the picture above and heavy capitals across the
+   foot, hard edges and shadows, pictures printed in black on colour, a new
+   ground on every tone. Things snap in. */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,800;112,900;100,500;100,600&family=Space+Mono:wght@400;700&display=block');
+[data-look='poster'] {
+  --x-ground: #ffd400;
+  --x-ground-image: linear-gradient(transparent, transparent);
+  --x-panel: #fffdf2;
+  --x-panel-2: #ffffff;
+  --x-ink: #0c0c0c;
+  --x-dim: #0c0c0c;
+  --x-line: #0c0c0c;
+  --x-accent: #ff3b1f;
+  --x-accent-ink: #0c0c0c;
+  --x-ring: #ff3b1f;
+  --x-ring-w: 3px;
+  --x-head-font: 'Archivo', system-ui, sans-serif;
+  --x-head-weight: 900;
+  --x-head-at: bottom;
+  --x-head-h: 190px;
+  --x-head-size: 84px;
+  --x-head-line: 0.96;
+  --x-head-track: -0.018em;
+  --x-head-case: uppercase;
+  --x-hero-size: 124px;
+  --x-hero-track: -0.03em;
+  --x-body-font: 'Archivo', system-ui, sans-serif;
+  --x-body-weight: 500;
+  --x-label-font: 'Archivo', system-ui, sans-serif;
+  --x-label-weight: 800;
+  --x-label-case: uppercase;
+  --x-label-track: 0.01em;
+  --x-mono-font: 'Space Mono', ui-monospace, monospace;
+  --x-radius: 0px;
+  --x-radius-s: 0px;
+  --x-edge: 4px;
+  --x-edge-color: #0c0c0c;
+  --x-shadow: 12px 12px 0 #0c0c0c;
+  --x-bar: #ff3b1f;
+  --x-bar-ink: #0c0c0c;
+  --x-light-1: #0c0c0c;
+  --x-light-2: #0c0c0c;
+  --x-light-3: #0c0c0c;
+  --x-light-radius: 0;
+  --x-pointer: #0c0c0c;
+  --x-pointer-edge: #fff;
+  --x-pic-filter: grayscale(1) contrast(1.25) brightness(1.08);
+  --x-pic-blend: multiply;
+  --x-pic-ground: #ffd400;
+  --x-pic-ink: #0c0c0c;
+  --x-motion: snap;
+  --x-motion-dur: 0.2;
+  --x-motion-dist: 34;
+  --x-cap-font: 'Archivo', system-ui, sans-serif;
+  --x-cap-weight: 800;
+  --x-cap-ink: #fff;
+  --x-cap-word: #ffd400;
+  --x-cap-edge: transparent;
+  --x-cap-bg: #0c0c0c;
+  --x-cap-pad: 4px 14px 6px;
+  --x-name-face: Archivo;
+  --x-name-moves: Snappy;
+}
+[data-look='poster'] .x-scene[data-tone='2'] {
+  --x-ground: #1b2bff;
+  --x-ink: #ffffff;
+  --x-dim: #ffffff;
+  --x-line: #ffffff;
+  background: #1b2bff;
+}
+[data-look='poster'] .x-scene[data-tone='3'] {
+  --x-ground: #ff3b1f;
+  --x-accent: #ffd400;
+  --x-ring: #0c0c0c;
+  background: #ff3b1f;
+  --x-pic-ground: #ffd400;
+}
+[data-look='poster'] .x-head .x-lead {
+  display: inline-block;
+  padding: 0.02em 0.16em 0.04em;
+  margin-right: 0.1em;
+  background: var(--x-ink);
+  color: var(--x-ground);
+}
+[data-look='poster'] .x-scene[data-tone='3'] .x-head .x-lead,
+[data-look='poster'] .x-scene[data-tone='3'] .en-at {
+  color: #ffd400;
+}
+[data-look='poster'] .x-win {
+  rotate: -0.7deg;
+}
+[data-look='poster'] .x-win:nth-child(even) {
+  rotate: 0.8deg;
+}
+[data-look='poster'] .x-scene .x-win {
+  --x-ground: #fffdf2;
+  --x-accent: #ff3b1f;
+  --x-ink: #0c0c0c;
+  --x-dim: #55534a;
+  --x-line: rgba(12, 12, 12, 0.3);
+  color: #0c0c0c;
+}

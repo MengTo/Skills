@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three engines, one line · Create AI Avatar</title>
+<meta name="description" content="One digital twin saying one line in its own ElevenLabs voice on HeyGen's Avatar V, IV and III, and the mouths beside the real footage.">
+<style>
+  :root {
+    --ground: #f6f5f2;
+    --panel: #ffffff;
+    --ink: #17171a;
+    --soft: #6c6b70;
+    --line: rgba(0, 0, 0, 0.1);
+    --accent: #1f6feb;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0d0d0f;
+      --panel: #17171b;
+      --ink: #efeef0;
+      --soft: #9a99a0;
+      --line: rgba(255, 255, 255, 0.1);
+      --accent: #6ea8ff;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 40px 16px 56px; }
+  .embed main { padding: 16px; }
+  header { margin-bottom: 20px; }
+  .embed header { display: none; }
+  .kicker { margin: 0 0 6px; color: var(--soft); font-size: 13px; letter-spacing: 0.02em; }
+  h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 38px); line-height: 1.1; letter-spacing: -0.02em; font-weight: 650; }
+  .lede { margin: 0; color: var(--soft); max-width: 640px; }
+  .picks { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .picks button {
+    font: inherit; font-size: 14px; color: var(--ink); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer;
+  }
+  .picks button[aria-pressed='true'] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .picks button small { opacity: 0.6; margin-left: 6px; font-size: 12px; }
+  .stage { position: relative; border-radius: 14px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; }
+  .stage video { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .sound {
+    position: absolute; right: 12px; bottom: 12px; font: inherit; font-size: 13px;
+    color: #fff; background: rgba(0, 0, 0, 0.55); border: 0; border-radius: 999px; padding: 6px 12px; cursor: pointer;
+    backdrop-filter: blur(8px);
+  }
+  .says { margin: 12px 2px 28px; color: var(--soft); min-height: 3em; }
+  .says b { color: var(--ink); font-weight: 600; }
+  h2 { margin: 0 0 4px; font-size: 18px; font-weight: 650; letter-spacing: -0.01em; }
+  .sub { margin: 0 0 12px; color: var(--soft); font-size: 14px; }
+  .sheet { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+  .sheet img { display: block; width: 100%; height: auto; }
+  /* The row picked above, and your real one, stay lit. */
+  .sheet .dim { position: absolute; left: 0; right: 0; height: 25%; background: var(--ground); opacity: 0.62; transition: opacity 0.2s; pointer-events: none; }
+  .sheet .dim[hidden] { display: block; opacity: 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+  thead th { color: var(--soft); font-weight: 500; border-top: 0; }
+  tbody th { font-weight: 600; white-space: nowrap; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.on th, tr.on td { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+  .foot { margin-top: 20px; color: var(--soft); font-size: 13px; }
+  .foot code { font-size: 12px; }
+  @media (max-width: 640px) {
+    .hide-s { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sheet .dim { transition: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="kicker">Create AI Avatar · the skill's demo</p>
+    <h1>Three engines, one line.</h1>
+    <p class="lede">One digital twin, trained on 2 min 48 s of real takes, saying one line in its own ElevenLabs voice. The same audio on each of HeyGen's engines, so the only difference is the engine.</p>
+  </header>
+
+  <div class="picks" role="group" aria-label="Which engine">
+    <button type="button" data-k="iv" aria-pressed="true">Avatar IV<small>picked</small></button>
+    <button type="button" data-k="iii" aria-pressed="false">Avatar III</button>
+    <button type="button" data-k="v" aria-pressed="false">Avatar V</button>
+  </div>
+  <div class="stage">
+    <video id="clip" src="avatar-iv.mp4" poster="avatar-iv.webp" playsinline loop muted preload="metadata" aria-label="The twin on Avatar IV saying the line"></video>
+    <button type="button" class="sound" id="sound" aria-pressed="false">Sound on</button>
+  </div>
+  <p class="says" id="says"></p>
+
+  <h2>Judge it by the mouth.</h2>
+  <p class="sub">Six moments of each render, nose to chin, and the real footage last.</p>
+  <div class="sheet" id="sheet">
+    <img src="mouths.jpg" alt="Four rows of six mouth close-ups: Avatar V, Avatar IV, Avatar III, then the real footage. Avatar V stretches the lips and shows both rows of teeth; IV and III open small and round like the real mouth." width="1260" height="600">
+    <span class="dim" data-row="0" style="top: 0"></span>
+    <span class="dim" data-row="1" style="top: 25%"></span>
+    <span class="dim" data-row="2" style="top: 50%"></span>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th scope="col">Engine</th><th scope="col">A second</th><th scope="col">The mouth</th><th scope="col" class="hide-s">Everything else</th></tr>
+    </thead>
+    <tbody>
+      <tr data-k="v"><th scope="row">Avatar V</th><td class="num">$0.12</td><td>Lips stretched, both rows of teeth, pinker lips</td><td class="hide-s">Smoothed skin</td></tr>
+      <tr data-k="iv"><th scope="row">Avatar IV</th><td class="num">$0.0805</td><td>Small and round, top teeth now and then</td><td class="hide-s">Hand gestures</td></tr>
+      <tr data-k="iii"><th scope="row">Avatar III</th><td class="num">$0.01</td><td>Closest: small openings, natural lip colour</td><td class="hide-s">The real head movement</td></tr>
+    </tbody>
+  </table>
+  <p class="foot">Made with <code>scripts/render.mjs</code> and <code>scripts/mouths.sh</code>. An 8.8 s line cost $1.05 on Avatar V, $0.71 on IV and $0.09 on III.</p>
+</main>
+<script type="module">
+  if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('embed');
+  const ROW = { v: 0, iv: 1, iii: 2 };
+  const SAYS = {
+    iv: '<b>Avatar IV, the pick.</b> The mouth opens small and round, the top teeth show now and then, and the hands move as it talks. Watch them: in one render a thumb looked rubbery.',
+    iii: '<b>Avatar III, the closest mouth.</b> It keeps the real head movement from the footage and the real lip colour. It’s the oldest engine, so check the sync by ear.',
+    v: '<b>Avatar V, too expressive.</b> The lips stretch toward the cheeks and both rows of teeth show, close to a grin. A motion prompt didn’t calm it.',
+  };
+  const clip = document.getElementById('clip');
+  const sound = document.getElementById('sound');
+  const says = document.getElementById('says');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seen = false;
+  function pick(k, first) {
+    const t = clip.currentTime;
+    if (!first) {
+      clip.src = `avatar-${k}.mp4`;
+      clip.poster = `avatar-${k}.webp`;
+    }
+    clip.setAttribute('aria-label', `The twin on Avatar ${k.toUpperCase()} saying the line`);
+    // The same moment of the line, on the next engine.
+    clip.addEventListener('loadedmetadata', () => {
+      clip.currentTime = Math.min(t, clip.duration - 0.05);
+      if (seen && !still) clip.play().catch(() => {});
+    }, { once: true });
+    for (const b of document.querySelectorAll('.picks button')) b.setAttribute('aria-pressed', String(b.dataset.k === k));
+    for (const r of document.querySelectorAll('tbody tr')) r.classList.toggle('on', r.dataset.k === k);
+    for (const d of document.querySelectorAll('.sheet .dim')) d.hidden = Number(d.dataset.row) === ROW[k];
+    says.innerHTML = SAYS[k];
+  }
+  for (const b of document.querySelectorAll('.picks button')) b.addEventListener('click', () => pick(b.dataset.k));
+  sound.addEventListener('click', () => {
+    clip.muted = !clip.muted;
+    sound.textContent = clip.muted ? 'Sound on' : 'Sound off';
+    sound.setAttribute('aria-pressed', String(!clip.muted));
+    if (!clip.muted) clip.play().catch(() => {});
+  });
+  // It plays only while it's on screen, and stands still for reduced motion.
+  new IntersectionObserver(([e]) => {
+    if (still) return;
+    seen = e.isIntersecting;
+    if (seen) clip.play().catch(() => {});
+    else clip.pause();
+  }).observe(clip);
+  pick('iv', true);
+</script>
+</body>
+</html>

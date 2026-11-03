@@ -4,10 +4,10 @@
    link), or a script read in a HeyGen voice. It says the price before it
    starts and the wallet when it's done.
 
-   node scripts/render.mjs --look <look_id> --audio line.mp3 --engine avatar_iv
+   node scripts/render.mjs --look <look_id> --audio line.mp3
    node scripts/render.mjs --photo me.jpg --audio line.mp3
    node scripts/render.mjs --look <look_id> --script "Hi, it's Ada." --voice <heygen_voice_id>
-     --engine avatar_v | avatar_iv | avatar_iii   (a twin only; default avatar_iv)
+     --engine avatar_v | avatar_iv | avatar_iii   (a twin or photo avatar; default avatar_v)
      --out twin-avatar_iv.mp4
      --res 1080p | 720p
 
@@ -28,7 +28,7 @@ const look = arg('look');
 const photo = arg('photo');
 const audio = arg('audio');
 const script = arg('script');
-const engine = arg('engine') || 'avatar_iv';
+const engine = arg('engine') || 'avatar_v';
 if ((!look && !photo) || (!audio && !script) || (script && !arg('voice'))) {
   console.error('Usage: node scripts/render.mjs (--look <id> | --photo <file>) (--audio <file|asset_id|url> | --script "<line>" --voice <id>) [--engine avatar_iv] [--out file.mp4]');
   process.exit(1);

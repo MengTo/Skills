@@ -15,7 +15,7 @@ Look along each column, then down:
 | Look at | Over-acting | Like you |
 |---|---|---|
 | Width | Lips stretched toward the cheeks | Opens about as wide as yours |
-| Teeth | Both rows, often | As often as yours show (for Meng: the top row, rarely) |
+| Teeth | Both rows, often | As often as yours show (for the creator this was built on: the top row, rarely) |
 | Shape | Wide and flat, a half grin | Small and round, if that's how you talk |
 | Lips | Pinker, glossier, outlined | Your colour |
 | Corners | Pulled up between words | Relaxed |
@@ -38,5 +38,5 @@ Check that consonants close the lips (b, p, m), that the mouth is still between 
 - Send the clip and the sheet, and say which row is which.
 - Say what you saw in plain words: "Avatar V stretches your lips and shows both rows of teeth; in your real takes your mouth opens small and round."
 - Say what you couldn't check, for example sync from stills.
-- Ask which one, and let them change their mind after watching. Meng first picked Avatar III from the sheet, then Avatar IV after watching.
+- Ask which one, and let them change their mind after watching. The creator this was built on first picked Avatar III from the sheet, then Avatar IV after watching.
 - Write down the pick with the ids: the look, the group, the voice and the engine.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Three engines, one line · Create AI Avatar</title>
-<meta name="description" content="One digital twin saying one line in its own ElevenLabs voice on HeyGen's Avatar V, IV and III, and the mouths beside the real footage.">
+<meta name="description" content="One presenter made from a single portrait saying one line in a stock ElevenLabs voice on HeyGen's Avatar V, IV and III, and the mouths beside the portrait.">
 <style>
   :root {
     --ground: #f6f5f2;
@@ -85,24 +85,24 @@
   <header>
     <p class="kicker">Create AI Avatar · the skill's demo</p>
     <h1>Three engines, one line.</h1>
-    <p class="lede">One digital twin, trained on 2 min 48 s of real takes, saying one line in its own ElevenLabs voice. The same audio on each of HeyGen's engines, so the only difference is the engine.</p>
+    <p class="lede">Jack is one portrait, made a HeyGen photo avatar, saying one line in ElevenLabs' Mark voice. The same audio on each of HeyGen's engines, so the only difference is the engine.</p>
   </header>
 
   <div class="picks" role="group" aria-label="Which engine">
-    <button type="button" data-k="iv" aria-pressed="true">Avatar IV<small>picked</small></button>
+    <button type="button" data-k="v" aria-pressed="true">Avatar V<small>default</small></button>
+    <button type="button" data-k="iv" aria-pressed="false">Avatar IV</button>
     <button type="button" data-k="iii" aria-pressed="false">Avatar III</button>
-    <button type="button" data-k="v" aria-pressed="false">Avatar V</button>
   </div>
   <div class="stage">
-    <video id="clip" src="avatar-iv.mp4" poster="avatar-iv.webp" playsinline loop muted preload="metadata" aria-label="The twin on Avatar IV saying the line"></video>
+    <video id="clip" src="avatar-v.mp4" poster="avatar-v.webp" playsinline loop muted preload="metadata" aria-label="Jack on Avatar V saying the line"></video>
     <button type="button" class="sound" id="sound" aria-pressed="false">Sound on</button>
   </div>
   <p class="says" id="says"></p>
 
   <h2>Judge it by the mouth.</h2>
-  <p class="sub">Six moments of each render, nose to chin, and the real footage last.</p>
+  <p class="sub">Six moments of each render, nose to chin, and the portrait last. With a twin, your real footage goes there.</p>
   <div class="sheet" id="sheet">
-    <img src="mouths.jpg" alt="Four rows of six mouth close-ups: Avatar V, Avatar IV, Avatar III, then the real footage. Avatar V stretches the lips and shows both rows of teeth; IV and III open small and round like the real mouth." width="1260" height="600">
+    <img src="mouths.jpg" alt="Four rows of six mouth close-ups of Jack: Avatar V opens widest, Avatar IV a little smaller, Avatar III least; the portrait is last." width="1260" height="600">
     <span class="dim" data-row="0" style="top: 0"></span>
     <span class="dim" data-row="1" style="top: 25%"></span>
     <span class="dim" data-row="2" style="top: 50%"></span>
@@ -110,23 +110,23 @@
 
   <table>
     <thead>
-      <tr><th scope="col">Engine</th><th scope="col">A second</th><th scope="col">The mouth</th><th scope="col" class="hide-s">Everything else</th></tr>
+      <tr><th scope="col">Engine</th><th scope="col">The mouth</th><th scope="col" class="hide-s">Everything else</th></tr>
     </thead>
     <tbody>
-      <tr data-k="v"><th scope="row">Avatar V</th><td class="num">$0.12</td><td>Lips stretched, both rows of teeth, pinker lips</td><td class="hide-s">Smoothed skin</td></tr>
-      <tr data-k="iv"><th scope="row">Avatar IV</th><td class="num">$0.0805</td><td>Small and round, top teeth now and then</td><td class="hide-s">Hand gestures</td></tr>
-      <tr data-k="iii"><th scope="row">Avatar III</th><td class="num">$0.01</td><td>Closest: small openings, natural lip colour</td><td class="hide-s">The real head movement</td></tr>
+      <tr data-k="v"><th scope="row">Avatar V</th><td>Widest: top teeth often, a grin on some words</td><td class="hide-s">HeyGen’s newest; the default here</td></tr>
+      <tr data-k="iv"><th scope="row">Avatar IV</th><td>A little smaller, top teeth now and then</td><td class="hide-s">Frames the face tighter</td></tr>
+      <tr data-k="iii"><th scope="row">Avatar III</th><td>Smallest: lips mostly together</td><td class="hide-s">More head tilt; check the sync by ear</td></tr>
     </tbody>
   </table>
-  <p class="foot">Made with <code>scripts/render.mjs</code> and <code>scripts/mouths.sh</code>. An 8.8 s line cost $1.05 on Avatar V, $0.71 on IV and $0.09 on III.</p>
+  <p class="foot">Made with <code>scripts/render.mjs</code> and <code>scripts/mouths.sh</code>. Making the portrait a photo avatar cost about $1.32. On a twin, an 8.8 s line costs $1.05 on Avatar V, $0.71 on IV and $0.09 on III.</p>
 </main>
 <script type="module">
   if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('embed');
   const ROW = { v: 0, iv: 1, iii: 2 };
   const SAYS = {
-    iv: '<b>Avatar IV, the pick.</b> The mouth opens small and round, the top teeth show now and then, and the hands move as it talks. Watch them: in one render a thumb looked rubbery.',
-    iii: '<b>Avatar III, the closest mouth.</b> It keeps the real head movement from the footage and the real lip colour. It’s the oldest engine, so check the sync by ear.',
-    v: '<b>Avatar V, too expressive.</b> The lips stretch toward the cheeks and both rows of teeth show, close to a grin. A motion prompt didn’t calm it.',
+    v: '<b>Avatar V, the default.</b> HeyGen’s newest engine. Jack’s mouth opens widest here, the top teeth show often, and a few words get a grin.',
+    iv: '<b>Avatar IV.</b> It frames the face tighter, and the mouth opens a little smaller, the top teeth showing now and then.',
+    iii: '<b>Avatar III.</b> The smallest mouth, lips mostly together, with more head tilt. It’s the oldest engine, so check the sync by ear.',
   };
   const clip = document.getElementById('clip');
   const sound = document.getElementById('sound');
@@ -139,7 +139,7 @@
       clip.src = `avatar-${k}.mp4`;
       clip.poster = `avatar-${k}.webp`;
     }
-    clip.setAttribute('aria-label', `The twin on Avatar ${k.toUpperCase()} saying the line`);
+    clip.setAttribute('aria-label', `Jack on Avatar ${k.toUpperCase()} saying the line`);
     // The same moment of the line, on the next engine.
     clip.addEventListener('loadedmetadata', () => {
       clip.currentTime = Math.min(t, clip.duration - 0.05);
@@ -164,7 +164,7 @@
     if (seen) clip.play().catch(() => {});
     else clip.pause();
   }).observe(clip);
-  pick('iv', true);
+  pick('v', true);
 </script>
 </body>
 </html>

@@ -23,7 +23,7 @@ A direct upload takes up to 200 MB; a link HeyGen fetches takes 32 MB. Two to th
 - **Use takes with natural speech, not a script read flat.** The twin learns how much your mouth opens. Varied sentences teach it more than one repeated line.
 - **Match the shape you'll use.** Landscape takes make a landscape twin.
 
-Meng's first twin used the three eye-contact takes of one YouTube video (2 min 48 s), all from one session in front of the same shelves. It trained in about 4 minutes.
+The twin this skill was built on used the eye-contact takes of one YouTube video (2 min 48 s), all from one session in front of the same shelves. It trained in about 4 minutes.
 
 ## Where takes come from
 

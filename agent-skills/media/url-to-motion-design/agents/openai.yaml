@@ -1,0 +1,4 @@
+interface:
+  display_name: "URL to Motion Design"
+  short_description: "Turn a film or post at a link into new Fil motion scenes in its look, judged to 8/10"
+  default_prompt: "Use $url-to-motion-design on [this post / video link]: capture its best 5 to 10 distinct motion-graphics shots as screenshots first, then rebuild each as an original Fil motion scene in its look with Fil's own words, polish them with two blind judges to 8/10, put them in a new section of the HTML motion scenes canvas, and show them to me as a screening page and MP4s."

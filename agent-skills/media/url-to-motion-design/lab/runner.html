@@ -1,0 +1,79 @@
+<!doctype html><meta charset="utf-8"><title>Scene lab runner</title>
+<body style="margin:0;background:#111;color:#9a9;font:13px ui-monospace,monospace"><pre id="log" style="margin:12px">runner…</pre>
+<script>
+const NOT_DEFAULT = ['width', 'height', '-webkit-text-fill-color'], SVG_NS = 'http://www.w3.org/2000/svg', dcache = new Map(); let blank = null;
+async function defaultsFor(keys) {
+  blank ||= new Promise((ok) => { const f = document.createElement('iframe'); Object.assign(f.style, { position: 'fixed', width: '0', height: '0', border: '0', visibility: 'hidden' }); f.onload = () => ok(f); f.srcdoc = '<!DOCTYPE html><meta charset="UTF-8"><title></title><body>'; document.body.appendChild(f); });
+  const f = await blank, doc = f.contentDocument, out = {};
+  for (const [key, k] of Object.entries(keys || {})) {
+    if (!dcache.has(key)) {
+      let root, el;
+      if (k.svg) { root = doc.createElementNS(SVG_NS, 'svg'); el = doc.createElementNS(SVG_NS, k.tag); for (const [n, v] of k.attrs) el.setAttributeNS(null, n, v); root.appendChild(el); } else root = el = doc.createElement(k.tag);
+      el.textContent = ' '; doc.body.appendChild(root);
+      const cs = f.contentWindow.getComputedStyle(el, k.pseudo), list = [];
+      for (let i = 0; i < cs.length; i++) { const p = cs.item(i); if (!NOT_DEFAULT.includes(p)) list.push([p, cs.getPropertyValue(p)]); }
+      doc.body.removeChild(root); dcache.set(key, list);
+    }
+    out[key] = dcache.get(key);
+  }
+  return out;
+}
+const SHIM = `<script>(function(){
+  const src = 'const t=new Map();onmessage=e=>{const d=e.data;if(d.c==="s"){t.set(d.id,setTimeout(()=>{t.delete(d.id);postMessage(d.id)},d.ms))}else{clearTimeout(t.get(d.id));t.delete(d.id)}}';
+  const w = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+  const cbs = new Map(); let seq = 1e6;
+  w.onmessage = (e) => { const f = cbs.get(e.data); if (f) { cbs.delete(e.data); f(); } };
+  window.setTimeout = (fn, ms, ...a) => { const id = ++seq; cbs.set(id, () => { if (typeof fn === 'function') fn(...a); }); w.postMessage({ c: 's', id, ms: +ms || 0 }); return id; };
+  window.clearTimeout = (id) => { cbs.delete(id); w.postMessage({ c: 'c', id }); };
+  const iv = new Map();
+  window.setInterval = (fn, ms, ...a) => { const key = ++seq; const go = () => { iv.set(key, window.setTimeout(() => { fn(...a); if (iv.has(key)) go(); }, ms)); }; go(); return key; };
+  window.clearInterval = (key) => { window.clearTimeout(iv.get(key)); iv.delete(key); };
+  window.requestAnimationFrame = (cb) => window.setTimeout(() => cb(performance.now()), 16);
+  window.cancelAnimationFrame = (id) => window.clearTimeout(id);
+})();<\/script>`;
+const WORKERS = 3; let doneCount = 0, cur = {};
+const show = () => { document.getElementById('log').textContent = 'scene lab · done ' + doneCount + '\n' + Object.values(cur).join('\n'); };
+async function work(n) {
+  for (;;) {
+    let r; try { r = await fetch('/next'); } catch { await new Promise((k) => setTimeout(k, 1500)); continue; }
+    if (r.status === 204) continue;
+    const job = await r.json(); cur[n] = 'worker ' + n + ' job ' + job.id; show();
+    let error, startMs, avgMs;
+    const frame = document.createElement('iframe');
+    try {
+      frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+      Object.assign(frame.style, { position: 'fixed', left: 0, top: 0, width: job.w + 'px', height: job.h + 'px', border: 0, opacity: 0, pointerEvents: 'none' });
+      // 5 Nov: a frame that never answers used to hold its worker forever; after three, the runner stopped asking for work.
+      const wait = (op, id) => new Promise((ok, no) => {
+        const to = setTimeout(() => { removeEventListener('message', h); no(new Error('runner timeout waiting for ' + op + ': render again')); }, op === 'loaded' ? 60000 : 45000);
+        const h = (e) => { if (e.source !== frame.contentWindow || e.data?.fil !== 'scene') return; if (e.data.op === 'error') { clearTimeout(to); removeEventListener('message', h); no(new Error(e.data.error)); } else if (e.data.op === op && (id == null || e.data.id === id)) { clearTimeout(to); removeEventListener('message', h); ok(e.data); } };
+        addEventListener('message', h);
+      });
+      const loaded = wait('loaded'); frame.srcdoc = job.doc.replace(/<head[^>]*>/i, (m) => m + SHIM); document.body.appendChild(frame); await loaded;
+      const t0 = performance.now();
+      frame.contentWindow.postMessage({ fil: 'scene', op: 'start', id: 0, w: job.w, h: job.h, scale: 1 }, '*');
+      await wait('ready', 0); startMs = Math.round(performance.now() - t0);
+      frame.contentWindow.postMessage({ fil: 'scene', op: 'keys', id: 900001 }, '*');
+      const { keys } = await wait('keys', 900001);
+      const dp = wait('defaults', 900002);
+      frame.contentWindow.postMessage({ fil: 'scene', op: 'defaults', id: 900002, defaults: await defaultsFor(keys) }, '*');
+      await dp;
+      const c = document.createElement('canvas'); c.width = job.w; c.height = job.h; const g = c.getContext('2d');
+      const ms = []; let id = 1;
+      for (let i = 0; i < job.times.length; i++) {
+        const a = performance.now();
+        frame.contentWindow.postMessage({ fil: 'scene', op: 'frame', id, t: job.times[i] }, '*');
+        const f = await wait('frame', id++); ms.push(performance.now() - a);
+        g.drawImage(f.bmp, 0, 0, job.w, job.h); f.bmp.close?.();
+        const blob = await new Promise((k) => c.toBlob(k, 'image/jpeg', 0.9));
+        await fetch('/frame?job=' + job.id + '&i=' + i, { method: 'POST', body: blob });
+      }
+      avgMs = Math.round(ms.reduce((a, b) => a + b, 0) / ms.length);
+    } catch (e) { error = String(e?.message || e); }
+    frame.remove();
+    await fetch('/finish', { method: 'POST', body: JSON.stringify({ id: job.id, error, startMs, avgMs }) });
+    doneCount++; delete cur[n]; show();
+  }
+}
+for (let n = 0; n < WORKERS; n++) work(n);
+</script>

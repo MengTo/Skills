@@ -1,0 +1,168 @@
+<title>Motion Scenes Screening</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* A dark screening room: the scene is the only bright thing, the playlist sits beside it like a cue sheet. */
+:root {
+  color-scheme: dark;
+  --bg: #0e0e10; --panel: #18181b; --raise: #232327; --line: #2d2d32;
+  --fg: #f3f2ef; --muted: #a0a0a7; --accent: #efb36c; --accent-ink: #1d1305;
+  --ui: 'Instrument Sans', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+html, body { background: var(--bg); color: var(--fg); font-family: var(--ui); }
+body { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px; }
+.room { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; max-width: 1560px; margin: 0 auto; }
+.main { display: flex; flex-direction: column; gap: 14px; min-width: 0; align-items: center; }
+.main > * { width: min(100%, calc((100vh - 196px) * 16 / 9)); }
+.stage { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: #000; border-radius: 12px; overflow: hidden; }
+.stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; pointer-events: none; }
+.stage iframe.on { opacity: 1; }
+.bar { height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+.now { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+.now h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.now .meta { color: var(--muted); font-size: 14px; }
+.time { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.note { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.controls button { background: var(--raise); border: 0; border-radius: 8px; padding: 8px 14px; font-size: 14px; font-weight: 500; }
+.controls button:hover { background: var(--line); }
+.controls button.lead { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.controls button.lead:hover { background: var(--accent); filter: brightness(1.06); }
+.controls button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+button:focus { outline: none; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.list { display: flex; flex-direction: column; gap: 18px; max-height: calc(100vh - 32px); overflow-y: auto; min-width: 0; padding-right: 4px; }
+.list h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.row { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; background: none; border: 0; border-radius: 8px; padding: 5px; text-align: left; }
+.row:hover { background: var(--panel); }
+.row.on { background: var(--raise); }
+.row img { width: 96px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 5px; display: block; background: var(--panel); }
+.row span.name { font-size: 14px; font-weight: 500; line-height: 1.25; }
+.score { font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.score.top { color: var(--accent); }
+.foot { font-size: 13px; color: var(--muted); line-height: 1.45; margin: 0; }
+.foot a { color: var(--fg); }
+.warm { position: fixed; left: -9999px; top: 0; width: 640px; height: 360px; border: 0; }
+@media (max-width: 980px) {
+  .room { grid-template-columns: minmax(0, 1fr); }
+  .main > * { width: 100%; }
+  .list { max-height: none; overflow: visible; padding-right: 0; }
+}
+</style>
+
+<div class="room">
+  <div class="main">
+    <div class="stage" id="stage"><iframe id="a" title="Scene" tabindex="-1"></iframe><iframe id="b" title="Scene" tabindex="-1"></iframe></div>
+    <div class="bar"><i id="fill"></i></div>
+    <div class="now">
+      <h1 id="name"></h1>
+      <span class="meta"><span id="style"></span> &middot; <span id="score"></span> &middot; <span class="time" id="time">0.0 / 5.0 s</span></span>
+    </div>
+    <div class="controls">
+      <button class="lead" id="all">Play all with sound</button>
+      <button id="prev">Previous</button>
+      <button id="again">Replay</button>
+      <button id="next">Next</button>
+      <button id="sound" aria-pressed="false">Sound</button>
+      <button id="loop" aria-pressed="false">Loop this one</button>
+    </div>
+    <p class="note" id="note"></p>
+    <p class="foot">Each scene plays live from its own page in your browser, 5 seconds each. These are all 83 scenes on the <a href="https://fil.design/#canvas/eb6b97bb-ca99-461f-aa10-e8def0231c7e">HTML motion scenes</a> canvas, as they are there now, with the sounds each one marks. Scores come from two fresh blind judges who saw 12 stills, the lower score counting; nobody has scored them at speed. Keys: space replays, left and right change scene.</p>
+  </div>
+  <nav class="list" id="list" aria-label="Scenes"></nav>
+</div>
+
+<script>
+const S = /*MANIFEST*/[];
+const $ = (id) => document.getElementById(id);
+const frames = [$('a'), $('b')];
+let live = 0, i = 0, tok = 0, timer = 0, t0 = 0, loop = false, soundOn = false, ctx = null;
+const buffers = {}; let playing = [];
+const rows = [];
+
+let group = null;
+S.forEach((s, n) => {
+  if (!group || group.dataset.style !== s.style) {
+    group = document.createElement('section'); group.dataset.style = s.style;
+    const h = document.createElement('h2'); h.textContent = s.style; group.append(h); $('list').append(group);
+  }
+  const b = document.createElement('button'); b.className = 'row';
+  b.innerHTML = `<img alt="" loading="lazy" src="thumbs/${s.id}.jpg"><span class="name"></span><span class="score${s.score >= 8 ? ' top' : ''}">${s.score}/10</span>`;
+  b.querySelector('.name').textContent = s.name;
+  b.onclick = () => { unlock(); play(n); };
+  group.append(b); rows.push(b);
+});
+
+function warm(id) {
+  const f = document.createElement('iframe'); f.className = 'warm'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+  f.onload = () => setTimeout(() => f.remove(), 1500);
+  f.src = 'scenes/' + id + '.html'; document.body.append(f);
+}
+function stopSounds() { playing.forEach((x) => { try { x.stop(); } catch {} }); playing = []; }
+async function buffer(id) {
+  if (!buffers[id]) buffers[id] = fetch('sfx/' + id + '.mp3').then((r) => r.arrayBuffer()).then((d) => ctx.decodeAudioData(d));
+  return buffers[id];
+}
+function unlock() {
+  if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
+  try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch { ctx = null; return; }
+  [...new Set(S.flatMap((s) => s.cues.map((c) => c.id)))].forEach((id) => buffer(id).catch(() => {}));
+}
+function cues(s) {
+  if (!soundOn || !ctx) return;
+  const base = ctx.currentTime, mine = tok;
+  s.cues.forEach((c) => buffer(c.id).then((buf) => {
+    if (mine !== tok) return;
+    const src = ctx.createBufferSource(), g = ctx.createGain();
+    src.buffer = buf; g.gain.value = c.vol; src.connect(g).connect(ctx.destination);
+    src.start(Math.max(ctx.currentTime, base + c.at)); playing.push(src);
+  }).catch(() => {}));
+}
+function paint() {
+  const s = S[i];
+  $('name').textContent = s.name; $('style').textContent = s.style; $('score').textContent = s.score + '/10';
+  $('note').textContent = 'Judges liked: ' + s.good + '. Weakest point: ' + s.weak + '.';
+  rows.forEach((r, n) => { r.classList.toggle('on', n === i); if (n === i) r.setAttribute('aria-current', 'true'); else r.removeAttribute('aria-current'); });
+  const list = $('list'), r = rows[i];
+  if (getComputedStyle(list).overflowY === 'auto') { const top = r.offsetTop - list.offsetTop; if (top < list.scrollTop || top + r.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = top - 40; }
+}
+function play(n) {
+  i = (n + S.length) % S.length; clearTimeout(timer); stopSounds();
+  const me = ++tok, back = frames[1 - live], s = S[i]; paint();
+  back.onload = () => {
+    if (me !== tok) return;
+    back.classList.add('on'); const old = frames[live]; old.classList.remove('on'); live = 1 - live;
+    setTimeout(() => { if (me === tok) { old.onload = null; old.src = 'about:blank'; } }, 80);
+    t0 = performance.now(); cues(s);
+    timer = setTimeout(done, s.dur * 1000 + 300);
+    warm(S[(i + 1) % S.length].id);
+  };
+  back.src = 'scenes/' + s.id + '.html';
+}
+function done() { if (loop) play(i); else if (i < S.length - 1) play(i + 1); else { t0 = 0; $('all').textContent = 'Play all again with sound'; } }
+(function tick() {
+  const s = S[i], t = t0 ? Math.min((performance.now() - t0) / 1000, s.dur) : 0;
+  $('fill').style.transform = 'scaleX(' + t / s.dur + ')';
+  $('time').textContent = t.toFixed(1) + ' / ' + s.dur.toFixed(1) + ' s';
+  requestAnimationFrame(tick);
+})();
+function setSound(on) { soundOn = on; $('sound').setAttribute('aria-pressed', String(on)); if (!on) stopSounds(); }
+$('all').onclick = () => { unlock(); setSound(true); play(0); };
+$('again').onclick = () => { unlock(); play(i); };
+$('prev').onclick = () => { unlock(); play(i - 1); };
+$('next').onclick = () => { unlock(); play(i + 1); };
+$('sound').onclick = () => { unlock(); setSound(!soundOn); };
+$('loop').onclick = () => { loop = !loop; $('loop').setAttribute('aria-pressed', String(loop)); };
+addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') { unlock(); play(i - 1); }
+  else if (e.key === 'ArrowRight') { unlock(); play(i + 1); }
+  else if (e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); unlock(); play(i); }
+});
+paint();
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) { frames[0].src = 'scenes/' + S[0].id + '.html'; frames[0].classList.add('on'); }
+else play(0);
+</script>

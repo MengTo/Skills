@@ -12,6 +12,7 @@ They're portable. Project specifics (hosting, changelog format, capture folders)
 
 | Need | Start with |
 | --- | --- |
+| Run selected agent-qa application tests, review recorded evidence and trace memidex knowledge | [`agent-qa`](agent-qa/SKILL.md) |
 | Show real screenshots of the start, key moment and result as work progresses, unasked | [`workflow-progress-screenshots`](workflow-progress-screenshots/SKILL.md) |
 | Score work out of 10 on an anchored rubric and improve it round by round to a target | [`workflow-score-to-target`](workflow-score-to-target/SKILL.md) |
 | Ship a change: screenshots, changelog, tests, commit, fast-forward push, draft-then-live publish, measured sizes, a 50 MB stop | [`workflow-ship-change`](workflow-ship-change/SKILL.md) |

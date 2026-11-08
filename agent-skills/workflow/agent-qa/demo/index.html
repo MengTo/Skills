@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>agent-qa · Evidence review examples</title>
+<style>
+:root{color-scheme:light;font-family:Inter,system-ui,sans-serif;color:#24362f;background:#f5f6f0;font-size:14px;line-height:1.5}
+*{box-sizing:border-box}body{margin:0}button{font:inherit;cursor:pointer}button:focus-visible,summary:focus-visible{outline:3px solid #2f7960;outline-offset:3px}
+.shell{max-width:1240px;margin:auto;padding:26px 40px}.top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d8dfd5;padding-bottom:16px}.brand{font-size:18px;font-weight:750;letter-spacing:-.04em}.brand span{font-weight:400;color:#748076;margin-left:10px}.example{font-size:11px;border:1px solid #c8d2c6;padding:5px 10px;border-radius:5px;color:#526459}
+header{display:flex;align-items:end;justify-content:space-between;gap:28px;padding:27px 0 23px}.eyebrow{font-size:10px;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:#65766b;margin:0 0 10px}h1{font-size:38px;line-height:1.1;letter-spacing:-.055em;margin:0;font-weight:650}header p:last-child{color:#68786e;max-width:365px;margin:0;font-size:13px}.cases{display:flex;gap:6px;margin-bottom:20px}.cases button{background:transparent;color:#607267;border:1px solid #d5ded2;border-radius:6px;padding:9px 15px;font-size:12px}.cases button:hover{border-color:#7f9a87;background:#edf1e8}.cases button[aria-pressed="true"]{background:#283e33;border-color:#283e33;color:white}.cases button:active{transform:translateY(1px)}
+.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px}.panel{background:#fff;border:1px solid #dce3d9;border-radius:10px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:center;padding:17px 20px;border-bottom:1px solid #e5eadf}.panelHead h2{font-size:14px;margin:0;font-weight:650}.pill{font-size:10px;letter-spacing:.06em;font-weight:750;padding:4px 9px;border-radius:5px;background:#fbe6df;color:#a34831}.pill.passed{background:#e5f0df;color:#356f36}.pill.none{background:#ecefe9;color:#596858}.body{padding:18px 20px}.facts{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;padding-bottom:16px;border-bottom:1px solid #e5eadf}.label{display:block;font-size:10px;color:#748172;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}.value{font-size:12px;font-weight:600;overflow-wrap:anywhere}.evidence{margin-top:17px}.evidence h3{font-size:12px;margin:0 0 12px}.fact{display:flex;gap:10px;font-size:12px;margin:10px 0}.dot{flex:0 0 7px;height:7px;margin-top:6px;border-radius:50%;background:#a5b8a0}.fact strong{font-weight:650}.fact p{margin:0;color:#69796d}.decision{border-left:3px solid #b78055;background:#faf5eb;padding:12px 14px;margin-top:17px;font-size:12px}.decision strong{display:block;color:#765532;margin-bottom:3px}.decision p{margin:0;color:#786b57}
+.memoryRows{display:grid;gap:13px;margin-top:15px}.memoryRow{display:grid;grid-template-columns:110px 1fr;gap:10px;font-size:12px}.memoryRow span{color:#758270}.memoryRow b{font-weight:600}.provenance{border-top:1px solid #e5eadf;margin-top:18px;padding-top:14px}.provenance p{font-size:12px;color:#5a6e5d;margin:7px 0 0;line-height:1.6}.next{margin-top:18px;padding-top:14px;border-top:1px solid #e5eadf;color:#526955;font-size:12px}.next p{margin:4px 0 0}
+details{margin-top:15px;font-size:11px;color:#657668}summary{cursor:pointer;width:max-content}pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:14px;background:#eaf0e6;border-radius:6px;color:#405542}.footer{display:flex;justify-content:space-between;gap:20px;margin-top:16px;color:#7b8778;font-size:10px}.footer span:last-child{text-align:right}
+@media(max-width:780px){.shell{padding:20px}header{display:block}header p:last-child{margin-top:14px}.grid{grid-template-columns:1fr}h1{font-size:34px}.cases{flex-wrap:wrap}.footer{display:block}.footer span{display:block}.footer span:last-child{text-align:left;margin-top:5px}.brand span{display:none}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}.cases button:active{transform:none}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="top"><div class="brand">agent-qa <span>/ workflow examples</span></div><span class="example">Synthetic records · learning demo</span></div>
+  <header><div><p class="eyebrow">Evidence, context, provenance</p><h1>Review a run with context.</h1></div><p>Explore three examples of the agent-qa workflow. No application test or provider call runs here.</p></header>
+  <nav class="cases" aria-label="Choose an example">
+    <button type="button" data-case="failure" aria-pressed="true">Recorded failure</button>
+    <button type="button" data-case="older" aria-pressed="false">Older passing build</button>
+    <button type="button" data-case="validation" aria-pressed="false">Validation only</button>
+  </nav>
+  <div class="grid" aria-live="polite" aria-atomic="true">
+    <section class="panel" aria-labelledby="reviewHeading">
+      <div class="panelHead"><h2 id="reviewHeading">Run review</h2><span id="verdict" class="pill"></span></div>
+      <div class="body">
+        <div class="facts"><div><span class="label">Recorded run</span><span id="run" class="value"></span></div><div><span class="label">Target / build</span><span id="build" class="value"></span></div></div>
+        <div class="evidence"><h3>What the record shows</h3><div class="fact"><i class="dot" aria-hidden="true"></i><div><strong id="observationTitle"></strong><p id="observation"></p></div></div><div class="fact"><i class="dot" aria-hidden="true"></i><div><strong id="contextTitle"></strong><p id="context"></p></div></div></div>
+        <div class="decision"><strong id="conclusion"></strong><p id="uncertainty"></p></div>
+      </div>
+    </section>
+    <section class="panel" aria-labelledby="memoryHeading">
+      <div class="panelHead"><h2 id="memoryHeading">memidex provenance</h2><span class="label" style="margin:0">Read-only inspection</span></div>
+      <div class="body"><span class="label">Knowledge record</span><div id="record" class="value"></div>
+        <div class="memoryRows"><div class="memoryRow"><span>Historical use</span><b id="historical"></b></div><div class="memoryRow"><span>Current status</span><b id="current"></b></div></div>
+        <div class="provenance"><span class="label">Source provenance</span><p id="provenance"></p></div>
+        <div class="next"><span class="label">Useful next action</span><p id="next"></p></div>
+      </div>
+    </section>
+  </div>
+  <details><summary>Read the synthetic example data</summary><pre id="input"></pre></details>
+  <div class="footer"><span>Illustrates verdict, build and memory checks. This is not the agent-qa product interface.</span><span>vostride · advanced memory and self-improvement</span></div>
+</main>
+<script>
+const examples = {
+  failure: {
+    verdict: "FAILED", tone: "", run: "example-settings-rc7", build: "staging / rc7",
+    observationTitle: "Settings did not open", observation: "Test 0, step 2: the expected settings screen was not observed.",
+    contextTitle: "Network evidence: HTTP 503", context: "The settings request failed. No console events or screenshot were supplied.",
+    conclusion: "Preserve the failed verdict", uncertainty: "The digest suggests a navigation regression. The cause remains unconfirmed; the network failure is an observation.",
+    record: "example-settings-hint", historical: "Used by this recorded run", current: "Superseded after the run",
+    provenance: "Learned from an earlier staging onboarding run; later replaced by a direct settings-link hint.",
+    next: "Inspect the recorded request and environment failure before proposing a retry. The replacement hint's source is unknown."
+  },
+  older: {
+    verdict: "PASSED", tone: "passed", run: "example-checkout-rc6", build: "staging / rc6",
+    observationTitle: "The recorded checkout passed", observation: "The record belongs to build rc6. The requested review concerns build rc7.",
+    contextTitle: "No rc7 run supplied", context: "There is no evidence here that the same journey works on the requested build.",
+    conclusion: "Build rc7 remains unverified", uncertainty: "Keep the original pass for rc6. A pass on an older build cannot establish a pass on rc7.",
+    record: "Not supplied", historical: "Unknown", current: "Unknown", provenance: "No knowledge record or source provenance was supplied.",
+    next: "Find an existing run for rc7, or run the selected test on rc7 when execution is authorized."
+  },
+  validation: {
+    verdict: "NO RUN", tone: "none", run: "No run recorded", build: "staging / rc7",
+    observationTitle: "Configuration validation succeeded", observation: "Dry-run discovery selected one test. No application steps were executed.",
+    contextTitle: "No recorded application verdict", context: "There are no run artifacts or historical knowledge inputs to inspect.",
+    conclusion: "Application behavior is unverified", uncertainty: "Validation and discovery check prerequisites. They do not establish whether the application journey passes.",
+    record: "No run inputs", historical: "Not observed", current: "Not inspected", provenance: "No knowledge record was inspected in this example.",
+    next: "Execute the selected test only when authorized, then capture its run ID and review the actual result."
+  }
+};
+function showExample(key) {
+  const example = examples[key];
+  for (const [id, value] of Object.entries(example)) {
+    if (id !== "tone") document.getElementById(id).textContent = value;
+  }
+  document.getElementById("verdict").className = "pill " + example.tone;
+  document.getElementById("input").textContent = JSON.stringify({synthetic: true, ...example}, null, 2);
+  for (const button of document.querySelectorAll("[data-case]")) button.setAttribute("aria-pressed", String(button.dataset.case === key));
+}
+for (const button of document.querySelectorAll("[data-case]")) button.addEventListener("click", () => showExample(button.dataset.case));
+showExample("failure");
+</script>
+</body>
+</html>

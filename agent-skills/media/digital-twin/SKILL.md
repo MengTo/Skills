@@ -179,7 +179,8 @@ Read: `references/video.md`, `references/speaking.md`.
 5. **Measure** with `scripts/measure_drafts.sh DIR K…`: whisper for the words, mouth opening p50 and head-turn sd against
    **your** numbers (measure yourself with `speakstats`). Seedance opens the mouth ~50 % wider than a calm speaker.
 6. **One draft per still.** Near-duplicate tests read as waste to the person paying; say up front when a pair is a test.
-   A 480p draft keeps about a third of the still's face detail; a 720p final only after you pick.
+   A 480p draft keeps about a third of the still's face detail. Once a draft is picked, offer a 1080p final made from
+   that draft (same take, face detail back), priced first: see "Making the final from a draft" in `references/video.md`.
 
 ## Stage 7 · Deliver
 

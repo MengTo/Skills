@@ -89,3 +89,13 @@ scripts/measure_drafts.sh video D1 D2 D3    # fetch, 16 kHz wav, speakstats, fil
 | G1–G4 | close-up stills + the soft-mouth clause | 0.085–0.12 | 0.023–0.037 | **"pretty good"**: the workflow |
 | H1–H2 | stills in his real room, the clone voice | 0.10–0.13 | 0.02 | room and gear held |
 | J1–J2 | the same, with his real voice line | 0.10–0.13 | 0.027 | pitch matched his real voice |
+
+## Making the final from a draft (8 Nov 2026)
+
+- The person, on a 1080p final made from the draft they picked: "the non-draft looks great". Offer one once a draft is
+  picked, priced first: Higgsfield 1080p 80 credits for 5 s (96 for 6 s), 720p 35; Fil "Make final" 287 for 5 s at 1080p.
+- **The `higgsfield` CLI can't make it**: `--draft_job_id` fails validation ("a validation rule could not be evaluated"), with or
+  without the media. Use the Higgsfield MCP `generate_video` with `{"model": "seedance_2_5", "draft_job_id": "<draft id>",
+  "resolution": "1080p", "duration": <same>, "prompt": <same prompt>}` (price it first with `get_cost: true`). It keeps the
+  draft's take: the same words, timing and motion, with the face detail back.
+- Encode for the web with `ffmpeg -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -movflags +faststart` (6 s at 1080p ≈ 1 MB).

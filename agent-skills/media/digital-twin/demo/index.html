@@ -1,9 +1,16 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 <title>Your Digital Twin</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="A skill for making photoreal stills, talking clips and voice lines of yourself, with one creator's twin as the worked example.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="step-window.css">
+<link rel="stylesheet" href="twin-demo.css">
 <style>
 /* Layout: a shot log. The hero leads with real frames; the stages run as a production sequence; the worked example is
    logged frame by frame with its lens and measured proportions, the way a camera report reads. Dark-first, like a grade suite. */
@@ -178,13 +185,27 @@ td.mono { white-space: nowrap; }
 .files code { font-size: 0.8125rem; }
 footer { border-top: 1px solid var(--rule); padding-block: 36px 56px; color: var(--muted); font-size: var(--step--1); }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; }
+
+/* In Fil: the workflow's window (twin-demo.js on step-window.js), and its clock */
+.in-fil .sec-head { max-width: 70ch; }
+.twin-window { --hd-font: "Geist", ui-sans-serif, system-ui, sans-serif; --hd-mono: "Geist Mono", ui-monospace, monospace; --hd-focus: var(--amber); }
+.clockbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 18px; font-size: var(--step--1); color: var(--muted); }
+.clockbar button { font: 500 var(--step--1)/1 var(--body); min-width: 72px; padding: 9px 14px; border-radius: 3px; border: 1px solid var(--rule); background: var(--ink-2); color: var(--paper); cursor: pointer; }
+.clockbar button:hover { border-color: var(--amber); }
+.scrub { flex: 1 1 260px; display: flex; align-items: center; gap: 12px; }
+.scrub input { flex: 1; min-width: 0; accent-color: var(--amber); }
+.scrub output { min-width: 96px; font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--paper); }
+.still { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.still input { accent-color: var(--amber); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.in-fil .fine { margin-top: 14px; font-size: var(--step--1); color: var(--muted); max-width: 72ch; }
 </style>
 
 <header class="bar">
   <div class="wrap">
     <a class="mark" href="#top">$<span>digital-twin</span></a>
     <nav class="nav" aria-label="Sections">
-      <a href="#workflow">Workflow</a><a href="#example">Example</a><a href="#voice">Voice</a><a href="#lessons">Lessons</a><a href="#consent">Consent</a><a href="#use">Use it</a>
+      <a href="#in-fil">In Fil</a><a href="#workflow">Workflow</a><a href="#example">Example</a><a href="#voice">Voice</a><a href="#lessons">Lessons</a><a href="#consent">Consent</a><a href="#use">Use it</a>
     </nav>
   </div>
 </header>
@@ -216,6 +237,27 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: 
           <figcaption><b>Late afternoon</b> · 50 mm, 3/4 past the lens</figcaption>
         </figure>
       </div>
+    </div>
+  </section>
+
+  <section id="in-fil" class="in-fil">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">In Fil</p>
+        <h2>The workflow, step by step</h2>
+        <p>Mai’s batch in Fil’s Digital twin workflow: her face frames and her room dropped in, three Seedream 5.0 Pro stills, the iMac fixed in one edit, her line on ElevenLabs v4, then still 2 as a Seedance 2.5 draft, made final at 1080p. Drawn live in HTML from one clock, with Fil’s own prices.</p>
+      </div>
+      <div id="twin-window" class="twin-window"></div>
+      <div class="clockbar">
+        <button type="button" id="twin-play" aria-pressed="false">Pause</button>
+        <label class="scrub">
+          <span class="sr">The window’s clock</span>
+          <input id="twin-clock" type="range" min="0" max="33" step="0.01" value="0">
+          <output id="twin-time" for="twin-clock">0:00.0 / 0:33.0</output>
+        </label>
+        <label class="still"><input id="twin-still" type="checkbox"> End frames (reduced motion)</label>
+      </div>
+      <p class="fine">Mai is one of Fil’s example presenters, standing in for you; her room’s photo is the corner of it still 2 sees. Credits as Fil prices them: 12 a still, 9 an edit, 1 for the line, 55 for the draft and 289 to make it final.</p>
     </div>
   </section>
 
@@ -445,4 +487,42 @@ document.querySelectorAll('[data-copy]').forEach(function (btn) {
     try { navigator.clipboard.writeText(text).then(function () { done(true); }, select); } catch (e) { select(); }
   });
 });
+</script>
+<script src="step-window.js"></script>
+<script src="twin-demo.js"></script>
+<script>
+(function () {
+  var el = document.getElementById('twin-window');
+  if (!el || !window.HTMLDemo || !window.TwinDemo) return;
+  var demo = HTMLDemo.mount(el, {
+    steps: TwinDemo.steps(''),
+    tabs: ['Digital twin'],
+    label: 'The Digital twin workflow in Fil',
+  });
+  // For screenshots of exact frames (html-demo's shoot.mjs --frozen).
+  window.__hd = demo;
+  var play = document.getElementById('twin-play');
+  var clock = document.getElementById('twin-clock');
+  var time = document.getElementById('twin-time');
+  var still = document.getElementById('twin-still');
+  function fmt(s) { return Math.floor(s / 60) + ':' + (s % 60).toFixed(1).padStart(4, '0'); }
+  clock.max = demo.state().total;
+  still.checked = demo.state().still;
+  demo.onChange(function (s) {
+    clock.value = s.elapsed;
+    time.value = fmt(s.elapsed) + ' / ' + fmt(s.total);
+    play.textContent = s.paused ? 'Play' : 'Pause';
+    play.setAttribute('aria-pressed', String(s.paused));
+    play.disabled = s.still;
+  });
+  play.addEventListener('click', function () { demo.state().paused ? demo.resume() : demo.pause(); });
+  clock.addEventListener('input', function () {
+    // Read it before pausing: pausing draws again.
+    var s = Number(clock.value);
+    demo.pause();
+    demo.seek(s);
+  });
+  still.addEventListener('change', function () { demo.setStill(still.checked); });
+  demo.resume();
+})();
 </script>

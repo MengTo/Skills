@@ -27,11 +27,15 @@ reference for structure, tone and responsiveness.
 
 ### Experience
 
-- **Top bar:** a mono wordmark `$digital-twin` and links to Workflow, Worked example, Voice, Lessons, Consent and Use it.
+- **Top bar:** a mono wordmark `$digital-twin` and links to In Fil, Workflow, Worked example, Voice, Lessons, Consent and Use it.
   It sticks below the safe area, and the links hide under 720 px.
 - **Hero:** a kicker naming the stack, the title "Your digital twin", one line on what it makes, one line of provenance
   (160+ stills, 20+ drafts, a voice taken from 8.7 to 9.2), a "Copy the prompt" button, and a contact strip of the three
   stills of one batch with shot-log captions: still number, time of day, lens.
+- **In Fil:** the Digital twin workflow played live in a Fil window (`twin-demo.js` on HTML Demo's `step-window.js`): her
+  files dropped in, three stills made together, the iMac fixed in the image editor, her line, then still 2 as a draft made
+  final at 1080p, every frame drawn from one clock with Fil's own words and prices, a clock to drag and end frames for
+  reduced motion.
 - **What it makes:** stills, talking clips and voice lines, each with a real example (a still, the draft video, the
   voice line), its model, price and gate.
 - **The workflow:** stages 0–7 as a sequence. Each has what it needs or costs and its gate.
@@ -47,8 +51,8 @@ reference for structure, tone and responsiveness.
 
 ### Implementation contract
 
-- One HTML file with no framework. Fonts from Google Fonts only: Gloock (display), Schibsted Grotesk (body), IBM Plex
-  Mono (labels, numbers). Media next to it in `media/`: webp stills at 1400 px q80, the draft mp4 with a webp poster,
+- One HTML file with no framework, and Fil's window as its two scripts and stylesheets beside it. Fonts from Google
+  Fonts only: Gloock (display), Schibsted Grotesk (body), IBM Plex Mono (labels, numbers), and Geist inside Fil's window. Media next to it in `media/`: webp stills at 1400 px q80, the draft mp4 with a webp poster,
   and three mp3 clips.
 - Dark-first tokens on `:root` (a warm near-black, warm ivory text, practical-lamp amber, olive-earth), with the light
   theme under `prefers-color-scheme: light` and `[data-theme="light"]`.

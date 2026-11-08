@@ -122,6 +122,10 @@ audio { width: 100%; height: 40px; }
 .readout b { display: block; font-family: var(--mono); font-weight: 500; font-size: var(--step-2); font-variant-numeric: tabular-nums; color: var(--paper); line-height: 1.1; }
 .readout span { font-size: 0.75rem; color: var(--muted); font-family: var(--mono); }
 @media (max-width: 860px) { .clip { grid-template-columns: 1fr; } }
+.takes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.take-cap { margin: 6px 0 0; font-size: var(--step--1); color: var(--muted); }
+.take-cap b { color: var(--paper); font-weight: 600; }
+@media (max-width: 480px) { .takes { grid-template-columns: 1fr; } }
 
 /* voice */
 .voice { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 48px; align-items: start; }
@@ -230,14 +234,14 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: 
           <dl class="meta"><dt>model</dt><dd>Seedream 5 Pro, 16:9, 2k</dd><dt>price</dt><dd class="mono">$0.10–0.12 a still</dd><dt>gate</dt><dd>your pick; face measured against your real frames</dd></dl>
         </div>
         <div class="make">
-          <div class="frame"><video src="talk.mp4" poster="talk.webp" controls playsinline preload="metadata" aria-label="A five-second Seedance draft of Mai saying her line"></video></div>
+          <div class="frame"><video src="talk-final.mp4" poster="talk-final.webp" controls playsinline preload="metadata" aria-label="A six-second Seedance 2.5 final of Mai saying her line, 1080p"></video></div>
           <h3>Talking clips</h3>
-          <p class="muted">Five seconds from a picked still, with a line in your voice. One draft per still, measured before you see it.</p>
-          <dl class="meta"><dt>model</dt><dd>Seedance 2.5 draft, 480p</dd><dt>price</dt><dd class="mono">$0.52–0.59 a draft</dd><dt>gate</dt><dd>words exact; mouth and head against how you talk</dd></dl>
+          <p class="muted">Five or six seconds from a picked still, with a line in your voice. One draft per still, measured before you see it; the final, from the draft you like.</p>
+          <dl class="meta"><dt>model</dt><dd>Seedance 2.5 draft 480p, then its final 1080p</dd><dt>price</dt><dd class="mono">$0.52–0.59 a draft · $3.12 a final</dd><dt>gate</dt><dd>words exact; mouth and head against how you talk</dd></dl>
         </div>
         <div class="make">
           <div class="voicecard">
-            <div class="row"><span>Mai’s line · Kristen voice, v4 + [calm]</span><audio controls preload="none" src="voice.mp3"></audio></div>
+            <div class="row"><span>Mai’s line · Kristen voice, v4, read conversationally</span><audio controls preload="none" src="voice.mp3"></audio></div>
           </div>
           <h3>Lines in your voice</h3>
           <p class="muted">An instant clone from three minutes of your cleanest speech, tuned with an audio tag and scored against your real voice.</p>
@@ -283,16 +287,19 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: 
 
       <div class="clip">
         <figure>
-          <div class="frame"><video src="talk.mp4" poster="talk.webp" controls playsinline preload="metadata" aria-label="Seedance draft: Mai from still 2 says her line"></video></div>
-          <figcaption><b>Talking clip</b> · Seedance 2.5 draft, 480p, 5 s, from still 2, with her line in a stock ElevenLabs voice as the audio reference</figcaption>
+          <div class="takes">
+            <div><div class="frame"><video src="talk.mp4" poster="talk.webp" controls playsinline preload="metadata" aria-label="Seedance 2.5 draft: Mai from still 2 says her line, 480p"></video></div><p class="take-cap"><b>Draft</b> · 480p · 18 Higgsfield credits</p></div>
+            <div><div class="frame"><video src="talk-final.mp4" poster="talk-final.webp" controls playsinline preload="metadata" aria-label="The same take as the non-draft final, 1080p"></video></div><p class="take-cap"><b>Final</b> · the same take, 1080p · 96 credits</p></div>
+          </div>
+          <figcaption><b>Talking clip</b> · Seedance 2.5, 6 s, from still 2, with her line in a stock ElevenLabs voice as the audio reference: the draft, then the final made from it</figcaption>
         </figure>
         <div>
           <h3>Checked before anyone sees it</h3>
-          <p class="muted" style="margin-top:8px">Written down by whisper, the words came back exactly: “This course is different. The agent writes the code now.” The face, the display and the room held through the clip.</p>
+          <p class="muted" style="margin-top:8px">Written down by whisper, the words came back exactly: “This course is different. The agent writes the code and you shape how it feels.” Read conversationally at 175 words a minute, it fills the clip. The face, the display and the room held through the clip, and the final keeps the draft’s take with the detail back.</p>
           <div class="readout">
             <div><b>3 + 3</b><span>stills, then one edit each</span></div>
             <div><b>~60</b><span>Fil credits for the batch and fixes</span></div>
-            <div><b>15</b><span>Higgsfield credits for the draft</span></div>
+            <div><b>18 + 96</b><span>Higgsfield credits: draft, then 1080p final</span></div>
             <div><b>exact</b><span>the line, word for word</span></div>
           </div>
         </div>

@@ -17,6 +17,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 | Define attack timing, contact authority, defense, and combat feedback | [`design-action-combat`](design-action-combat/SKILL.md) |
 | Compose arenas, waves, objectives, boss phases, and rewards | [`design-game-encounters`](design-game-encounters/SKILL.md) |
 | Build inventory, loot, equipment, or persistence | [`build-game-inventory`](build-game-inventory/SKILL.md) |
+| Create a realistic, rigged, posed character model from a description or reference | [`game-dev-character-model`](game-dev-character-model/SKILL.md) |
 | Choose and integrate imported, procedural, generated, or 2D assets | [`build-hybrid-game-assets`](build-hybrid-game-assets/SKILL.md) |
 | Pair Vesperfall catalog PNGs with truthful live model review routes | [`build-vesperfall-review-assets`](build-vesperfall-review-assets/SKILL.md) |
 | Add readable visual or audio feedback | [`create-game-vfx`](create-game-vfx/SKILL.md) and [`build-game-audio-feedback`](build-game-audio-feedback/SKILL.md) |
@@ -48,6 +49,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 
 ## Assets, performance, QA, and release
 
+- [`game-dev-character-model`](game-dev-character-model/SKILL.md) — make a photoreal character as a textured, rigged GLB: A-pose concept image, image-to-3D, rig, pose by direction, hangar lighting, headless capture and checks.
 - [`build-hybrid-game-assets`](build-hybrid-game-assets/SKILL.md) — choose the correct runtime representation and preserve provenance, scale, sockets, collision, and budgets.
 - [`build-vesperfall-review-assets`](build-vesperfall-review-assets/SKILL.md) — pair transparent catalog references with truthful live model previews, provenance, grounding, and deterministic review routes.
 - [`optimize-threejs-games`](optimize-threejs-games/SKILL.md) — measure and improve representative encounters without sacrificing controls or combat readability.

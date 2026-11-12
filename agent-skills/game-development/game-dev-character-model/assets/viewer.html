@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Heroine — character model</title>
+<style>
+  html,body{margin:0;height:100%;background:#07090c;overflow:hidden;font:12px/1.4 ui-sans-serif,system-ui,sans-serif;color:#9aa4b2}
+  canvas{display:block}
+  #bar{position:fixed;left:16px;bottom:16px;display:flex;gap:6px}
+  #bar button{background:#12161c;color:#c8d0da;border:1px solid #232a33;border-radius:6px;padding:6px 10px;font:inherit;cursor:pointer}
+  #bar button:hover{background:#1a2029}
+  #msg{position:fixed;left:16px;top:14px}
+</style>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+<div id="msg">Loading…</div>
+<div id="bar">
+  <button data-v="full">Full body</button>
+  <button data-v="half">Half</button>
+  <button data-v="face">Face</button>
+  <button data-v="back">Back</button>
+  <button id="spin">Turntable</button>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const q = new URLSearchParams(location.search);
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.9;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x07090c);
+scene.fog = new THREE.Fog(0x07090c, 6, 16);
+const pm = new THREE.PMREMGenerator(renderer);
+scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.35;
+
+const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.05, 50);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+// Hangar-style rig: cool overhead key, warm side fill, cold rim from behind.
+const key = new THREE.SpotLight(0xdfe9ff, 60, 12, 0.5, 0.6, 1.6);
+key.position.set(1.6, 4.2, 2.6); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0002; key.shadow.radius = 4;
+const fill = new THREE.PointLight(0xffb27a, 6, 8, 1.8); fill.position.set(-2.4, 1.4, 1.6);
+const rim = new THREE.SpotLight(0x8fb8ff, 55, 12, 0.6, 0.5, 1.6); rim.position.set(-1.8, 2.8, -3.2);
+const rim2 = new THREE.SpotLight(0xffd0a8, 40, 12, 0.6, 0.5, 1.6); rim2.position.set(2.4, 2.2, -2.6);
+scene.add(key, key.target, fill, rim, rim.target, rim2, rim2.target);
+
+// Wet concrete floor.
+const floor = new THREE.Mesh(
+  new THREE.CircleGeometry(9, 64),
+  new THREE.MeshStandardMaterial({ color: 0x0c0e11, roughness: 0.72, metalness: 0.0 })
+);
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.18, 0.6, 0.92));
+composer.addPass(new OutputPass());
+
+const H = 1.72; // metres
+const views = {
+  full: { p: [0.9, 1.05, 5.6], t: [0, 0.88, 0] },
+  half: { p: [0.5, 1.35, 2.6], t: [0, 1.2, 0] },
+  face: { p: [0.22, 1.62, 0.95], t: [0, 1.58, 0] },
+  back: { p: [-1.0, 1.1, -5.4], t: [0, 0.88, 0] },
+};
+function setView(n) {
+  const v = views[n] || views.full;
+  camera.position.set(...v.p); controls.target.set(...v.t); controls.update();
+}
+setView(q.get('view') || 'full');
+let spin = q.get('spin') === '1';
+document.querySelectorAll('#bar [data-v]').forEach(b => b.onclick = () => setView(b.dataset.v));
+document.getElementById('spin').onclick = () => spin = !spin;
+if (q.get('hud') === '0') { bar.style.display = 'none'; msg.style.display = 'none'; }
+
+let model, idle = null;
+const bones = {};
+// Turn a bone so the segment to its child points along a world direction.
+function aim(name, childName, dir) {
+  const b = bones[name], c = bones[childName]; if (!b || !c) return;
+  model.updateWorldMatrix(true, true);
+  const bp = b.getWorldPosition(new THREE.Vector3()), cp = c.getWorldPosition(new THREE.Vector3());
+  const cur = cp.sub(bp).normalize(), tgt = new THREE.Vector3(...dir).normalize();
+  const dq = new THREE.Quaternion().setFromUnitVectors(cur, tgt);
+  const bw = b.getWorldQuaternion(new THREE.Quaternion());
+  const pw = b.parent.getWorldQuaternion(new THREE.Quaternion());
+  b.quaternion.copy(pw.invert().multiply(dq).multiply(bw));
+}
+// Rotate a bone about a world axis by an angle in degrees.
+function turn(name, axis, deg) {
+  const b = bones[name]; if (!b) return;
+  model.updateWorldMatrix(true, true);
+  const dq = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(...axis).normalize(), deg * Math.PI / 180);
+  const bw = b.getWorldQuaternion(new THREE.Quaternion());
+  const pw = b.parent.getWorldQuaternion(new THREE.Quaternion());
+  b.quaternion.copy(pw.invert().multiply(dq).multiply(bw));
+}
+function pose() {
+  // Relaxed stand: arms down with a soft elbow bend, slight chest and head turn.
+  aim('LeftArm', 'LeftForeArm', [0.30, -1, 0.02]);
+  aim('LeftForeArm', 'LeftHand', [0.20, -1, 0.26]);
+  aim('RightArm', 'RightForeArm', [-0.32, -1, -0.02]);
+  aim('RightForeArm', 'RightHand', [-0.20, -1, 0.28]);
+  turn('Spine01', [0, 1, 0], -5);
+  turn('Spine', [0, 0, 1], 1.5);
+  turn('neck', [0, 1, 0], 6);
+  turn('Head', [0, 1, 0], 9);
+  turn('Head', [1, 0, 0], 3);
+  idle = {};
+  for (const n of ['Spine02', 'Spine', 'Head', 'LeftArm', 'RightArm', 'LeftForeArm', 'RightForeArm']) if (bones[n]) idle[n] = bones[n].quaternion.clone();
+}
+const _q = new THREE.Quaternion(), _e = new THREE.Euler();
+function breathe(t) {
+  if (!idle) return;
+  const br = Math.sin(t * 1.5), sw = Math.sin(t * 0.55);
+  const set = (n, x, y, z) => { if (idle[n]) bones[n].quaternion.copy(idle[n]).multiply(_q.setFromEuler(_e.set(x, y, z))); };
+  set('Spine02', 0.006 * br, 0.008 * sw, 0.004 * sw);
+  set('Spine', -0.012 * br, 0, 0);
+  set('Head', 0.006 * br, 0.03 * Math.sin(t * 0.33), 0);
+  set('LeftArm', 0, 0, 0.010 * br);
+  set('RightArm', 0, 0, -0.010 * br);
+  set('LeftForeArm', 0.012 * sw, 0, 0);
+  set('RightForeArm', -0.012 * sw, 0, 0);
+}
+const posed = q.get('pose') !== 'a';
+new GLTFLoader().load(q.get('m') || 'assets/heroine-rigged.glb', g => {
+  model = g.scene;
+  model.traverse(o => { if (o.isBone) bones[o.name] = o; if (o.isSkinnedMesh) { o.frustumCulled = false; o.computeBoundingBox(); } });
+  model.updateWorldMatrix(true, true);
+  let box = new THREE.Box3().setFromObject(model);
+  const s = H / box.getSize(new THREE.Vector3()).y;
+  model.scale.setScalar(s);
+  if (posed && bones.Hips) pose();
+  model.updateWorldMatrix(true, true);
+  model.traverse(o => { if (o.isSkinnedMesh) { o.skeleton.update(); o.computeBoundingBox(); } });
+  box = new THREE.Box3().setFromObject(model);
+  const c = box.getCenter(new THREE.Vector3());
+  model.position.x -= c.x; model.position.z -= c.z; model.position.y -= box.min.y;
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
+  let tris = 0;
+  model.traverse(o => {
+    if (!o.isMesh) return;
+    o.castShadow = o.receiveShadow = true;
+    tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3;
+    const m = o.material;
+    for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap']) if (m[k]) m[k].anisotropy = maxAniso;
+  });
+  scene.add(model);
+  msg.textContent = `${Math.round(tris).toLocaleString()} triangles · rigged, ${Object.keys(bones).length} bones · drag to orbit`;
+  window.__ready = true;
+}, undefined, e => { msg.textContent = 'Model failed to load: ' + e.message; });
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
+});
+const clock = new THREE.Clock();
+renderer.setAnimationLoop(() => {
+  if (spin && model) model.rotation.y += 0.006;
+  if (q.get('still') !== '1') breathe(clock.getElapsedTime());
+  controls.update(); composer.render();
+});
+</script>
+</body>
+</html>

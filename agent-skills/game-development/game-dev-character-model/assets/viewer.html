@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Heroine — character model</title>
+<title>Character model</title>
+<link rel="icon" href="data:,">
 <style>
   html,body{margin:0;height:100%;background:#07090c;overflow:hidden;font:12px/1.4 ui-sans-serif,system-ui,sans-serif;color:#9aa4b2}
   canvas{display:block}
@@ -23,6 +24,7 @@
 <div id="msg">Loading…</div>
 <div id="bar">
   <button data-v="full">Full body</button>
+  <button data-v="tq">Three-quarter</button>
   <button data-v="half">Half</button>
   <button data-v="face">Face</button>
   <button data-v="back">Back</button>
@@ -80,18 +82,30 @@ composer.addPass(new RenderPass(scene, camera));
 composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.18, 0.6, 0.92));
 composer.addPass(new OutputPass());
 
-const H = 1.72; // metres
+// Per-character settings: the GLB, standing height in metres (boots and helmet included), and the
+// relaxed arm pose. Override any of them in the URL: ?m=…&h=1.88&arm=0.30,0.20,0.27
+const MODEL = q.get('m') || 'assets/character-rigged.glb';
+const H = +(q.get('h') || 1.75);
+// arm = [upper arm out, forearm out, forearm forward], as x and z of a world direction with y = -1.
+// These are starting values; fitArm() widens each arm until it clears the body by CLEAR metres.
+const ARM = (q.get('arm') || '0.30,0.20,0.27').split(',').map(Number);
+const CLEAR = +(q.get('clear') || 0.025);
+// Camera views as fractions of H, so they frame any height.
+const vh = (x, y, z) => [x * H, y * H, z * H];
 const views = {
-  full: { p: [0.9, 1.05, 5.6], t: [0, 0.88, 0] },
-  half: { p: [0.5, 1.35, 2.6], t: [0, 1.2, 0] },
-  face: { p: [0.22, 1.62, 0.95], t: [0, 1.58, 0] },
-  back: { p: [-1.0, 1.1, -5.4], t: [0, 0.88, 0] },
+  full: { p: vh(0.52, 0.61, 3.26), t: vh(0, 0.51, 0) },
+  tq:   { p: vh(2.0, 0.66, 2.3),   t: vh(0, 0.53, 0) },
+  half: { p: vh(0.29, 0.78, 1.51), t: vh(0, 0.70, 0) },
+  face: { p: vh(0.13, 0.94, 0.55), t: vh(0, 0.92, 0) },
+  back: { p: vh(-0.58, 0.64, -3.14), t: vh(0, 0.51, 0) },
 };
+// ?cam=x,y,z,tx,ty,tz (fractions of H) frames any close-up, e.g. a hip to check gear near a hand.
+if (q.get('cam')) { const c = q.get('cam').split(',').map(Number); views.cam = { p: vh(c[0], c[1], c[2]), t: vh(c[3], c[4], c[5]) }; }
 function setView(n) {
   const v = views[n] || views.full;
   camera.position.set(...v.p); controls.target.set(...v.t); controls.update();
 }
-setView(q.get('view') || 'full');
+setView(q.get('cam') ? 'cam' : q.get('view') || 'full');
 let spin = q.get('spin') === '1';
 document.querySelectorAll('#bar [data-v]').forEach(b => b.onclick = () => setView(b.dataset.v));
 document.getElementById('spin').onclick = () => spin = !spin;
@@ -119,17 +133,74 @@ function turn(name, axis, deg) {
   const pw = b.parent.getWorldQuaternion(new THREE.Quaternion());
   b.quaternion.copy(pw.invert().multiply(dq).multiply(bw));
 }
+// Smallest gap in metres between one arm (forearm + hand vertices) and the torso, hips and thighs,
+// with the mesh skinned on the CPU in its current pose. Negative-ish/near 0 means touching or inside.
+const ARMB = s => [s + 'ForeArm', s + 'Hand'];
+const BODYB = ['Hips', 'Spine', 'Spine01', 'Spine02', 'LeftUpLeg', 'RightUpLeg'];
+function gap(side) {
+  model.updateWorldMatrix(true, true);
+  const arm = [], body = [], armN = [], bodyN = [], v = new THREE.Vector3();
+  // Arm vertices must sit near the forearm-to-fingertip line. Gear that touched the arm in the
+  // A-pose (holsters, pouches) is often skinned to the forearm; it is counted as stray, not as arm.
+  const e = bones[side + 'ForeArm'].getWorldPosition(new THREE.Vector3()), w = bones[side + 'Hand'].getWorldPosition(new THREE.Vector3());
+  const tip = w.clone().add(w.clone().sub(e).setLength(0.11 * H)), seg = new THREE.Line3(e, tip), cp = new THREE.Vector3();
+  let stray = 0, tether = 0;
+  model.traverse(o => {
+    if (!o.isSkinnedMesh) return;
+    o.skeleton.update();
+    const si = o.geometry.attributes.skinIndex, sw = o.geometry.attributes.skinWeight, n = si.count;
+    for (let i = 0; i < n; i++) {
+      let best = 0; for (let k = 1; k < 4; k++) if (sw.getComponent(i, k) > sw.getComponent(i, best)) best = k;
+      const name = o.skeleton.bones[si.getComponent(i, best)].name;
+      let into = ARMB(side).includes(name) ? arm : BODYB.includes(name) ? body : null;
+      if (into === body) { // body vertices partly weighted to this arm move with it: tethered gear, not clearance
+        let aw = 0; for (let k = 0; k < 4; k++) if (o.skeleton.bones[si.getComponent(i, k)].name.startsWith(side + 'ForeArm') || o.skeleton.bones[si.getComponent(i, k)].name.startsWith(side + 'Hand')) aw += sw.getComponent(i, k);
+        if (aw > 0.1) { tether++; into = null; }
+      }
+      if (!into || (into === body && i % 2)) continue;
+      o.getVertexPosition(i, v); v.applyMatrix4(o.matrixWorld);
+      if (into === arm && seg.closestPointToPoint(v, true, cp).distanceTo(v) > 0.075 * H) { stray++; continue; }
+      into.push(v.x, v.y, v.z);
+      (into === arm ? armN : bodyN).push(name);
+    }
+  });
+  const C = 0.03, grid = new Map(), key = (x, y, z) => `${Math.floor(x / C)},${Math.floor(y / C)},${Math.floor(z / C)}`;
+  for (let i = 0; i < body.length; i += 3) { const k = key(body[i], body[i + 1], body[i + 2]); (grid.get(k) || grid.set(k, []).get(k)).push(i); }
+  let min = 0.09;
+  for (let i = 0; i < arm.length; i += 3) {
+    const cx = Math.floor(arm[i] / C), cy = Math.floor(arm[i + 1] / C), cz = Math.floor(arm[i + 2] / C);
+    for (let a = -3; a <= 3; a++) for (let b = -3; b <= 3; b++) for (let c = -3; c <= 3; c++) {
+      const l = grid.get(`${cx + a},${cy + b},${cz + c}`); if (!l) continue;
+      for (const j of l) { const d = Math.hypot(arm[i] - body[j], arm[i + 1] - body[j + 1], arm[i + 2] - body[j + 2]);
+        if (d < min) { min = d; gap.last = { arm: armN[i / 3], body: bodyN[j / 3], at: [arm[i], arm[i + 1], arm[i + 2]].map(x => +x.toFixed(3)) }; } }
+    }
+  }
+  gap.stray = stray; gap.tether = tether;
+  return min;
+}
+window.__gap = s => [gap(s), gap.last];
+// Aim one arm, then widen it in steps until it clears the body by CLEAR (or hits a limit).
+function fitArm(side) {
+  const sx = side === 'Left' ? 1 : -1;
+  let out = ARM[0], g = 0;
+  for (; out <= 0.75; out += 0.05) {
+    aim(side + 'Arm', side + 'ForeArm', [sx * out, -1, 0.02 * sx]);
+    aim(side + 'ForeArm', side + 'Hand', [sx * (ARM[1] + out - ARM[0]), -1, ARM[2]]);
+    g = gap(side); if (q.get('debug')) console.log(side, out.toFixed(2), (g * 100).toFixed(1), JSON.stringify(gap.last));
+    if (g >= CLEAR) break;
+  }
+  return { out: +Math.min(out, 0.75).toFixed(2), gapCm: +(g * 100).toFixed(1), stray: gap.stray, tether: gap.tether };
+}
 function pose() {
-  // Relaxed stand: arms down with a soft elbow bend, slight chest and head turn.
-  aim('LeftArm', 'LeftForeArm', [0.30, -1, 0.02]);
-  aim('LeftForeArm', 'LeftHand', [0.20, -1, 0.26]);
-  aim('RightArm', 'RightForeArm', [-0.32, -1, -0.02]);
-  aim('RightForeArm', 'RightHand', [-0.20, -1, 0.28]);
+  // Relaxed stand: slight chest and head turn first, then arms down with a soft elbow bend, widened
+  // until they clear the body (the chest turn swings the hands, so fit the arms last).
   turn('Spine01', [0, 1, 0], -5);
   turn('Spine', [0, 0, 1], 1.5);
   turn('neck', [0, 1, 0], 6);
   turn('Head', [0, 1, 0], 9);
   turn('Head', [1, 0, 0], 3);
+  window.__arms = { Left: fitArm('Left'), Right: fitArm('Right') };
+  console.log('arms', JSON.stringify(window.__arms));
   idle = {};
   for (const n of ['Spine02', 'Spine', 'Head', 'LeftArm', 'RightArm', 'LeftForeArm', 'RightForeArm']) if (bones[n]) idle[n] = bones[n].quaternion.clone();
 }
@@ -147,13 +218,14 @@ function breathe(t) {
   set('RightForeArm', -0.012 * sw, 0, 0);
 }
 const posed = q.get('pose') !== 'a';
-new GLTFLoader().load(q.get('m') || 'assets/heroine-rigged.glb', g => {
+new GLTFLoader().load(MODEL, g => {
   model = g.scene;
   model.traverse(o => { if (o.isBone) bones[o.name] = o; if (o.isSkinnedMesh) { o.frustumCulled = false; o.computeBoundingBox(); } });
   model.updateWorldMatrix(true, true);
   let box = new THREE.Box3().setFromObject(model);
   const s = H / box.getSize(new THREE.Vector3()).y;
   model.scale.setScalar(s);
+  if (posed && (!bones.Hips || !bones.LeftForeArm)) console.warn('bones', Object.keys(bones).join(' '), '— rename ARMB/BODYB and pose() to match');
   if (posed && bones.Hips) pose();
   model.updateWorldMatrix(true, true);
   model.traverse(o => { if (o.isSkinnedMesh) { o.skeleton.update(); o.computeBoundingBox(); } });
@@ -170,7 +242,7 @@ new GLTFLoader().load(q.get('m') || 'assets/heroine-rigged.glb', g => {
     for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap']) if (m[k]) m[k].anisotropy = maxAniso;
   });
   scene.add(model);
-  msg.textContent = `${Math.round(tris).toLocaleString()} triangles · rigged, ${Object.keys(bones).length} bones · drag to orbit`;
+  msg.textContent = `${Math.round(tris).toLocaleString()} triangles · ${Object.keys(bones).length ? `rigged, ${Object.keys(bones).length} bones` : 'unrigged'} · drag to orbit`;
   window.__ready = true;
 }, undefined, e => { msg.textContent = 'Model failed to load: ' + e.message; });
 

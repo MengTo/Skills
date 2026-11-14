@@ -2,7 +2,7 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 87
+- Captured demos: 88
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
@@ -98,6 +98,16 @@ Check a user's latest X/Twitter bookmarks and turn recent saved posts into sourc
 [Open demo](agent-skills/codex/x-bookmark-quote-posts/demo/index.html) · [Skill](agent-skills/codex/x-bookmark-quote-posts/SKILL.md) · [Prompt](agent-skills/codex/x-bookmark-quote-posts/demo/PROMPT.md) · Local demo
 
 ![x-bookmark-quote-posts preview screenshot](agent-skills/codex/x-bookmark-quote-posts/demo/preview.jpg)
+
+## game-development (1)
+
+### game-dev-character-model
+
+Create a realistic, AAA-looking 3D character model for a game or web scene, from a description or a reference video/image, as a textured, rigged GLB standing in a relaxed pose in a lit three.js viewer. Covers designing an original character, the photoreal A-pose concept image, image-to-3D with Meshy or Tripo through Fil, rigging, posing in code, hangar-style lighting, headless capture, and the checks before showing it. Use when the user asks for a character model, a hero/heroine/NPC, "a model as good as X", a realistic human for a game, or to rig or pose a generated character.
+
+[Open demo](agent-skills/game-development/game-dev-character-model/demo/index.html) · [Skill](agent-skills/game-development/game-dev-character-model/SKILL.md) · [Prompt](agent-skills/game-development/game-dev-character-model/demo/PROMPT.md) · Local demo
+
+![game-dev-character-model preview screenshot](agent-skills/game-development/game-dev-character-model/demo/preview.jpg)
 
 ## media (2)
 

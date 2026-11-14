@@ -30,6 +30,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 
 - [`build-isometric-arpg`](build-isometric-arpg/SKILL.md) — assemble one coherent production-ready action-RPG loop in vertical slices.
 - [`author-game-levels`](author-game-levels/SKILL.md) — author flat, readable routes with separated collision/navigation/visual layers and source-motivated lighting.
+- [`build-game-map-editor`](build-game-map-editor/SKILL.md) — build or audit production-linked browser map editors for Three.js and isometric games.
 - [`build-game-camera-controls`](build-game-camera-controls/SKILL.md) — create readable isometric, follow, lock-on, occlusion, shake, and touch-camera behavior.
 - [`build-mobile-threejs-games`](build-mobile-threejs-games/SKILL.md) — treat mobile controls, safe areas, responsive HUD, orientation, and performance as primary surfaces.
 
@@ -46,10 +47,12 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 - [`build-game-inventory`](build-game-inventory/SKILL.md) — create atomic inventory, loot, equipment, drag/drop, migration, and no-loss persistence flows.
 - [`create-game-vfx`](create-game-vfx/SKILL.md) — build readable, bounded, pooled, reduced-motion-aware gameplay effects.
 - [`build-game-audio-feedback`](build-game-audio-feedback/SKILL.md) — connect player intent and combat state to prioritized, accessible, browser-safe audio cues.
+- [`build-game-changelog`](build-game-changelog/SKILL.md) — design, backfill and release in-game changelogs with contiguous versions and an accessible release ledger.
 
 ## Assets, performance, QA, and release
 
-- [`game-dev-character-model`](game-dev-character-model/SKILL.md) — make a photoreal character as a textured, rigged GLB: A-pose concept image, image-to-3D, rig, pose by direction, hangar lighting, headless capture and checks.
+- [`game-dev-character-model`](game-dev-character-model/SKILL.md) — make a photoreal character as a textured, rigged GLB: A-pose concept image, image-to-3D, rig, pose by direction, hangar lighting, headless capture and checks. [Demo](game-dev-character-model/demo/index.html).
+- [`build-rigged-game-assets`](build-rigged-game-assets/SKILL.md) — production-ready rigged characters and monsters with a skeleton, animation library, sockets, collision, equipment and catalog media.
 - [`build-hybrid-game-assets`](build-hybrid-game-assets/SKILL.md) — choose the correct runtime representation and preserve provenance, scale, sockets, collision, and budgets.
 - [`build-vesperfall-review-assets`](build-vesperfall-review-assets/SKILL.md) — pair transparent catalog references with truthful live model previews, provenance, grounding, and deterministic review routes.
 - [`optimize-threejs-games`](optimize-threejs-games/SKILL.md) — measure and improve representative encounters without sacrificing controls or combat readability.

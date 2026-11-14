@@ -54,8 +54,9 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 89
+- Total: 90
 - codex: 13
+- game-development: 1
 - media: 2
 - ui: 1
 - web-design: 73
@@ -75,6 +76,7 @@ Use --force only when every locally generated demo should be intentionally regen
 | stitched-full-page-capture | codex | [Open](agent-skills/codex/stitched-full-page-capture/demo/index.html) | [Preview](agent-skills/codex/stitched-full-page-capture/demo/preview.jpg) | [Prompt](agent-skills/codex/stitched-full-page-capture/demo/PROMPT.md) | Local |
 | video-to-superprompt | codex | [Open](agent-skills/codex/video-to-superprompt/demo/index.html) | [Preview](agent-skills/codex/video-to-superprompt/demo/preview.jpg) | [Prompt](agent-skills/codex/video-to-superprompt/demo/PROMPT.md) | Local |
 | x-bookmark-quote-posts | codex | [Open](agent-skills/codex/x-bookmark-quote-posts/demo/index.html) | [Preview](agent-skills/codex/x-bookmark-quote-posts/demo/preview.jpg) | [Prompt](agent-skills/codex/x-bookmark-quote-posts/demo/PROMPT.md) | Local |
+| game-dev-character-model | game-development | [Open](agent-skills/game-development/game-dev-character-model/demo/index.html) | [Preview](agent-skills/game-development/game-dev-character-model/demo/preview.jpg) | [Prompt](agent-skills/game-development/game-dev-character-model/demo/PROMPT.md) | Local |
 | aura-asset-images | media | [Open](agent-skills/media/aura-asset-images/demo/index.html) | [Preview](agent-skills/media/aura-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/aura-asset-images/demo/PROMPT.md) | [Neuform #1 · 2,154 views](agent-skills/media/aura-asset-images/demo/source.json) |
 | unsplash-asset-images | media | [Open](agent-skills/media/unsplash-asset-images/demo/index.html) | [Preview](agent-skills/media/unsplash-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/unsplash-asset-images/demo/PROMPT.md) | Local |
 | design-first-ui-prompting | ui | [Open](agent-skills/ui/design-first-ui-prompting/demo/index.html) | [Preview](agent-skills/ui/design-first-ui-prompting/demo/preview.jpg) | [Prompt](agent-skills/ui/design-first-ui-prompting/demo/PROMPT.md) | Local |

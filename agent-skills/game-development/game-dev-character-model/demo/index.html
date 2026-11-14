@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Character Model Demo</title>
+<meta name="description" content="An original sci-fi heroine made with the game-dev-character-model skill: concept image, A-pose model, relaxed pose and hangar-lit views.">
+<style>
+:root{--bg:#07090c;--panel:#0d1015;--line:#1c222b;--ink:#e8ebef;--muted:#8b94a1;--accent:#f08a3c;--cool:#8fb8ff;color-scheme:dark;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(120% 70% at 50% -10%,#141a24 0,var(--bg) 60%) fixed,var(--bg);color:var(--ink);line-height:1.55}
+main{max-width:1180px;margin:0 auto;padding:40px 24px 72px}
+section.first{margin-top:0}
+.hero .frame{max-height:620px}
+.eyebrow{margin:0 0 14px;color:var(--accent);font:600 11px/1.2 "SF Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}
+h1{margin:0;max-width:820px;font-size:clamp(32px,3.6vw,48px);font-weight:600;letter-spacing:-.035em;line-height:1.02}
+.lead{max-width:640px;margin:18px 0 40px;color:var(--muted);font-size:17px}
+h2{margin:0 0 6px;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.sub{margin:0 0 20px;color:var(--muted);font-size:14px}
+section{margin-top:64px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,660px);gap:44px;align-items:start}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+figure{margin:0}
+.frame{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#000;aspect-ratio:8/15}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.frame.concept{background:#a6a4a5}
+.frame.concept img{object-fit:contain}
+figcaption{display:flex;justify-content:space-between;gap:12px;margin-top:10px;color:var(--muted);font-size:13px}
+figcaption b{color:var(--ink);font-weight:600}
+.tag{position:absolute;top:12px;padding:4px 9px;border-radius:999px;background:rgba(7,9,12,.72);border:1px solid rgba(255,255,255,.14);font:600 10px/1.2 "SF Mono",Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;pointer-events:none}
+.tag.l{left:12px}.tag.r{right:12px;color:var(--accent)}
+.wipe .after{clip-path:inset(0 0 0 var(--x,50%))}
+.wipe .handle{position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;margin-left:-1px;background:var(--accent);box-shadow:0 0 12px rgba(240,138,60,.6);pointer-events:none}
+.wipe .handle::after{content:"";position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(240,138,60,.25)}
+.wipe input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}
+.views{display:grid;grid-template-columns:minmax(0,480px) minmax(0,1fr);gap:40px;align-items:start}
+.stage{aspect-ratio:3/4}
+.stage img{opacity:0;transition:opacity .6s ease}
+.stage img.on{opacity:1}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;padding:0;list-style:none}
+.tabs button{height:36px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font:inherit;font-size:13px;cursor:pointer}
+.tabs button[aria-selected="true"]{border-color:var(--accent);color:var(--ink);background:#1a130d}
+.note{margin:0;color:var(--muted);font-size:15px}
+.note strong{color:var(--ink)}
+.progress{height:2px;margin-top:22px;background:var(--line);border-radius:2px;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:var(--accent)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);counter-increment:s}
+.steps li::before{content:counter(s,decimal-leading-zero);display:block;margin-bottom:10px;color:var(--accent);font:600 11px/1 "SF Mono",Menlo,monospace;letter-spacing:.1em}
+.steps b{display:block;margin-bottom:4px}
+.steps span{color:var(--muted);font-size:14px}
+.stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}
+.stats div{min-width:120px}
+.stats strong{display:block;font-size:26px;font-weight:600;letter-spacing:-.02em}
+.stats span{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+footer{margin-top:56px;color:var(--muted);font-size:13px}
+footer code{color:var(--ink)}
+@media (max-width:820px){
+  main{padding:36px 16px 56px}
+  .views,.split{grid-template-columns:1fr}
+  .split{gap:20px}
+  .steps{grid-template-columns:1fr}
+  section{margin-top:48px}
+}
+@media (max-width:520px){
+  .pair{grid-template-columns:1fr}
+  .lead{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .stage img{transition:none}
+  .progress{display:none}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="split hero">
+    <div>
+      <p class="eyebrow">$game-dev-character-model · demo</p>
+      <h1>One concept image in, a rigged heroine standing in a lit hangar out.</h1>
+      <p class="lead">An original sci-fi heroine made with this skill: a photoreal A-pose concept, image-to-3D, an auto rig, a relaxed pose set in code, and hangar lighting. Every picture here is a headless capture of the real three.js viewer.</p>
+      <h2 id="s1">Concept to posed model</h2>
+      <p class="sub">Left: the generated concept the model was built from. Right: drag across to compare the raw A-pose straight out of image-to-3D with the rigged, relaxed pose.</p>
+    </div>
+    <section aria-labelledby="s1" class="first">
+    <div class="pair">
+      <figure>
+        <div class="frame concept"><img src="assets/concept.jpg" alt="Photoreal A-pose concept image of the heroine in a black and orange armoured flight suit" width="800" height="1204"><span class="tag l">Concept</span></div>
+        <figcaption><b>A-pose concept</b><span>image input</span></figcaption>
+      </figure>
+      <figure>
+        <div class="frame wipe" id="wipe">
+          <img src="assets/a-pose-full.jpg" alt="The model straight from image-to-3D, arms out in an A-pose" width="640" height="1000">
+          <img class="after" src="assets/posed-full.jpg" alt="The same model rigged and posed with relaxed arms and a slight chest turn" width="640" height="1000">
+          <span class="handle"></span>
+          <span class="tag l">A-pose</span><span class="tag r">Posed</span>
+          <input type="range" min="0" max="100" value="50" aria-label="Compare A-pose and posed model">
+        </div>
+        <figcaption><b>Before / after posing</b><span>same camera, same light</span></figcaption>
+      </figure>
+    </div>
+    </section>
+  </div>
+
+  <section aria-labelledby="s2">
+    <h2 id="s2">The four check views</h2>
+    <p class="sub">The views the skill captures before showing a character: full body, waist up, back and face.</p>
+    <div class="views">
+      <div class="frame stage" id="stage">
+        <img class="on" src="assets/posed-full.jpg" alt="Full body, front" width="640" height="1000" data-i="0">
+        <img src="assets/posed-half.jpg" alt="Waist up, slightly turned" width="750" height="1000" data-i="1">
+        <img src="assets/posed-back.jpg" alt="Full body from behind, with the cast shadow" width="640" height="1000" data-i="2">
+        <img src="assets/posed-face.jpg" alt="Face close-up" width="750" height="1000" data-i="3">
+      </div>
+      <div>
+        <div class="tabs" role="tablist" aria-label="Views">
+          <button role="tab" aria-selected="true" data-i="0">Full</button>
+          <button role="tab" aria-selected="false" data-i="1">Waist up</button>
+          <button role="tab" aria-selected="false" data-i="2">Back</button>
+          <button role="tab" aria-selected="false" data-i="3">Face</button>
+        </div>
+        <p class="note" id="note"></p>
+        <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s3">
+    <h2 id="s3">How it was made</h2>
+    <p class="sub">The steps in the skill, in order.</p>
+    <ol class="steps">
+      <li><b>Design an original character</b><span>Silhouette, palette and kit written down before any image.</span></li>
+      <li><b>Photoreal A-pose concept</b><span>One full-body image, neutral grey, arms out, nothing cropped.</span></li>
+      <li><b>Image to 3D</b><span>Meshy 7.1 at 4k through Fil: about 310k triangles, textured, in five minutes.</span></li>
+      <li><b>Rig</b><span>Meshy rig: 24 Mixamo-style bones and a mesh cut to about 150k triangles.</span></li>
+      <li><b>Pose in code</b><span>Arms aimed down with a soft elbow, small chest and head turn.</span></li>
+      <li><b>Light and capture</b><span>Cool key, warm fill, cold rims; four views captured headless.</span></li>
+    </ol>
+    <div class="stats">
+      <div><strong>310k</strong><span>Triangles, textured</span></div>
+      <div><strong>150k</strong><span>Triangles, rigged</span></div>
+      <div><strong>4</strong><span>Check views</span></div>
+    </div>
+  </section>
+
+  <footer>The model itself (a GLB of about 52 MB) stays out of the repo; this page uses compressed stills only. See <code>../SKILL.md</code> and <code>PROMPT.md</code>.</footer>
+</main>
+<script>
+const wipe=document.getElementById('wipe'),range=wipe.querySelector('input');
+range.addEventListener('input',()=>wipe.style.setProperty('--x',range.value+'%'));
+const notes=[
+  '<strong>Full body.</strong> Relaxed stand: arms down with a soft bend, weight even, boots planted on the floor.',
+  '<strong>Waist up.</strong> Harness, belt pouches, vambraces and fingerless gloves keep the concept\'s detail.',
+  '<strong>Back.</strong> The back of the suit is modelled too, and the key light casts one clean shadow.',
+  '<strong>Face.</strong> Eyes, brows and hair checked close up before the character is shown.'
+];
+const imgs=[...document.querySelectorAll('#stage img')],tabs=[...document.querySelectorAll('[role=tab]')],note=document.getElementById('note'),bar=document.getElementById('bar');
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let i=0,t0=performance.now(),auto=!still;const dur=3200;
+function show(n){i=n;imgs.forEach(m=>m.classList.toggle('on',+m.dataset.i===n));tabs.forEach(b=>b.setAttribute('aria-selected',String(+b.dataset.i===n)));note.innerHTML=notes[n];t0=performance.now();}
+tabs.forEach(b=>b.addEventListener('click',()=>{auto=false;bar.style.width='0';show(+b.dataset.i);}));
+show(0);
+function tick(now){if(auto){const k=(now-t0)/dur;if(k>=1)show((i+1)%imgs.length);bar.style.width=Math.min(100,k*100)+'%';}requestAnimationFrame(tick);}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+I made this game in three days. It runs in a browser tab.
+In the next five minutes you get the whole workflow. The stack. The steps. And where it still falls short.
+The stack is small. Claude Code, Fil, and three JS.
+Step one. Get it playable. One prompt, then the same short note. Keep working until eight out of ten.
+So where is it now? Not at nine.
+The workflow is what I'd keep. It's linked below. Go build your own.

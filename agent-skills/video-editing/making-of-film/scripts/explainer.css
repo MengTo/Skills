@@ -1,0 +1,293 @@
+/* HTML Explainer Video's stage and parts. Every colour, face, corner and
+   move comes from a look's --x- variables (demo/looks/*.css, or what
+   read-look.mjs writes); nothing here names a brand. The regions (--pic-x,
+   --head-y…) come from the shape and the camera (explainer.js frameOf). */
+:root {
+  --x-ground: #0b0b0d;
+  --x-ground-image: none;
+  --x-panel: #151518;
+  --x-panel-2: #1d1d21;
+  --x-ink: #f5f5f7;
+  --x-dim: #86868b;
+  --x-line: rgba(255, 255, 255, 0.12);
+  --x-accent: #efb36c;
+  --x-accent-ink: #17110a;
+  --x-ring: #efb36c;
+  --x-ring-w: 1.5px;
+  --x-head-font: system-ui, sans-serif;
+  --x-head-weight: 600;
+  --x-head-size: 62px;
+  --x-head-line: 1.06;
+  --x-head-track: -0.012em;
+  --x-head-case: none;
+  --x-hero-size: 118px;
+  --x-hero-track: -0.02em;
+  --x-body-font: system-ui, sans-serif;
+  --x-body-weight: 400;
+  --x-label-font: system-ui, sans-serif;
+  --x-label-weight: 500;
+  --x-label-case: none;
+  --x-label-track: 0;
+  --x-mono-font: ui-monospace, Menlo, monospace;
+  --x-radius: 14px;
+  --x-radius-s: 8px;
+  --x-edge: 1px;
+  --x-edge-color: var(--x-line);
+  --x-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.8);
+  --x-bar: var(--x-panel-2);
+  --x-light-1: #ff5f57;
+  --x-light-2: #febc2e;
+  --x-light-3: #28c840;
+  --x-pic-filter: none;
+  --x-motion: rise;
+  --x-motion-dur: 0.55;
+  --x-motion-dist: 26;
+  --x-cap-font: var(--x-body-font);
+  --x-cap-size: 46px;
+  --x-cap-weight: 600;
+  --x-cap-ink: #fff;
+  --x-cap-word: var(--x-accent);
+  --x-cap-edge: #000;
+  --x-cap-bg: transparent;
+  --x-cap-pad: 0;
+  --x-head-align: left;
+}
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--x-ground);
+}
+#stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--W, 1440px);
+  height: var(--H, 1080px);
+  overflow: hidden;
+  transform-origin: 0 0;
+  transform: scale(var(--k, 1));
+  background: var(--x-ground);
+  color: var(--x-ink);
+  font-family: var(--x-body-font);
+  font-weight: var(--x-body-weight);
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+/* Nothing on the stage keeps its own time. */
+#stage,
+#stage * {
+  box-sizing: border-box;
+  animation: none !important;
+  transition: none !important;
+}
+.x-scene {
+  position: absolute;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+  background: var(--x-ground);
+  color: var(--x-ink);
+}
+.x-ground {
+  position: absolute;
+  inset: 0;
+  background: var(--x-ground-image), var(--x-ground);
+}
+/* One headline: a dim lead-in and a statement. */
+.x-head {
+  position: absolute;
+  left: var(--head-x);
+  top: var(--head-y);
+  width: var(--head-w);
+  margin: 0;
+  font-family: var(--x-head-font);
+  font-weight: var(--x-head-weight);
+  font-size: var(--x-head-size);
+  line-height: var(--x-head-line);
+  letter-spacing: var(--x-head-track);
+  text-transform: var(--x-head-case);
+  text-align: var(--x-head-align);
+  color: var(--x-ink);
+  visibility: hidden;
+}
+.x-head .x-lead,
+.x-hero .x-lead {
+  color: var(--x-dim);
+}
+.x-hero {
+  margin: 0;
+  font-family: var(--x-head-font);
+  font-weight: var(--x-head-weight);
+  font-size: var(--x-hero-size);
+  line-height: 1.02;
+  letter-spacing: var(--x-hero-track);
+  text-transform: var(--x-head-case);
+  color: var(--x-ink);
+}
+.x-pic {
+  position: absolute;
+  left: var(--pic-x);
+  top: var(--pic-y);
+  width: var(--pic-w);
+  height: var(--pic-h);
+  container-type: size;
+}
+.x-label {
+  font-family: var(--x-label-font);
+  font-weight: var(--x-label-weight);
+  text-transform: var(--x-label-case);
+  letter-spacing: var(--x-label-track);
+}
+.x-mono {
+  font-family: var(--x-mono-font);
+}
+/* A window, its chrome from the look. */
+.x-win {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--x-panel);
+  border: var(--x-edge) solid var(--x-edge-color);
+  border-radius: var(--x-radius);
+  box-shadow: var(--x-shadow);
+}
+.x-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 54px;
+  padding: 0 20px;
+  order: var(--x-bar-order, 0);
+  background: var(--x-bar);
+  border-bottom: var(--x-edge) solid var(--x-edge-color);
+  color: var(--x-bar-ink, var(--x-dim));
+  font-family: var(--x-label-font);
+  font-weight: var(--x-label-weight);
+  font-size: 21px;
+  text-transform: var(--x-label-case);
+  letter-spacing: var(--x-label-track);
+}
+.x-lights {
+  display: var(--x-lights, flex);
+  gap: 8px;
+  margin-right: 10px;
+}
+.x-lights i {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--x-light-radius, 50%);
+  background: var(--x-light-1);
+}
+.x-lights i:nth-child(2) {
+  background: var(--x-light-2);
+}
+.x-lights i:nth-child(3) {
+  background: var(--x-light-3);
+}
+.x-pointer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  z-index: 40;
+  transform-origin: 8px 6px;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+}
+.x-pointer path {
+  fill: var(--x-pointer, #fff);
+  stroke: var(--x-pointer-edge, #111);
+  stroke-width: 1.3;
+}
+/* Captions in a preview; Fil draws the real ones from the same look. */
+.x-cap {
+  position: absolute;
+  left: var(--cap-x);
+  top: var(--cap-y);
+  width: var(--cap-w);
+  height: var(--cap-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  font-family: var(--x-cap-font);
+  font-weight: var(--x-cap-weight);
+  font-size: var(--x-cap-size);
+  line-height: 1.1;
+  color: var(--x-cap-ink);
+  text-align: center;
+  --e: var(--x-cap-edge);
+  text-shadow: -2.5px -2.5px 0 var(--e), 0 -3px 0 var(--e), 2.5px -2.5px 0 var(--e), 3px 0 0 var(--e), 2.5px 2.5px 0 var(--e), 0 3px 0 var(--e), -2.5px 2.5px 0 var(--e), -3px 0 0 var(--e);
+}
+.x-cap-line {
+  padding: var(--x-cap-pad);
+  background: var(--x-cap-bg);
+}
+.x-cap b {
+  font-weight: inherit;
+  color: var(--x-cap-word);
+}
+.x-cam {
+  position: absolute;
+  z-index: 50;
+  overflow: hidden;
+  box-shadow: 0 18px 44px -12px rgba(0, 0, 0, 0.55);
+}
+.x-cam svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.x-w {
+  display: inline-block;
+}
+/* A preview's bar; a render never shows it. */
+.x-controls {
+  position: fixed;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(20, 20, 22, 0.88);
+  color: #eee;
+  font: 500 13px/1 system-ui, sans-serif;
+}
+.x-controls button {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+.x-controls .x-sound {
+  width: auto;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.x-controls .x-sound[aria-pressed='true'] {
+  background: #efb36c;
+  color: #17110a;
+}
+.x-controls input {
+  flex: 1;
+  accent-color: #efb36c;
+}
+.x-controls output {
+  min-width: 44px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

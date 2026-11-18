@@ -1,0 +1,84 @@
+<!doctype html>
+<!-- The making-of film starter: the section structure of the Greymourn tutorial in eight scenes, on the one-clock
+     engine. Copy this folder into the project (docs/making-of/film/), copy scripts/explainer.js, explainer.css and
+     motion.js next to it, then replace every scene's content with the project's real material. The slots marked
+     class="slot" are where real captures go: they are labels for you, and none may survive into a render. -->
+<html lang="en" data-look="project">
+<head>
+<meta charset="utf-8">
+<title>Making-of film</title>
+<link rel="stylesheet" href="explainer.css">
+<link rel="stylesheet" href="film.css">
+</head>
+<body>
+<div id="stage">
+<!-- under every scene: a background drawn from the same clock (Greymourn: bg.js's WebGL looks and the game's own plates) -->
+<div id="bg"></div>
+
+<!-- 0 · cold open: 4–5 cuts of real footage, ~2 s each, the project's own sound, no voice; a small badge -->
+<section class="x-scene" id="cold">
+  <img class="gp" id="cold-a" alt=""><img class="gp" id="cold-b" alt="">
+  <p class="slot">cold open: real footage, 2 s a cut</p>
+  <div class="badge" id="cold-badge"><b>Project name</b><span>three.js · runs in a browser tab</span></div>
+</section>
+
+<!-- 1 · the hook, over the best footage: the claim in big type, each line on its word -->
+<section class="x-scene" id="hook">
+  <div class="hk-type">
+    <h1 class="hero" id="hk-days">Made in three days</h1>
+    <p class="sub" id="hk-tab">It runs in a browser tab</p>
+  </div>
+</section>
+
+<!-- 2 · the promise: what the viewer gets, each row lit on its word, with its chapter time -->
+<section class="x-scene" id="promise">
+  <div class="col">
+    <p class="label">In the next five minutes</p>
+    <h2 class="head" id="pr-h">The whole workflow</h2>
+    <ol class="rows" id="pr-rows"><li><b>01</b>The stack<span></span></li><li><b>02</b>The steps<span></span></li><li><b>03</b>Where it falls short<span></span></li></ol>
+  </div>
+</section>
+
+<!-- 3 · the stack: one card per tool, each lands on its name and is lit while it's said -->
+<section class="x-scene" id="stack">
+  <h2 class="head top" id="st-h">The stack is small</h2>
+  <div class="st-grid" id="st-grid">
+    <article class="glass"><small>Agent</small><b>Claude Code</b><span>the coordinator and its threads</span></article>
+    <article class="glass"><small>Canvas</small><b>Fil</b><span>images, models, the edit</span></article>
+    <article class="glass"><small>Engine</small><b>three.js</b><span>plain modules, no build step</span></article>
+  </div>
+</section>
+
+<!-- 4 · a step title: the numeral and its gilt rule on "Step", the title on its own words -->
+<section class="x-scene" id="s1a">
+  <div class="steptitle col"><p class="st-l label">Step</p><p class="st-n num">01</p><i class="st-rule"></i><h2 class="hero">Get it playable</h2></div>
+</section>
+
+<!-- 5 · the step's real prompt, typed in a drawn window with the real words (never an invented UI) -->
+<section class="x-scene" id="s1b">
+  <div class="win glass" id="s1b-win">
+    <div class="bar"><i></i><i></i><i></i><span>claude · project</span></div>
+    <div class="body"><p class="label">My prompt</p><p class="prompt" id="s1b-q"><span id="s1b-qt"></span><i class="caret" id="s1b-c"></i></p></div>
+  </div>
+</section>
+
+<!-- 6 · where it falls short: the honest number, big -->
+<section class="x-scene" id="short">
+  <div class="col"><p class="label">Where it is now</p><h2 class="hero" id="sh-h">Not at nine</h2></div>
+</section>
+
+<!-- 7 · what I'd keep, and the end card: big addresses, the ask -->
+<section class="x-scene" id="end">
+  <div class="col">
+    <h2 class="head" id="end-h">Go build your own</h2>
+    <div class="links" id="end-links"><p><b>Every prompt and model</b><span>fil.design/…</span></p><p><b>The skills</b><span>github.com/MengTo/Skills</span></p></div>
+  </div>
+</section>
+</div>
+<script src="words.js"></script>
+<script src="explainer.js"></script>
+<script src="motion.js"></script>
+<script src="twin.js" onerror="this.remove()"></script>
+<script src="film.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Relight Painted Surfaces"
+  short_description: "Light a painting with depth, normal, and roughness maps"
+  default_prompt: "Use $relight-painted-surfaces to make the studio light follow my pointer across a painted illustration."

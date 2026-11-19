@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#eee1c6">
+<title>Painted surface lighting · Commission</title>
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:light;--ink:#30271e;--quiet:#655540;--rule:#8d77544d;--paper:#f4e8cf;--mono:ui-monospace,"SFMono-Regular",Consolas,monospace;--sans:Arial,"Helvetica Neue",sans-serif}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.4 Georgia,serif}
+main{position:relative;isolation:isolate;min-height:max(600px,100svh);overflow:hidden;background:radial-gradient(ellipse at 57% 42%,#fcf2db6b,transparent 64%),url("assets/paper-grain.png"),var(--paper);--pin:max(50svh,calc(14svh + 24.3vw))}
+header,footer{display:flex;justify-content:space-between;align-items:center}
+header{height:clamp(58px,4.7vw,90px);padding-inline:clamp(22px,3.6vw,75px)}
+.wordmark{font:750 clamp(24px,2.2vw,44px)/1 var(--sans);letter-spacing:-.065em}
+.kicker,legend,label,.role{font:500 clamp(11px,.9vw,15px)/1.35 var(--mono);text-transform:uppercase;letter-spacing:.055em;color:var(--quiet)}
+.role{border-block:1px solid var(--rule);padding-block:4px}
+hgroup{position:relative;text-align:center;z-index:1;pointer-events:none;margin:clamp(19px,2.2vh,43px) 0 0}
+hgroup p{margin:0}
+h1{font:600 min(11.1vw,16vh)/1.05 var(--sans);margin:10px 0 0;letter-spacing:-.077em}
+.plate,.seal{position:absolute;pointer-events:none}
+.seal{width:min(43vw,61svh);aspect-ratio:1;left:48%;top:55%;transform:translate(-50%,-50%);background:url("assets/commission-engraving.webp") center/contain no-repeat;opacity:.28;mix-blend-mode:multiply}
+.plate img{width:100%;height:auto;display:block}
+.steel{width:76.1%;right:55.2%;top:calc(var(--pin) - 1.9vw);transform:rotate(-3deg);transform-origin:60% 45%;z-index:1}
+.skin{width:72.36%;left:53.68%;top:var(--pin);transform:translateY(-53.65%);z-index:3}
+.velvet{width:8.8%;left:55.5%;top:var(--pin);transform:translate(-67%,-2%);z-index:2}
+.plate .map-view{position:absolute;inset:0;width:100%;height:100%;mask-size:100% 100%;mask-repeat:no-repeat}
+[hidden]{display:none!important}
+footer{position:absolute;z-index:5;inset:auto clamp(22px,4.2vw,90px) clamp(22px,3.3vh,50px);align-items:end;gap:24px}
+fieldset{padding:0;border:0;margin:0}
+legend{padding:0;margin:0 0 6px}
+.choices{display:inline-flex;gap:2px;border:1px solid var(--rule);border-radius:40px;padding:3px;background:#f5ead775}
+.choices label{position:relative;color:var(--ink);text-transform:none;letter-spacing:0;font:500 13px/1.3 var(--sans);cursor:pointer}
+.choices input{position:absolute;opacity:0;top:0;left:0}
+.choices span{display:block;border-radius:32px;padding:8px clamp(10px,1.2vw,22px)}
+.choices input:checked+span{background:#483a2a;color:#fff4df}
+.choices input:focus-visible+span,input[type=range]:focus-visible{outline:2px solid #785a30;outline-offset:3px}
+aside{text-align:right;max-width:34ch}
+aside p{font:normal clamp(17px,1.8vw,31px)/1.12 Georgia,serif;letter-spacing:-.036em;margin:0 0 10px;text-wrap:balance}
+.adjust{display:inline-flex;align-items:center;gap:10px}
+input[type=range]{width:100px;accent-color:#65503a;cursor:pointer}
+@media(max-width:700px){
+ main{--pin:47svh;min-height:max(650px,100svh)}
+ hgroup{margin-top:45px}h1{font-size:16.3vw;margin-top:13px}
+ .kicker{font-size:11px}
+ .steel{width:122%;right:57.8%;top:calc(var(--pin) - 4vw)}
+ .skin{width:115.8%;left:55.9%}.velvet{width:13.9%;left:58.7%}
+ .seal{width:78%;top:48%}
+ footer{align-items:start;flex-direction:column-reverse;gap:20px}
+ aside{text-align:left;max-width:28ch}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main id="scene">
+<header><span class="wordmark">folvra</span><span class="role">The studio ledger</span></header>
+<hgroup><p class="kicker">Painted surface lighting · Three.js · WebGL 2 · GLSL</p><h1>Commission</h1></hgroup>
+<div class="seal" aria-hidden="true"></div>
+<div class="plate steel"><img alt="An articulated steel hand reaching across the paper"></div>
+<div class="plate velvet"><img alt="A gold velvet coin pouch"></div>
+<div class="plate skin"><img alt="A human hand holding the pouch by its cord"></div>
+<footer>
+<fieldset><legend>Surface maps</legend><div class="choices">
+<label><input type="radio" name="mode" value="paint" checked><span>Lighting</span></label>
+<label><input type="radio" name="mode" value="depth"><span>Depth</span></label>
+<label><input type="radio" name="mode" value="normal"><span>Normals</span></label>
+<label><input type="radio" name="mode" value="roughness"><span>Roughness</span></label>
+</div></fieldset>
+<aside><p id="hint">Move across the paper to turn the light on the steel.</p><div class="adjust"><label for="aim">Light direction</label><input id="aim" type="range" min="-100" max="100" value="25" aria-describedby="hint"></div></aside>
+</footer>
+</main>
+<script src="assets/handoff.js"></script>
+<script src="assets/paint-light.min.js"></script>
+<script>
+const stage=document.querySelector("#scene"), slider=document.querySelector("#aim"), hint=document.querySelector("#hint");
+const plates=Object.entries(window.handoffArt).map(([key,urls])=>{
+  const wrapper=stage.querySelector("."+key), image=wrapper.querySelector("img");
+  image.src=urls.paint;
+  const preview=new Image();
+  preview.alt=""; preview.hidden=true; preview.className="map-view";
+  preview.style.maskImage="url("+urls.paint+")"; wrapper.append(preview);
+  return {...urls,image,preview,metal:key==="steel"?1:0};
+});
+const light=PaintedLight.createPaintLighting(stage,plates);
+const notes={paint:"Move across the paper to turn the light on the steel.",depth:"The lighter joints sit closer to the viewer.",normal:"Each colour encodes a different surface angle.",roughness:"Light areas scatter the reflection. Dark areas keep it sharp."};
+const reduce=matchMedia("(prefers-reduced-motion: reduce)");
+function defaultPose(){if(reduce.matches||!matchMedia("(hover: hover)").matches)light.reset();else light.setLight(slider.valueAsNumber/100,.34)}
+defaultPose();
+reduce.addEventListener("change",()=>{if(!slider.disabled)defaultPose()});
+stage.querySelector("footer").addEventListener("pointermove",e=>e.stopPropagation());
+stage.querySelector("fieldset").addEventListener("change",e=>{
+  const mode=e.target.value,lit=mode==="paint";light.enablePointer(lit);
+  plates.forEach(plate=>{plate.preview.hidden=lit;if(!lit)plate.preview.src=plate[mode];});
+  hint.textContent=notes[mode];slider.disabled=!lit;
+  if(lit)defaultPose();
+});
+slider.addEventListener("input",()=>light.setLight(slider.valueAsNumber/100,.34));
+</script>
+</body>
+</html>

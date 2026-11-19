@@ -54,7 +54,8 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 90
+- Total: 91
+- 3d: 1
 - codex: 13
 - game-development: 1
 - media: 2
@@ -65,6 +66,7 @@ Use --force only when every locally generated demo should be intentionally regen
 
 | Skill | Category | Demo | Preview | Prompt | Source |
 | --- | --- | --- | --- | --- | --- |
+| relight-painted-surfaces | 3d | [Open](agent-skills/3d/relight-painted-surfaces/demo/index.html) | [Preview](agent-skills/3d/relight-painted-surfaces/demo/preview.jpg) | [Prompt](agent-skills/3d/relight-painted-surfaces/demo/PROMPT.md) | Local |
 | article-prompts-to-skills | codex | [Open](agent-skills/codex/article-prompts-to-skills/demo/index.html) | [Preview](agent-skills/codex/article-prompts-to-skills/demo/preview.jpg) | [Prompt](agent-skills/codex/article-prompts-to-skills/demo/PROMPT.md) | Local |
 | audit-verify-explain-grade-5 | codex | [Open](agent-skills/codex/audit-verify-explain-grade-5/demo/index.html) | [Preview](agent-skills/codex/audit-verify-explain-grade-5/demo/preview.jpg) | [Prompt](agent-skills/codex/audit-verify-explain-grade-5/demo/PROMPT.md) | Local |
 | browser-video-recording | codex | [Open](agent-skills/codex/browser-video-recording/demo/index.html) | [Preview](agent-skills/codex/browser-video-recording/demo/preview.jpg) | [Prompt](agent-skills/codex/browser-video-recording/demo/PROMPT.md) | Local |

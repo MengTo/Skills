@@ -86,6 +86,7 @@ agent-skills/
     3d-sky-background/
     3d-falling-leaves/
     3d-four-seasons/
+    relight-painted-surfaces/
     3d-high-resolution-textures/
     3d-high-poly-models/
     3d-retina-resolution/
@@ -258,11 +259,11 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **185 skills** across ten categories.
+This snapshot contains **186 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### 3D rendering (16)
+### 3D rendering (17)
 
 Atmospheric, detailed 3D scenes in Three.js. See the [3D guide](agent-skills/3d/README.md).
 - `3d-ultra-realistic-water` - open oceans with Gerstner waves, sun glitter, lace foam, a wake and a seamless horizon.
@@ -272,6 +273,7 @@ Atmospheric, detailed 3D scenes in Three.js. See the [3D guide](agent-skills/3d/
 - `3d-sky-background` - procedural or panoramic skies with a coherent horizon and environment light.
 - `3d-falling-leaves` - instanced leaves that tumble and catch the wind.
 - `3d-four-seasons` - coordinated spring, summer, fall and winter materials, foliage, light and particles.
+- [relight-painted-surfaces](agent-skills/3d/relight-painted-surfaces/SKILL.md) - moving studio light on painted metal, skin and cloth using depth, normal and roughness maps.
 - `3d-high-resolution-textures` - sharp PBR materials with the right UVs, filtering and progressive loading.
 - `3d-high-poly-models` - detailed silhouettes with practical levels of detail.
 - `3d-wood-material` - procedural wood with grain, pores, finishes, tool marks and end grain.

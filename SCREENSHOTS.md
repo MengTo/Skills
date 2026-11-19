@@ -2,12 +2,22 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 88
+- Captured demos: 89
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
 
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
+
+## 3d (1)
+
+### relight-painted-surfaces
+
+Steer one studio light across a 2D illustration using separate depth, normal and roughness maps.
+
+[Open demo](agent-skills/3d/relight-painted-surfaces/demo/index.html) · [Skill](agent-skills/3d/relight-painted-surfaces/SKILL.md) · [Prompt](agent-skills/3d/relight-painted-surfaces/demo/PROMPT.md)
+
+[![Relight Painted Surfaces preview](agent-skills/3d/relight-painted-surfaces/demo/preview.jpg)](agent-skills/3d/relight-painted-surfaces/demo/index.html)
 
 ## codex (11)
 

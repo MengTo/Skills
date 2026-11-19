@@ -1,6 +1,6 @@
 # 3D Rendering Skills
 
-Seventeen reusable skills for atmospheric, detailed 3D scenes, open water, underwater light and interactive walkthroughs. Most of the techniques draw on [Seijaku](https://mengto.github.io/seijaku/); the water comes from Pirate Ship Sunset, and the underwater light from Blue Hour. Each includes implementation guidance, performance considerations and verification steps.
+Reusable skills for atmospheric 3D scenes, real-time architecture, survey scans, construction sequences and interactive walkthroughs. Most of the techniques draw on [Seijaku](https://mengto.github.io/seijaku/); the water comes from Pirate Ship Sunset, and the underwater light from Blue Hour. Each includes implementation guidance, performance considerations and verification steps.
 
 | Skill | Use it for |
 | --- | --- |
@@ -21,6 +21,9 @@ Seventeen reusable skills for atmospheric, detailed 3D scenes, open water, under
 | [3D Orbit and Inspect Demo](3d-orbit-inspect-demo/SKILL.md) | A 3D object that leans on hover and lifts to a full inspect view on click, with drag, zoom and a clean return. |
 | [3D Wood Lighting Scorecard](3d-wood-lighting-scorecard/SKILL.md) | Warm key light, volumetric shafts and dust, plus a runnable scorecard that rates the render out of 10 against an anchored rubric. |
 | [3D Retina Resolution](3d-retina-resolution/SKILL.md) | Fixed 200% rendering, synchronized render buffers, and correct HiDPI sizing. |
+| [3D Survey Scan](3d-survey-scan/SKILL.md) | Sweep the occupied scene with a cyan pulse that traces its actual mesh edges. [Open demo](3d-survey-scan/demo/index.html). |
+| [3D Construction Sequence](3d-construction-sequence/SKILL.md) | Assemble a structure from its foundations through its roof with synchronized wires and rigid parts. [Open demo](3d-construction-sequence/demo/index.html). |
+| [3D Modular Buildings](3d-modular-buildings/SKILL.md) | Model structural bays, entrances and rooflines that read from the approach and at eye height. [Open demo](3d-modular-buildings/demo/index.html). |
 
 ## Use a skill
 

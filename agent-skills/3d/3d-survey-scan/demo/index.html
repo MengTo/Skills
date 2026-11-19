@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Survey scan — East Quay</title><style>
+:root{font:15px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#eff4ef;background:#202f34;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0}main{height:100svh;min-height:360px;position:relative;overflow:hidden;background:linear-gradient(178deg,#354c59 1%,#738c90 34%,#d4b9a2 66%,#a3b0aa)}
+canvas{width:100%;height:100%;display:block;touch-action:pan-y}header,footer{position:absolute;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:clamp(18px,3vw,42px);pointer-events:none}
+header{top:0;align-items:flex-start;background:linear-gradient(#13292f80,transparent)}footer{bottom:0;align-items:flex-end;background:linear-gradient(transparent,#10292edc 80%);padding-top:48px}
+h1{font-weight:500;letter-spacing:-.048em;font-size:clamp(26px,4.5vw,58px);line-height:1.04;margin:.25rem 0 0}
+.eyebrow,label,output,button,.caption{font:500 12px/1.5 ui-monospace,Menlo,monospace}.eyebrow,.caption{margin:0;letter-spacing:.08em}
+nav,.controls{display:flex;align-items:center;gap:6px;pointer-events:auto}button{border:1px solid #c3cfcb57;background:#183438e8;color:#faf7ed;border-radius:3px;cursor:pointer;min-height:36px;padding:5px 12px}
+button[aria-pressed=true],button:hover{background:#e8ede3;color:#203b3c}button:focus-visible,input:focus-visible{outline:2px solid #7dffff;outline-offset:3px}
+.controls{flex-wrap:wrap;background:#143235ec;border:1px solid #c4cebd44;padding:9px 12px;border-radius:5px}
+input{width:clamp(80px,14vw,210px);accent-color:#8eeee0;cursor:pointer}output{min-width:4ch;text-align:right}
+@media(max-width:650px){header{flex-wrap:wrap}footer{align-items:flex-start;flex-direction:column;gap:12px;padding-top:28px}.controls{max-width:100%}nav{gap:4px}button{padding:4px 8px}}
+</style></head>
+<body><main><canvas aria-label="Three-dimensional ferry terminal on a piled wharf"></canvas>
+<header><p class="eyebrow">EAST QUAY / FERRY TERMINAL</p><nav aria-label="Camera views"><button aria-pressed="true">Approach</button><button aria-pressed="false">Entrance</button><button aria-pressed="false">Roof</button></nav></header>
+<footer><h1>Survey scan</h1><div class="controls"><button id="play" type="button">Play</button><label for="phase">Survey pulse</label><input type="range" min="0" max="1000" id="phase"><output for="phase"></output></div></footer></main>
+<script src="assets/three.min.js"></script><script>
+const canvas=document.querySelector('canvas');
+const useEdges=true;let cage=null;
+
+const field='float field(vec3 p){return (length(p-origin)+.065*sin(p.z*1.1+p.y*.36)-radius)/width;}';
+function patchSurface(m){
+ m.onBeforeCompile=s=>{
+  Object.assign(s.uniforms,{origin:{value:scanOrigin},radius,width,enabled:active});
+  s.vertexShader='varying vec3 site;\n'+s.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\nsite=(modelMatrix*vec4(transformed,1.)).xyz;');
+  s.fragmentShader='uniform vec3 origin; uniform float width,radius,enabled; varying vec3 site;'+field+'\n'+s.fragmentShader.replace('#include <output_fragment>',`
+   float d=field(site);float rim=exp(-2.8*d*d);float trail=smoothstep(-5.,-1.2,d)*(1.-smoothstep(-.2,.5,d));
+   outgoingLight=mix(outgoingLight,outgoingLight*.48+vec3(.003,.048,.063),trail*.64*enabled);
+   outgoingLight=mix(outgoingLight,vec3(.008,.43,.47),rim*.75*enabled);
+   outgoingLight+=rim*vec3(.015,.70,.91)*enabled;
+   #include <output_fragment>`);
+ };
+ m.customProgramCacheKey=()=>'survey-field';
+}
+function makeCage(){
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(linePos,3));
+ const m=new THREE.ShaderMaterial({uniforms:{origin:{value:scanOrigin},radius,width,enabled:active},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+ vertexShader:'varying vec3 site;void main(){site=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(site,1.);gl_Position.z-=.00013*gl_Position.w;}',
+ fragmentShader:'uniform vec3 origin;uniform float width,radius,enabled;varying vec3 site;'+field+'void main(){float d=field(site);float a=exp(-2.8*d*d)*.96+smoothstep(-5.,-1.2,d)*(1.-smoothstep(-.2,.5,d))*.52;if(a<.01)discard;gl_FragColor=vec4(.18,1.,1.,a*enabled);}'});cage=new THREE.LineSegments(g,m);scene.add(cage);
+}
+THREE.ColorManagement.legacyMode=false;
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x799094,.017);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+const camera=new THREE.OrthographicCamera(-12,12,7,-7,.1,145);
+const ambient=new THREE.HemisphereLight(0xffeee0,0x607e86,.92);
+const sun=new THREE.DirectionalLight(0xffdbc1,1.50);
+sun.position.set(-12,18,11);scene.add(ambient,sun);
+const eye=new THREE.Vector3(),aim=new THREE.Vector3();
+const vec=(x,y,z)=>new THREE.Vector3(x,y,z);
+const palette={stone:0x8b9691,concrete:0xaeb1a5,edge:0xcec8b7,iron:0x273d40,rail:0x54777a,
+  oxblood:0xa33e2d,roof:0xb4654b,lip:0xe3a482,pane:0x486b70,lit:0xeea15a,
+  warm:0xffce83,slate:0x53666b,wood:0x997258,dark:0x20383e};
+const common=new Map(),materials=new Map(),surfaces=new Map(),linePos=[],linePart=[];
+const boxShape=new THREE.BoxGeometry(1,1,1),roundShape=new THREE.CylinderGeometry(1,1,1,12);
+const up=vec(0,1,0),matrix=new THREE.Matrix4(),q=new THREE.Quaternion();
+const point=vec(0,0,0),normal=vec(0,0,0),normalMatrix=new THREE.Matrix3();
+const scanOrigin=vec(-5.5,.15,3.6),phase={value:.48},radius={value:8.4},width={value:.32};
+const active={value:1},drawables=[];
+function stage(x,y,z,start){
+  const hash=Math.sin(x*12.71+y*13.43+z*7.93)*5471.8;
+  return [.34*Math.sin(z),1.1+y*.17,.24*Math.cos(x),Math.min(.741,start+.019*(hash-Math.floor(hash)))];
+}
+function piece(shape,at,rotation,scale,finish,part,outline=true){
+  matrix.compose(at,rotation,scale);normalMatrix.getNormalMatrix(matrix);
+  let b=surfaces.get(finish);
+  if(!b){b={p:[],n:[],part:[],idx:[]};surfaces.set(finish,b);}
+  const P=shape.attributes.position,N=shape.attributes.normal,base=b.p.length/3;
+  for(let i=0;i<P.count;i++){
+    point.fromBufferAttribute(P,i).applyMatrix4(matrix);
+    normal.fromBufferAttribute(N,i).applyNormalMatrix(normalMatrix);
+    b.p.push(point.x,point.y,point.z);b.n.push(normal.x,normal.y,normal.z);b.part.push(...part);
+  }
+  const I=shape.index;
+  for(let i=0;i<(I?I.count:P.count);i++)b.idx.push(base+(I?I.getX(i):i));
+  if(!outline||!useEdges)return;
+  if(!common.has(shape))common.set(shape,new THREE.EdgesGeometry(shape,25).attributes.position);
+  const E=common.get(shape);
+  for(let i=0;i<E.count;i++){point.fromBufferAttribute(E,i).applyMatrix4(matrix);linePos.push(point.x,point.y,point.z);linePart.push(...part);}
+}
+const idleQ=new THREE.Quaternion();
+function box(x,y,z,w,h,d,mat,part,edges=true){piece(boxShape,vec(x,y,z),idleQ,vec(w,h,d),mat,part,edges);}
+function beam(a,b,w,d,mat,part,round=false,edges=true){
+ const A=vec(...a),B=vec(...b),delta=B.clone().sub(A),len=delta.length();
+ q.setFromUnitVectors(up,delta.normalize());
+ piece(round?roundShape:boxShape,A.add(B).multiplyScalar(.5),q,vec(w,len,d),mat,part,edges);
+}
+const station=stage(0,0,0,0);
+// Piled wharf, structural deck and approach steps.
+for(const x of [-5.45,-3.1,-.8,1.5,3.8,5.6])for(const z of [-2.72,2.6]){
+ const part=stage(x,0,z,.005);
+ beam([x,-1.7,z],[x,.06,z],.20,.20,'iron',part,true);
+ box(x,.01,z,.57,.27,.57,'concrete',part);
+}
+box(.04,.15,0,12.05,.38,6.38,'concrete',station);
+for(let j=0;j<37;j++)box(-5.78+j*.32,.362,.03,.304,.048,6.23,'wood',station,false);
+for(const z of [-3.18,3.18])box(0,.13,z,12.03,.135,.12,'rail',station);
+for(let i=0;i<5;i++){
+ const z=3.22+.25*i,y=.31-i*.105,p=stage(3,y,z,.045);
+ box(3.62,y,z,2.16,.13,.30,'concrete',p);
+ box(3.62,y+.069,z+.095,2.15,.018,.035,'edge',p,false);
+}
+for(const x of [2.51,4.73]){
+ beam([x,1.26,3.23],[x,.82,4.26],.038,.038,'rail',station,true);
+ for(let j=0;j<3;j++)beam([x,.32-j*.21,3.24+j*.5],[x,1.25-j*.215,3.24+j*.5],.025,.025,'rail',station,true);
+}
+// A complete bay includes both returns, its mullions, a sill and an interior at the recess.
+for(const z of [-1.92,1.92])for(let i=0;i<6;i++){
+ const x=-4.63+i*1.71,p=stage(x,1.66,z,.18+i*.014);
+ box(x,.55,z,.27,.32,.31,'stone',p);
+ box(x,1.73,z,.16,2.56,.20,'iron',p);
+ box(x,2.93,z,.30,.13,.28,'rail',p);
+}
+for(let i=0;i<5;i++){
+ const x=-3.775+i*1.71;
+ for(const side of [-1,1]){
+  const z=side*1.93,part=stage(x,1.42,z,.32+i*.012);
+  const isDoor=side===1&&i===4;
+  if(!isDoor){
+   box(x,.70,z,1.54,.62,.13,'concrete',part);
+   box(x,.995,z+.048*side,1.65,.07,.23,'edge',part);
+   for(let k=0;k<3;k++){
+    const xx=x-.50+k*.50;
+    box(xx,1.82,z-.105*side,.47,1.53,.06,(i+k+(side+1))%4===0?'lit':'pane',part,false);
+    box(xx,2.38,z-.056*side,.47,.085,.045,'rail',part,false);
+    box(xx,1.79,z-.056*side,.024,1.54,.055,'iron',part,false);
+   }
+   box(x,2.12,z-.043*side,1.56,.037,.055,'iron',part);
+  }else{
+   box(x+.51,1.6,z-.10,.47,2.17,.07,'pane',part);
+   box(x+.21,1.56,z-.06,.045,2.15,.14,'rail',part);
+   box(x-.32,1.34,z-.79,.71,1.66,.11,'oxblood',part);
+  }
+  box(x,2.72,z,1.58,.14,.16,'iron',part);
+  for(let j=0;j<4;j++)box(x-.57+j*.38,2.72,z+.095*side,.22,.035,.045,'lip',part,false);
+ }
+}
+for(const x of [-4.62,3.92]){
+ const p=stage(x,1.62,0,.33);
+ box(x,1.50,0,.16,2.20,3.82,'slate',p);
+ for(let j=0;j<9;j++)box(x+(x<0?-.09:.09),1.62,-1.6+j*.4,.04,1.94,.064,'rail',p,false);
+}
+// Two pitched planes meet on full trusses. The purlins run across trusses on the roof slope.
+function roofHeight(z){return 4.11-.46*Math.abs(z);}
+for(let i=0;i<6;i++){
+ const x=-4.63+i*1.71,p=stage(x,3.63,0,.45+i*.019);
+ beam([x,2.95,-2.43],[x,4.11,0],.12,.13,'oxblood',p);
+ beam([x,4.11,0],[x,2.95,2.43],.12,.13,'oxblood',p);
+ beam([x,2.97,-2.4],[x,2.97,2.4],.11,.12,'iron',p);
+ for(const side of [-1,1]){
+  beam([x,2.99,side*1.77],[x,3.82,side*.58],.055,.06,'roof',p);
+  beam([x,2.99,side*.57],[x,3.82,side*.58],.048,.052,'rail',p);
+ }
+}
+for(let j=0;j<16;j++){
+ const z=-2.46+(j+.5)*.3075,p=stage(0,roofHeight(z),z,.64+j*.006);
+ const tilt=z<0?.432:-.432;
+ // The local Z axis rises by -sin(rotation.x).
+ q.setFromAxisAngle(vec(1,0,0),-tilt);
+ piece(boxShape,vec(-.35,roofHeight(z)+.065,z),q,vec(9.58,.106,.351),'roof',p,false);
+ beam([-5.16,roofHeight(z-.135)+.14,z-.135],[4.47,roofHeight(z-.135)+.14,z-.135],.034,.032,'lip',p);
+}
+for(const side of [-1,1]){
+ const z=side*2.52,p=stage(-.34,3.0,z,.74);
+ box(-.34,2.995,z,9.68,.18,.10,'oxblood',p);
+ box(-.34,2.89,z,9.66,.034,.075,'warm',p);
+}
+const tower=stage(4.90,2.42,-.94,.35);
+box(4.92,1.95,-.94,1.18,3.17,1.32,'concrete',tower);
+for(let j=0;j<7;j++)box(4.92+j*.001,1.48+j*.22,-.253,.65,.065,.045,'iron',tower,false);
+box(4.92,3.59,-.94,1.36,.17,1.51,'iron',tower);
+const beacon=stage(4.92,4.65,-.94,.78);
+for(const x of [4.37,5.47])for(const z of [-1.55,-.33])box(x,4.16,z,.073,1.14,.073,'oxblood',beacon);
+box(4.92,4.16,-.94,.63,.86,.75,'warm',beacon);
+box(4.92,4.77,-.94,1.49,.17,1.59,'oxblood',beacon);
+beam([4.92,4.82,-.94],[4.92,5.65,-.94],.037,.037,'iron',beacon,true);
+for(const x of [-5.69,-3.28,-.96,1.32,5.63]){
+ const p=stage(x,.69,2.97,.20);beam([x,.39,2.96],[x,.87,2.96],.079,.079,'iron',p,true);
+ box(x,.85,2.96,.23,.066,.17,'edge',p);
+}
+// Fender eyes, rear rails and the service landing articulate the edge against the water.
+for(const x of [-4.9,-2.1,.70,5.30]){
+ const p=stage(x,.22,3.18,.16);
+ beam([x,-.23,3.23],[x,.21,3.23],.105,.105,'dark',p,true);
+ beam([x,-.15,3.24],[x,-.08,3.24],.112,.112,'lip',p,true,false);
+ beam([x,.24,3.24],[x,.39,3.1],.018,.018,'rail',p,true);
+}
+for(const z of [-3.02]){
+ for(let i=0;i<6;i++)box(-5.65+i*2.23,.73,z,.058,.72,.058,'iron',station);
+ for(const y of [.78,1.08])beam([-5.65,y,z],[5.5,y,z],.034,.034,'rail',station,true);
+}
+function geometry(b){
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(b.p,3));
+ g.setAttribute('normal',new THREE.Float32BufferAttribute(b.n,3));
+ g.setAttribute('part',new THREE.Float32BufferAttribute(b.part,4));
+ g.setIndex(b.idx);g.computeBoundingSphere();g.boundingSphere.radius+=3;return g;
+}
+for(const [finish,bucket] of surfaces){
+ const mat=new THREE.MeshStandardMaterial({color:palette[finish],roughness:finish==='pane'?.24:.68,metalness:['rail','iron','roof'].includes(finish)?.32:.03});
+ if(['warm','lit'].includes(finish)){mat.emissive.setHex(palette[finish]);mat.emissiveIntensity=finish==='warm'?.60:.23;}
+ patchSurface(mat);
+ const mesh=new THREE.Mesh(geometry(bucket),mat);scene.add(mesh);drawables.push(mesh);
+}
+if(useEdges)makeCage();
+// Water and the distant shore remain in the resting scene throughout the study.
+const waterGeo=new THREE.PlaneGeometry(200,145,160,100);waterGeo.rotateX(-Math.PI/2);
+const wp=waterGeo.attributes.position;
+for(let i=0;i<wp.count;i++){const x=wp.getX(i),z=wp.getZ(i);wp.setY(i,-.86+.035*Math.sin(x*1.6+z*.91)+.028*Math.cos(z*1.47-x*.42));}
+waterGeo.computeVertexNormals();
+const waterColor=new Float32Array(wp.count*3);
+for(let i=0;i<wp.count;i++){
+ const x=wp.getX(i),z=wp.getZ(i),grain=.91+.052*Math.sin(x*.53+z*1.08)+.04*Math.sin(x*.46-z*.62);
+ for(let j=0;j<3;j++)waterColor[i*3+j]=grain;
+}
+waterGeo.setAttribute('color',new THREE.BufferAttribute(waterColor,3));
+const water=new THREE.Mesh(waterGeo,new THREE.MeshPhongMaterial({vertexColors:true,color:0x3e666e,specular:0x9dc8c1,shininess:45,flatShading:true}));
+scene.add(water);
+const skylineMat=new THREE.MeshStandardMaterial({color:0x657f83,roughness:1});
+for(let i=0;i<30;i++){
+ const h=2+.18*((i*37)%31),x=i*3.7-39,z=-18-(i*7%9);
+ const block=new THREE.Mesh(boxShape,skylineMat);block.position.set(x,h*.5-.8,z);block.scale.set(1.4+(i*3%4),h,2.1+(i%4));scene.add(block);
+}
+
+patchSurface(water.material);
+
+const views={Approach:[[13,8.0,16],[0,1.72,0],9.1],Entrance:[[7.5,3.75,9.6],[2.9,1.55,.78],5.15],Roof:[[-6,13,9.8],[0,2.05,0],7.8]};
+let currentView='Approach',hoverX=0,hoverY=0,frame=0;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+function draw(){
+ const [position,target,span]=views[currentView];
+ const w=canvas.clientWidth,h=canvas.clientHeight,aspect=w/h,half=Math.max(span*.5,6.95/aspect);
+ camera.left=-half*aspect;camera.right=half*aspect;camera.top=half;camera.bottom=-half;
+ eye.fromArray(position);aim.fromArray(target);eye.x+=hoverX*.50;eye.y+=hoverY*.22;
+ camera.position.copy(eye);camera.lookAt(aim);camera.updateProjectionMatrix();renderer.render(scene,camera);
+}
+function schedule(){if(!frame)frame=requestAnimationFrame(t=>{frame=0;advance(t);draw();});}
+function resize(){renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);schedule();}
+for(const button of document.querySelectorAll('nav button'))button.addEventListener('click',()=>{
+ currentView=button.textContent;hoverX=hoverY=0;
+ for(const b of document.querySelectorAll('nav button'))b.setAttribute('aria-pressed',String(b===button));
+ schedule();
+});
+canvas.addEventListener('pointermove',e=>{if(!reduced.matches&&e.pointerType==='mouse'){hoverX=e.clientX/innerWidth*2-1;hoverY=.5-e.clientY/innerHeight;schedule();}});
+canvas.addEventListener('pointerleave',()=>{hoverX=hoverY=0;schedule();});
+new ResizeObserver(resize).observe(canvas);
+
+const slider=document.querySelector('input'),readout=document.querySelector('output'),play=document.querySelector('#play');
+let running=false,last=null;
+function setPhase(p){
+ phase.value=Math.min(1,Math.max(0,p));active.value=phase.value>0&&phase.value<1?1:0;
+ radius.value=-1+16*(1-Math.pow(1-phase.value,1.3));
+ if(cage)cage.visible=Boolean(active.value);
+ slider.value=Math.round(phase.value*1000);readout.textContent=Math.round(phase.value*100)+'%';
+}
+function pause(){running=false;last=null;play.textContent=phase.value===1?'Replay':'Play';}
+function advance(t){if(!running)return;if(last!==null)setPhase(phase.value+(t-last)/3850.0);last=t;if(phase.value>=1)pause();else schedule();}
+play.addEventListener('click',()=>{if(running)pause();else{if(phase.value===1)setPhase(0);running=true;last=null;play.textContent='Pause';}schedule();});
+slider.addEventListener('input',()=>{setPhase(Number(slider.value)/1000);pause();schedule();});
+document.addEventListener('visibilitychange',()=>{last=null;if(!document.hidden&&running)schedule();});
+reduced.addEventListener('change',()=>{if(reduced.matches){pause();hoverX=hoverY=0;schedule();}});
+setPhase(.41);resize();
+
+</script></body></html>

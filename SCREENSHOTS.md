@@ -2,7 +2,7 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 94
+- Captured demos: 97
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
@@ -10,6 +10,30 @@ Every tracked skill is shown as a real browser rendering of its local `demo/inde
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
 
 ## 3d (1)
+
+### 3d-construction-sequence
+
+Assemble a structure from its foundations through its roof with synchronized wires and rigid parts.
+
+[Open demo](agent-skills/3d/3d-construction-sequence/demo/index.html) · [Skill](agent-skills/3d/3d-construction-sequence/SKILL.md) · [Prompt](agent-skills/3d/3d-construction-sequence/demo/PROMPT.md)
+
+[![3D Construction Sequence preview](agent-skills/3d/3d-construction-sequence/demo/preview.jpg)](agent-skills/3d/3d-construction-sequence/demo/index.html)
+
+### 3d-modular-buildings
+
+Model structural bays, entrances and rooflines that read from the approach and at eye height.
+
+[Open demo](agent-skills/3d/3d-modular-buildings/demo/index.html) · [Skill](agent-skills/3d/3d-modular-buildings/SKILL.md) · [Prompt](agent-skills/3d/3d-modular-buildings/demo/PROMPT.md)
+
+[![3D Modular Buildings preview](agent-skills/3d/3d-modular-buildings/demo/preview.jpg)](agent-skills/3d/3d-modular-buildings/demo/index.html)
+
+### 3d-survey-scan
+
+Sweep the occupied scene with a cyan pulse that traces its actual mesh edges.
+
+[Open demo](agent-skills/3d/3d-survey-scan/demo/index.html) · [Skill](agent-skills/3d/3d-survey-scan/SKILL.md) · [Prompt](agent-skills/3d/3d-survey-scan/demo/PROMPT.md)
+
+[![3D Survey Scan preview](agent-skills/3d/3d-survey-scan/demo/preview.jpg)](agent-skills/3d/3d-survey-scan/demo/index.html)
 
 ### relight-painted-surfaces
 

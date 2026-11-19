@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Survey Scan"
+  short_description: "Sweep a live scene with a world-space wireframe pulse"
+  default_prompt: "Use $3d-survey-scan to sweep this scene with a replayable cyan survey pulse."

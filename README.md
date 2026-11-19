@@ -172,6 +172,10 @@ agent-skills/
       references/
       scripts/
       assets/
+    genjutsu-scene/
+      SKILL.md
+      references/
+      scripts/
   ui/
     design-first-ui-prompting/
       SKILL.md
@@ -254,7 +258,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **184 skills** across ten categories.
+This snapshot contains **185 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -313,8 +317,9 @@ Image sourcing, video and likeness skills:
 - `html-reel` - turn a tweet, video or landing page into a 9:16 reel with every cut on a word.
 - `url-to-motion-design` - turn a launch film or post at a URL into Fil HTML motion scenes.
 
-### Video editing (1)
+### Video editing (2)
 
+- `genjutsu-scene` - a scene of yourself inside a game, three.js or Blender world, in its costume and light, saying your line with your own face and voice: your HeyGen Avatar 6 twin drives Genjutsu motion transfer, Sync Lipsync 3 on your voice, a 4K60 insert, blind judges.
 - `making-of-film` - a 4–5 minute "how I made X" YouTube film from a finished project: script in your voice, the project's own look and captures, every cut on a word, a digital twin at key places, 4K60, blind judges.
 
 ### UI (3)

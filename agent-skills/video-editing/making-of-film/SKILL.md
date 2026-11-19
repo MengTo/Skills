@@ -30,6 +30,7 @@ scene, with the history of what he asked for and rejected. Read it once before t
 | A 9:16 reel from a post, a page or a video | `html-reel` |
 | An app window playing live on a web page | `html-demo` |
 | A still, a talking clip or a voice line of him on its own | `meng-digital-twin` (`references/heygen-twin.md` there is the twin recipe this film uses) |
+| A shot of him inside the game, a three.js or a Blender scene, in costume, saying the film's words (an insert over his camera; Greymourn scene one) | `genjutsu-scene` (HeyGen Avatar 6 twin to Genjutsu; the camera itself stays the HeyGen twin, rule 7) |
 | Export, Studio upload, covers, title A/B test, description | `youtube-video-release`; covers with his AI face: `meng-youtube-cover` |
 | Scoring rounds to a target ("get it to 9") | `workflow-score-to-target` (this skill's judging is that, tuned for film frames) |
 

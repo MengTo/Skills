@@ -2,7 +2,7 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 89
+- Captured demos: 94
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
@@ -147,7 +147,47 @@ Use when you need design-first, spec-driven, skimmable prompts for UI generation
 
 ![design-first-ui-prompting preview screenshot](agent-skills/ui/design-first-ui-prompting/demo/preview.jpg)
 
-## web-design (73)
+## web-design (78)
+
+### neoclassical-ledger-ui
+
+Design parchment editorial interfaces with neoclassical object paintings, ledger typography and printed rules. Use for art-directed portfolios, finance showcases, or studio case studies.
+
+[Open demo](agent-skills/web-design/neoclassical-ledger-ui/demo/index.html) · [Skill](agent-skills/web-design/neoclassical-ledger-ui/SKILL.md) · [Prompt](agent-skills/web-design/neoclassical-ledger-ui/demo/PROMPT.md)
+
+[![Neoclassical Ledger UI preview](agent-skills/web-design/neoclassical-ledger-ui/demo/preview.jpg)](agent-skills/web-design/neoclassical-ledger-ui/demo/index.html)
+
+### dither-ascii-ink-hover
+
+Reveal warm dither dots and ASCII marks beneath the pointer on an illustration using intersecting CSS masks. Use for a printed, holographic inspection effect with a one-pass scan.
+
+[Open demo](agent-skills/web-design/dither-ascii-ink-hover/demo/index.html) · [Skill](agent-skills/web-design/dither-ascii-ink-hover/SKILL.md) · [Prompt](agent-skills/web-design/dither-ascii-ink-hover/demo/PROMPT.md)
+
+[![Dither and ASCII Ink Hover preview](agent-skills/web-design/dither-ascii-ink-hover/demo/preview.jpg)](agent-skills/web-design/dither-ascii-ink-hover/demo/index.html)
+
+### generate-ledger-logo-register
+
+Generate a family of original fictional wordmarks on a Seedream contact sheet, extract transparent assets, and present them as a partner or studio logo register.
+
+[Open demo](agent-skills/web-design/generate-ledger-logo-register/demo/index.html) · [Skill](agent-skills/web-design/generate-ledger-logo-register/SKILL.md) · [Prompt](agent-skills/web-design/generate-ledger-logo-register/demo/PROMPT.md)
+
+[![Generate a Ledger Logo Register preview](agent-skills/web-design/generate-ledger-logo-register/demo/preview.jpg)](agent-skills/web-design/generate-ledger-logo-register/demo/index.html)
+
+### painted-product-showcase
+
+Build interactive HTML product demos over expansive painted landscapes, with translucent neutral panels, sample data, and stateful charts, invoices or budgets.
+
+[Open demo](agent-skills/web-design/painted-product-showcase/demo/index.html) · [Skill](agent-skills/web-design/painted-product-showcase/SKILL.md) · [Prompt](agent-skills/web-design/painted-product-showcase/demo/PROMPT.md)
+
+[![Painted Product Showcase preview](agent-skills/web-design/painted-product-showcase/demo/preview.jpg)](agent-skills/web-design/painted-product-showcase/demo/index.html)
+
+### scroll-scrubbed-object-handoff
+
+Choreograph a reversible scroll handoff between layered illustrations, transforming a held object into multiple moving pieces that land in a second scene.
+
+[Open demo](agent-skills/web-design/scroll-scrubbed-object-handoff/demo/index.html) · [Skill](agent-skills/web-design/scroll-scrubbed-object-handoff/SKILL.md) · [Prompt](agent-skills/web-design/scroll-scrubbed-object-handoff/demo/PROMPT.md)
+
+[![Scroll-Scrubbed Object Handoff preview](agent-skills/web-design/scroll-scrubbed-object-handoff/demo/preview.jpg)](agent-skills/web-design/scroll-scrubbed-object-handoff/demo/index.html)
 
 ### agency-grid-layout-minimal
 

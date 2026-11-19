@@ -2,6 +2,14 @@
 
 These are portable AgentSkills focused on **web design** (motion, 3D, UI styling, interactive embeds).
 
+## Folvra studio techniques
+
+- [Neoclassical Ledger UI](neoclassical-ledger-ui/SKILL.md) · Design parchment editorial interfaces with neoclassical object paintings, ledger typography and printed rules. Use for art-directed portfolios, finance showcases, or studio case studies.
+- [Dither and ASCII Ink Hover](dither-ascii-ink-hover/SKILL.md) · Reveal warm dither dots and ASCII marks beneath the pointer on an illustration using intersecting CSS masks. Use for a printed, holographic inspection effect with a one-pass scan.
+- [Generate a Ledger Logo Register](generate-ledger-logo-register/SKILL.md) · Generate a family of original fictional wordmarks on a Seedream contact sheet, extract transparent assets, and present them as a partner or studio logo register.
+- [Painted Product Showcase](painted-product-showcase/SKILL.md) · Build interactive HTML product demos over expansive painted landscapes, with translucent neutral panels, sample data, and stateful charts, invoices or budgets.
+- [Scroll-Scrubbed Object Handoff](scroll-scrubbed-object-handoff/SKILL.md) · Choreograph a reversible scroll handoff between layered illustrations, transforming a held object into multiple moving pieces that land in a second scene.
+
 Included skills
 - `gsap/` — timelines, ScrollTrigger, stagger, SPA cleanup
 - `threejs/` — scene/camera/renderer, loaders, performance, disposal

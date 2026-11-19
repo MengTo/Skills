@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generate a Ledger Logo Register"
+  short_description: "Generate and extract fictional partner identities"
+  default_prompt: "Use $generate-ledger-logo-register to generate and extract fictional partner identities."

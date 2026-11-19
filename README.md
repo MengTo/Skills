@@ -259,7 +259,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **186 skills** across ten categories.
+This snapshot contains **191 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -386,7 +386,15 @@ Assets, performance, QA, and release:
 
 Demo: [`game-dev-character-model`](agent-skills/game-development/game-dev-character-model/demo/index.html) - a concept image, the A-pose before/after and the four check views of an original heroine.
 
-### Web design (92)
+### Web design (97)
+
+Folvra studio techniques
+
+- [Neoclassical Ledger UI](agent-skills/web-design/neoclassical-ledger-ui/SKILL.md)
+- [Dither and ASCII Ink Hover](agent-skills/web-design/dither-ascii-ink-hover/SKILL.md)
+- [Generate a Ledger Logo Register](agent-skills/web-design/generate-ledger-logo-register/SKILL.md)
+- [Painted Product Showcase](agent-skills/web-design/painted-product-showcase/SKILL.md)
+- [Scroll-Scrubbed Object Handoff](agent-skills/web-design/scroll-scrubbed-object-handoff/SKILL.md)
 
 Conversion and implementation:
 - `build-awwwards-quality-sites`, `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`

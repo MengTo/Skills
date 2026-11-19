@@ -54,13 +54,13 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 91
+- Total: 96
 - 3d: 1
 - codex: 13
 - game-development: 1
 - media: 2
 - ui: 1
-- web-design: 73
+- web-design: 78
 
 ## Demo index
 
@@ -82,6 +82,11 @@ Use --force only when every locally generated demo should be intentionally regen
 | aura-asset-images | media | [Open](agent-skills/media/aura-asset-images/demo/index.html) | [Preview](agent-skills/media/aura-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/aura-asset-images/demo/PROMPT.md) | [Neuform #1 · 2,154 views](agent-skills/media/aura-asset-images/demo/source.json) |
 | unsplash-asset-images | media | [Open](agent-skills/media/unsplash-asset-images/demo/index.html) | [Preview](agent-skills/media/unsplash-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/unsplash-asset-images/demo/PROMPT.md) | Local |
 | design-first-ui-prompting | ui | [Open](agent-skills/ui/design-first-ui-prompting/demo/index.html) | [Preview](agent-skills/ui/design-first-ui-prompting/demo/preview.jpg) | [Prompt](agent-skills/ui/design-first-ui-prompting/demo/PROMPT.md) | Local |
+| neoclassical-ledger-ui | web-design | [Open](agent-skills/web-design/neoclassical-ledger-ui/demo/index.html) | [Preview](agent-skills/web-design/neoclassical-ledger-ui/demo/preview.jpg) | [Prompt](agent-skills/web-design/neoclassical-ledger-ui/demo/PROMPT.md) | Local |
+| dither-ascii-ink-hover | web-design | [Open](agent-skills/web-design/dither-ascii-ink-hover/demo/index.html) | [Preview](agent-skills/web-design/dither-ascii-ink-hover/demo/preview.jpg) | [Prompt](agent-skills/web-design/dither-ascii-ink-hover/demo/PROMPT.md) | Local |
+| generate-ledger-logo-register | web-design | [Open](agent-skills/web-design/generate-ledger-logo-register/demo/index.html) | [Preview](agent-skills/web-design/generate-ledger-logo-register/demo/preview.jpg) | [Prompt](agent-skills/web-design/generate-ledger-logo-register/demo/PROMPT.md) | Local |
+| painted-product-showcase | web-design | [Open](agent-skills/web-design/painted-product-showcase/demo/index.html) | [Preview](agent-skills/web-design/painted-product-showcase/demo/preview.jpg) | [Prompt](agent-skills/web-design/painted-product-showcase/demo/PROMPT.md) | Local |
+| scroll-scrubbed-object-handoff | web-design | [Open](agent-skills/web-design/scroll-scrubbed-object-handoff/demo/index.html) | [Preview](agent-skills/web-design/scroll-scrubbed-object-handoff/demo/preview.jpg) | [Prompt](agent-skills/web-design/scroll-scrubbed-object-handoff/demo/PROMPT.md) | Local |
 | agency-grid-layout-minimal | web-design | [Open](agent-skills/web-design/agency-grid-layout-minimal/demo/index.html) | [Preview](agent-skills/web-design/agency-grid-layout-minimal/demo/preview.jpg) | [Prompt](agent-skills/web-design/agency-grid-layout-minimal/demo/PROMPT.md) | [Neuform #1 · 731 views](agent-skills/web-design/agency-grid-layout-minimal/demo/source.json) |
 | ambient-section-particles | web-design | [Open](agent-skills/web-design/ambient-section-particles/demo/index.html) | [Preview](agent-skills/web-design/ambient-section-particles/demo/preview.jpg) | [Prompt](agent-skills/web-design/ambient-section-particles/demo/PROMPT.md) | Local |
 | animation-on-scroll | web-design | [Open](agent-skills/web-design/animation-on-scroll/demo/index.html) | [Preview](agent-skills/web-design/animation-on-scroll/demo/preview.jpg) | [Prompt](agent-skills/web-design/animation-on-scroll/demo/PROMPT.md) | Local |

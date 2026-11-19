@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dither and ASCII Ink Hover"
+  short_description: "Reveal dither and glyphs inside a printed hover spot"
+  default_prompt: "Use $dither-ascii-ink-hover to reveal dither and glyphs inside a printed hover spot."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scroll-Scrubbed Object Handoff"
+  short_description: "Animate an illustrated handoff with scroll progress"
+  default_prompt: "Use $scroll-scrubbed-object-handoff to animate an illustrated handoff with scroll progress."

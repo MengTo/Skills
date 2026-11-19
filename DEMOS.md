@@ -54,8 +54,8 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 97
-- 3d: 4
+- Total: 98
+- 3d: 5
 - codex: 13
 - game-development: 1
 - media: 2
@@ -67,6 +67,7 @@ Use --force only when every locally generated demo should be intentionally regen
 | Skill | Category | Demo | Preview | Prompt | Source |
 | --- | --- | --- | --- | --- | --- |
 | 3d-construction-sequence | 3d | [Open](agent-skills/3d/3d-construction-sequence/demo/index.html) | [Preview](agent-skills/3d/3d-construction-sequence/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-construction-sequence/demo/PROMPT.md) | Local |
+| 3d-harbour-water | 3d | [Open](agent-skills/3d/3d-harbour-water/demo/index.html) | [Preview](agent-skills/3d/3d-harbour-water/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-harbour-water/demo/PROMPT.md) | Local |
 | 3d-modular-buildings | 3d | [Open](agent-skills/3d/3d-modular-buildings/demo/index.html) | [Preview](agent-skills/3d/3d-modular-buildings/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-modular-buildings/demo/PROMPT.md) | Local |
 | 3d-survey-scan | 3d | [Open](agent-skills/3d/3d-survey-scan/demo/index.html) | [Preview](agent-skills/3d/3d-survey-scan/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-survey-scan/demo/PROMPT.md) | Local |
 | relight-painted-surfaces | 3d | [Open](agent-skills/3d/relight-painted-surfaces/demo/index.html) | [Preview](agent-skills/3d/relight-painted-surfaces/demo/preview.jpg) | [Prompt](agent-skills/3d/relight-painted-surfaces/demo/PROMPT.md) | Local |

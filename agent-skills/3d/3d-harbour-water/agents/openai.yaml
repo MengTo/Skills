@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Harbour Water"
+  short_description: "Reflect lit quays in rain and float boats on the swell"
+  default_prompt: "Use $3d-harbour-water to build a rainy waterfront with anchored reflections and a turning boat wake."

@@ -2,7 +2,7 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 97
+- Captured demos: 98
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
@@ -18,6 +18,14 @@ Assemble a structure from its foundations through its roof with synchronized wir
 [Open demo](agent-skills/3d/3d-construction-sequence/demo/index.html) · [Skill](agent-skills/3d/3d-construction-sequence/SKILL.md) · [Prompt](agent-skills/3d/3d-construction-sequence/demo/PROMPT.md)
 
 [![3D Construction Sequence preview](agent-skills/3d/3d-construction-sequence/demo/preview.jpg)](agent-skills/3d/3d-construction-sequence/demo/index.html)
+
+### 3d-harbour-water
+
+Reflect quay lights on rain-dappled water, float a launch on the swell and leave a wake through turns.
+
+[Open demo](agent-skills/3d/3d-harbour-water/demo/index.html) · [Skill](agent-skills/3d/3d-harbour-water/SKILL.md) · [Prompt](agent-skills/3d/3d-harbour-water/demo/PROMPT.md)
+
+[![3D Harbour Water preview](agent-skills/3d/3d-harbour-water/demo/preview.jpg)](agent-skills/3d/3d-harbour-water/demo/index.html)
 
 ### 3d-modular-buildings
 

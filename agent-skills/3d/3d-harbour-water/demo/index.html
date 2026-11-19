@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Night water · Shinonome Harbour</title>
+<style>
+:root{color-scheme:dark;--ink:#e3eeea;--accent:#b9efe3;--rule:#b9d3d247;font-family:Arial,Helvetica,sans-serif}*{box-sizing:border-box}body{margin:0;background:#101e2d;color:var(--ink)}main{position:relative;isolation:isolate;height:100svh;min-height:340px;overflow:hidden}canvas{position:absolute;inset:0;width:100%;height:100%;display:block}header,footer{position:absolute;left:clamp(14px,3vw,48px);right:clamp(14px,3vw,48px);display:flex;align-items:center;justify-content:space-between;gap:12px}header{top:clamp(14px,3vw,34px);align-items:flex-start;pointer-events:none;text-shadow:0 2px 15px #0a1724}h1{font-size:clamp(23px,2.7vw,42px);margin:5px 0 0;letter-spacing:-.055em;font-weight:500}.mono,button{font:500 11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase}.mark{display:inline-block;height:7px;width:7px;margin:0 10px 1px 0;border-radius:50%;background:var(--accent)}.position{padding-top:3px;text-align:right}footer{bottom:clamp(12px,2.5vw,30px);align-items:flex-end}fieldset,.other{display:flex;gap:1px;padding:4px;border:1px solid var(--rule);background:#101c25e8;border-radius:3px}fieldset{margin:0}button{border:0;padding:8px 12px;background:transparent;color:#d3e3e2;cursor:pointer;letter-spacing:.06em}button:hover{background:#304149}button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}button[aria-pressed=true]{background:#c8e8dd;color:#162c30}button[aria-pressed=true][id=pause]{background:#32484b;color:white}legend,.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}#error{position:absolute;top:44%;left:10%;right:10%;text-align:center}main:after{content:'';pointer-events:none;position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#06101c48,transparent 20%,transparent 85%,#07151e66)}canvas{z-index:-2}@media(max-width:600px){.position{display:none}button{padding:7px 8px}footer{flex-wrap:wrap;gap:7px}.mono{font-size:11px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body><main aria-labelledby="title">
+<canvas id="view" aria-label="A harbour launch crossing rain-dappled water below illuminated wharves"></canvas>
+<header><div><div class="mono"><span class="mark"></span>Shinonome Harbour</div><h1 id="title">Night water</h1></div><div class="position mono">Tokyo Bay<br>35°38′ N &nbsp; 139°48′ E</div></header>
+<footer>
+<fieldset><legend>Water conditions</legend><button data-weather="calm" aria-pressed="false">Calm</button><button data-weather="rain" aria-pressed="true">Rain</button><button data-weather="squall" aria-pressed="false">Squall</button></fieldset>
+<div class="other"><button id="angle" aria-pressed="false">Waterline</button><button id="pause" aria-pressed="false">Pause</button></div>
+</footer><p id="error" role="alert" hidden></p>
+</main>
+<script src="assets/three-reflector.min.js"></script><script src="assets/harbour-water.js"></script><script src="assets/quay.js"></script>
+</body></html>

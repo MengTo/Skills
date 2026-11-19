@@ -89,6 +89,7 @@ agent-skills/
     relight-painted-surfaces/
     3d-high-resolution-textures/
     3d-high-poly-models/
+    3d-harbour-water/
     3d-survey-scan/
     3d-construction-sequence/
     3d-modular-buildings/
@@ -262,11 +263,11 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **194 skills** across ten categories.
+This snapshot contains **195 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### 3D rendering (20)
+### 3D rendering (21)
 
 Atmospheric, detailed 3D scenes in Three.js. See the [3D guide](agent-skills/3d/README.md).
 - `3d-ultra-realistic-water` - open oceans with Gerstner waves, sun glitter, lace foam, a wake and a seamless horizon.
@@ -282,6 +283,7 @@ Atmospheric, detailed 3D scenes in Three.js. See the [3D guide](agent-skills/3d/
 - [3d-survey-scan](agent-skills/3d/3d-survey-scan/SKILL.md) - Sweep the occupied scene with a cyan pulse that traces its actual mesh edges.
 - [3d-construction-sequence](agent-skills/3d/3d-construction-sequence/SKILL.md) - Assemble a structure from its foundations through its roof with synchronized wires and rigid parts.
 - [3d-modular-buildings](agent-skills/3d/3d-modular-buildings/SKILL.md) - Model structural bays, entrances and rooflines that read from the approach and at eye height.
+- [3d-harbour-water](agent-skills/3d/3d-harbour-water/SKILL.md) - Reflect quay lights on rain-dappled water, float a launch on the swell and leave a wake through turns.
 - `3d-wood-material` - procedural wood with grain, pores, finishes, tool marks and end grain.
 - `3d-cloth-material` - woven cloth with thread structure, sheen, folds, hems and frayed edges.
 - `3d-paper-material` - washi, rag and kraft paper with fibres, deckled edges, translucency and creases.

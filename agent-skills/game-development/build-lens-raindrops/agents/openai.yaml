@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lens Raindrops"
+  short_description: "Refract live scenery through moving lens droplets"
+  default_prompt: "Use $build-lens-raindrops for this task. Add moving rain beads that refract the scene and respond to speed."

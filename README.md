@@ -266,7 +266,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **206 skills** across ten categories.
+This snapshot contains **209 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -387,7 +387,7 @@ Combat animation and combat skills that read and look like Diablo IV, measured a
 - `lightning-energy-skill-vfx` - a skill's effects as one language in Three.js: lightning that reaches out as a stepped leader, flares, holds and fades, one discharge at a time, with forks of forks and hair-fine branchlets; a storm-cloud orb with plasma-globe arcs that churns in place and carries its own torn black shadow; ground strikes that crawl along the stone's cracks; refraction-only air fronts, sparks, fractured debris and ink-negative impact frames, with a reusable module, a five-beat demo on a scanned CC0 floor and a blind-judged scorecard.
 - `water-crystal-skill-vfx` - a water and crystal skill's effects as one language in Three.js: clear water that bends and mirrors instead of glowing teal; a sphere-traced water orb whose drop modes, capillary rings and drifting warp deform it in place, with a crisp inverted horizon and a silver rim; beaded streams wound up out of tide pools, a lash that whips into a torn, lopsided splash crown, and analytic ripple rings and rain; quartz traced against its own planes (total internal reflection, a clamped dispersion fringe, fracture discs, a white-hot root glow and a climbing resonance band) that grows out of the water and shatters into splinters resting on the rock with real contact; flat mirror pools with a moon-glitter column on a tidal rock flat laid out from target images, with a reusable module, a five-beat demo on a scanned CC0 floor and a target-image scorecard.
 
-### Game development (22)
+### Game development (25)
 
 Playable Three.js and browser-game workflows. See the [game-development guide](agent-skills/game-development/README.md) for the skill-selection table and system boundaries.
 
@@ -399,6 +399,7 @@ Combat, enemies, and encounters:
 
 Player systems and feedback:
 - `build-game-inventory`, `create-game-vfx`, `build-game-audio-feedback`, `build-game-changelog`
+- [`build-point-cloud-scan`](agent-skills/game-development/build-point-cloud-scan/SKILL.md), [`build-lens-raindrops`](agent-skills/game-development/build-lens-raindrops/SKILL.md), [`build-3d-character-selector`](agent-skills/game-development/build-3d-character-selector/SKILL.md)
 
 Assets, performance, QA, and release:
 - `game-dev-character-model`, `build-rigged-game-assets`, `build-hybrid-game-assets`, `build-vesperfall-review-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`

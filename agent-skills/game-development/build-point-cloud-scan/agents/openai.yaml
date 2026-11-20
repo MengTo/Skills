@@ -1,0 +1,4 @@
+interface:
+  display_name: "Point Cloud Scan"
+  short_description: "Reveal 3D models through dots and mesh edges"
+  default_prompt: "Use $build-point-cloud-scan for this task. Build a mesh-driven scan transition between two 3D models."

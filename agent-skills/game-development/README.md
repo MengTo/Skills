@@ -21,6 +21,9 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 | Create a realistic, rigged, posed character model from a description or reference | [`game-dev-character-model`](game-dev-character-model/SKILL.md) |
 | Choose and integrate imported, procedural, generated, or 2D assets | [`build-hybrid-game-assets`](build-hybrid-game-assets/SKILL.md) |
 | Pair Vesperfall catalog PNGs with truthful live model review routes | [`build-vesperfall-review-assets`](build-vesperfall-review-assets/SKILL.md) |
+| Scan real mesh edges and points across a district or character | [`build-point-cloud-scan`](build-point-cloud-scan/SKILL.md) |
+| Refract the scene through moving lens raindrops | [`build-lens-raindrops`](build-lens-raindrops/SKILL.md) |
+| Build a full-body character selector with rotation and animated swaps | [`build-3d-character-selector`](build-3d-character-selector/SKILL.md) |
 | Add readable visual or audio feedback | [`create-game-vfx`](create-game-vfx/SKILL.md) and [`build-game-audio-feedback`](build-game-audio-feedback/SKILL.md) |
 | Adapt controls, HUD, quality, and QA for mobile | [`build-mobile-threejs-games`](build-mobile-threejs-games/SKILL.md) |
 | Diagnose frame-time, draw-call, memory, or quality problems | [`optimize-threejs-games`](optimize-threejs-games/SKILL.md) |

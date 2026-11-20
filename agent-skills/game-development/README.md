@@ -9,6 +9,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 | Need | Start with |
 | --- | --- |
 | Build a complete playable vertical slice | [`build-isometric-arpg`](build-isometric-arpg/SKILL.md) |
+| Match a photoreal first-person interior to reference and verify the look during play | [`build-ultra-realistic-game-interiors`](build-ultra-realistic-game-interiors/SKILL.md) |
 | Author readable flat-world routes and motivated lighting | [`author-game-levels`](author-game-levels/SKILL.md) |
 | Implement camera framing, lock-on, occlusion, or touch gestures | [`build-game-camera-controls`](build-game-camera-controls/SKILL.md) |
 | Define enemy archetypes, movesets, model conventions, and runtime hooks | [`build-threejs-enemy-systems`](build-threejs-enemy-systems/SKILL.md) |

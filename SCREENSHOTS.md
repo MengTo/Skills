@@ -2,14 +2,14 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 98
+- Captured demos: 99
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
 
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
 
-## 3d (1)
+## 3d (6)
 
 ### 3d-construction-sequence
 
@@ -26,6 +26,14 @@ Reflect quay lights on rain-dappled water, float a launch on the swell and leave
 [Open demo](agent-skills/3d/3d-harbour-water/demo/index.html) · [Skill](agent-skills/3d/3d-harbour-water/SKILL.md) · [Prompt](agent-skills/3d/3d-harbour-water/demo/PROMPT.md)
 
 [![3D Harbour Water preview](agent-skills/3d/3d-harbour-water/demo/preview.jpg)](agent-skills/3d/3d-harbour-water/demo/index.html)
+
+### 3d-kasumidera-ultra-realism
+
+Build walkable painterly Three.js environments with warm lacquer, modeled joinery, layered clouds and materials reviewed at 200%.
+
+[Open demo](agent-skills/3d/3d-kasumidera-ultra-realism/demo/index.html) · [Skill](agent-skills/3d/3d-kasumidera-ultra-realism/SKILL.md) · [Prompt](agent-skills/3d/3d-kasumidera-ultra-realism/demo/PROMPT.md)
+
+[![Kasumidera Ultra-Realism preview](agent-skills/3d/3d-kasumidera-ultra-realism/demo/preview.jpg)](agent-skills/3d/3d-kasumidera-ultra-realism/demo/index.html)
 
 ### 3d-modular-buildings
 

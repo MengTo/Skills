@@ -25,6 +25,7 @@ Reusable skills for atmospheric 3D scenes, real-time architecture, survey scans,
 | [3D Construction Sequence](3d-construction-sequence/SKILL.md) | Assemble a structure from its foundations through its roof with synchronized wires and rigid parts. [Open demo](3d-construction-sequence/demo/index.html). |
 | [3D Modular Buildings](3d-modular-buildings/SKILL.md) | Model structural bays, entrances and rooflines that read from the approach and at eye height. [Open demo](3d-modular-buildings/demo/index.html). |
 | [3D Harbour Water](3d-harbour-water/SKILL.md) | Reflect quay lights on rain-dappled water, float a launch on the swell and leave a wake through turns. [Open demo](3d-harbour-water/demo/index.html). |
+| [Kasumidera Ultra-Realism](3d-kasumidera-ultra-realism/SKILL.md) | Build walkable painterly Three.js environments with warm lacquer, modeled joinery, layered clouds and materials reviewed at 200%. [Inspect six game frames](3d-kasumidera-ultra-realism/demo/index.html). |
 
 ## Use a skill
 

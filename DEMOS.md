@@ -54,18 +54,21 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 99
-- 3d: 6
+- Total: 108
+- 3d: 9
 - codex: 13
 - game-development: 1
 - media: 2
-- ui: 1
-- web-design: 78
+- ui: 3
+- web-design: 82
 
 ## Demo index
 
 | Skill | Category | Demo | Preview | Prompt | Source |
 | --- | --- | --- | --- | --- | --- |
+| forest-floor-specimen | 3d | [Open](agent-skills/3d/forest-floor-specimen/demo/index.html) | [Preview](agent-skills/3d/forest-floor-specimen/demo/preview.jpg) | [Prompt](agent-skills/3d/forest-floor-specimen/demo/PROMPT.md) | Local |
+| perching-butterfly | 3d | [Open](agent-skills/3d/perching-butterfly/demo/index.html) | [Preview](agent-skills/3d/perching-butterfly/demo/preview.jpg) | [Prompt](agent-skills/3d/perching-butterfly/demo/PROMPT.md) | Local |
+| woodland-chapter-cameras | 3d | [Open](agent-skills/3d/woodland-chapter-cameras/demo/index.html) | [Preview](agent-skills/3d/woodland-chapter-cameras/demo/preview.jpg) | [Prompt](agent-skills/3d/woodland-chapter-cameras/demo/PROMPT.md) | Local |
 | 3d-construction-sequence | 3d | [Open](agent-skills/3d/3d-construction-sequence/demo/index.html) | [Preview](agent-skills/3d/3d-construction-sequence/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-construction-sequence/demo/PROMPT.md) | Local |
 | 3d-harbour-water | 3d | [Open](agent-skills/3d/3d-harbour-water/demo/index.html) | [Preview](agent-skills/3d/3d-harbour-water/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-harbour-water/demo/PROMPT.md) | Local |
 | 3d-kasumidera-ultra-realism | 3d | [Open](agent-skills/3d/3d-kasumidera-ultra-realism/demo/index.html) | [Preview](agent-skills/3d/3d-kasumidera-ultra-realism/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-kasumidera-ultra-realism/demo/PROMPT.md) | Local |
@@ -86,7 +89,13 @@ Use --force only when every locally generated demo should be intentionally regen
 | game-dev-character-model | game-development | [Open](agent-skills/game-development/game-dev-character-model/demo/index.html) | [Preview](agent-skills/game-development/game-dev-character-model/demo/preview.jpg) | [Prompt](agent-skills/game-development/game-dev-character-model/demo/PROMPT.md) | Local |
 | aura-asset-images | media | [Open](agent-skills/media/aura-asset-images/demo/index.html) | [Preview](agent-skills/media/aura-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/aura-asset-images/demo/PROMPT.md) | [Neuform #1 · 2,154 views](agent-skills/media/aura-asset-images/demo/source.json) |
 | unsplash-asset-images | media | [Open](agent-skills/media/unsplash-asset-images/demo/index.html) | [Preview](agent-skills/media/unsplash-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/unsplash-asset-images/demo/PROMPT.md) | Local |
+| segmented-field-menu | ui | [Open](agent-skills/ui/segmented-field-menu/demo/index.html) | [Preview](agent-skills/ui/segmented-field-menu/demo/preview.jpg) | [Prompt](agent-skills/ui/segmented-field-menu/demo/PROMPT.md) | Local |
+| moss-glass-controls | ui | [Open](agent-skills/ui/moss-glass-controls/demo/index.html) | [Preview](agent-skills/ui/moss-glass-controls/demo/preview.jpg) | [Prompt](agent-skills/ui/moss-glass-controls/demo/PROMPT.md) | Local |
 | design-first-ui-prompting | ui | [Open](agent-skills/ui/design-first-ui-prompting/demo/index.html) | [Preview](agent-skills/ui/design-first-ui-prompting/demo/preview.jpg) | [Prompt](agent-skills/ui/design-first-ui-prompting/demo/PROMPT.md) | Local |
+| pollen-pointer-trail | web-design | [Open](agent-skills/web-design/pollen-pointer-trail/demo/index.html) | [Preview](agent-skills/web-design/pollen-pointer-trail/demo/preview.jpg) | [Prompt](agent-skills/web-design/pollen-pointer-trail/demo/PROMPT.md) | Local |
+| compose-a-woodland-landing-page | web-design | [Open](agent-skills/web-design/compose-a-woodland-landing-page/demo/index.html) | [Preview](agent-skills/web-design/compose-a-woodland-landing-page/demo/preview.jpg) | [Prompt](agent-skills/web-design/compose-a-woodland-landing-page/demo/PROMPT.md) | Local |
+| sylva-field-guide-layout | web-design | [Open](agent-skills/web-design/sylva-field-guide-layout/demo/index.html) | [Preview](agent-skills/web-design/sylva-field-guide-layout/demo/preview.jpg) | [Prompt](agent-skills/web-design/sylva-field-guide-layout/demo/PROMPT.md) | Local |
+| scroll-mesh-survey | web-design | [Open](agent-skills/web-design/scroll-mesh-survey/demo/index.html) | [Preview](agent-skills/web-design/scroll-mesh-survey/demo/preview.jpg) | [Prompt](agent-skills/web-design/scroll-mesh-survey/demo/PROMPT.md) | Local |
 | neoclassical-ledger-ui | web-design | [Open](agent-skills/web-design/neoclassical-ledger-ui/demo/index.html) | [Preview](agent-skills/web-design/neoclassical-ledger-ui/demo/preview.jpg) | [Prompt](agent-skills/web-design/neoclassical-ledger-ui/demo/PROMPT.md) | Local |
 | dither-ascii-ink-hover | web-design | [Open](agent-skills/web-design/dither-ascii-ink-hover/demo/index.html) | [Preview](agent-skills/web-design/dither-ascii-ink-hover/demo/preview.jpg) | [Prompt](agent-skills/web-design/dither-ascii-ink-hover/demo/PROMPT.md) | Local |
 | generate-ledger-logo-register | web-design | [Open](agent-skills/web-design/generate-ledger-logo-register/demo/index.html) | [Preview](agent-skills/web-design/generate-ledger-logo-register/demo/preview.jpg) | [Prompt](agent-skills/web-design/generate-ledger-logo-register/demo/PROMPT.md) | Local |

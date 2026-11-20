@@ -2,14 +2,38 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 99
+- Captured demos: 108
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
 
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
 
-## 3d (6)
+## 3d (9)
+
+### woodland-chapter-cameras
+
+Stage a live Three.js valley with a creek, instanced trees and layered fog across a hero, story chapter and footer using distinct scroll-driven camera poses.
+
+[Open demo](agent-skills/3d/woodland-chapter-cameras/demo/index.html) · [Skill](agent-skills/3d/woodland-chapter-cameras/SKILL.md) · [Prompt](agent-skills/3d/woodland-chapter-cameras/demo/PROMPT.md)
+
+[![Woodland Chapter Cameras](agent-skills/3d/woodland-chapter-cameras/demo/preview.jpg)](agent-skills/3d/woodland-chapter-cameras/demo/index.html)
+
+### perching-butterfly
+
+Animate a small 3D butterfly that banks in flight, approaches an actual plant surface, settles with hinged wings and takes off when disturbed.
+
+[Open demo](agent-skills/3d/perching-butterfly/demo/index.html) · [Skill](agent-skills/3d/perching-butterfly/SKILL.md) · [Prompt](agent-skills/3d/perching-butterfly/demo/PROMPT.md)
+
+[![Perching Butterfly](agent-skills/3d/perching-butterfly/demo/preview.jpg)](agent-skills/3d/perching-butterfly/demo/index.html)
+
+### forest-floor-specimen
+
+Model an animated 3D botanical study with fern fronds, folded pinnae, a moss cushion and grounded stones for a light editorial Journey section.
+
+[Open demo](agent-skills/3d/forest-floor-specimen/demo/index.html) · [Skill](agent-skills/3d/forest-floor-specimen/SKILL.md) · [Prompt](agent-skills/3d/forest-floor-specimen/demo/PROMPT.md)
+
+[![Forest Floor Specimen](agent-skills/3d/forest-floor-specimen/demo/preview.jpg)](agent-skills/3d/forest-floor-specimen/demo/index.html)
 
 ### 3d-construction-sequence
 
@@ -177,7 +201,23 @@ Use when you need to pick high-quality Unsplash images for product/design assets
 
 ![unsplash-asset-images preview screenshot](agent-skills/media/unsplash-asset-images/demo/preview.jpg)
 
-## ui (1)
+## ui (3)
+
+### moss-glass-controls
+
+Build Sylva-style dark glass action pills and woodland cards with an inset rim, pale icon well and a gradient that travels around the edge on hover.
+
+[Open demo](agent-skills/ui/moss-glass-controls/demo/index.html) · [Skill](agent-skills/ui/moss-glass-controls/SKILL.md) · [Prompt](agent-skills/ui/moss-glass-controls/demo/PROMPT.md)
+
+[![Moss Glass Controls](agent-skills/ui/moss-glass-controls/demo/preview.jpg)](agent-skills/ui/moss-glass-controls/demo/index.html)
+
+### segmented-field-menu
+
+Create an inset upper-right navigation dock with compact icon-and-label segments, a pale selected segment and a matching footer dock for an editorial landing page.
+
+[Open demo](agent-skills/ui/segmented-field-menu/demo/index.html) · [Skill](agent-skills/ui/segmented-field-menu/SKILL.md) · [Prompt](agent-skills/ui/segmented-field-menu/demo/PROMPT.md)
+
+[![Segmented Field Menu](agent-skills/ui/segmented-field-menu/demo/preview.jpg)](agent-skills/ui/segmented-field-menu/demo/index.html)
 
 ### design-first-ui-prompting
 
@@ -187,7 +227,39 @@ Use when you need design-first, spec-driven, skimmable prompts for UI generation
 
 ![design-first-ui-prompting preview screenshot](agent-skills/ui/design-first-ui-prompting/demo/preview.jpg)
 
-## web-design (78)
+## web-design (82)
+
+### scroll-mesh-survey
+
+Scrub a narrow topology scan across a visible 3D object and its companion editorial figures. Use when a scroll gesture should disclose surface structure in both directions.
+
+[Open demo](agent-skills/web-design/scroll-mesh-survey/demo/index.html) · [Skill](agent-skills/web-design/scroll-mesh-survey/SKILL.md) · [Prompt](agent-skills/web-design/scroll-mesh-survey/demo/PROMPT.md)
+
+[![Scroll Mesh Survey](agent-skills/web-design/scroll-mesh-survey/demo/preview.jpg)](agent-skills/web-design/scroll-mesh-survey/demo/index.html)
+
+### sylva-field-guide-layout
+
+Lay out a botanical editorial UI with continuous vertical rules, sparse diagonal guides, large lightweight typography and aligned chapter labels and specimen captions.
+
+[Open demo](agent-skills/web-design/sylva-field-guide-layout/demo/index.html) · [Skill](agent-skills/web-design/sylva-field-guide-layout/SKILL.md) · [Prompt](agent-skills/web-design/sylva-field-guide-layout/demo/PROMPT.md)
+
+[![Sylva Field Guide Layout](agent-skills/web-design/sylva-field-guide-layout/demo/preview.jpg)](agent-skills/web-design/sylva-field-guide-layout/demo/index.html)
+
+### compose-a-woodland-landing-page
+
+Compose a Sylva-style botanical landing page as a six-chapter field guide, alternating light editorial spreads, dark participation cards and live woodland views.
+
+[Open demo](agent-skills/web-design/compose-a-woodland-landing-page/demo/index.html) · [Skill](agent-skills/web-design/compose-a-woodland-landing-page/SKILL.md) · [Prompt](agent-skills/web-design/compose-a-woodland-landing-page/demo/PROMPT.md)
+
+[![Compose a Woodland Landing Page](agent-skills/web-design/compose-a-woodland-landing-page/demo/preview.jpg)](agent-skills/web-design/compose-a-woodland-landing-page/demo/index.html)
+
+### pollen-pointer-trail
+
+Emit a sparse, distance-spaced trail of airborne pollen from the pointer over a woodland scene, with depth drift, short lives and bounded particles.
+
+[Open demo](agent-skills/web-design/pollen-pointer-trail/demo/index.html) · [Skill](agent-skills/web-design/pollen-pointer-trail/SKILL.md) · [Prompt](agent-skills/web-design/pollen-pointer-trail/demo/PROMPT.md)
+
+[![Pollen Pointer Trail](agent-skills/web-design/pollen-pointer-trail/demo/preview.jpg)](agent-skills/web-design/pollen-pointer-trail/demo/index.html)
 
 ### neoclassical-ledger-ui
 

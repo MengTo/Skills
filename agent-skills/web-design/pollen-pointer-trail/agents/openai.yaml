@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pollen Pointer Trail"
+  short_description: "Emit soft pollen along a pointer path with a fixed budget."
+  default_prompt: "Use $pollen-pointer-trail to implement this treatment in my project."

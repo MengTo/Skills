@@ -26,6 +26,9 @@ Reusable skills for atmospheric 3D scenes, real-time architecture, survey scans,
 | [3D Modular Buildings](3d-modular-buildings/SKILL.md) | Model structural bays, entrances and rooflines that read from the approach and at eye height. [Open demo](3d-modular-buildings/demo/index.html). |
 | [3D Harbour Water](3d-harbour-water/SKILL.md) | Reflect quay lights on rain-dappled water, float a launch on the swell and leave a wake through turns. [Open demo](3d-harbour-water/demo/index.html). |
 | [Kasumidera Ultra-Realism](3d-kasumidera-ultra-realism/SKILL.md) | Build walkable painterly Three.js environments with warm lacquer, modeled joinery, layered clouds and materials reviewed at 200%. [Inspect six game frames](3d-kasumidera-ultra-realism/demo/index.html). |
+| [Woodland Chapter Cameras](woodland-chapter-cameras/SKILL.md) | Stage one live woodland across several scroll chapters. [Open demo](woodland-chapter-cameras/demo/index.html). |
+| [Perching Butterfly](perching-butterfly/SKILL.md) | Animate a butterfly with a grounded perch and a flight loop. [Open demo](perching-butterfly/demo/index.html). |
+| [Forest Floor Specimen](forest-floor-specimen/SKILL.md) | Grow an inspectable fern and moss specimen for a field guide. [Open demo](forest-floor-specimen/demo/index.html). |
 
 ## Use a skill
 

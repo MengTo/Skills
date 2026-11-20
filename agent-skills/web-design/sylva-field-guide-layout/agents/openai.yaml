@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sylva Field Guide Layout"
+  short_description: "Align field-guide typography, rules and figure captions."
+  default_prompt: "Use $sylva-field-guide-layout to implement this treatment in my project."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Perching Butterfly"
+  short_description: "Animate a butterfly with a grounded perch and a flight loop."
+  default_prompt: "Use $perching-butterfly to implement this treatment in my project."

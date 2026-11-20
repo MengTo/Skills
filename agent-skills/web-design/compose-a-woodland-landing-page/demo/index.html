@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Compose a Woodland Landing Page</title><style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f1f0e6;color:#26352a;font:350 16px/1.5 Lexend,'Helvetica Neue',sans-serif}button,a,input{font:inherit}button,a{touch-action:manipulation}a{color:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,canvas:focus-visible{outline:2px solid #aebd71;outline-offset:4px}.shell{position:relative;max-width:1560px;margin:auto;padding-inline:clamp(24px,5vw,90px)}.shell::before{content:'';position:absolute;inset:0 clamp(13px,3.9vw,69px);border-inline:1px solid currentColor;pointer-events:none;opacity:.13}.bar,.cap{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px}.bar{height:85px;border-bottom:1px solid #78867044}.brand{font-size:21px;font-weight:500;letter-spacing:-.05em;text-decoration:none}.brand:before{content:'✳';margin-right:.48em;color:#94a371}.meta,.cap{font-size:11px;letter-spacing:.115em;text-transform:uppercase}.panel{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:4vw;min-height:calc(100svh - 140px);align-items:center}.copy{max-width:630px;position:relative;z-index:2}.k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}.k:before{content:'●';font-size:9px;margin-right:10px;color:#82906a}h1,h2{font-weight:330;line-height:.99;letter-spacing:-.07em;margin:.24em 0}h1{font-size:clamp(52px,7.7vw,116px)}h2{font-size:clamp(38px,5.6vw,84px)}p{max-width:39ch;font-size:clamp(16px,1.42vw,22px);line-height:1.55}.cap{padding:17px 0;border-top:1px solid #78867044;letter-spacing:.05em}.art{position:relative;height:clamp(340px,68vh,740px);border-radius:3px;min-width:0}.art canvas,.world canvas{display:block;width:100%;height:100%}.paper .art{background:radial-gradient(ellipse,#d0d2b7 0%,#e6e6d7 43%,transparent 72%)}.reg{position:absolute;inset:6%;border:1px solid #7f8c6924;pointer-events:none}.reg:after{content:'';position:absolute;top:55%;left:-3%;width:106%;height:1px;background:#63745626;transform:rotate(-16deg)}.art .fig{position:absolute;bottom:0;right:2%;font-size:11px;letter-spacing:.08em}.dark{background:#18271f;color:#eeeddc}.world{position:absolute;inset:0;overflow:hidden;pointer-events:none}.world:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0c2019d9,#17261a39 71%),linear-gradient(0deg,#1423198c,transparent 48%)}.stage{position:relative;isolation:isolate;overflow:hidden}.stage>.shell{z-index:1}.stage .bar,.dark .bar,.dark .cap{border-color:#d5ddc43b}.stage h1{max-width:10.5ch}.rim,.dock{background:linear-gradient(155deg,#3a4736,#243128);border:1px solid #dbe4c92b;color:#eef0d9;box-shadow:inset 0 1px #f4f5cf24,0 6px 18px #131b1229}.rim{position:relative;display:inline-flex;align-items:center;justify-content:space-between;gap:18px;padding:7px 8px 7px 17px;border-radius:30px;text-decoration:none;min-height:44px;font-size:14px}.rim i{font:400 18px/32px sans-serif;width:32px;text-align:center;color:#2f3c2f;background:#e5e8ce;border-radius:100%}.rim:after{content:'';position:absolute;inset:-1px;border-radius:inherit;opacity:0;padding:1.4px;background:conic-gradient(from var(--angle,0deg),transparent 10%,#f6e8ad 27%,#9ac7d5 34%,transparent 55%,#bdc990 78%,transparent 92%);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;-webkit-mask-composite:xor;pointer-events:none}.rim:is(:hover,:focus-visible):after{opacity:1;animation:turn 2.4s linear infinite}@property --angle{syntax:'<angle>';inherits:false;initial-value:0deg}@keyframes turn{to{--angle:360deg}}.rim:active{transform:scale(.975)}.dock{display:inline-flex;gap:3px;border-radius:12px;padding:4px}.dock a{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;min-height:36px;border-radius:7px;text-decoration:none;font-size:11px;font-weight:590;letter-spacing:.08em;text-transform:uppercase;background:#e7e8ce0a}.dock a[aria-current]{color:#253024;background:#eef0d9}.dock a:hover{box-shadow:inset 0 0 0 1px #92a381}.ico{width:14px;height:14px}.spread{min-height:84svh;display:grid;gap:5vw;grid-template-columns:1.1fr .9fr;align-items:center;padding-block:8vh}.spread ul{padding:0;list-style:none}.spread li,.steps button{padding:15px 0;border-block-end:1px solid #7d876840}.steps button{display:block;width:100%;text-align:left;background:none;color:inherit;border-width:0 0 1px}.steps button[aria-expanded=true]{font-weight:600}.card{background:linear-gradient(145deg,#3e4a38,#253329);color:#e9ebd6;border:1px solid #a2ae8645;border-radius:24px;padding:9px;box-shadow:0 12px 32px #0c140e29;max-width:410px;justify-self:center;width:100%}.plate{width:100%;height:clamp(140px,24vh,235px);object-fit:cover;border-radius:16px;display:block;background:#787f5e}.inside{padding:15px 17px 18px}.inside h2{font-size:34px;letter-spacing:-.045em}.inside p{font-size:16px;max-width:35ch}.footword{font-size:clamp(75px,18vw,260px);letter-spacing:-.09em;line-height:1.12}.spec{background:radial-gradient(ellipse at 64% 38%,#637251,#263829 72%)}label.range{display:block;max-width:280px;margin-top:24px}input[type=range]{display:block;width:100%;accent-color:#6b805a;min-height:36px}.pin{position:sticky;top:0}.scrollpad{height:90vh}.panel.one{grid-template-columns:1fr}.world-note{justify-self:end}.figure-img{display:block;width:100%;aspect-ratio:1.23;object-fit:cover;border-radius:2px}.price{font-size:54px;letter-spacing:-.06em}.card .price{margin:.25em 0}.wordmark{font-weight:350}.buttons{display:flex;gap:10px;align-items:center}.buttons>button{padding:8px 14px;min-height:44px;border:1px solid #8f9c7890;background:transparent;color:inherit;border-radius:24px}.buttons>button[aria-pressed=true]{background:#e4e9d5;color:#28392e}.pollen-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+@media(max-width:700px){.panel,.spread{grid-template-columns:1fr;gap:18px;padding-block:34px}.panel{min-height:auto}.art{height:min(46svh,420px)}.bar{height:72px}.dock a{padding:9px;min-height:44px}.dock .navtext{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}.hero .panel{min-height:71svh}.spread{min-height:65svh}.copy p{max-width:31ch}.cap{font-size:11px}.art .fig{bottom:0}.card{margin-block:10px}.panel.one{min-height:65svh}h1{font-size:clamp(47px,12vw,68px)}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rim:after{animation:none!important}}
+dialog{color:#25372a;background:#f1f1e4;max-width:min(90vw,500px);padding:35px;border:1px solid #7e8c72;border-radius:20px}dialog::backdrop{background:#16261bb0}</style></head><body><main><section class="dark stage hero" id="grove" tabindex="-1"><div class="world" data-art="page"></div><div class="shell"><div class="bar"><span class="brand">Alder</span><nav class="dock" aria-label="Field index"><a href="#grove" aria-current="location" ><svg aria-hidden="true" class="ico" viewBox="0 0 24 24"><path d="M6 18C2 8 11 4 19 3c1 8-2 16-10 16Z" fill="currentColor" opacity=".7"/><path d="M5 22c2-7 7-10 11-14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="navtext">Grove</span></a><a href="#journal" ><svg aria-hidden="true" class="ico" viewBox="0 0 24 24"><path fill="currentColor" d="m2 19 7-12 3.5 6 2.5-4 7 10z"/></svg><span class="navtext">Journal</span></a><a href="#visit" ><svg aria-hidden="true" class="ico" viewBox="0 0 24 24"><path d="M5 4h14v16H5z" fill="currentColor" opacity=".6"/><path d="M8 8h8m-8 4h5" stroke="currentColor" stroke-width="2"/></svg><span class="navtext">Visit</span></a></nav></div><div class="panel one"><div class="copy"><div class="k">A woodland field guide</div><h1>Into the understory.</h1><p>Follow the water, look under the ferns and return when the light changes.</p><a class="rim" href="#journey">Walk the trail <i aria-hidden="true">↗</i></a></div></div><div class="cap"><span>Alder field station</span><span>The grove</span></div></div></section><section class="paper" id="journey" tabindex="-1"><div class="shell"><div class="spread"><div><h2>The journey.</h2><p>Three ways of observing the forest floor.</p></div><div class="steps"><button aria-expanded="true">Read the ground</button><p >Follow the water across the soil.</p><button aria-expanded="false">Plant in layers</button><p hidden>Shelter small ferns beneath taller growth.</p><button aria-expanded="false">Return each season</button><p hidden>Record new shoots at the same marker.</p></div></div></div></section><section class="dark stage" id="journal" tabindex="-1"><div class="world" data-art="forest"></div><div class="shell"><div class="spread"><div><div class="k">Field note</div><h2>After the rain.</h2><p>Water has gathered beneath the lowest branch.</p></div></div></div></section><section class="paper"><div class="shell"><div class="spread"><div><h2>Voices from the field.</h2><p>“We missed the smallest changes until we started returning to the same place.”</p></div><div class="k">Field journal contributor</div></div></div></section><section class="dark" id="visit" tabindex="-1"><div class="shell"><div class="spread"><div><h2>Ways to take part.</h2><p>Choose a way into the woodland.</p></div><article class="card"><div class="inside"><div class="k">Field reader</div><div class="price">$0</div><button type="button" class="rim">Open the pocket guide <i aria-hidden="true">↗</i></button></div></article></div></div></section><section class="dark stage"><div class="world" data-art="page"></div><div class="shell"><div class="spread"><div><div class="footword">Alder</div><a class="rim" href="#grove">Back to the grove <i aria-hidden="true">↗</i></a></div></div></div></section><dialog><h2>Pocket guide</h2><p>Choose one patch. Draw its outline and return to it after rain.</p><form method="dialog"><button class="rim">Close guide</button></form></dialog></main><script src="assets/three.min.js"></script><script>
+function woodlandStudy(host, mode) {
+  const T=THREE, scene=new T.Scene(), camera=new T.PerspectiveCamera(38,1,.1,170);
+  const renderer=new T.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.outputEncoding=T.sRGBEncoding;
+  host.prepend(renderer.domElement);
+  const plant=new T.Group(), animal=new T.Group(), root=new T.Group();scene.add(plant,animal,root);
+  const motion=matchMedia('(prefers-reduced-motion:reduce)');
+  let seed=91482,t=0,last=0,frame=0,visible=true,target=0,phase=0,flight=0,elapsed=0,reach=0;
+  const random=()=>((seed=Math.imul(1664525,seed)+1013904223>>>0)/4294967296);
+  function mesh(g,color,parent,x=0,y=0,z=0){
+    const mat=new T.MeshStandardMaterial({color,roughness:.88,side:T.DoubleSide});
+    const obj=new T.Mesh(g,mat);obj.position.set(x,y,z);parent.add(obj);return obj;
+  }
+  scene.add(new T.HemisphereLight(0xfff1ce,0x414d3c,.88));const sun=new T.DirectionalLight(0xffe7c7,1.23);sun.position.set(-3,9,5);scene.add(sun);
+  const V=(x,y,z)=>new T.Vector3(x,y,z);
+  const canopy=mode==='forest'||mode==='page';
+  let wings=[],fronds=[],u,perch=V(0,0,0),renderShot=0;
+  if(canopy){
+    scene.background=new T.Color(0xd4ceac);scene.fog=new T.FogExp2(0xb9c2a3,.035);
+    const river=z=>2*Math.sin(z*.13)+.65*Math.sin(z*.31);
+    const height=(x,z)=>-.26+(1-Math.exp(-Math.max(0,Math.abs(x-river(z))-1.05)*.35))*(2.2+.7*Math.sin(z*.33)+1*Math.sin(x*.27-z*.12))+.08*Math.sin(x*3.3+z);
+    const ground=new T.PlaneGeometry(90,100,120,130);ground.rotateX(-Math.PI/2);ground.translate(0,0,-24);
+    const pos=ground.attributes.position,colors=[];
+    const color=new T.Color();
+    for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i),h=height(x,z);pos.setY(i,h);color.setHSL(.194+.018*random(),.22+random()*.13,.15+.10*random()+.04*Math.sin(x*.33+z*.3));colors.push(color.r,color.g,color.b);}
+    ground.setAttribute('color',new T.Float32BufferAttribute(colors,3));ground.computeVertexNormals();
+    scene.add(new T.Mesh(ground,new T.MeshStandardMaterial({vertexColors:true,roughness:.94})));
+    const water=new T.PlaneGeometry(90,100);water.rotateX(-Math.PI/2);const creek=mesh(water,0x779392,scene,0,-.11,-24);creek.material.roughness=.23;
+    const trees=[],wood=[],mat=new T.Matrix4(),rot=new T.Quaternion(),up=V(0,1,0),crownGeo=new T.BufferGeometry(),verts=[];
+    function triangle(a,b,c){verts.push(...a,...b,...c)}
+    for(let layer=0;layer<8;layer++){
+      const y=.14+layer*.095,spread=(1-y)*.32;
+      for(let j=0;j<12;j++){const a=j*.524+layer*2.4,b=a+.49,r=spread*(.72+.4*random());
+        triangle([.01,y+.19,0],[r*Math.cos(b),y-.015,r*Math.sin(b)],[r*Math.cos(a),y-.04-random()*.05,r*Math.sin(a)]);}
+    }
+    crownGeo.setAttribute('position',new T.Float32BufferAttribute(verts,3));crownGeo.computeVertexNormals();
+    for(let i=0;i<1550;i++){const z=9-random()*74,x=(random()-.5)*78;if(Math.abs(x-river(z))<2.9+random()*2)continue;
+      const h=1.5+random()**1.7*7,s=.68+random()*.64;rot.setFromAxisAngle(up,random()*6.28);
+      trees.push(mat.compose(V(x,height(x,z)-.08,z),rot,V(h*s,h,h*s)).clone());wood.push(mat.compose(V(x,height(x,z)+h*.32,z),rot,V(h*.019,h*.64,h*.019)).clone());}
+    function stands(g,mat,transforms,tint){const m=new T.InstancedMesh(g,mat,transforms.length);transforms.forEach((matrix,i)=>{m.setMatrixAt(i,matrix);if(tint)m.setColorAt(i,new T.Color().setHSL(.22+random()*.06,.23+random()*.12,.12+random()*.13));});scene.add(m);}
+    stands(crownGeo,new T.MeshStandardMaterial({side:T.DoubleSide,roughness:1}),trees,true);
+    stands(new T.CylinderGeometry(.6,1,1,5),new T.MeshStandardMaterial({color:0x443d2a}),wood,false);
+    const ripple=new T.PlaneGeometry(1,.025);ripple.rotateX(-Math.PI/2);
+    const strokes=[];for(let i=0;i<160;i++){const z=10-random()*53;strokes.push(mat.compose(V(river(z)+(random()-.5)*1.8,-.103,z),rot.setFromAxisAngle(up,Math.sin(z*.13)*.22),V(.08+random()*.8,1,.5+random())).clone());}
+    stands(ripple,new T.MeshBasicMaterial({color:0xb3b8a4}),strokes,false);
+  }else{
+    const bark=new T.CatmullRomCurve3([V(-2.8,-.38,.05),V(-1.4,.04,0),V(-.45,-.08,.13),V(.42,.36,0),V(1.2,.27,-.12),V(2.7,.74,-.16)]);
+    const branch=mesh(new T.TubeGeometry(bark,55,.16,9,false),0x57452d,root);
+    for(let i=0;i<110;i++){const p=bark.getPoint(random());const m=mesh(new T.IcosahedronGeometry(.09+random()*.17,0),new T.Color().setHSL(.207,.33,.16+random()*.15),root,p.x,p.y+.14,p.z+(random()-.5)*.20);m.scale.y=.45;}
+    for(let i=0;i<4;i++){let p=bark.getPoint(.16+i*.19);let side=i%2?1:-1;const path=new T.CatmullRomCurve3([p,p.clone().add(V(.2,.18,side*.15)),p.clone().add(V(.5,.32,side*.43))]);mesh(new T.TubeGeometry(path,9,.037,5),0x635137,root);}
+    const perchU=.62,tangent=bark.getTangentAt(perchU).normalize(),perchNormal=V(0,1,0);
+    perchNormal.addScaledVector(tangent,-perchNormal.dot(tangent)).normalize();
+    perch.copy(bark.getPointAt(perchU)).addScaledVector(perchNormal,.315);
+    root.add(animal);animal.userData.normal=perchNormal;
+    animal.userData.rest=new T.Quaternion().setFromUnitVectors(V(0,1,0),perchNormal);
+    if(mode==='scan'){
+      const cage=new T.LineSegments(new T.WireframeGeometry(branch.geometry),new T.ShaderMaterial({
+        transparent:true,depthWrite:false,uniforms:{front:{value:0}},vertexShader:'varying float coord;void main(){coord=position.x;gl_Position=projectionMatrix*modelViewMatrix*vec4(position*1.004,1.);}',fragmentShader:'uniform float front;varying float coord;void main(){float a=1.-smoothstep(.04,.65,abs(coord-front));if(a<.02)discard;gl_FragColor=vec4(.85,.99,.56,a);}'
+      }));root.add(cage);u=cage.material.uniforms.front;
+      const indicator=host.parentElement.querySelector('input'),track=host.closest('.survey-track');
+      const range=()=>Math.max(1,track.offsetHeight-host.closest('.pin').offsetHeight);
+      function sync(){const pct=Math.max(0,Math.min(1,-track.getBoundingClientRect().top/range()));indicator.value=Math.round(pct*100);u.value=-2.8+pct*5.5;indicator.setAttribute('aria-valuetext',indicator.value+' percent');wake();}
+      indicator.addEventListener('input',()=>{scrollTo({top:scrollY+track.getBoundingClientRect().top+range()*Number(indicator.value)/100,behavior:'instant'});sync()});
+      window.addEventListener('scroll',sync,{passive:true});new ResizeObserver(sync).observe(track);sync();
+    }
+    if(mode==='plant'){
+      root.visible=false;const soil=mesh(new T.IcosahedronGeometry(1.21,2),0x534434,plant,0,-.67,0);soil.scale.set(1.3,.28,1);
+      for(let i=0;i<92;i++){const a=random()*6.28,r=Math.sqrt(random())*1.15;let m=mesh(new T.IcosahedronGeometry(.12+random()*.17,0),new T.Color().setHSL(.20,.33,.13+random()*.17),plant,r*Math.cos(a),-.39-.2*r*r,r*Math.sin(a));m.scale.y=.63;}
+      for(const [x,z,s] of [[-.68,.28,.48],[.64,.24,.32],[.25,-.52,.29]]){const rock=mesh(new T.DodecahedronGeometry(s),0xbab69d,plant,x,-.32,z);rock.scale.y=.65;}
+      for(let j=0;j<15;j++){const group=new T.Group();plant.add(group);group.position.y=-.36;group.rotation.y=j*2.399;fronds.push(group);
+        const h=1+random()*.92,l=.55+random()*.8,point=v=>V(l*v*v,h*(1.5*v-.7*v*v),0);
+        const stem=new T.CatmullRomCurve3([point(0),point(.33),point(.66),point(1)]);mesh(new T.TubeGeometry(stem,18,.012,4),0x879459,group);
+        const verts=[];for(let n=1;n<=15;n++){const v=n/16,p=point(v),span=Math.sin(v*Math.PI)**.67*.32+.012;
+          for(const sign of [-1,1]){const tip=p.clone().add(V(span*.37,span*.32,span*sign)),rib=p.clone().lerp(tip,.46).add(V(.018,.047,0));
+          const a=p.clone().add(V(-.034,0,0)),b=p.clone().add(V(.052,.017,0));for(const vv of [a,tip,rib,rib,tip,b])verts.push(vv.x,vv.y,vv.z);}}
+        const leaves=new T.BufferGeometry();leaves.setAttribute('position',new T.Float32BufferAttribute(verts,3));leaves.computeVertexNormals();mesh(leaves,new T.Color().setHSL(.213,.38,.23+random()*.09),group);}
+    }
+    if(mode==='insect'){
+      const torso=mesh(new T.SphereGeometry(.085,12,8),0x312d21,animal);torso.scale.set(.74,.8,2.36);mesh(new T.SphereGeometry(.067,10,8),0x342e20,animal,0,.022,.18);
+      for(const s of [-1,1]){const pivot=new T.Group();animal.add(pivot);pivot.position.x=s*.036;wings.push(pivot);
+        const path=new T.Shape();path.moveTo(0,-.16);path.bezierCurveTo(.20,-.50,.53,-.46,.54,-.29);path.bezierCurveTo(.57,-.18,.35,-.06,.40,-.05);
+        path.bezierCurveTo(1.00,-.10,1.01,.35,.91,.65);path.bezierCurveTo(.68,.68,.22,.33,0,.04);path.closePath();
+        let g=new T.ShapeGeometry(path,18);g.rotateX(Math.PI/2);g.scale(s,1,1);
+        const hind=new T.Group();pivot.add(hind);hind.position.z=-.13;
+        const lower=new T.Shape();lower.moveTo(0,0);lower.bezierCurveTo(.07,-.36,.39,-.55,.58,-.4);lower.bezierCurveTo(.66,-.23,.38,-.06,0,0);
+        const hg=new T.ShapeGeometry(lower,15);hg.rotateX(Math.PI/2);hg.scale(s,1,1);mesh(hg,0x573721,hind);const hp=mesh(hg,0xba7536,hind,0,.012,0);hp.scale.set(.79,1,.8);pivot.userData.hind=hind;
+        for(let leg=0;leg<3;leg++){const z=(leg-1)*.071;mesh(new T.TubeGeometry(new T.CatmullRomCurve3([V(s*.04,-.015,z),V(s*.097,-.063,z+.018),V(s*.105,-.092,z+.051)]),5,.005,4),0x483a28,animal);}
+        const base=mesh(g,0x312923,pivot);const patch=mesh(g,0xd48e3c,pivot,0,.009,0);patch.scale.set(.84,1,.82);
+        for(let j=0;j<5;j++){const mark=mesh(new T.SphereGeometry(.033-j*.002,8,5),0xffdf9a,pivot,s*(.75-j*.084),.027,.37-j*.045);mark.scale.y=.17;}
+        const tip=V(s*.16,.21,.33);mesh(new T.TubeGeometry(new T.CatmullRomCurve3([V(s*.03,.035,.18),V(s*.08,.13,.23),tip]),8,.008,4),0x302b20,animal);
+      }
+      const trigger=host.parentElement.querySelector('button');function fly(){if(!motion.matches&&flight===0){flight=1;elapsed=0}}
+      trigger.addEventListener('click',fly);host.addEventListener('pointermove',e=>{const box=host.getBoundingClientRect(),pt=animal.getWorldPosition(new T.Vector3()).project(camera);if(Math.hypot((pt.x*.5+.5)*box.width+box.left-e.clientX,(-pt.y*.5+.5)*box.height+box.top-e.clientY)<55)fly()});
+    }
+  }
+  function pose(dt){
+    if(canopy){const p=phase;camera.position.set(2.7+Math.sin(p*2.7)*3.8,3.9+2.6*p,8-9*p);camera.lookAt(0,1.5,-10-3*p);}
+    else if(mode==='plant'){plant.rotation.y=phase+.11*(motion.matches?0:Math.sin(t*.45));camera.position.set(2.9,1.62,3.1);camera.lookAt(0,.36,0);fronds.forEach((f,i)=>f.rotation.z=motion.matches?0:.019*Math.sin(t*1.3+i*.64));}
+    else{camera.position.set(.15,mode==='insect'?3.1:1.32,mode==='insect'?3.35:4.65);camera.lookAt(0,.25,0);root.rotation.y=phase*.12;
+      if(mode==='insect'){
+        elapsed+=dt;const durations=[Infinity,.72,2.55,1.15];
+        if(flight&&elapsed>=durations[flight]){elapsed-=durations[flight];flight=flight===3?0:flight+1;}
+        const v=flight?Math.min(1,elapsed/durations[flight]):0,e=v*v*(3-2*v);
+        let x=0,y=0,z=0,bank=0;
+        if(flight===1){x=-.54*e;y=.84*e;z=.20*e;bank=-.3*Math.sin(Math.PI*v);}
+        if(flight===2){x=-.54*Math.cos(Math.PI*v);y=.84+.29*Math.sin(Math.PI*v);z=.20+.55*Math.sin(2*Math.PI*v);bank=.31*Math.sin(2*Math.PI*v);}
+        if(flight===3){x=.54*(1-e);y=.84*(1-e);z=.20*(1-e);}
+        animal.position.copy(perch).add(V(x,y,z));animal.quaternion.copy(animal.userData.rest);animal.rotateZ(bank);
+        const phase=t*(flight?34:2.2);wings.forEach((w,i)=>{const sign=i?1:-1;w.rotation.z=sign*(.24+(motion.matches?0:Math.sin(phase)*(flight?.76:.095)));w.userData.hind.rotation.z=sign*(motion.matches?0:.14*(Math.sin(phase-.32)-Math.sin(phase)));});
+      }}
+  }
+  function draw(ms){frame=0;if(!visible||document.hidden)return;const dt=Math.min(.05,Math.max(0,(ms-(last||ms))/1000));last=ms;if(!motion.matches)t+=dt;phase+=(target-phase)*(motion.matches?1:1-Math.exp(-8*dt));pose(dt);renderer.render(scene,camera);if(!motion.matches)wake();}
+  function wake(){if(!frame&&visible&&!document.hidden)frame=requestAnimationFrame(draw);}
+  function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();wake();}
+  new ResizeObserver(resize).observe(host);new IntersectionObserver(([e])=>{visible=e.isIntersecting;last=0;if(visible)wake();else{cancelAnimationFrame(frame);frame=0}}).observe(host);
+  document.addEventListener('visibilitychange',()=>{last=0;wake()});motion.addEventListener('change',()=>{if(motion.matches)flight=0;wake()});resize();
+  return {set(v){target=v;wake()},refresh:wake};
+}
+
+const views=Array.from(document.querySelectorAll('[data-art]'),h=>woodlandStudy(h,h.dataset.art));
+const links=[...document.querySelectorAll('.dock a')];const destinations=[...new Set(links.map(a=>document.querySelector(a.hash)))];function selectNav(){let active=destinations[0];for(const s of destinations)if(s.getBoundingClientRect().top<=innerHeight*.42)active=s;if(scrollY+innerHeight>=document.documentElement.scrollHeight-2)active=destinations.at(-1);for(const a of links){if(a.hash==='#'+active.id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current')}}addEventListener('scroll',selectNav,{passive:true});addEventListener('resize',selectNav);selectNav();
+document.querySelectorAll('.steps button').forEach(b=>b.onclick=()=>{for(const e of document.querySelectorAll('.steps button')){e.setAttribute('aria-expanded',String(b===e));e.nextElementSibling.hidden=b!==e}});document.querySelector('.card button').onclick=()=>document.querySelector('dialog').showModal();const sections=[...document.querySelectorAll('[data-art]')];function travel(){sections.forEach((s,i)=>{const r=s.getBoundingClientRect();views[i].set(Math.max(0,Math.min(1,(innerHeight-r.top)/(innerHeight+r.height))))})}addEventListener('scroll',travel,{passive:true});travel();
+</script></body></html>

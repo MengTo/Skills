@@ -266,11 +266,15 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **197 skills** across ten categories.
+This snapshot contains **206 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### 3D rendering (22)
+### 3D rendering (25)
+
+- [Woodland Chapter Cameras](agent-skills/3d/woodland-chapter-cameras/SKILL.md) — Stage one live woodland across several scroll chapters.
+- [Perching Butterfly](agent-skills/3d/perching-butterfly/SKILL.md) — Animate a butterfly with a grounded perch and a flight loop.
+- [Forest Floor Specimen](agent-skills/3d/forest-floor-specimen/SKILL.md) — Grow an inspectable fern and moss specimen for a field guide.
 
 Atmospheric, detailed 3D scenes in Three.js. See the [3D guide](agent-skills/3d/README.md).
 - `3d-ultra-realistic-water` - open oceans with Gerstner waves, sun glitter, lace foam, a wake and a seamless horizon.
@@ -336,7 +340,10 @@ Image sourcing, video and likeness skills:
 - `genjutsu-scene` - a scene of yourself inside a game, three.js or Blender world, in its costume and light, saying your line with your own face and voice: your HeyGen Avatar 6 twin drives Genjutsu motion transfer, Sync Lipsync 3 on your voice, a 4K60 insert, blind judges.
 - `making-of-film` - a 4–5 minute "how I made X" YouTube film from a finished project: script in your voice, the project's own look and captures, every cut on a word, a digital twin at key places, 4K60, blind judges.
 
-### UI (3)
+### UI (5)
+
+- [Moss Glass Controls](agent-skills/ui/moss-glass-controls/SKILL.md) — Build dark moss glass cards and perimeter-lit buttons.
+- [Segmented Field Menu](agent-skills/ui/segmented-field-menu/SKILL.md) — Create the upper-right dock and synchronized section state.
 
 - `audit-ai-design-slop` - audit sites, apps and mockups for AI-design clichés and UI defects, with evidence.
 - `no-ai-design-slop` - prevent and remove generic AI design defaults while creating or revising UI.
@@ -398,7 +405,12 @@ Assets, performance, QA, and release:
 
 Demo: [`game-dev-character-model`](agent-skills/game-development/game-dev-character-model/demo/index.html) - a concept image, the A-pose before/after and the four check views of an original heroine.
 
-### Web design (97)
+### Web design (101)
+
+- [Scroll Mesh Survey](agent-skills/web-design/scroll-mesh-survey/SKILL.md) — Sweep a reversible topology band over a living form.
+- [Sylva Field Guide Layout](agent-skills/web-design/sylva-field-guide-layout/SKILL.md) — Align field-guide typography, rules and figure captions.
+- [Compose a Woodland Landing Page](agent-skills/web-design/compose-a-woodland-landing-page/SKILL.md) — Compose an editorial landing page around a living grove.
+- [Pollen Pointer Trail](agent-skills/web-design/pollen-pointer-trail/SKILL.md) — Emit soft pollen along a pointer path with a fixed budget.
 
 Folvra studio techniques
 

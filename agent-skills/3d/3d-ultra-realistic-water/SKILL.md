@@ -1,11 +1,13 @@
 ---
 name: 3d-ultra-realistic-water
-description: Build an ultra-realistic open ocean in Three.js with a deep-water Gerstner spectrum shaded per pixel from analytic derivatives, each wave faded at its own pixel footprint, plus Fresnel sky-cube and planar reflections, subsurface light through the crests, HDR sun glitter, Jacobian lace foam, a Kelvin wake, hull foam, buoyancy queries and aerial perspective into the sky's horizon haze. Use for seas, oceans, sunset or daylight water, sun glitter paths, ship or boat scenes, wakes, coastal flyovers and any 3D scene with a moving camera and a water horizon. Includes the approved water from Pirate Ship Sunset as a reusable module and demo.
+description: Build an ultra-realistic open ocean in Three.js with a deep-water Gerstner spectrum shaded per pixel from analytic derivatives, each wave faded at its own pixel footprint, plus Fresnel sky-cube and planar reflections, subsurface light through the crests, HDR sun glitter, Jacobian lace foam, a Kelvin wake, hull foam, buoyancy queries and aerial perspective into the sky's horizon haze. Use for shallow creeks, water around rocks, seas, oceans, sunset or daylight water, sun glitter paths, ship or boat scenes, wakes, coastal flyovers and any 3D scene with a moving camera and a water horizon. Includes the approved water from Pirate Ship Sunset as a reusable module and demo.
 ---
 
 # 3D Ultra-Realistic Water
 
-Use this for an open sea seen by a moving camera, with a horizon and a sun. Reach for something else in these cases:
+For riverbeds, water wrapping around stones and small cascades, follow the [shallow creek recipe](references/creek.md) and its runnable checks.
+
+Use the ocean module for an open sea seen by a moving camera, with a horizon and a sun. Reach for something else in these cases:
 
 - **Mirror-flat water seen from the waterline with no mesh:** a full-screen analytic water plane is cheaper.
 - **Ripples that follow the cursor on a UI surface:** use `shaders-cursor-ripples`.

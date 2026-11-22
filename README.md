@@ -80,6 +80,8 @@ agent-skills/
   3d/
     README.md
     3d-ultra-realistic-water/
+    animate-procedural-birds/
+    control-camera-lenses/
     3d-underwater-god-rays/
     3d-virtual-tour/
     3d-sky-rays/
@@ -281,7 +283,9 @@ Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 - [Forest Floor Specimen](agent-skills/3d/forest-floor-specimen/SKILL.md) — Grow an inspectable fern and moss specimen for a field guide.
 
 Atmospheric, detailed 3D scenes in Three.js. See the [3D guide](agent-skills/3d/README.md).
-- `3d-ultra-realistic-water` - open oceans with Gerstner waves, sun glitter, lace foam, a wake and a seamless horizon.
+- [3D ultra-realistic water](agent-skills/3d/3d-ultra-realistic-water/) covers open oceans and shallow creek flow, refraction and reflections around stones.
+- [Animate procedural birds](agent-skills/3d/animate-procedural-birds/) covers species silhouette, folding feathers, planted feet and flight.
+- [Control camera lenses](agent-skills/3d/control-camera-lenses/) covers focal length, eye tracking and shallow focus in Three.js.
 - `3d-underwater-god-rays` - volumetric light shafts through water with caustics and a rippling surface.
 - `3d-virtual-tour` - guided walkthroughs, room and floor-plan navigation, and orbit inspection.
 - `3d-sky-rays` - sunlight shafts shaped by roofs, foliage and scene occlusion.

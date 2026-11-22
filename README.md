@@ -266,11 +266,14 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **209 skills** across ten categories.
+This snapshot contains **213 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### 3D rendering (25)
+### 3D rendering (27)
+
+- [Light a Three.js Workspace](agent-skills/3d/light-a-threejs-workspace/SKILL.md) — Build a textured desk scene with working blinds and depth-clipped god rays.
+- [Model Three.js Control Icons](agent-skills/3d/model-threejs-control-icons/SKILL.md) — Model small physical instruments and render them into a shared icon atlas.
 
 - [Woodland Chapter Cameras](agent-skills/3d/woodland-chapter-cameras/SKILL.md) — Stage one live woodland across several scroll chapters.
 - [Perching Butterfly](agent-skills/3d/perching-butterfly/SKILL.md) — Animate a butterfly with a grounded perch and a flight loop.
@@ -340,7 +343,10 @@ Image sourcing, video and likeness skills:
 - `genjutsu-scene` - a scene of yourself inside a game, three.js or Blender world, in its costume and light, saying your line with your own face and voice: your HeyGen Avatar 6 twin drives Genjutsu motion transfer, Sync Lipsync 3 on your voice, a 4K60 insert, blind judges.
 - `making-of-film` - a 4–5 minute "how I made X" YouTube film from a finished project: script in your voice, the project's own look and captures, every cut on a word, a digital twin at key places, 4K60, blind judges.
 
-### UI (5)
+### UI (7)
+
+- [Refract Liquid Glass](agent-skills/ui/refract-liquid-glass/SKILL.md) — Bend the live backdrop through a draggable, rounded glass lens.
+- [Shade a Glass Button Press](agent-skills/ui/shade-glass-button-press/SKILL.md) — Indent the lens at contact and release a wave through its surface.
 
 - [Moss Glass Controls](agent-skills/ui/moss-glass-controls/SKILL.md) — Build dark moss glass cards and perimeter-lit buttons.
 - [Segmented Field Menu](agent-skills/ui/segmented-field-menu/SKILL.md) — Create the upper-right dock and synchronized section state.

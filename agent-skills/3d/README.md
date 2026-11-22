@@ -4,6 +4,8 @@ Reusable skills for atmospheric 3D scenes, real-time architecture, survey scans,
 
 | Skill | Use it for |
 | --- | --- |
+| [Light a Three.js Workspace](light-a-threejs-workspace/SKILL.md) | A textured desk interior with adjustable blinds, shadows and volumetric window light. |
+| [Model Three.js Control Icons](model-threejs-control-icons/SKILL.md) | Miniature instruments with shaped reflections and a transparent icon atlas. |
 | [3D Ultra-Realistic Water](3d-ultra-realistic-water/SKILL.md) | Open oceans with per-pixel Gerstner waves, sun glitter, lace foam, a Kelvin wake and a seamless horizon, plus a runnable demo. |
 | [3D Underwater God Rays](3d-underwater-god-rays/SKILL.md) | Volumetric light shafts through water that converge on the sun and parallax with the camera, with caustic streaks, a rippling surface and dappled fish, plus a runnable demo. |
 | [3D Virtual Tour](3d-virtual-tour/SKILL.md) | Guided walkthroughs, room and floor-plan navigation, orbit inspection, and smooth return to the tour. |

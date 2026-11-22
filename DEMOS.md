@@ -54,18 +54,20 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 108
-- 3d: 9
+- Total: 112
+- 3d: 11
 - codex: 13
 - game-development: 1
 - media: 2
-- ui: 3
+- ui: 5
 - web-design: 82
 
 ## Demo index
 
 | Skill | Category | Demo | Preview | Prompt | Source |
 | --- | --- | --- | --- | --- | --- |
+| light-a-threejs-workspace | 3d | [Open](agent-skills/3d/light-a-threejs-workspace/demo/index.html) | [Preview](agent-skills/3d/light-a-threejs-workspace/demo/preview.jpg) | [Prompt](agent-skills/3d/light-a-threejs-workspace/demo/PROMPT.md) | Local |
+| model-threejs-control-icons | 3d | [Open](agent-skills/3d/model-threejs-control-icons/demo/index.html) | [Preview](agent-skills/3d/model-threejs-control-icons/demo/preview.jpg) | [Prompt](agent-skills/3d/model-threejs-control-icons/demo/PROMPT.md) | Local |
 | forest-floor-specimen | 3d | [Open](agent-skills/3d/forest-floor-specimen/demo/index.html) | [Preview](agent-skills/3d/forest-floor-specimen/demo/preview.jpg) | [Prompt](agent-skills/3d/forest-floor-specimen/demo/PROMPT.md) | Local |
 | perching-butterfly | 3d | [Open](agent-skills/3d/perching-butterfly/demo/index.html) | [Preview](agent-skills/3d/perching-butterfly/demo/preview.jpg) | [Prompt](agent-skills/3d/perching-butterfly/demo/PROMPT.md) | Local |
 | woodland-chapter-cameras | 3d | [Open](agent-skills/3d/woodland-chapter-cameras/demo/index.html) | [Preview](agent-skills/3d/woodland-chapter-cameras/demo/preview.jpg) | [Prompt](agent-skills/3d/woodland-chapter-cameras/demo/PROMPT.md) | Local |
@@ -89,6 +91,8 @@ Use --force only when every locally generated demo should be intentionally regen
 | game-dev-character-model | game-development | [Open](agent-skills/game-development/game-dev-character-model/demo/index.html) | [Preview](agent-skills/game-development/game-dev-character-model/demo/preview.jpg) | [Prompt](agent-skills/game-development/game-dev-character-model/demo/PROMPT.md) | Local |
 | aura-asset-images | media | [Open](agent-skills/media/aura-asset-images/demo/index.html) | [Preview](agent-skills/media/aura-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/aura-asset-images/demo/PROMPT.md) | [Neuform #1 · 2,154 views](agent-skills/media/aura-asset-images/demo/source.json) |
 | unsplash-asset-images | media | [Open](agent-skills/media/unsplash-asset-images/demo/index.html) | [Preview](agent-skills/media/unsplash-asset-images/demo/preview.jpg) | [Prompt](agent-skills/media/unsplash-asset-images/demo/PROMPT.md) | Local |
+| refract-liquid-glass | ui | [Open](agent-skills/ui/refract-liquid-glass/demo/index.html) | [Preview](agent-skills/ui/refract-liquid-glass/demo/preview.jpg) | [Prompt](agent-skills/ui/refract-liquid-glass/demo/PROMPT.md) | Local |
+| shade-glass-button-press | ui | [Open](agent-skills/ui/shade-glass-button-press/demo/index.html) | [Preview](agent-skills/ui/shade-glass-button-press/demo/preview.jpg) | [Prompt](agent-skills/ui/shade-glass-button-press/demo/PROMPT.md) | Local |
 | segmented-field-menu | ui | [Open](agent-skills/ui/segmented-field-menu/demo/index.html) | [Preview](agent-skills/ui/segmented-field-menu/demo/preview.jpg) | [Prompt](agent-skills/ui/segmented-field-menu/demo/PROMPT.md) | Local |
 | moss-glass-controls | ui | [Open](agent-skills/ui/moss-glass-controls/demo/index.html) | [Preview](agent-skills/ui/moss-glass-controls/demo/preview.jpg) | [Prompt](agent-skills/ui/moss-glass-controls/demo/PROMPT.md) | Local |
 | design-first-ui-prompting | ui | [Open](agent-skills/ui/design-first-ui-prompting/demo/index.html) | [Preview](agent-skills/ui/design-first-ui-prompting/demo/preview.jpg) | [Prompt](agent-skills/ui/design-first-ui-prompting/demo/PROMPT.md) | Local |

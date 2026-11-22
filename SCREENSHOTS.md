@@ -2,14 +2,30 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 108
+- Captured demos: 112
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
 
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
 
-## 3d (9)
+## 3d (11)
+
+### light-a-threejs-workspace
+
+Build a procedural desk interior with one aperture driving both the blind shadows and volumetric light.
+
+[Open demo](agent-skills/3d/light-a-threejs-workspace/demo/index.html) · [Skill](agent-skills/3d/light-a-threejs-workspace/SKILL.md) · [Prompt](agent-skills/3d/light-a-threejs-workspace/demo/PROMPT.md)
+
+[![Light a Three.js Workspace](agent-skills/3d/light-a-threejs-workspace/demo/preview.jpg)](agent-skills/3d/light-a-threejs-workspace/demo/index.html)
+
+### model-threejs-control-icons
+
+Shape, light and render miniature instruments into a reusable high-density atlas.
+
+[Open demo](agent-skills/3d/model-threejs-control-icons/demo/index.html) · [Skill](agent-skills/3d/model-threejs-control-icons/SKILL.md) · [Prompt](agent-skills/3d/model-threejs-control-icons/demo/PROMPT.md)
+
+[![Model Three.js Control Icons](agent-skills/3d/model-threejs-control-icons/demo/preview.jpg)](agent-skills/3d/model-threejs-control-icons/demo/index.html)
 
 ### woodland-chapter-cameras
 
@@ -201,7 +217,23 @@ Use when you need to pick high-quality Unsplash images for product/design assets
 
 ![unsplash-asset-images preview screenshot](agent-skills/media/unsplash-asset-images/demo/preview.jpg)
 
-## ui (3)
+## ui (5)
+
+### refract-liquid-glass
+
+Trace a rounded glass lip over a live backdrop and let a dragged panel flex at the grip.
+
+[Open demo](agent-skills/ui/refract-liquid-glass/demo/index.html) · [Skill](agent-skills/ui/refract-liquid-glass/SKILL.md) · [Prompt](agent-skills/ui/refract-liquid-glass/demo/PROMPT.md)
+
+[![Refract Liquid Glass](agent-skills/ui/refract-liquid-glass/demo/preview.jpg)](agent-skills/ui/refract-liquid-glass/demo/index.html)
+
+### shade-glass-button-press
+
+Gather the glass under the fingertip and send a refractive crest to the opposite rim.
+
+[Open demo](agent-skills/ui/shade-glass-button-press/demo/index.html) · [Skill](agent-skills/ui/shade-glass-button-press/SKILL.md) · [Prompt](agent-skills/ui/shade-glass-button-press/demo/PROMPT.md)
+
+[![Shade a Glass Button Press](agent-skills/ui/shade-glass-button-press/demo/preview.jpg)](agent-skills/ui/shade-glass-button-press/demo/index.html)
 
 ### moss-glass-controls
 

@@ -232,6 +232,7 @@ agent-skills/
       REFERENCES.md
   workflow/
     README.md
+    release-threeui-demo/
     workflow-progress-screenshots/
     workflow-score-to-target/
     workflow-ship-change/
@@ -266,7 +267,7 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **213 skills** across ten categories.
+This snapshot contains **214 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
@@ -448,9 +449,11 @@ Visual styles and page moods:
 Additional interaction, narrative, and product systems:
 - `ambient-section-particles`, `beam-glow-states`, `documentary-brutalist-agency`, `editorial-portfolio-chapters`, `editorial-service-booking`, `falling-leaves`, `html-demo`, `liquid-metal-border`, `operational-enterprise-ai`, `pointer-trail-emitter`, `product-proof-saas`, `reveal-hover-effect`, `scroll-progress-timeline`, `scroll-scrubbed-visual-sequence`, `scroll-scrubbed-word-reveal`, `scroll-world-storytelling`, `shaders-cursor-ripples`, `thinking-orbs`
 
-### Workflow (4)
+### Workflow (5)
 
 How to work with agents on a real project: the rules repeated in every thread, turned into procedures with scripts. See the [workflow guide](agent-skills/workflow/README.md).
+
+- [Release a ThreeUI Demo](agent-skills/workflow/release-threeui-demo/SKILL.md) - capture a 4K60 master, ship the interactive preview and three skills, and prepare platform-specific Fil posts.
 - `workflow-progress-screenshots` - send real screenshots of the start, key moment and result as work progresses, unasked, with headless capture and side-by-side scripts.
 - `workflow-score-to-target` - score work out of 10 on an anchored rubric, judge it independently, and improve round by round until every item hits the target.
 - `workflow-ship-change` - ship every change: screenshots, changelog, tests, own files only, fast-forward push, draft-then-live publish, measured sizes and a 50 MB stop.

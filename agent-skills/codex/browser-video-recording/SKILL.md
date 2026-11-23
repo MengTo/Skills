@@ -11,7 +11,7 @@ Separate the workflow into three layers:
 
 1. **Browser control and source frames**: Use the Codex in-app browser through the Browser skill/MCP. Do not use Chrome when the user asks for Codex browser or the project says not to. The browser layer supplies real screenshots and real click/scroll/navigation states.
 2. **Local video renderer**: Use the bundled Python script to render screenshots into an MP4 with a natural macOS cursor, subtle click scale, and calm zoom-follow framing. This does not require a screen-recording MCP.
-3. **Optional native recorder integration**: Use a native recording MCP only when callable and explicitly useful for starting/stopping an actual app recording or opening a generated project. If unavailable, blocked, or unable to capture the Codex browser surface, fall back to the screenshot-to-video renderer and explain the fallback.
+3. **Optional native recorder integration**: Use a native recording MCP (DreamCut is one option) only when callable and explicitly useful for starting/stopping an actual app recording or opening a generated project. If unavailable, blocked, or unable to capture the Codex browser surface, fall back to the screenshot-to-video renderer and explain the fallback.
 
 ## Self-Contained Execution
 
@@ -23,11 +23,13 @@ Required local tools:
 - Python package `Pillow`
 - `ffmpeg` and `ffprobe`
 
-Optional macOS cursor extraction uses `swift` and `/usr/sbin/screencapture`. If those are unavailable, provide a transparent PNG through `cursor_asset` and set `cursor_hotspot` in the config.
+Always pass a transparent cursor PNG through `cursor_asset` and set `cursor_hotspot` in the config. Never rely on the script's screencapture fallback (`swift` and `/usr/sbin/screencapture`, which flashes an overlay over the screen to grab the live cursor).
 
 The Browser skill/MCP is still needed for fresh Codex in-app browser screenshots. If it is unavailable, use the best available browser automation screenshot source and state the fallback.
 
 ## Optional Native Recorder Support
+
+One option is DreamCut: `dreamcut record --app "<app>" --seconds N --output-path /abs/path/take.mp4` for a recording and `dreamcut screenshot --app "<app>" --output-path /abs/path/shot.png` for a still (`dreamcut help record` lists the options).
 
 For native app recording, verify the MCP supports:
 
@@ -102,7 +104,7 @@ Preferred defaults:
 }
 ```
 
-If `cursor_asset` is omitted, the script briefly shows a solid-color overlay and uses `screencapture` to extract the real current macOS cursor into a transparent PNG. This is local rendering support, not an MCP dependency.
+Always set `cursor_asset` (and `cursor_hotspot`). If it's omitted, the script briefly shows a solid-color overlay and uses `screencapture` to extract the live macOS cursor, which takes over the screen while it runs: never rely on that fallback; keep a transparent cursor PNG with the project and pass it every time.
 
 ## Verification
 

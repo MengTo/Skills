@@ -1,7 +1,7 @@
 # Your voice
 
-Start with an **instant clone** (a minute, no verification), make it sound right on **`eleven_v4`** with an **audio
-tag**, **score** it against your real voice, and let your ear decide. A Professional Voice Clone (PVC) can be better, but
+Start with an **instant clone** (a minute, no verification), make it sound right on **`eleven_v4`** (run-on text with no
+tag first, an **audio tag** if the pitch still runs high), **score** it against your real voice, and let your ear decide. A Professional Voice Clone (PVC) can be better, but
 it has traps that can take your voice offline for a day or more.
 
 ## 1. Build a clean dataset from your recordings
@@ -45,7 +45,13 @@ python3 ../scripts/voice/make_ivc.py seg/segments.tsv ivc --seconds 180 --exclud
 Generate the same 3 test lines on several models, then score them. Use 7–10 s lines with different rhythms: one you
 really said (so there's a real recording to compare), one with short choppy sentences, one long flowing sentence.
 
-What one creator's instant clone measured (his range 106–131 Hz, median 116):
+**First try no tag, with the text written as run-on speech** (sentences joined with commas, "and", "so"; no "!" or "…";
+lowercase starts; numbers as words; plain words; two or three of your own fillers per 30 s). On the same creator's later
+clone (21 Nov 2026, from 3 minutes of his tutorial register), run-on text took the same words from 8.4 to 9.2 with no
+tag, while `[matter-of-fact]` and mid-text tags did nothing or raised the pitch. Make two takes and keep the lower pitch.
+If the pitch still runs high, try tags, as below.
+
+What one creator's first instant clone measured (8 Nov; his range 106–131 Hz, median 116):
 
 | Variant | Similarity /10 | Pitch | Score /10 (mean of 3 lines) |
 |---|---|---|---|
@@ -120,7 +126,7 @@ So:
 | a voice: samples, fine-tuning, verification | `GET /v1/voices/{id}` (`fine_tuning.state`, `verification_failures`, `next_max_verification_attempts_reset_unix_ms`) |
 | instant clone | `POST /v1/voices/add` (multipart `name`, `files`, `remove_background_noise`) |
 | settings | `POST /v1/voices/{id}/settings/edit` |
-| speak | `POST /v1/text-to-speech/{id}?output_format=mp3_44100_192` with `{"text":"[calm] …","model_id":"eleven_v4"}` |
+| speak | `POST /v1/text-to-speech/{id}?output_format=mp3_44100_192` with `{"text":"…","model_id":"eleven_v4"}` (a tag, if one scored best, goes at the start: `"[calm] …"`) |
 | PVC samples | `POST /v1/voices/pvc/{id}/samples` (multipart `files`), `DELETE /v1/voices/{id}/samples/{sid}`, `GET …/samples/{sid}/audio` |
 | PVC train | `POST /v1/voices/pvc/{id}/train {"model_id":"eleven_v4"}` |
 | models | `eleven_v4`, `eleven_v4_turbo`, `eleven_v3`, `eleven_multilingual_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2_5` |

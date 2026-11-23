@@ -33,6 +33,9 @@ the game's Cinzel caps).
 
 ## The UI language
 
+Since 22 Nov this dresses the demo, it doesn't replace it: at least 25 % of the runtime is the exact real UI, full
+frame, and headline-plus-card scenes read as a slide deck ("too many presentations, too few demos").
+
 - **Gilt hairlines.** 1 px lines in the project's metal at ~20 % opacity for borders, rules and table lines.
 - **The project's frame motif as linework.** Greymourn's menus had double hairlines, corner brackets and diamonds at
   each edge's middle; `motion.js ornament(w, h)` draws that as SVG and `--draw` draws it on as a panel lands. Change
@@ -42,9 +45,12 @@ the game's Cinzel caps).
 - **Holographic / AR panels.** The look Meng asked for ("AR UI, holographic UI, and in-game UI", prompt 169): glass
   panels that fly in, turn a little and settle; linework that draws on; the project's real data drawn in light (the
   level plan as a gold wireframe on a glass table, the real source code typing on a glass pane).
-- **Drawn windows with real words.** A Claude Code window is a plain window (`.win`, three dots, a title like
-  "claude · greymourn") with his real prompt typed in it. Not a screenshot of the app, not a copy of its chrome; the
-  words are exact. Any word you had to write for the film, say so in the report.
+- **The exact real UI (since 22 Nov).** Show the agent or app as it really is: a recording of it, or an exact HTML
+  copy of its real UI (its sidebar, the chat with the prompt, its browser pane), full frame and uncropped; real pages
+  full frame and scrolling. Never a drawn stand-in, never a clipped design. Any word you had to write for the film,
+  say so in the report.
+- **Drawn windows with real words** (Greymourn, superseded 22 Nov). A Claude Code window was a plain window (`.win`,
+  three dots, a title like "claude · greymourn") with his real prompt typed in it, not a copy of the app's chrome.
 - **Lit while said.** Cards, rows and threads light (border and text toward the accent) while their name is said,
   the rest step back to ~50 %.
 

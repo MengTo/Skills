@@ -42,6 +42,7 @@ Poll `GET v3/avatars/looks/{look_id}` every 30 s until `status` leaves `processi
 - Audio: `audio_asset_id` or `audio_url` (a public https mp3 or wav), never with `script`. Words: `script` and `voice_id` instead.
 - A photo: `{ "type": "image", "image": { "type": "asset_id" | "url", … } }` with the same audio fields. It's always Avatar IV.
 - `engine.type`: `avatar_v`, `avatar_iv` (the default) or `avatar_iii`. Avatar V also takes `more_blinking` and `reference_look_id`.
+- Avatar 6, HeyGen's newest engine (Nov 2026), isn't in these scripts; render it through Fil (`heygen-avatar-6`, `heygen-avatar-6-turbo`, with the audio wired in as a sound).
 - `motion_prompt`: gestures in words, for photo avatars, and for twins on Avatar V. It didn't calm an over-acting mouth.
 - `expressiveness`: `low` (the default), `medium` or `high`, photo avatars on Avatar IV only.
 
@@ -56,6 +57,7 @@ The answer is `{ video_id, status: "waiting" }`. Poll `GET v3/videos/{video_id}`
 | | |
 |---|---|
 | A digital twin | about $2.13 |
+| Avatar 6, twin (through Fil) | $0.10 a second at 1080p, $0.145 at 2K |
 | Avatar V, twin | $0.12 a second |
 | Avatar IV, twin | $0.0805 a second |
 | Avatar III, twin | $0.01 a second |

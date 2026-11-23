@@ -10,7 +10,7 @@ until you press Generate, and each node shows what it costs first.
 | **Twin.md** | brief | Your face in words, your room, your gear and clothes, the look, the line, and the three shots (`Time:` and `Camera:` for each). Replace every [bracket]. |
 | **digital-twin SKILL.md** | skill | The craft, short: consent, the four-part prompt, your real room only, the voice, the talking clip, judging, what to avoid. |
 | **Still 1 · 2 · 3** | Seedream 5 Pro, 16:9, 2k | Each reads Your face, Your room, Twin.md and the skill, and makes its shot. About 11–12 credits each. |
-| **Voice** | ElevenLabs v4 | `[calm]` and Twin.md's line. Pick your own clone in its voice field (by name or id). About 1 credit per 10 s. |
+| **Voice** | ElevenLabs v4 | `[calm]` and Twin.md's line. Pick your own clone in its voice field (by name or id). Try it with no `[calm]` too, the line written as run-on speech, and keep what scores best (`references/voice.md`). About 1 credit per 10 s. |
 | **Talking clip** | Seedance 2.5, 480p, 5 s | Reads Still 1 and Twin.md's line. Left unticked by Generate all: pick the still that looks most like you, wire it in, and add it to Settings › Your face first. About 52 credits. |
 
 ## Run a batch of three

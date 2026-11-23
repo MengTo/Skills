@@ -40,7 +40,14 @@ On the film's canvas:
   `window.CHAPTERS` (`scripts/film-facts.mjs --yt`). Later drafts: `{"op":"replace","clip":…,"file":…}` per changed
   scene, then `trim dur` if a length changed; audio can't be replaced, only removed and added.
 - Rename the edit per draft ("Greymourn tutorial · draft 4f"). Keep earlier drafts' nodes untouched.
-- Export runs in his open Fil window: Fil can't draw the edit until he opens the canvas. Say so; never set visibility.
+- Export with `export_video` to Downloads at 4K, 60 fps (the full-size file; Save to canvas shrinks to the plan's file
+  size). It runs in his own Fil (Fil for Mac with the canvas open in its own tab): Fil can't draw the edit until he
+  opens the canvas, so say so, and after new files or remakes ask him to reload that tab first. Never set visibility.
+- **No export is handed over, called done or uploaded** until it passes the sound gate and the colour tag (13 and
+  16 Nov): a check that hears every camera take in the file (`takes-heard.py` in his private `youtube-video-release`)
+  and a format check (3840 × 2160, 60 fps, the edit's length, about −14 LUFS); `ffprobe` reads bt709 for
+  color_transfer, color_primaries and color_space (a browser-tab export tagged sRGB played darker on YouTube; retag
+  without re-encoding).
 - Captions: Fil's captions from the real voice (~1 credit a minute), priced, only once the cut is locked.
 
 ## The release package (hand-off)

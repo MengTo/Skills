@@ -2,6 +2,8 @@
 
 The draft is cut to the scratch voice. The creator's takes say the same words at their own pace: about 10% faster in the shipped reel (37.8 s of scratch voice became 33.4 s of takes). This is how every part follows them.
 
+With the creator's Avatar 6 twin there's nothing to retime: each clip speaks the final voice the scenes were cut to. This is for a new read: a creator's own takes, or a line voiced again.
+
 ## 1. Join the takes into one talking track
 
 `scripts/join-takes.py` joins segments of the takes on one clock, a video and a voice:

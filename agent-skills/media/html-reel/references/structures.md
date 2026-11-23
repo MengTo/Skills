@@ -49,7 +49,7 @@ On a 1080 × 1920 frame unless the shape says otherwise. Faceless layouts need n
 | the middle | 50/50 split | split, then framed demo for a montage | split; the maker's post card full frame |
 | the ask | camera + card, CTA type | camera + CTA type | camera + CTA type |
 
-The camera is the creator's placeholder, a backlit studio silhouette, until their takes are in.
+The camera is the creator's placeholder, a backlit studio silhouette, until their takes (or their approved Avatar 6 twin clips) are in.
 
 ### Choosing
 

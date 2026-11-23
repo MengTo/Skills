@@ -1,5 +1,8 @@
 # Worked example: the Greymourn Castle tutorial (15–19 Nov 2026)
 
+History, kept as it was made. Its silent cold open, ~25 % camera, Instant voice with `[calm]`, drawn windows and soft
+exits between shots are superseded by SKILL.md's "What changed after Greymourn" (19–23 Nov).
+
 Read once before the first film. Paths: `R` = the game's folder in Meng's projects repo, `C` = the film's cache folder outside the repo (frames,
 clips, renders), `N` = the threads' hand-over notes folder.
 
@@ -53,8 +56,8 @@ cost (ledger, usage meter) · pay (what I'd keep) · end (canvas, links, Go buil
 | 186 | "I don't speak like that! Stop doing a poor job at recreating my likeness!" | Intone dropped |
 | 190–191 | "LOOK at my REAL camera recordings!!" / "SPEAK NATURALLY" | his real mouth, eyes and pace measured; the trained twin proposed |
 | 199 | "Use my Kimi twin" | the HeyGen Kimi twin in the camera, on the film's own voice |
-| 200 | "we're not using genjutsu" | Genjutsu dropped |
-| 202 | "only put cameras at key places 25% of the video" | KEYS camera plan, reflows where it left |
+| 200 | "we're not using genjutsu" | Genjutsu dropped for this film (since 21 Nov: only if necessary, on an approved HeyGen Avatar 6 twin clip) |
+| 202 | "only put cameras at key places 25% of the video" | KEYS camera plan, reflows where it left (since 22 Nov the share is 10–20 %) |
 | 208 | "put the video in downloads" | draft 4g to Downloads |
 | 209 | "Keep the twin" | twin kept although judges preferred the still |
 | 210–211 | "Turn this whole video… into a skill" / "in a new thread" | this skill |

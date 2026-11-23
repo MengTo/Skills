@@ -1,7 +1,7 @@
 # Costs (November 2026)
 
 Compare dollars, never raw credits: platforms price credits differently. Price every run before it starts
-(`max_credits: 0` on Fil, `higgsfield generate cost …`), tell the owner, keep their budget, and log the spend.
+(`max_credits: 0` on Fil, `higgsfield generate cost …`), tell the owner, run only on their typed yes (a budget is a ceiling, not a yes), and log the spend.
 
 | Item | Platform | Credits | Dollars |
 |---|---|---|---|

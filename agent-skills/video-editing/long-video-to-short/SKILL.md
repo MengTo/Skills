@@ -48,13 +48,14 @@ free and a render is repeatable.
    re-skinned. Never a general video model's draft of their face.
 2. **Genjutsu only when the scene needs it.** The twin as it is (their look, their room's light) is the default and is
    enough for most shorts. Re-skin only to put them in a world's costume or light, and then 720p is enough for 9:16.
-3. **Price first.** Say the price of every paid run, get a yes, then run it, and log it in a ledger.
+3. **Price first.** Say the price of every paid run (voice takes, twin clips, re-skins, captions), wait for the
+   creator's typed yes, then run it, and log it in a ledger. No run is too small to ask about.
 4. **Keep their colour.** Seat the cut-out with a little of the scene's light on the edge; never desaturate the face
    to match a grey scene.
 5. **Check the rendered file, not the project.** Transcript, caption timing, loudness, silence, colour tags, size.
 6. **Shorts and TikTok never end on a comment ask.** Only Instagram says "Comment WORD"; the others end "check the
    full video in the description".
-7. **Nothing goes public without their yes for that exact thing.** Posts are saved paused. AI labels are theirs to
+7. **Nothing goes public without their typed yes for that exact thing.** Posts are saved paused. AI labels are theirs to
    set, and a twin on camera means the label is yes.
 8. **No paid-partnership label on a short nobody paid for.** If the long video had a sponsor, the caption says "The
    full video is sponsored by X."
@@ -79,7 +80,12 @@ script approved before voicing.
 
 Voice each paragraph whole in their cloned voice (two takes, keep the better: natural pitch, no clipped ending) as
 `voice/A.mp3`… Shape pauses if the read runs on (about 0.45 s at a full stop, 0.24 s at a comma). Listen, or
-transcribe, before building on it: names and numbers first.
+transcribe, before building on it: names and numbers first. Price the takes and wait for a typed yes before making
+them.
+
+What worked best for a cloned ElevenLabs voice: `eleven-v4` with no tag, run-on text (commas, "and", "so"; no "!" or
+"…"; numbers as words), one paragraph per generation, a few light hedges, the lower-pitched of two takes. The same
+file is what the twin speaks in step 5.
 
 ### 3. Word times, by phrases
 
@@ -111,11 +117,11 @@ For each on-camera line:
 1. Cut its sound from the paragraph file, from the section's `in` to a pause after its last word
    (`ffmpeg -ss IN -to OUT -i voice/A.mp3 line-hook.mp3`). A line may run past its section; the plan's `line_at` says
    where the clip's sound starts in the paragraph.
-2. **Price it, get a yes**, then have the twin say that sound: HeyGen Avatar 6, the creator's trained twin, one look,
+2. **Price it, wait for a typed yes**, then have the twin say that sound: HeyGen Avatar 6, the creator's trained twin, one look,
    1080p, 16:9, the sound file as the speech (not text, so the timing is the voice's own). About $0.10 a second in
    our run.
 3. Look at it yourself (mouth on the consonants, eyes, hands), then show the creator and wait for their yes. A
-   startled or stiff delivery is redone here, where a take costs under a dollar.
+   startled or stiff delivery is redone here, where a take costs under a dollar (priced and approved again).
 4. **Only if this scene needs a costume or a world's light:** a Genjutsu motion-transfer re-skin of the approved
    clip, 720p, priced and approved the same way. Otherwise skip it; the twin goes straight to the cut-out.
 5. Cut them out. 60 fps frames, a person matte on every frame, then solid, steady plates:
@@ -190,7 +196,8 @@ Run the checks on both files.
 
 ### 12. Posts (`references/posting.md`)
 
-Write the captions, save the three posts scheduled but paused, and ask for a yes on the captions and the time. Tell
+Write the captions, save the three posts scheduled but paused, and wait for a typed yes on the captions and the
+time; nothing is posted or switched on before it. Tell
 the creator the AI labels they set by hand on each platform. After the Instagram reel is up, set up the comment
 keyword's auto-reply (paused) with the full video and the free resource.
 

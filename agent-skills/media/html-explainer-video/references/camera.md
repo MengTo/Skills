@@ -4,6 +4,8 @@
 
 **Turn it on** only when they ask to be in it. Then the person records last and only has to press Record: everything else is finished and ready before they say a word.
 
+**With an Avatar 6 twin, nobody records.** If the person has a trained HeyGen Avatar 6 twin, the voice is final (their cloned ElevenLabs voice, no tag, run-on text), and each camera part is the twin saying that part's cut of it (the sound file in, never text), one look, priced, run only on their typed yes and shown to them for their yes before it goes in. It goes into its slot with `{"op":"replace","clip":…,"file":…}`, keeping every layout keyframe; it speaks the words the scenes were timed to, so nothing renders again. A Higgsfield Genjutsu re-skin only if a part truly needs a costume or a world's light, priced and approved the same way. The teleprompter, the hand-over and the take below are the route for a person who records.
+
 ## What changes
 
 | | off | on |

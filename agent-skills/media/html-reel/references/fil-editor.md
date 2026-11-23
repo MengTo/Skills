@@ -80,6 +80,8 @@ The picture is made locally (`frame-video.mjs` with its title layer, plus any fu
 
 ## Record on your phone
 
+For a creator who records themselves. When the camera is the creator's approved HeyGen Avatar 6 twin, made from the final voice (SKILL.md, step 9), nobody records: each clip goes in with the same `replace`.
+
 - The script is a canvas document. `#` headings and `[directions]` show on the phone but aren't read, so the word count it reports should equal the words spoken (99 for the shipped reel).
 - No MCP tool makes a camera recording node: on the canvas, + › Record › On your phone. It drops at the view's centre (move it with `update_node`) and opens a dialog with a QR code and a fil.design/r/… link.
 - The script, the prompter and Follow my voice live on the node (`update_node` `script_doc` or `script_text`), the same in every window and on the phone. Pick the document before you hand over the link.

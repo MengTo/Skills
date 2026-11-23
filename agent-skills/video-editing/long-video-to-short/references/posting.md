@@ -1,6 +1,7 @@
 # Posting
 
-Nothing here happens without the creator's yes for that exact thing: the captions, the time, turning a schedule on.
+Nothing here happens without the creator's typed yes for that exact thing: the captions, the time, turning a
+schedule on. Nothing is posted or switched on without it; posts are saved paused.
 
 ## Two files, three posts
 
@@ -12,6 +13,9 @@ Nothing here happens without the creator's yes for that exact thing: the caption
 
 Before anything: the full video is **public** (not unlisted or scheduled) at the link the captions use. Check it
 signed out.
+
+Both cuts are under 30 MB at 60 fps, so they go up as they are. Any other video over 50 MB is compressed before
+it's uploaded (H.264 for a post).
 
 ## Captions
 
@@ -47,3 +51,11 @@ No paid-partnership label unless this short itself was paid for.
 After the Instagram reel is posted (the rule attaches to a post): keyword WORD, a public reply ("Sent. Check your
 DMs."), a DM with the full video's link and the free resource. Save it off; they turn it on. Test it from a second
 account before the reel gets reach.
+
+## The long video's own post (X, Threads, LinkedIn)
+
+Not the short: the post announcing the long video itself. One post per platform, never a thread; the live YouTube
+cover as its picture and the video's youtu.be link as its only link. No free pack, site or tracking links (the
+YouTube description carries those). For a sponsored video, X keeps its Paid partnership label and the sponsor is
+tagged in the cover; Threads and LinkedIn say "sponsored by X" in the text. Positive only. Saved for the creator's
+typed yes like the rest.

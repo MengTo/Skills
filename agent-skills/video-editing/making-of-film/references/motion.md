@@ -4,6 +4,11 @@ Every function is in `scripts/motion.js` (`window.MakingOf`, load after `explain
 each. All take t and a word time, so nothing animates on its own clock. Calm: expo-out arrivals, soft focus
 resolving, no shines, glints, sweeps or streaks.
 
+**Since 22 Nov: cut by default.** A soft exit (the 0.3 s exit into blur, a dissolve, a burn) only where the subject or
+section really changes, never between two shots of the same build ("we don't need to transition all the time").
+Demo footage stays alive (idle motion, hits, effects), not a still UI with a label. Greymourn's dissolves and
+per-scene exits below are the worked example from before that.
+
 ## The vocabulary
 
 | Device | Function | Where Greymourn used it |
@@ -18,8 +23,8 @@ resolving, no shines, glints, sweeps or streaks.
 | A ring on the thing named | engine `ring(el, t, at)` | the roll and parry checks, the HUD's 8 |
 | Cards lit while said, others stepped back | `litCards(cards, t, ats)` | the stack, the thread list |
 | Step title: numeral and gilt rule on "Step", title on its words | `stepTitle(el, t, at, titleAt)` | every step |
-| Footage as frame folders, cuts with 0.24 s dissolves | `frame()`, `montage()` | cold open, hook, the UI clips |
-| Scene drift 0.6 px/s, centred; 0.3 s exit into blur | `over` (pass to `film({ over })`) | every scene but full-frame footage |
+| Footage as frame folders, cuts with 0.24 s dissolves (since 22 Nov hard cuts between shots of the same build) | `frame()`, `montage()` | cold open, hook, the UI clips |
+| Scene drift 0.6 px/s, centred; 0.3 s exit into blur (since 22 Nov only where the subject or section changes) | `over` (pass to `film({ over })`) | every scene but full-frame footage |
 | Background burn between looks, 1.4 s | bg.js | chapter changes |
 | Camera glides between layouts, fades to/from hidden | the forked engine's `cameraAt` | the key places |
 
@@ -30,7 +35,7 @@ resolving, no shines, glints, sweeps or streaks.
 - **Hold to read.** A whole prompt stays ≥ 1.5 s before the cut. A headline that arrives alone is big (hero) while
   it's alone, then rises to the top when the content comes.
 - **Leave before the next arrives.** A headline's leave + 0.22 s ≤ the next one's start. Scenes leave in their last
-  0.3 s; the next comes in on its word.
+  0.3 s only at a change of subject or section (since 22 Nov; otherwise a cut); the next comes in on its word.
 - **Camera moves start at the cut.** A layout that grows at a scene change starts its glide at the cut (`+ G`, 0.54 s),
   never over the scene that's leaving.
 - **Step back what's done.** Once the note comes, "Build it" dims; once the verdict lands, the replaced frame dims.

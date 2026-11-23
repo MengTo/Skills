@@ -14,7 +14,7 @@ Why rendered MP4s, not live HTML scenes in the edit: a whole film page floods `w
 generate { canvas_id, kind: "audio", model: "eleven-v4", voice: "Hope", name: "Voice", prompt: <the script's lines>, max_credits: 0 }
 ```
 
-That gives the price and leaves the node waiting. Tell the person, and run it with their OK: `generate { canvas_id, node_id, max_credits: <the price> }`, then `check_node` with `wait` for its link. Save it as `voice.mp3` (`curl -o`), once. `list_models` with `kind: "audio"` lists the voices.
+`Hope` is a stock voice; use the person's own cloned voice if they have one (no tag). That gives the price and leaves the node waiting. Tell the person, and run it only on their typed yes: `generate { canvas_id, node_id, max_credits: <the price> }`, then `check_node` with `wait` for its link. Save it as `voice.mp3` (`curl -o`), once. `list_models` with `kind: "audio"` lists the voices.
 
 ## 3. The edit, and the clock
 

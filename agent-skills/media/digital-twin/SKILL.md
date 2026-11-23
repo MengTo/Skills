@@ -29,7 +29,7 @@ captcha, a face check on your phone) are the owner's to do. Never work around a 
 | 2 · Identity | a 250–350-word identity block from a blind feature list | free | judge reads it against held-out frames |
 | 3 · Stills | 3 at a time, in your real room, only the camera and time changing | Seedream 5 Pro on Fil: 12 credits ($0.12) | your pick; proportions measured |
 | 4 · Audit and fix | every pick checked tile by tile, then fixed | a Seedream edit + `fix_still.py` paste-back | wrong gear, hair, hands, extra objects gone |
-| 5 · Voice | lines in your voice | ElevenLabs instant clone, v4 + an audio tag | ≥ 9 on `score_voice.py` on 7–10 s lines; your ear |
+| 5 · Voice | lines in your voice | ElevenLabs instant clone on v4: run-on text, no tag first; an audio tag only if the pitch runs high | ≥ 9 on `score_voice.py` on 7–10 s lines; your ear |
 | 6 · Talking clips | 5 s, one draft per still | Seedance 2.5 on Fil, 480p: ~52 credits ($0.52) | English exact; mouth and head measured |
 | 7 · Deliver | on a canvas, logged | Fil sections, a ledger, a log | every spend logged; picks marked |
 
@@ -42,7 +42,8 @@ The same flow is a ready-made Fil workflow: https://fil.design/workflows/digital
   instant slots). Optional: the Higgsfield CLI `higgsfield` for Seedance drafts from a photo outside Fil.
 - **A project folder** with `refs/`, `room/`, `rounds/`, `voice/`, `video/`, `LOG.md` and a ledger `credits.txt`. Write
   every run into LOG.md: model, refs, exact prompt, file, canvas node and **your** verdict.
-- **Price, tell, then run:** `max_credits: 0` on Fil returns the price (a Fil credit is $0.01). On Higgsfield,
+- **Price, tell, wait for a typed yes, then run:** `max_credits: 0` on Fil returns the price (a Fil credit is $0.01).
+  A budget is a ceiling, not a yes. On Higgsfield,
   `higgsfield generate cost …` does (a credit is ~$0.039 on Plus annual): compare in dollars, never raw credits.
 - **Local tools:** ffmpeg, whisper-cli (a large-v3-turbo model), Swift (macOS Vision for landmarks), Python 3.12 with
   numpy, Pillow, speechbrain and torchaudio.
@@ -140,11 +141,15 @@ Read: `references/voice.md`.
 1. **Start with an instant clone** from ~3 minutes of your cleanest solo speech (`scripts/voice/build_ref.py` labels
    your segments in recordings with other people, and `make_ivc.py` packs the best). It's ready in a minute and needs no
    verification.
-2. **Generate on `eleven_v4`** and measure the pitch. If it runs high, put an **audio tag** in front: on that project
-   `[calm]` took v4 from 136–162 Hz back into his 106–131 range, and the score from 7.7 to 9.2. Stability didn't move the
-   pitch at all. Whisper confirms the tag isn't spoken. `scripts/voice/tts_line.sh VOICE_ID "Line." out.mp3`.
-   **On Fil:** an audio node on `eleven-v4` with your clone's voice id in its voice field and `[calm]` at the start of the
-   prompt (about 1 credit per 10 s), on the same canvas as your stills and clips.
+2. **Generate on `eleven_v4`, no tag first,** with the text written as run-on speech: sentences joined with commas,
+   "and", "so"; no "!" or "…"; numbers as words; plain words; two or three of your own fillers per 30 s; your natural pace
+   (his was 2.4–2.5 words a second). On that creator's later clone (21 Nov), run-on text took the same words from 8.4 to
+   9.2 with no tag, and tags such as `[matter-of-fact]` raised the pitch. Measure the pitch; if it still runs high, try an
+   **audio tag** in front: on his first clone `[calm]` took v4 from 136–162 Hz back into his 106–131 range, and the score
+   from 7.7 to 9.2. Tags vary per voice, so score 3–4. Stability didn't move the pitch at all. Whisper confirms a tag
+   isn't spoken. `scripts/voice/tts_line.sh VOICE_ID "Line." out.mp3`.
+   **On Fil:** an audio node on `eleven-v4` with your clone's voice id in its voice field and the line with no tag (or the
+   tag that scored best) as its prompt (about 1 credit per 10 s), on the same canvas as your stills and clips.
 3. **Score** with `scripts/voice/score_voice.py REF_DIR clip.mp3`: ECAPA speaker similarity, calibrated so your own
    held-out clips = 10 and other people = 0, plus pitch inside your own p10–p90; score = 0.7 × similarity + 0.3 × pitch.
    Your own denoised voice scores ~9.3, so **9 ≈ you**. Score 7–10 s lines (a 4 s clip of the right voice scored 4.7).
@@ -161,6 +166,10 @@ Read: `references/voice.md`.
 ## Stage 6 · Talking clips
 
 Read: `references/video.md`, `references/speaking.md`.
+
+For your real face talking, a HeyGen twin trained on your own footage (`create-ai-avatar`) on Avatar 6, HeyGen's newest
+engine, is the safer first step: that creator later made an approved twin clip the first step before any Seedance clip
+of himself. Seedance from a still is for a made-up scene.
 
 1. Start from an **audited, picked close-up still**. A close-up gives the face ~190–235 px at 480p; a medium shot gives
    only 110–140.
@@ -206,7 +215,7 @@ report.
 | Video mouth too wide | the soft-mouth clause; close-up stills; measure p50 |
 | Video head frozen or too busy | no video ref + "mostly still, small natural nods" (calm); a video ref of you for more life |
 | Video speaks another language | Seedance 2.5, "speaks English" + the exact words |
-| Voice too high and bright | an instant clone on v4 + an audio tag (`[calm]`); or your real line as the audio ref |
+| Voice too high and bright | run-on text with no tag first; then an audio tag (`[calm]` worked on one clone); two takes, keep the lower; or your real line as the audio ref |
 | Voice offline after adding samples | warn first; keep an instant stand-in; test a mic clip before verification tries |
 
 ## Numbers that shipped
@@ -223,7 +232,7 @@ One person's measured results, Nov 2026. Measure your own.
 | his mouth when talking | opening p50 0.092 (Seedance 0.135), open > 0.15 in 25 % of frames, 2.1 syllable cycles/s, 43 blinks/min |
 | his head when talking | turn sd 0.100, tilt sd 3.9°, lean sd 0.075 (Seedance alone 0.034, 1.7°, 0.029) |
 | best drafts | mouth p50 0.085–0.10, head turn sd 0.02–0.04 (calm, his pick) |
-| his voice | median F0 116 Hz, p10–p90 106–131 Hz; instant + `[calm]` 9.2/10, old Pro voice 8.7, Multilingual v2 ~8.1, v3 5–7 |
+| his voice | median F0 116 Hz, p10–p90 106–131 Hz; instant + `[calm]` 9.2/10, old Pro voice 8.7, Multilingual v2 ~8.1, v3 5–7; a later clone, no tag, run-on text 9.2 |
 | talking clip | Seedance 2.5 on Fil, 480p, 5 s: ~52 credits ($0.52); off Fil, a Higgsfield draft is 15 credits (~$0.59) |
 
 ## Verify before you report
@@ -232,9 +241,9 @@ One person's measured results, Nov 2026. Measure your own.
 - [ ] Every still: Seedream 5 Pro, the real room with room photos last, the real gear, no grey hair, warm light.
 - [ ] Faces measured against the held-out frames; the numbers are in the node notes.
 - [ ] Every pick audited and fixed before video, with the face masked in the paste-back.
-- [ ] Voice lines scored on 7–10 s lines (≥ 9) and heard; the tag isn't spoken.
+- [ ] Voice lines scored on 7–10 s lines (≥ 9) and heard; any tag isn't spoken.
 - [ ] Drafts: one per still, words exact, mouth and head measured against the owner's own numbers.
-- [ ] Priced before running; ledger and log updated; picks marked on the canvas.
+- [ ] Priced, and the owner's typed yes, before every run; ledger and log updated; picks marked on the canvas.
 
 ## Files
 

@@ -64,7 +64,7 @@ photos last.
 
 Fil (MCP): `add_prompt` ×4 (or reuse the shared ones), `add_node` kind image, model `seedream-5-pro`, aspect 16:9,
 resolution 2k, wired with `connect` from the prompts and the reference file nodes; `generate` with `max_credits: 0` to
-price, then with a budget; `check_node` with `wait` for the result.
+price, then, on the owner's typed yes, with that price as `max_credits`; `check_node` with `wait` for the result.
 
 Higgsfield CLI (bash; in zsh put the flags in an array, because an unquoted `$FLAGS` doesn't split):
 ```bash

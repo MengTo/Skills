@@ -9,13 +9,15 @@
 ## The plan: key places only
 
 `window.CAMERA = [[time, layout], …]` in film.js, read by the forked engine. Layouts: `full`, `half`, `corner`,
-`hidden`. Meng's rule (prompt 202): the camera only at key places, about 25 % of the film. Greymourn's KEYS:
+`hidden`. Meng's rule since 22 Nov: the camera only at key places, **10–20 % of the runtime**, in a corner, a third or
+half the frame, each stretch whole sentences, 5 to 30 s, never cut mid-sentence (on Greymourn, prompt 202, it was
+about 25 %). Greymourn's KEYS, the worked example:
 
 | Where | Layout |
 |---|---|
 | the hook's twist ("I didn't write the code…") | full, then half with the prompt count beside him |
 | the promise | half |
-| each step's title (5) | half, from the cut + 0.54 s, hidden on the step's first content word |
+| each step's title (5) | half, from the cut + 0.54 s, hidden on the step's first content word (about 3 s; since 22 Nov a stretch runs on to a sentence's end, 5 s at least) |
 | "So where is it now?" until "Not at nine" | half |
 | what I'd keep | half |
 | the end card | corner |
@@ -59,6 +61,8 @@ The recipe for his twin is `meng-digital-twin/references/heygen-twin.md`. For th
 6. **Prove sync**: `scripts/sync-check.mjs kimi-keys.mp4 voice.m4a film/twin.js` cross-correlates the render's audio
    with the film's voice per stretch: Greymourn read 0 ms, r 1.00 on all eight.
 7. **No grade.** His frames as HeyGen made them (rule 5 in SKILL.md).
+8. **His approval** (21 Nov). Check the mouth and eyes for drift, then send him the twin clip. Only an approved clip
+   goes in the film or on to a Genjutsu re-skin.
 
 Judges scored the twin frames 5–6 against his still's 7–8 (soft upscaled 1080p, shiny skin, the mic over his chin,
 blurred hands, a cool grey wall). He kept the twin. If a better look or framing would help, price a new render and
@@ -73,5 +77,5 @@ corner where you can, full frame only for a few seconds.
 | His approved still 166 with a slow push (drafts 2–4f) | judges 7–8; "dead stills" when held 20 s |
 | Seedance 2.5 draft (480p) | 4.5 with judges; brings its own re-timed voice, so the film can't stay on his words |
 | Intone 720p (cameras 144/152/154) | 6.5 with judges; he rejected it: "I don't speak like that!" (mouth 30–70 % wider, a fixed stare, 10–46 % slower than him) |
-| Genjutsu (motion transfer) | needs a driving video, takes no audio; priced, dropped ("we're not using genjutsu") |
+| Genjutsu (motion transfer) | needs a driving video, takes no audio; priced, dropped for this film ("we're not using genjutsu", prompt 200). Since 21 Nov only if necessary, driven by a HeyGen Avatar 6 twin clip he approved (`genjutsu-scene`) |
 | HeyGen Kimi twin on the film's own voice (4g) | kept by him (prompt 209) |

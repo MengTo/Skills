@@ -7,15 +7,20 @@ no scene changes.
 
 `python3 ~/.claude/skills/html-explainer-video/scripts/words.py --draft script.txt --out film/words --start 10.1 --pace 2.7`
 writes `words.js` (`window.WORDS = [[word, start, end], …]`) from the script's letters. `--start` is where the voice
-begins in the film (after the 10 s cold open). Build and judge every scene on it before any voice is paid for.
+begins in the film: since 19 Nov he speaks in the first second, so under 1 s (Greymourn's 10.1 followed its silent
+10 s cold open, superseded). Build and judge every scene on it before any voice is paid for.
 Greymourn's draft 1 used the Mac's built-in voice as a scratch track (`tools/scratch-voice.py`), also free.
 
-## 2. His voice, one take
+## 2. His voice: his newer clone, no tag (since 21 Nov)
 
-- Price first: a Fil audio node on `eleven-v4`, his **Meng Voice 2026 Instant**, the text with
-  `[calm] ` before it, `max_credits: 0`. The whole 720-word script was 31 credits, one take, 3:56. Run on his typed yes.
-- Put the cold open's silence in front so the file starts at film time 0: then a word's time in the file is its time
-  in the film. Pauses between paragraphs are added locally (free).
+- His newer instant clone (picked by ear on 21 Nov) on `eleven-v4`, **no tag**. The voice text is run-on
+  (commas, "and", "so"; no "!" or "…"), numbers as words, a few light hedges; one paragraph per generation, two
+  takes, keep the lower pitch. The full recipe is in his private `meng-digital-twin` skill. Price first with
+  `max_credits: 0`; run on his typed yes.
+- Superseded: **Meng Voice 2026 Instant** with `[calm] ` (Greymourn, 17 Nov: the whole 720-word script in one take,
+  31 credits, 3:56) or `[matter-of-fact]` (19–20 Nov).
+- The file starts at film time 0, so a word's time in the file is its time in the film. Since 19 Nov no silence goes
+  in front and no pause is opened between paragraphs; the only shaping is the recipe's sentence-end pauses.
 - Listen to names and numbers against the script ("Sea Dream" for Seedream is a spelling, not an error).
 
 ## 3. Word times that hold
@@ -36,7 +41,8 @@ watch-through).
 - `{ "cut": [a, b], "why": "…" }` takes out a false or stale sentence; its words stay in words.js as markers of no
   length, so `T.one4` is still the fourth "one" and no scene is renamed.
 - `{ "gap": [at, seconds] }` opens a pause (Greymourn: 3 s after "All of it came from prompts like that." for the 3D
-  map's own beat, with the music bed rising over it).
+  map's own beat, with the music bed rising over it). Since 19 Nov only for a beat the picture's own sound or motion
+  carries, at a take's end; never a silence.
 - `{ "replace": [a, b], "take": "<audio>", "from": [ta, tb], "words": "<take words>", "len": b-a, "gain": dB }` drops a
   re-voiced line into the old slot, its tempo set so it lasts as long (±15 %), so no later word moves. Greymourn's two
   number lines: 1 credit, tempo 1.05, gain +3.5 and +2.0 dB to match loudness, pauses 0.41–0.45 s.
@@ -46,3 +52,6 @@ It writes the new voice (`out`), a WAV for the mix, and `words.js`/`words.json` 
 
 Re-render every scene whose words moved (all of them after a realignment), rebuild the preview, re-read the chapters
 (`scripts/film-facts.mjs --yt`) into the release package, and re-pack the twin's stretches if the camera's words moved.
+
+Once the film is cut in Fil, a re-voice never moves the scenes (21 Nov): every clip, cut and title stays, and each new
+line is fitted to the cut it sat on with pauses only.

@@ -43,7 +43,17 @@ A false line in the voice needs a re-voiced line (≈1 credit, his yes): fix it 
 ## His voice
 
 He talks plainly, first person, result first, with real numbers, and says where it falls short. The film is spoken,
-so write for the ear: short sentences, one idea each, numbers as he'd say them ("a hundred and seventy").
+so write for the ear: short sentences, one idea each.
+
+Since 21–23 Nov (these win over the Greymourn wording below):
+- **Grade-five words** (23 Nov; on 21 Nov he asked for eighth grade, then fifth), friend to friend. Nothing poetic or
+  abstract: say what's on screen in plain words.
+- **2–3 of his own fillers per 30 s**: "so", "you know", "uh", "kind of", "like"; "okay, so" is fine.
+- **Two texts.** The teleprompter script he reads is short plain sentences with numerals ("4K", "1080p", "176"). The
+  voice text sent to his cloned voice is run-on (joined with commas, "and", "so"; no "!" or "…") with numbers as
+  words ("a hundred and seventy"). See `voice.md`.
+- **Sponsored parts tell tries as experiments and tips, never failures** (16 Nov). Honest limits stay in unsponsored
+  films.
 
 - Start with the result and a number: "I made this game in three days. It runs in a browser tab."
 - The honest twist early: "I didn't write the code, and I didn't model anything."
@@ -53,14 +63,18 @@ so write for the ear: short sentences, one idea each, numbers as he'd say them (
   bot, not me playing." "The real bill was Claude usage. I ran into my usage limits."
 - The close: what he'd keep, as four short imperatives, then where it all is: "It's linked below, with the skills.
   Go build your own."
-- Never: hype words, "game-changer", "insane", "Ok so", sponsor taglines, credentials, "smash that like", invented
-  quotes. Lines you wrote for him get ✎ in the script so he can change them.
+- Never: hype words, "game-changer", "insane", sponsor taglines, credentials, "smash that like", invented
+  quotes ("Ok so" was on this list until 22 Nov; "okay, so" is his own and allowed). Lines you wrote for him get ✎ in the script so he can change them.
 - See `write-like-meng-on-x` for his written voice; the film's is the same voice said aloud.
 
 Pace: 2.7 words a second spoken (his clone reads a little faster than the Mac's voice). 720 words ≈ 4:30 with the
-10 s cold open, pauses and the end hold.
+10 s cold open, pauses and the end hold (Greymourn's; since 19 Nov there is no silent cold open and no added pause,
+so the same words run a little shorter).
 
 ## The Greymourn script (as voiced; cut sentences struck out in the edit)
+
+A worked example of shape, claims and honesty from 17–19 Nov, written before the grade-five and fillers rules: don't
+copy its wording or its filler-free lines.
 
 > I made this game in three days. It runs in a browser tab. Lighting, effects, sound, and a boss with two phases.
 > I didn't write the code, and I didn't model anything. I wrote about a hundred and seventy short prompts. Most of them sound like this. Keep working until eight out of ten.

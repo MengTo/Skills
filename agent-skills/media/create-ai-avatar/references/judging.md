@@ -38,5 +38,5 @@ Check that consonants close the lips (b, p, m), that the mouth is still between 
 - Send the clip and the sheet, and say which row is which.
 - Say what you saw in plain words: "Avatar V stretches your lips and shows both rows of teeth; in your real takes your mouth opens small and round."
 - Say what you couldn't check, for example sync from stills.
-- Ask which one, and let them change their mind after watching. The creator this was built on first picked Avatar III from the sheet, then Avatar IV after watching.
+- Ask which one, and let them change their mind after watching. The creator this was built on first picked Avatar III from the sheet, then Avatar IV after watching, and on 18 Nov his twin on Avatar 6, which is his standing pick now.
 - Write down the pick with the ids: the look, the group, the voice and the engine.

@@ -24,7 +24,10 @@
 
 ## The beats
 
-Greymourn, 270.65 s. The scene ids are film.html's.
+Greymourn, 270.65 s, 15–19 Nov 2026. The scene ids are film.html's. Superseded since (SKILL.md, "What changed after
+Greymourn"): the silent cold open (his voice now starts at 0:00, over the result), the drawn Claude Code window (now
+the exact real UI), the ~25 % camera (now 10–20 %, each stretch whole sentences, 5–30 s), and soft exits between
+shots (now cuts by default).
 
 | Time | Scene(s) | Beat | What the picture does |
 |---|---|---|---|
@@ -47,8 +50,9 @@ Greymourn, 270.65 s. The scene ids are film.html's.
 
 Each step, 25–45 s:
 1. **Say it.** A step title: "Step 01", a gilt rule, the title in display type landing on its own words. Him half frame.
-2. **His real prompt.** Typed in a drawn window (the agent's window with the real words, not a copy of the app),
-   while he says it, then held whole ≥ 1.5 s. Quote prompts exactly, typos and all, from `qa/PROMPTS.md`.
+2. **His real prompt.** Shown in the exact real UI (a recording of the agent's window, or an exact HTML copy of it,
+   full frame), while he says it, then held whole ≥ 1.5 s. (Greymourn's drawn window with the real words is
+   superseded, 22 Nov.) Quote prompts exactly, typos and all, from `qa/PROMPTS.md`.
 3. **The real result.** A capture, a render, a concept, a test run, a file. Real pixels at their real size.
 4. **Mark what matters.** One device: a ring, a phrase lit in fire as he reads it, a wipe from before to after, a number
    counting up on its word, a card lit while the others step back.
@@ -70,6 +74,7 @@ falls short · What I would keep. The promise scene shows the same times (`M.mms
 ## Titles and the hook
 
 - The first frame is a real frame of the result, already drawn (it's the edit node's thumbnail and the feed's).
+- His voice starts in the first second, over the result: no silent cold open, no added pauses (19 Nov).
 - Hard numbers by 0:20: days, prompts, models. Said and shown on the same word.
 - One honest twist in the hook ("I didn't write the code, and I didn't model anything").
 - No credentials, no "in this video I will" beyond the promise row list, no subscribe ask, no sales offer.
@@ -80,4 +85,5 @@ falls short · What I would keep. The promise scene shows the same times (`M.mms
 
 Five minutes only works dense: ~9–11 chapters of 15–45 s, one lesson each. He has no 5-minute baseline on his
 channel; a 12–15 minute cut from the same scenes is the fallback if it underperforms. Don't stretch a step with
-filler: cut it and give its time to the step that surprises most.
+filler: cut it and give its time to the step that surprises most. At any length, at least 25 % of the runtime is the
+exact real UI, full frame, and he is on camera 10–20 % (22 Nov).

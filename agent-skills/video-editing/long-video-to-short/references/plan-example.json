@@ -1,0 +1,35 @@
+{
+  "sections": [
+    {
+      "name": "hook",
+      "para": "A", "in": 0, "out": 7.9, "words": [0, 17],
+      "camera": { "line": "hook", "line_at": 0, "enter": false, "leave": true },
+      "pages": [["So, GPT 6.2", "Astra"], ["built this", "whole temple"], ["from three", "posts,"], ["and it also", "tried to cheat."]],
+      "titles": [
+        { "parts": [["ASTRA", "cream"], ["6.2", "fire"]], "until": 8 },
+        { "word": 8, "until": 12, "parts": [["3", "fire"], ["POSTS", "cream"]] },
+        { "word": 12, "parts": [["IT", "cream"], ["CHEATS", "fire"]] }
+      ]
+    },
+    {
+      "name": "cheat",
+      "para": "A", "in": 7.9, "words": [17, 38], "tail": 0.15,
+      "pages": [["I asked for", "a 3D pistol,"], ["and, you know,", "it gave me"], ["a flat picture"], ["that only worked", "from one angle."]],
+      "titles": [{ "word": 12, "parts": [["A FLAT", "cream"], ["PICTURE", "fire"]] }]
+    }
+  ],
+  "camera": {
+    "hook": { "wide": 2200, "cx": 548, "y": 440, "grade": "temple" }
+  },
+  "grades": {
+    "temple": [1.04, [0.985, 1, 1.02], 0.97, [0.74, 0.77, 0.82], 0.24],
+    "amber-corridor": [1.06, [1, 0.94, 0.84], 0.92, [0.85, 0.56, 0.30], 0.20]
+  },
+  "_notes": {
+    "sections": "in order. para: the voiced paragraph (voice/A.mp3, voice/A-aligned.json). in/out: seconds in it, inside pauses (out left out = its end). words: [first, last exclusive] of the paragraph's words. tail: silence after. fade: 12 ms fades where a word was cut out. own: true in a second cut's plan for the sections only it has.",
+    "pages": "the section's words again, broken for the frame. The count must match words exactly.",
+    "titles": "word: the spoken word (index in the section) the headline names; it lands six frames before it. until: the word whose headline replaces it. Left out: from the start, to the end.",
+    "camera": "per section: line = the talking clip (plates/<line>/), line_at = where that clip's sound starts in the paragraph, enter/leave = whether they defocus in and out. Top level: where each clip sits. wide = drawn width of the 16:9 plate in px, cx = its centre x, y = its top.",
+    "grades": "saturation, tint r g b, gain, the scene's light colour on the edge, how much of it."
+  }
+}

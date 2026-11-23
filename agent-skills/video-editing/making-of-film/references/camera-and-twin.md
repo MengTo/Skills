@@ -10,7 +10,7 @@
 
 `window.CAMERA = [[time, layout], …]` in film.js, read by the forked engine. Layouts: `full`, `half`, `corner`,
 `hidden`. Meng's rule since 22 Nov: the camera only at key places, **10–20 % of the runtime**, in a corner, a third or
-half the frame, each stretch whole sentences, 5 to 30 s, never cut mid-sentence (on Greymourn, prompt 202, it was
+half the frame, each stretch whole sentences, 5 to 30 s, never cut mid-sentence (on Greymourn it was
 about 25 %). Greymourn's KEYS, the worked example:
 
 | Where | Layout |
@@ -50,8 +50,8 @@ The recipe for his twin is `meng-digital-twin/references/heygen-twin.md`. For th
 2. **One audio file of exactly those stretches of the film's voice**, joined with 0.4 s of silence, and a map of
    where each starts in it. The twin then says the film's own words: no re-voice, no word time moves, sync is exact.
 3. **Price, then his typed yes.** HeyGen Avatar 6 on his trained **Kimi** look,
-   1080p: $0.10 a second (Greymourn: $7.30). Fil's `heygen-twin-meng-6` node with the audio wired in, or the Fil repo's
-   `qa/avatar-6/live.mjs` script (see heygen-twin.md). One render.
+   1080p: $0.10 a second (Greymourn: $7.30). His twin's Avatar 6 video node in Fil with the audio wired in as its sound
+   (for your own twin, `create-ai-avatar`). One render.
 4. **Frames**: `ffmpeg -i kimi-keys.mp4 -q:v 3 film/meng/kimi/%04d.jpg` (not in git). Hold a live face to the film's
    end by playing the render's silent last second back and forth.
 5. **twin.js** (`assets/twin.js`): `window.TWIN = [{ from, to, off, dir, n, fps, fx, fy, fs }]`: film from/to, `off`
@@ -77,5 +77,5 @@ corner where you can, full frame only for a few seconds.
 | His approved still 166 with a slow push (drafts 2–4f) | judges 7–8; "dead stills" when held 20 s |
 | Seedance 2.5 draft (480p) | 4.5 with judges; brings its own re-timed voice, so the film can't stay on his words |
 | Intone 720p (cameras 144/152/154) | 6.5 with judges; he rejected it: "I don't speak like that!" (mouth 30–70 % wider, a fixed stare, 10–46 % slower than him) |
-| Genjutsu (motion transfer) | needs a driving video, takes no audio; priced, dropped for this film ("we're not using genjutsu", prompt 200). Since 21 Nov only if necessary, driven by a HeyGen Avatar 6 twin clip he approved (`genjutsu-scene`) |
-| HeyGen Kimi twin on the film's own voice (4g) | kept by him (prompt 209) |
+| Genjutsu (motion transfer) | needs a driving video, takes no audio; priced, dropped for this film (his call). Since 21 Nov only if necessary, driven by a HeyGen Avatar 6 twin clip he approved (`genjutsu-scene`) |
+| HeyGen Kimi twin on the film's own voice (4g) | kept by him |

@@ -21,7 +21,7 @@ step numerals, the wipe line. One accent only: every label, ring and line in the
 
 ## Type
 
-The Geist trio, Meng's pick for the film (prompt 169: "Geist Serif and Geist Sans and Geist Mono for the video
+The Geist trio, Meng's pick for the film ("Geist Serif and Geist Sans and Geist Mono for the video
 editing"; the fonts are in `assets/starter/fonts/`):
 - **Geist Serif** for headlines and display (tracked in −0.03 to −0.04 em), balanced line breaks.
 - **Geist Sans** for body, caps labels (500, tracked out 0.14 em), and big numerals (200, tabular: Geist Mono's
@@ -42,7 +42,7 @@ frame, and headline-plus-card scenes read as a slide deck ("too many presentatio
   the motif to the project's own (its corners, its marks), keep the draw-on.
 - **Frosted glass.** Panels are the ground tinted at ~75 % with a blur behind (`.glass`), a long soft shadow, the
   hairline border. Flat and face-on at rest (sharp at 4K); they arrive from depth (`panel()`).
-- **Holographic / AR panels.** The look Meng asked for ("AR UI, holographic UI, and in-game UI", prompt 169): glass
+- **Holographic / AR panels.** The look Meng asked for ("AR UI, holographic UI, and in-game UI"): glass
   panels that fly in, turn a little and settle; linework that draws on; the project's real data drawn in light (the
   level plan as a gold wireframe on a glass table, the real source code typing on a glass pane).
 - **The exact real UI (since 22 Nov).** Show the agent or app as it really is: a recording of it, or an exact HTML

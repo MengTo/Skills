@@ -78,15 +78,15 @@ Greymourn's numbers and choices stay in this skill as the dated worked example. 
    delivered: no grade, colour matrix, curves, LUT, vignette, brightness, contrast, saturation, relight or sharpening,
    neither baked into the frames nor applied in CSS or SVG filters over the camera window, and no shade or gradient
    laid over his face. This holds even when blind judges score a graded version higher (a warm grade won +0.5 with
-   both judges and he rejected it: prompt 212, "I don't want you to touch the lighting at all"; then, 19 Nov, "Make
+   both judges and he rejected it: "I don't want you to touch the lighting at all"; then, 19 Nov, "Make
    sure you do not change the lighting of the camera"). Only framing may change (position and scale to keep his face
    on the layout), and the film's grades for plates and captures must be scoped so they never reach the camera.
-6. **The camera at key places only, 10–20 % of the runtime** (22 Nov; on Greymourn it was about 25 %, prompt 202:
+6. **The camera at key places only, 10–20 % of the runtime** (22 Nov; on Greymourn it was about 25 %:
    "only put cameras at key places 25% of the video"): the intro, each step's title, the verdict, what I'd keep, the
    end card. Hidden everywhere else. Each stretch is whole sentences, 5 to 30 s.
 7. **His twin, not a model's guess at him.** The camera shows his trained HeyGen twin (the Kimi look on Avatar 6),
    lip-synced to the film's own voice. He rejected Intone ("I don't speak like that!"), dropped Genjutsu and
-   Seedance clips for this, and kept the twin although blind judges preferred his still (prompt 209: "Keep the
+   Seedance clips for this, and kept the twin although blind judges preferred his still ("Keep the
    twin"). Don't swap the route without asking. Since 21 Nov any AI shot of him starts as a HeyGen Avatar 6 twin clip
    he has approved; Genjutsu only if necessary, on an approved clip (`genjutsu-scene`).
 8. **4K, single frames, before then after.** Every picture you send him is a full 3840 × 2160 JPEG q95, one frame per
@@ -139,7 +139,7 @@ Ask at most one question before starting, and only if the project is unclear. Sa
    `scripts/explainer.js`, `explainer.css` and `motion.js` beside it. Build all the scenes, one `<section>` each, from
    `references/motion.md`. Look at stills as you go (`scripts/render.mjs film.html --stills … --out …`).
 6. **His voice** (`references/voice.md`): price, his yes, then his newer cloned voice on eleven-v4 with no
-   tag, run-on text, one paragraph per generation (since 21 Nov; Greymourn's one take in "Meng Voice 2026 Instant"
+   tag, run-on text, one paragraph per generation (since 21 Nov; Greymourn's one take in his earlier clone
    with `[calm]` is superseded). Word times by `scripts/align-voice.py`, then
    `scripts/realign-phrases.py` phrase by phrase (one-pass whisper put 34 of 89 phrases up to 1.3 s early). Cuts,
    pauses and re-voiced lines with `scripts/voice-edit.mjs`, so no scene is renamed.

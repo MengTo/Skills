@@ -7,7 +7,7 @@
 // silent last 0.9 s played back and forth to 1877 so the end card holds a live face to the film's end.
 // [film from, film to, seconds into the render at `from`]. fx/fy/fs: his face in its frames, measured with
 // Vision on the render (eyes at 0.532, 0.382; 22 % larger in frame than still 166).
-// His frames exactly as HeyGen made them: no grade, relight or sharpening (Meng, 19 Nov, prompt 212: "can you
+// His frames exactly as HeyGen made them: no grade, relight or sharpening (Meng, 19 Nov: "can you
 // not touch my video? ... I don't want you to touch the lighting at all"). A warm grade tried in round 10
 // (blind judges +0.5) darkened his face and was taken off.
 (function () {

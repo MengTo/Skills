@@ -32,24 +32,23 @@ draft. After he confirms it, the 1080p final with the same inputs, changing only
 
 ## His rules for these shots (each came from a correction)
 
-1. **His camera, his face, his voice.** "I want you to use my camera, my face" (prompt 220): the motion comes from his own
-   twin, never from a game character re-skinned. "as long as we can see my face and I'm talking, and it's using my voice"
-   (222): the film's own voice (or, for a new line, his cloned ElevenLabs voice with no tag), never someone else's.
-2. **Never cut off the speech.** "the speech should not be cut off ... roughly around five to 10 seconds" (229). Use whole
+1. **His camera, his face, his voice.** The motion comes from his own
+   twin, never from a game character re-skinned. His face is seen and he is talking in his own voice:
+   the film's own voice (or, for a new line, his cloned ElevenLabs voice with no tag), never someone else's.
+2. **Never cut off the speech.** Lines run about 5 to 10 seconds. Use whole
    sentences, with the last word's tail inside the clip.
-3. **Draft first, then the final.** "once we confirm draft, we'll render at 1080p non-draft" (230). Drafts are 480p
-   ("Yes, 480p", 232).
+3. **Draft first, then the final.** Once he confirms the draft, render the 1080p non-draft. Drafts are 480p.
 4. **Price, ask, then run.** Get every paid step's price on the real inputs (`estimate_video_cost`, `higgsfield generate
    cost`, Fil `max_credits: 0`). Ask one plain question with credits and dollars, and run only on a yes he types in your own
    thread. A relayed yes doesn't count for video of him. Re-price a step whose input didn't exist when you asked. Stop if it
-   prices higher than you said. The HeyGen wallet is shared with DreamCut, so say the balance too. Price on the platform
+   prices higher than you said. A HeyGen wallet can be shared with other apps on the same key, so say the balance too. Price on the platform
    you'll run on: the same model costs differently on Higgsfield and in Fil (Seedream 5.0 Pro was 2.5 Higgsfield credits
    a still here and 10 Fil credits a still on a later film).
-5. **His camera stays as HeyGen made it.** Never grade, relight or sharpen his twin footage in the film (212, 214). The
+5. **His camera stays as HeyGen made it.** Never grade, relight or sharpen his twin footage in the film. The
    drive is a working copy for Genjutsu only.
-6. **Small head, eyes on the lens, a real mouth, real light** (225-226). The pauldrons or shoulders span about 4.0-4.5 face
+6. **Small head, eyes on the lens, a real mouth, real light.** The pauldrons or shoulders span about 4.0-4.5 face
    widths; a warm key falls off across the face with a cool rim.
-7. **"don't finish with big eyes"** (237). Genjutsu exaggerates, so a small brow lift in the drive becomes a startled
+7. **Never finish with big eyes.** Genjutsu exaggerates, so a small brow lift in the drive becomes a startled
    stare. Check the drive's last ~1.5 s before spending.
 8. **Hands off his screen.** Headless only: no clicks in the browser pane, no computer use, no recording. Show results
    with SendUserFile (`display: render`) and a copy in `~/Downloads/`.

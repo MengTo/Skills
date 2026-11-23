@@ -17,7 +17,7 @@ Greymourn's draft 1 used the Mac's built-in voice as a scratch track (`tools/scr
   (commas, "and", "so"; no "!" or "…"), numbers as words, a few light hedges; one paragraph per generation, two
   takes, keep the lower pitch. The full recipe is in his private `meng-digital-twin` skill. Price first with
   `max_credits: 0`; run on his typed yes.
-- Superseded: **Meng Voice 2026 Instant** with `[calm] ` (Greymourn, 17 Nov: the whole 720-word script in one take,
+- Superseded: his **earlier instant clone** with `[calm] ` (Greymourn, 17 Nov: the whole 720-word script in one take,
   31 credits, 3:56) or `[matter-of-fact]` (19–20 Nov).
 - The file starts at film time 0, so a word's time in the file is its time in the film. Since 19 Nov no silence goes
   in front and no pause is opened between paragraphs; the only shaping is the recipe's sentence-end pauses.

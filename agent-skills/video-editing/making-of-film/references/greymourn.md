@@ -42,7 +42,7 @@ cost (ledger, usage meter) · pay (what I'd keep) · end (canvas, links, Go buil
 | 4d | 17 Nov | every word re-timed phrase by phrase (34 of 89 phrases were early) | — |
 | 4e | 17 Nov | camera on the content grid, dead columns fixed, centred drift | 7.5–8 |
 | 4f | 18 Nov | the 8-level nits, drift halved | all 8+, none 9 |
-| 4g | 18–19 Nov | the camera at key places only (26 %), his Kimi twin, three reflows; grade removed (prompt 212) | twin frames 5–6; he kept them |
+| 4g | 18–19 Nov | the camera at key places only (26 %), his Kimi twin, three reflows; grade removed | twin frames 5–6; he kept them |
 
 ## His prompts about the film, and what each changed
 

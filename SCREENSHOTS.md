@@ -2,14 +2,40 @@
 
 Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.
 
-- Captured demos: 112
+- Captured demos: 116
 - Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)
 - Format: JPEG
 - Reveal hover effect: includes both default and interaction states
 
 Open the [visual browser gallery](SCREENSHOTS.html), or see [DEMOS.md](DEMOS.md) for the complete demo, prompt, and source index.
 
-## 3d (11)
+## 3d (14)
+
+### hover-particle-dissolve
+
+Brush grains off an actual model surface and let them settle back into its silhouette.
+
+[Open demo](agent-skills/3d/hover-particle-dissolve/demo/index.html) · [Skill](agent-skills/3d/hover-particle-dissolve/SKILL.md) · [Prompt](agent-skills/3d/hover-particle-dissolve/demo/PROMPT.md)
+
+[![Hover Particle Dissolve](agent-skills/3d/hover-particle-dissolve/demo/preview.jpg)](agent-skills/3d/hover-particle-dissolve/demo/index.html)
+
+### 3d-feature-objects
+
+Model and light a shelf of instruments that turn independently on hover.
+
+[Open demo](agent-skills/3d/3d-feature-objects/demo/index.html) · [Skill](agent-skills/3d/3d-feature-objects/SKILL.md) · [Prompt](agent-skills/3d/3d-feature-objects/demo/PROMPT.md)
+
+[![3D Feature Objects](agent-skills/3d/3d-feature-objects/demo/preview.jpg)](agent-skills/3d/3d-feature-objects/demo/index.html)
+
+### interactive-topography
+
+Draw fine contours for a timeline atlas and a raised relief with a press-triggered seismic wave.
+
+[Open demo](agent-skills/3d/interactive-topography/demo/index.html) · [Skill](agent-skills/3d/interactive-topography/SKILL.md) · [Prompt](agent-skills/3d/interactive-topography/demo/PROMPT.md)
+
+[![Interactive Topography](agent-skills/3d/interactive-topography/demo/preview.jpg)](agent-skills/3d/interactive-topography/demo/index.html)
+
+[![Field Access relief contours](agent-skills/3d/interactive-topography/demo/preview-feature.jpg)](agent-skills/3d/interactive-topography/demo/index.html)
 
 ### light-a-threejs-workspace
 
@@ -259,7 +285,15 @@ Use when you need design-first, spec-driven, skimmable prompts for UI generation
 
 ![design-first-ui-prompting preview screenshot](agent-skills/ui/design-first-ui-prompting/demo/preview.jpg)
 
-## web-design (82)
+## web-design (83)
+
+### gradient-border-flashlight
+
+Carry one soft pointer light across surfaces and adjacent gradient borders.
+
+[Open demo](agent-skills/web-design/gradient-border-flashlight/demo/index.html) · [Skill](agent-skills/web-design/gradient-border-flashlight/SKILL.md) · [Prompt](agent-skills/web-design/gradient-border-flashlight/demo/PROMPT.md)
+
+[![Gradient Border Flashlight](agent-skills/web-design/gradient-border-flashlight/demo/preview.jpg)](agent-skills/web-design/gradient-border-flashlight/demo/index.html)
 
 ### scroll-mesh-survey
 

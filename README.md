@@ -23,6 +23,13 @@ Portable by default. Each skill should work for any user, repo, or workspace unl
 
 Browse [all runnable demos and recreation prompts](DEMOS.md).
 
+## Saltmere interaction skills
+
+1. [Hover Particle Dissolve](agent-skills/3d/hover-particle-dissolve/SKILL.md) — Brush grains off an actual model surface and let them settle back into its silhouette.
+2. [3D Feature Objects](agent-skills/3d/3d-feature-objects/SKILL.md) — Model and light a shelf of instruments that turn independently on hover.
+3. [Interactive Topography](agent-skills/3d/interactive-topography/SKILL.md) — Draw fine contours for a timeline atlas and a raised relief with a press-triggered seismic wave.
+4. [Gradient Border Flashlight](agent-skills/web-design/gradient-border-flashlight/SKILL.md) — Carry one soft pointer light across surfaces and adjacent gradient borders.
+
 Explore the [3D rendering skills](agent-skills/3d/README.md) for ultra-realistic water, underwater god rays, virtual tours, sky rays, sky backgrounds, falling leaves, four seasons, detailed textures and models, and Retina rendering at 200%.
 
 Explore the [illustration skills](agent-skills/illustration/README.md) for 14 hand-written SVG illustration styles, from flat and outlined cartoon to halftone, one-line, isometric and vintage emblem, each with example cards, a palette, a drawing kit and a render-and-lint loop.
@@ -277,8 +284,11 @@ This snapshot contains **217 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### 3D rendering (27)
+### 3D rendering (30)
 
+- [Hover Particle Dissolve](agent-skills/3d/hover-particle-dissolve/SKILL.md) — Brush grains off an actual model surface and let them settle back into its silhouette.
+- [3D Feature Objects](agent-skills/3d/3d-feature-objects/SKILL.md) — Model and light a shelf of instruments that turn independently on hover.
+- [Interactive Topography](agent-skills/3d/interactive-topography/SKILL.md) — Draw fine contours for a timeline atlas and a raised relief with a press-triggered seismic wave.
 - [Light a Three.js Workspace](agent-skills/3d/light-a-threejs-workspace/SKILL.md) — Build a textured desk scene with working blinds and depth-clipped god rays.
 - [Model Three.js Control Icons](agent-skills/3d/model-threejs-control-icons/SKILL.md) — Model small physical instruments and render them into a shared icon atlas.
 
@@ -422,8 +432,9 @@ Assets, performance, QA, and release:
 
 Demo: [`game-dev-character-model`](agent-skills/game-development/game-dev-character-model/demo/index.html) - a concept image, the A-pose before/after and the four check views of an original heroine.
 
-### Web design (101)
+### Web design (102)
 
+- [Gradient Border Flashlight](agent-skills/web-design/gradient-border-flashlight/SKILL.md) — Carry one soft pointer light across surfaces and adjacent gradient borders.
 - [Scroll Mesh Survey](agent-skills/web-design/scroll-mesh-survey/SKILL.md) — Sweep a reversible topology band over a living form.
 - [Sylva Field Guide Layout](agent-skills/web-design/sylva-field-guide-layout/SKILL.md) — Align field-guide typography, rules and figure captions.
 - [Compose a Woodland Landing Page](agent-skills/web-design/compose-a-woodland-landing-page/SKILL.md) — Compose an editorial landing page around a living grove.

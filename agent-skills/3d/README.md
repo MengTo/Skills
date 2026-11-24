@@ -4,6 +4,9 @@ Reusable skills for atmospheric 3D scenes, real-time architecture, survey scans,
 
 | Skill | Use it for |
 | --- | --- |
+| [Hover Particle Dissolve](hover-particle-dissolve/SKILL.md) | Brush grains off an actual model surface and let them settle back into its silhouette. [Open demo](hover-particle-dissolve/demo/index.html). |
+| [3D Feature Objects](3d-feature-objects/SKILL.md) | Model and light a shelf of instruments that turn independently on hover. [Open demo](3d-feature-objects/demo/index.html). |
+| [Interactive Topography](interactive-topography/SKILL.md) | Draw fine contours for a timeline atlas and a raised relief with a press-triggered seismic wave. [Open demo](interactive-topography/demo/index.html). |
 | [Light a Three.js Workspace](light-a-threejs-workspace/SKILL.md) | A textured desk interior with adjustable blinds, shadows and volumetric window light. |
 | [Model Three.js Control Icons](model-threejs-control-icons/SKILL.md) | Miniature instruments with shaped reflections and a transparent icon atlas. |
 | [3D Ultra-Realistic Water](3d-ultra-realistic-water/SKILL.md) | Open oceans with per-pixel Gerstner waves, sun glitter, lace foam, a Kelvin wake and a seamless horizon, plus a runnable demo. |

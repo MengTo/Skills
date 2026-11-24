@@ -54,18 +54,22 @@ Use --force only when every locally generated demo should be intentionally regen
 
 ## Library coverage
 
-- Total: 112
-- 3d: 11
+- Total: 116
+- 3d: 14
 - codex: 13
 - game-development: 1
 - media: 2
 - ui: 5
-- web-design: 82
+- web-design: 83
 
 ## Demo index
 
 | Skill | Category | Demo | Preview | Prompt | Source |
 | --- | --- | --- | --- | --- | --- |
+| hover-particle-dissolve | 3d | [Open](agent-skills/3d/hover-particle-dissolve/demo/index.html) | [Preview](agent-skills/3d/hover-particle-dissolve/demo/preview.jpg) | [Prompt](agent-skills/3d/hover-particle-dissolve/demo/PROMPT.md) | Local |
+| 3d-feature-objects | 3d | [Open](agent-skills/3d/3d-feature-objects/demo/index.html) | [Preview](agent-skills/3d/3d-feature-objects/demo/preview.jpg) | [Prompt](agent-skills/3d/3d-feature-objects/demo/PROMPT.md) | Local |
+| interactive-topography | 3d | [Open](agent-skills/3d/interactive-topography/demo/index.html) | [Preview](agent-skills/3d/interactive-topography/demo/preview.jpg) | [Prompt](agent-skills/3d/interactive-topography/demo/PROMPT.md) | Local |
+| gradient-border-flashlight | web-design | [Open](agent-skills/web-design/gradient-border-flashlight/demo/index.html) | [Preview](agent-skills/web-design/gradient-border-flashlight/demo/preview.jpg) | [Prompt](agent-skills/web-design/gradient-border-flashlight/demo/PROMPT.md) | Local |
 | light-a-threejs-workspace | 3d | [Open](agent-skills/3d/light-a-threejs-workspace/demo/index.html) | [Preview](agent-skills/3d/light-a-threejs-workspace/demo/preview.jpg) | [Prompt](agent-skills/3d/light-a-threejs-workspace/demo/PROMPT.md) | Local |
 | model-threejs-control-icons | 3d | [Open](agent-skills/3d/model-threejs-control-icons/demo/index.html) | [Preview](agent-skills/3d/model-threejs-control-icons/demo/preview.jpg) | [Prompt](agent-skills/3d/model-threejs-control-icons/demo/PROMPT.md) | Local |
 | forest-floor-specimen | 3d | [Open](agent-skills/3d/forest-floor-specimen/demo/index.html) | [Preview](agent-skills/3d/forest-floor-specimen/demo/preview.jpg) | [Prompt](agent-skills/3d/forest-floor-specimen/demo/PROMPT.md) | Local |

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Observation notes</title>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#0a1017;color:#e9eff2;font:16px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}main{min-height:100svh;max-width:1540px;margin:auto;padding:clamp(22px,4vw,66px)}h1,h2,p{margin:0}h1{font-size:clamp(38px,6.4vw,94px);line-height:.98;letter-spacing:-.06em;font-weight:510}h2{font-weight:490;letter-spacing:-.035em;line-height:1.06}p{color:#a8b8c8}button{font:inherit;color:inherit;border:1px solid #587189;border-radius:3em;background:#132231;padding:8px 16px;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #b6ffec;outline-offset:4px}button[aria-pressed=true]{background:#a7d8d6;color:#10262c}.eyebrow,figcaption,small{font:500 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase;color:#9ccecc}.eyebrow{margin-bottom:15px}header p:last-child{margin-top:14px}canvas{display:block}figure{margin:0}button:disabled{opacity:.55;cursor:default}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
+
+body{background:radial-gradient(ellipse at 75% 0%,#17202f,#0b1018 65%)}main{display:flex;flex-direction:column;justify-content:center;gap:clamp(24px,5vh,55px)}.grid{display:grid;grid-template-columns:1.12fr 1fr 1fr;gap:14px}
+.note{position:relative;isolation:isolate;border-radius:18px;padding:clamp(17px,2.3vw,36px);min-height:clamp(210px,40vh,320px);background:linear-gradient(135deg,#1c2837,#111b27 73%);display:flex;flex-direction:column}
+.note::before,.lamp::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;padding:1px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.note::before{background:linear-gradient(128deg,#81979e9c,#42536977 22%,#29344366 56%,#91ada666)}.note small{margin-bottom:auto;color:#8eafb8}
+.note h2{font-size:clamp(28px,3.5vw,54px);margin:24px 0 8px}.note p{font-size:15px;max-width:27ch}
+.lamp{position:absolute;inset:0;border-radius:inherit;z-index:1;pointer-events:none;opacity:0;transition:opacity .18s ease}
+@media(hover:hover) and (pointer:fine) and (forced-colors:none){
+.note.near .lamp{opacity:1}.lamp{background:radial-gradient(circle var(--radius) at var(--x) var(--y),#c8e6ff21,#b0d8ff0b 47%,transparent)}
+.lamp::after{background:radial-gradient(circle var(--radius) at var(--x) var(--y),#dafaff,#9cd0f099 44%,transparent)}
+}a{color:#bdd9db;align-self:start;text-underline-offset:4px;margin-top:18px}.detail{color:#cadadf;min-height:1.5em;font-size:14px}summary{margin-top:15px;width:max-content;cursor:pointer;color:#b7d4d5}summary:focus-visible{outline:2px solid #b6ffec;outline-offset:4px}details p{margin-top:7px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.note{min-height:190px}}
+@media(forced-colors:active){.note{border:1px solid CanvasText}.note::before,.lamp{display:none}}
+
+</style>
+</head>
+<body>
+<main><header><p class="eyebrow">Field notebook</p><h1>Observation notes</h1><p>Move the pointer between cards to light their adjoining edges.</p></header>
+<section class="grid" aria-label="Field notes">
+<article class="note"><span class="lamp" aria-hidden="true"></span><small>North inlet · Dawn</small><h2>First light</h2><p>Fog lifts from the water just after the tide turns.</p><details><summary>Reading</summary><p>Visibility 400 m</p></details></article>
+<article class="note"><span class="lamp" aria-hidden="true"></span><small>Glass cape · Noon</small><h2>High water</h2><p>The new mark sits above last spring’s highest reading.</p><details><summary>Reading</summary><p>Tidal range 1.86 m</p></details></article>
+<article class="note"><span class="lamp" aria-hidden="true"></span><small>Low sound · Dusk</small><h2>Still air</h2><p>Wind drops and the surface holds a steady reflection.</p><details><summary>Reading</summary><p>Wind speed 2 knots</p></details></article>
+</section></main>
+<script>
+
+const cards=[...document.querySelectorAll('.note')],visible=new Set();
+const capable=matchMedia('(hover:hover) and (pointer:fine) and (forced-colors:none)');
+const radius=255;document.documentElement.style.setProperty('--radius',radius+'px');
+let point=null,frame=0;
+function schedule(){if(!frame)frame=requestAnimationFrame(paint);}
+function paint(){
+  frame=0;
+  // Read every rectangle first so that a style update cannot force a layout per card.
+  const readings=[...visible].map(card=>[card,card.getBoundingClientRect()]);
+  for(const [card,r] of readings){
+    const x=point?point.x-r.left:0,y=point?point.y-r.top:0;
+    const distance=Math.hypot(Math.max(0,-x,x-r.width),Math.max(0,-y,y-r.height));
+    const near=!!point&&capable.matches&&distance<radius;
+    if(near){card.style.setProperty('--x',x+'px');card.style.setProperty('--y',y+'px');}
+    card.classList.toggle('near',near);
+  }
+}
+function clear(){point=null;schedule();}
+const observer=new IntersectionObserver(entries=>{
+  for(const e of entries){if(e.isIntersecting)visible.add(e.target);else{visible.delete(e.target);e.target.classList.remove('near');}}
+  schedule();
+});
+for(const card of cards)observer.observe(card);
+document.addEventListener('pointermove',e=>{
+  if(e.pointerType==='touch'||!capable.matches){if(point)clear();return;}
+  point={x:e.clientX,y:e.clientY};schedule();
+},{passive:true});
+document.addEventListener('scroll',schedule,{capture:true,passive:true});
+const resize=new ResizeObserver(schedule);for(const card of cards)resize.observe(card);
+document.documentElement.addEventListener('pointerleave',clear);
+document.addEventListener('pointercancel',clear);window.addEventListener('blur',clear);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();});
+capable.addEventListener('change',clear);
+
+</script>
+</body>
+</html>

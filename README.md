@@ -197,6 +197,11 @@ agent-skills/
       SKILL.md
       references/
       scripts/
+    room-short-9x16/
+      SKILL.md
+      references/
+      scripts/
+      assets/
   ui/
     design-first-ui-prompting/
       SKILL.md
@@ -361,6 +366,7 @@ Image sourcing, video and likeness skills:
 
 - `genjutsu-scene` - a scene of yourself inside a game, three.js or Blender world, in its costume and light, saying your line with your own face and voice: your HeyGen Avatar 6 twin drives Genjutsu motion transfer, Sync Lipsync 3 on your voice, a 4K60 insert, blind judges.
 - `long-video-to-short` - a 60-second 9:16 short (Reels, Shorts, TikTok) from a finished long video: the script in your cloned voice, captions timed to the sound by phrases, the long video's own footage behind, you on camera as your HeyGen Avatar 6 twin (a Higgsfield Genjutsu re-skin only where a scene needs it), two cuts under 30 MB, checks on the rendered file, independent judges, posts saved paused.
+- `room-short-9x16` - a 60-second 9:16 short set in your own 3D room: it asks first how the stills, storyboard, Blender scenes, script, cover and posting should be set up, then a black-and-white storyboard, scene stills in one look, the demo on your real devices rendered in Blender on a rented GPU, you on camera from Seedance 2.5 (drafts, then 1080p finals of the picked takes), words set in the scene, music from a measured reference, the cover as the first frame, two cuts, checks and a judge, with every prompt.
 - `making-of-film` - a 4–5 minute "how I made X" YouTube film from a finished project: script in your voice, the project's own look and captures, every cut on a word, a digital twin at key places, 4K60, blind judges.
 
 ### UI (7)

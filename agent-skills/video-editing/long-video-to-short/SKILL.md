@@ -59,6 +59,9 @@ free and a render is repeatable.
    set, and a twin on camera means the label is yes.
 8. **No paid-partnership label on a short nobody paid for.** If the long video had a sponsor, the caption says "The
    full video is sponsored by X."
+9. **Every word inside the centred 3:4 area.** In the 1080 × 1920 frame that is y 240 to 1680, with a little to
+   spare. Instagram's grid and profile show that middle and cut the rest. Headlines, captions and the cover's type
+   all stay inside it; measure the drawn frames, don't judge by eye.
 
 ## Workflow
 

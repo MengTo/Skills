@@ -136,8 +136,13 @@ What the Blender room lacks against the three.js one: glass, thin plant stems, s
 a heavy last line), `at` (where it sits), `ink` (`dark` on a light wall) and `scale`.
 
 - On dark shots: off-white light line, heavy line in orange or off-white, with a soft shadow.
-- On a light wall: both lines in dark ink at `scale` 0.86. Orange on beige measured 1.35:1 and the judge could not
+- On a light wall: both lines in dark ink at `scale` 0.8 (0.86 before the 3:4 rule). Orange on beige measured 1.35:1 and the judge could not
   read it; descenders touched the lamp bar at full size.
+- **Every word sits inside the centred 3:4 area of the 9:16 frame: y 240 to 1680 of 1920, with 10 px to spare.**
+  Instagram's grid and profile show that middle and cut the rest, so a caption at the very top loses its first line.
+  This holds for captions, the cover's type and logo, and anything else meant to be read. `scripts/safe_area.py`
+  measures every frame's words and fails naming the section outside; run it before every export. If the words then
+  touch something in the shot (a lamp bar, a webcam), make them smaller (`scale` 0.8 here), don't move them out.
 - Never across their face or the page on the screen. On their shots the words sit on the shirt, below the hands.
 - A clip that changes page in its last frames flashes at the cut: trim and hold the last good frame.
 
@@ -152,8 +157,8 @@ about 15 dB under the voice, fade the last 1.3 s, and loudness-normalise the mix
 ## The cover is the first frame
 
 Shorts and TikTok take a frame, not an upload, so the cover has to be in the video. `assets/cover.html` draws it over
-the hook's first frame (logo above a light line above the big name, off-white, below their hands, inside the 4:5 feed
-crop). `cover-overlay.mjs` saves the same type as a see-through PNG; `scenes.py` holds it over the hook until the
+the hook's first frame (logo above a light line above the big name, off-white, below their hands, inside the 3:4 area
+and the 4:5 feed crop). `cover-overlay.mjs` saves the same type as a see-through PNG; `scenes.py` holds it over the hook until the
 subject's name has been said (frame 87 here), fades it in nine frames, and starts captions after it. Use a real logo
 file, never a redrawn one.
 
@@ -161,6 +166,7 @@ file, never a redrawn one.
 
 - Instagram's cut ends "Comment WORD and I'll send you every prompt"; Shorts and TikTok end "check the full video in
   the description". Export the first, swap the closing clip, then `export.py --tag d --reuse ''`.
+- `safe_area.py` (and `--tag d`) passes: no word outside the 3:4 area.
 - Both files: under 30 MB, 1080 × 1920 at 60 fps, bt709, about −14 LUFS, no silence over 1 s, transcript word for
   word, captions 20 to 70 ms early.
 - One independent judge on frame strips (brief in `references/prompts.md`). Fix its lowest item and report the
@@ -190,6 +196,8 @@ Log every paid run with the creator's words that allowed it.
 - Earlier cuts seated a cut-out Avatar twin in the room; the creator then asked for Seedance shots from the stills,
   which are full frame and need no cut-out.
 - Orange heavy lines on a light wall.
+- Captions set 10 px above the 3:4 area, found by the creator in the scheduled posts' previews. Both cuts were
+  re-rendered and the posts' videos replaced.
 - A cover made as a separate image, then moved into the video.
 - Posting asked for while the full video was still unlisted: check that first.
 
@@ -197,7 +205,7 @@ Log every paid run with the creator's words that allowed it.
 
 - `references/prompts.md`: every prompt (storyboard, look, scene stills, Seedance lines and working shot, finals,
   music, judge).
-- `scripts/`: `export-glb.mjs`, `anim.mjs`, `shot.mjs`, `build.py`, `render.py`, `scenes.py`, `sheet.py`,
+- `scripts/`: `export-glb.mjs`, `anim.mjs`, `shot.mjs`, `build.py`, `render.py`, `scenes.py`, `safe_area.py`, `sheet.py`,
   `record-reference-audio.mjs`, `cover-shot.mjs`, `cover-overlay.mjs`. The `.mjs` files need `playwright` installed
   (its bundled Chromium, never real Chrome).
 - `assets/`: `plan-example.json`, `cover.html`, `posts-example.md`.

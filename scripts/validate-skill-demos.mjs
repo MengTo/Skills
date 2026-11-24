@@ -14,6 +14,8 @@ const skillFiles = execFileSync(
   .trim()
   .split("\n")
   .filter(Boolean)
+  // Index only skills that ship a demo folder; demos are optional (README folder contract).
+  .filter((file) => file.split("/").length === 4 && existsSync(path.join(root, path.dirname(file), "demo", "index.html")))
   .sort();
 
 const failures = [];

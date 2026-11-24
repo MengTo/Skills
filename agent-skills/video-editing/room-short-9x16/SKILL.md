@@ -104,6 +104,9 @@ Scripts are in `scripts/`. The creator's room model is private: never upload it 
    JSON (colours pulled 75% toward white: three.js lamp colours render far too yellow in Cycles), gives `SCREEN` an
    emission material fed by an image sequence, and a near-black world.
 3. **Record each page** as frames (`anim.mjs`, or frames pulled from the long video's 4K master), one folder per clip.
+   **Every demo scene moves:** the page scrolls or is being used in every clip, from a real recording of the
+   finished page (speed a slow scroll up 2 to 3 times). A page held still on the display reads as a screenshot;
+   the creator sent the first cut back for five still scenes.
 4. **Render a clip** (`render.py`): the camera frames the screen by how much of the frame it fills (`fill`), with a
    slow eased move (`side`, `up`), depth of field focused on the screen, Cycles with AgX. Options: `seq, n, out,
    frames, step, fill, side, up, samples, fstop, exposure, device, dn`. Render at 30 fps (`step: 2`) and double to 60.

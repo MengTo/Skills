@@ -13,14 +13,22 @@
   const W = 1200;
   const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
-  /** How far t is through a → b, eased in and out (0 to 1). */
+  /** How far t is through a → b, eased in and out (0 to 1). Guards b <= a against 0/0 NaN. */
   function ease(t, a, b) {
+    if (b <= a) return t >= b ? 1 : 0;
     const x = clamp01((t - a) / (b - a));
     return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   }
-  /** `text` as typed by t: nothing before a, all of it by b. */
+  const _seg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
+  function _graphemes(str) {
+    const s = String(str ?? '');
+    return _seg ? Array.from(_seg.segment(s), (g) => g.segment) : Array.from(s);
+  }
+  /** `text` as typed by t: nothing before a, all of it by b. Slices by grapheme cluster (safe for Arabic Tashkeel & emoji surrogates). */
   function typed(text, t, a, b) {
-    return text.slice(0, Math.round(text.length * clamp01((t - a) / (b - a))));
+    const chars = _graphemes(text);
+    const ratio = b <= a ? (t >= b ? 1 : 0) : clamp01((t - a) / (b - a));
+    return chars.slice(0, Math.round(chars.length * ratio)).join('');
   }
   /** The value of the last cue whose time has come ([[at, value], …]). */
   function cue(t, cues, before) {
@@ -40,7 +48,7 @@
     let [, , x, y] = path[0];
     for (let j = 1; j < path.length; j++) {
       const [a, b, nx, ny] = path[j];
-      if (t <= a) break;
+      if (t < a) break;
       const k = ease(t, a, b);
       x += (nx - x) * k;
       y += (ny - y) * k;
@@ -187,6 +195,12 @@
       render();
     }
     function seek(s) {
+      if (s >= total && steps.length > 0) {
+        const lastIdx = steps.length - 1;
+        at = { i: lastIdx, t: steps[lastIdx].dur };
+        render();
+        return;
+      }
       let i = 0;
       let t = Math.min(Math.max(0, s), total - 1e-3);
       while (i < steps.length - 1 && t >= steps[i].dur) t -= steps[i++].dur;

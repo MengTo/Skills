@@ -88,10 +88,13 @@
   flex: 1;
 }
 
-/* The stage: the app at its design size, scaled as a whole. */
+/* The stage: the app at its design size, scaled as a whole.
+   Keep geometric coordinate stage direction: ltr so transform-origin: 0 0
+   and cursor translate(x, y) never shift off-screen inside RTL pages. */
 .hd-view {
   --k: 0.6;
   position: relative;
+  direction: ltr;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: #08090a;
@@ -215,7 +218,19 @@
   border-radius: 2px;
   background:
     linear-gradient(
-      90deg,
+      to inline-end,
+      #c3c6cc calc(var(--p) * 100%),
+      transparent calc(var(--p) * 100%)
+    ),
+    rgba(255, 255, 255, 0.08);
+}
+[dir="rtl"] .hd-steps button {
+  text-align: right;
+}
+[dir="rtl"] .hd-steps i {
+  background:
+    linear-gradient(
+      270deg,
       #c3c6cc calc(var(--p) * 100%),
       transparent calc(var(--p) * 100%)
     ),

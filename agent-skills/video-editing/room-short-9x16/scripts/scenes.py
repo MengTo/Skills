@@ -31,7 +31,7 @@ def layout(name):
                 tot = sum(width(w, f, tr * size) for w in ws) + sp * (len(ws) - 1)
                 if tot <= maxw or size < 60: break
                 size -= 6
-            INK = (26, 23, 20) if S.get('ink') == 'dark' else WHITE; col = (ORANGE if (len(lines) > 1 and S.get('ink') != 'dark') else INK) if heavy else INK
+            INK = (26, 23, 20) if S.get('ink') == 'dark' else WHITE; col = tuple(S['accent']) if (heavy and S.get('accent')) else INK   # no accent colour unless the plan names one
             x = x0; items = []
             for w in ws: items.append((k, x, w)); x += width(w, f, tr * size) + sp; k += 1
             rows.append((y, size, wg, tr * size, col, items)); y += int(size * (1.0 if heavy else 1.12))

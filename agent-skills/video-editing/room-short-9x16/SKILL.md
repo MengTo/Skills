@@ -59,7 +59,7 @@ the last run's answer offered as the default they can accept or change.
    - How they appear: Seedance 2.5 from stills, their avatar twin, or real camera takes? Drafts first, and may the
      picked drafts be made into 1080p finals (price first)?
 6. **The words on screen.** Font, the light line plus heavy phrase or another style, and the accent colour (last run:
-   Inter Tight, off-white with orange on dark shots, dark ink on a light wall).
+   Inter Tight, off-white on dark shots, dark ink on a light wall).
 7. **The cover.**
    - Which logo (a real file), the big name or number, and the light line above it.
    - Colour (last run: off-white, no orange), the logo above the line, both large.
@@ -138,7 +138,8 @@ What the Blender room lacks against the three.js one: glass, thin plant stems, s
 `scripts/scenes.py` (drop-in for `long-video-to-short`'s). Each section in `plan.json` has `pages` (a light line and
 a heavy last line), `at` (where it sits), `ink` (`dark` on a light wall) and `scale`.
 
-- On dark shots: off-white light line, heavy line in orange or off-white, with a soft shadow.
+- On dark shots: both lines off-white, with a soft shadow. No orange by default: the creator keeps orange for videos
+  about one product whose colour it is. Ask the accent colour; when unsure, off-white.
 - On a light wall: both lines in dark ink at `scale` 0.8 (0.86 before the 3:4 rule). Orange on beige measured 1.35:1 and the judge could not
   read it; descenders touched the lamp bar at full size.
 - **Every word sits inside the centred 3:4 area of the 9:16 frame: y 240 to 1680 of 1920, with 10 px to spare.**

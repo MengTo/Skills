@@ -15,6 +15,8 @@ const skillFiles = execFileSync(
   .trim()
   .split("\n")
   .filter(Boolean)
+  // Index only skills that ship a demo folder; demos are optional (README folder contract).
+  .filter((file) => file.split("/").length === 4 && existsSync(path.join(root, path.dirname(file), "demo", "index.html")))
   .sort();
 
 const workflowExamples = {
@@ -845,10 +847,14 @@ async function writeDemo(skillFile) {
   await writeGenerated(path.join(demoDirectory, "PROMPT.md"), promptMarkdown(skill, kind));
   if (kind === "workflow") {
     const example = workflowExamples[skill.name];
-    if (!example) throw new Error("Missing workflow example for " + skill.name);
-    await writeGenerated(path.join(demoDirectory, "input.md"), example.input + "\n");
-    await writeGenerated(path.join(demoDirectory, "expected-output.md"), example.output + "\n");
-    await writeGenerated(path.join(demoDirectory, "index.html"), workflowHtml(skill, example));
+    if (example) {
+      await writeGenerated(path.join(demoDirectory, "input.md"), example.input + "\n");
+      await writeGenerated(path.join(demoDirectory, "expected-output.md"), example.output + "\n");
+      await writeGenerated(path.join(demoDirectory, "index.html"), workflowHtml(skill, example));
+    } else if (!existsSync(path.join(demoDirectory, "index.html"))) {
+      // A hand-built workflow demo needs no generated example.
+      throw new Error("Missing workflow example for " + skill.name);
+    }
   } else {
     await writeGenerated(path.join(demoDirectory, "index.html"), visualHtml(skill, category, kind));
   }
@@ -870,7 +876,7 @@ const fence = String.fromCharCode(96).repeat(3);
 const index = [
   "# Skill Demos",
   "",
-  "Every tracked skill has a portable demo and the exact prompt needed to recreate or remix it.",
+  "Every skill that ships a `demo/` folder is listed here with its portable demo and the exact prompt needed to recreate or remix it.",
   "",
   "## Folder contract",
   "",

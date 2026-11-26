@@ -1,0 +1,4 @@
+interface:
+  display_name: "Animate Procedural Birds"
+  short_description: "Rig a perching bird and keep its feet, feathers and shadows coherent."
+  default_prompt: "Use $animate-procedural-birds to build a Japanese wagtail with a dark bib, pale eyebrow, barred wings and long tail."

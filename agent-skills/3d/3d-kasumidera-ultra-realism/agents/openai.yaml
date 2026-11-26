@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kasumidera Ultra-Realism"
+  short_description: "Art-direct walkable, painterly Three.js worlds"
+  default_prompt: "Use $3d-kasumidera-ultra-realism to refine my Three.js environment, preserve its opening camera and palette, and review the nearest materials at 200%."

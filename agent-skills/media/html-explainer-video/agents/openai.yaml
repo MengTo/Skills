@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Explainer Video"
+  short_description: "One-minute explainers in any look, drawn from one clock"
+  default_prompt: "Use $html-explainer-video to explain this feature in one minute, in the look of our site. No camera."

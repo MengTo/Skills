@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultra-Realistic Game Interiors"
+  short_description: "Build and review playable, photoreal Three.js rooms"
+  default_prompt: "Use $build-ultra-realistic-game-interiors to bring this playable Three.js interior closer to its references. Preserve the camera and show the result in motion."

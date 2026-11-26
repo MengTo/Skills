@@ -1,0 +1,4 @@
+interface:
+  display_name: "Painted Product Showcase"
+  short_description: "Stage working HTML demos over landscape paintings"
+  default_prompt: "Use $painted-product-showcase to stage working HTML demos over landscape paintings."

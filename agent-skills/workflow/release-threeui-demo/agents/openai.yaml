@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release a ThreeUI Demo"
+  short_description: "Ship a live ThreeUI demo and prepare its social posts"
+  default_prompt: "Use $release-threeui-demo to release this Three.js project with a verified 4K60 MP4, three technique skills, and Fil drafts for X, Threads and LinkedIn."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Control Camera Lenses"
+  short_description: "Frame a shot in millimetres and track a subject with shallow focus."
+  default_prompt: "Use $control-camera-lenses to build a lens study with three clusters of autumn leaves at measured depths."

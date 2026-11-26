@@ -1,0 +1,4 @@
+interface:
+  display_name: "Woodland Chapter Cameras"
+  short_description: "Stage one live woodland across several scroll chapters."
+  default_prompt: "Use $woodland-chapter-cameras to implement this treatment in my project."

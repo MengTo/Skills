@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Surface dissolution</title>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#0a1017;color:#e9eff2;font:16px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}main{min-height:100svh;max-width:1540px;margin:auto;padding:clamp(22px,4vw,66px)}h1,h2,p{margin:0}h1{font-size:clamp(38px,6.4vw,94px);line-height:.98;letter-spacing:-.06em;font-weight:510}h2{font-weight:490;letter-spacing:-.035em;line-height:1.06}p{color:#a8b8c8}button{font:inherit;color:inherit;border:1px solid #587189;border-radius:3em;background:#132231;padding:8px 16px;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #b6ffec;outline-offset:4px}button[aria-pressed=true]{background:#a7d8d6;color:#10262c}.eyebrow,figcaption,small{font:500 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase;color:#9ccecc}.eyebrow{margin-bottom:15px}header p:last-child{margin-top:14px}canvas{display:block}figure{margin:0}button:disabled{opacity:.55;cursor:default}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
+
+main{min-height:100svh;display:grid;grid-template-columns:minmax(270px,.76fr) minmax(0,1.52fr);gap:3vw;align-items:center}
+header{position:relative;z-index:1}header p{max-width:30ch}button{margin-top:24px}
+figure{position:relative;height:clamp(350px,84svh,790px);border:1px solid #263646;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 49% 46%,#253a4d,#101c29 65%,#0b141d)}
+canvas{width:100%;height:100%;touch-action:pan-y}figcaption{position:absolute;bottom:20px;left:22px;pointer-events:none}
+@media(max-width:680px){main{grid-template-columns:1fr;gap:22px}figure{height:56svh}h1 br{display:none}}
+
+</style>
+</head>
+<body>
+<main>
+<header><p class="eyebrow">Material studies</p><h1>Surface<br> dissolution</h1><p>Brush the knot to loosen its surface into grains. Move away to let it reform.</p><button type="button" aria-pressed="false">Preview dissolve</button></header>
+<figure><canvas role="img" aria-label="A folded metallic knot that sheds grains under the pointer"></canvas><figcaption>Brushed alloy · Torus knot</figcaption></figure>
+</main>
+<script src="assets/three.min.js"></script>
+<script>
+
+const canvas = document.querySelector('canvas');
+const toggle = document.querySelector('button');
+const motion = matchMedia('(prefers-reduced-motion: reduce)');
+function mount() {
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, .1, 40);
+  const shape = new THREE.TorusKnotGeometry(1, .31, 240, 28);
+  const pivot = new THREE.Group();
+  pivot.rotation.set(.28, -.45, -.45);
+  scene.add(pivot);
+  const brush = {value:new THREE.Vector3()}, amount = {value:0}, clock = {value:0};
+  const density = {value:1};
+  const uniforms = {brush, amount, clock, density};
+  const field = [
+    'uniform vec3 brush; uniform float amount;',
+    'float erosion(vec3 p){',
+    ' float grain=.038*sin(dot(p,vec3(19.,11.,9.)))+.023*cos(dot(p,vec3(-14.,29.,23.)));',
+    ' return clamp(.08+distance(p,brush)*.69+grain,.04,1.5);',
+    '}'
+  ].join('\n');
+  const solid = new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader:'varying vec3 home,n,v; void main(){home=position; vec4 p=modelViewMatrix*vec4(position,1.); n=normalMatrix*normal; v=-p.xyz; gl_Position=projectionMatrix*p;}',
+    fragmentShader:field+[
+      'varying vec3 home,n,v; void main(){if(erosion(home)<amount) discard;',
+      'vec3 N=normalize(n), V=normalize(v); float l=dot(N,normalize(vec3(-.5,.82,1.)));',
+      'float rim=pow(1.-max(0.,dot(N,V)),2.3); float band=dot(reflect(-V,N),normalize(vec3(-.6,.7,.3)));',
+      'vec3 c=mix(vec3(.10,.19,.29),vec3(.53,.77,.81),smoothstep(-.5,1.,l));',
+      'c+=vec3(.44,.31,.20)*smoothstep(.72,.93,band)+vec3(.18,.27,.31)*rim;',
+      'c*=.96+.04*sin(home.z*165.+home.x*38.);gl_FragColor=vec4(c,1.);}'
+    ].join('\n')
+  });
+  const mesh = new THREE.Mesh(shape, solid);
+  pivot.add(mesh);
+  // Choose triangles in proportion to surface area, then sample each uniformly.
+  let seed = 722;
+  function random(){ seed=(Math.imul(seed,1664525)+1013904223)>>>0; return seed/4294967296; }
+  const index = shape.index.array, pos = shape.attributes.position, norm = shape.attributes.normal;
+  const area = [], a=new THREE.Vector3(), b=a.clone(), c=a.clone(), triangle=new THREE.Triangle(a,b,c);
+  let total=0;
+  for(let i=0;i<index.length;i+=3){
+    a.fromBufferAttribute(pos,index[i]); b.fromBufferAttribute(pos,index[i+1]); c.fromBufferAttribute(pos,index[i+2]);
+    total+=triangle.getArea(); area.push(total);
+  }
+  const count=36000, homes=new Float32Array(count*3), normals=new Float32Array(count*3), seeds=new Float32Array(count);
+  for(let i=0;i<count;i++){
+    let lo=0,hi=area.length-1; const pick=random()*total;
+    while(lo<hi){const m=(lo+hi)>>>1;if(area[m]<pick)lo=m+1;else hi=m;}
+    const start=lo*3, u=Math.sqrt(random()), v=random(), weights=[1-u,u*(1-v),u*v];
+    for(let j=0;j<3;j++){
+      const n=index[start+j], w=weights[j];
+      for(let k=0;k<3;k++){homes[i*3+k]+=pos.array[3*n+k]*w;normals[i*3+k]+=norm.array[3*n+k]*w;}
+    }
+    seeds[i]=random();
+  }
+  const cloud = new THREE.BufferGeometry();
+  cloud.setAttribute('position',new THREE.BufferAttribute(homes,3));
+  cloud.setAttribute('normal',new THREE.BufferAttribute(normals,3));
+  cloud.setAttribute('seed',new THREE.BufferAttribute(seeds,1));
+  const dust = new THREE.ShaderMaterial({
+    uniforms, transparent:true, depthWrite:false,
+    vertexShader:field+[
+      'uniform float clock,density;attribute float seed;varying float alpha,tone;',
+      'void main(){float d=erosion(position);float freed=smoothstep(d-.045,d+.13,amount);',
+      'alpha=freed*smoothstep(0.,.06,amount);tone=seed;',
+      'float spread=seed<.65?.06:(seed<.91?.28:.77);',
+      'vec3 flow=vec3(sin(position.y*3.+clock*1.3+seed*4.),cos(position.z*4.+clock+seed*3.),sin(position.x*3.-clock));',
+      'vec3 p=position+freed*spread*(normalize(normal)*.63+flow*.5+vec3(.46,.26,0.));',
+      'gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);gl_PointSize=density*(1.2+1.8*seed);}'
+    ].join('\n'),
+    fragmentShader:'varying float alpha,tone; void main(){float r=length(gl_PointCoord-.5);if(r>.5||alpha<.01)discard;vec3 c=mix(vec3(.39,.63,.78),vec3(.84,.94,.96),tone);if(tone>.95)c=vec3(.99,.71,.44);gl_FragColor=vec4(c,alpha*(1.-smoothstep(.28,.5,r)));}'
+  });
+  const grains=new THREE.Points(cloud,dust);grains.frustumCulled=false;pivot.add(grains);
+  const ray=new THREE.Raycaster(), pointer=new THREE.Vector2(), aim=new THREE.Vector3();
+  // Use a front-facing point from the actual mesh for the keyboard preview.
+  scene.updateMatrixWorld(true);
+  let front=0,z=-Infinity;
+  for(let i=0;i<count;i+=19){a.fromArray(homes,i*3).applyMatrix4(pivot.matrixWorld);if(a.z>z){z=a.z;front=i;}}
+  const example=new THREE.Vector3().fromArray(homes,front*3);
+  let active=false, preview=false, raf=0, prev=0;
+  function schedule(){if(!raf&&!document.hidden)raf=requestAnimationFrame(draw);}
+  function draw(now){
+    raf=0;const dt=Math.min(.06,(now-prev)/1000||.016);prev=now;
+    const target=!motion.matches&&(active||preview)?1:0;
+    brush.value.lerp(active?aim:preview?example:brush.value,1-Math.exp(-16*dt));
+    amount.value=motion.matches?0:THREE.MathUtils.damp(amount.value,target,target?8:3.5,dt);
+    if(!target&&amount.value<.001)amount.value=0;
+    clock.value=now/1000;grains.visible=amount.value>0;renderer.render(scene,camera);
+    if(target||amount.value>0)schedule();
+  }
+  function hit(e){
+    const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);
+    ray.setFromCamera(pointer,camera);
+    const point=ray.intersectObject(mesh,false)[0];active=!!point;
+    if(point){mesh.worldToLocal(aim.copy(point.point));if(!amount.value)brush.value.copy(aim);}
+    schedule();
+  }
+  canvas.addEventListener('pointermove',hit);
+  canvas.addEventListener('pointerdown',hit);
+  function release(){active=false;schedule();}
+  for(const event of ['pointerleave','pointercancel'])canvas.addEventListener(event,release);
+  canvas.addEventListener('pointerup',e=>{if(e.pointerType==='touch')release();});
+  function reset(){release();preview=false;toggle.setAttribute('aria-pressed','false');toggle.textContent='Preview dissolve';}
+  toggle.onclick=()=>{preview=!preview;toggle.setAttribute('aria-pressed',String(preview));toggle.textContent=preview?'Reform surface':'Preview dissolve';if(preview&&!amount.value)brush.value.copy(example);schedule();};
+  function preferences(){reset();toggle.disabled=motion.matches;}
+  motion.addEventListener('change',preferences);window.addEventListener('blur',reset);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)reset();else schedule();});
+  new ResizeObserver(()=>{
+    const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;
+    density.value=Math.min(devicePixelRatio||1,2);renderer.setPixelRatio(density.value);renderer.setSize(w,h,false);
+    camera.aspect=w/h;camera.position.z=6.4/Math.min(1,camera.aspect);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+    schedule();
+  }).observe(canvas);
+  preferences();
+}
+try{mount();}catch(error){toggle.disabled=true;document.querySelector('figcaption').textContent='WebGL is required to view this study';console.error(error);}
+
+</script>
+</body>
+</html>

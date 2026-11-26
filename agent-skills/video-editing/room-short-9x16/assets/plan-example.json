@@ -1,0 +1,371 @@
+{
+ "sections": [
+  {
+   "name": "hook",
+   "para": "H",
+   "in": 0,
+   "words": [
+    0,
+    11
+   ],
+   "pages": [
+    [
+     "Astra six",
+     "point two"
+    ],
+    [
+     "can build",
+     "almost anything"
+    ],
+    [
+     "you show it,"
+    ]
+   ],
+   "at": [
+    64,
+    1090
+   ]
+  },
+  {
+   "name": "designs",
+   "para": "A",
+   "in": 3.5,
+   "out": 7.57,
+   "words": [
+    11,
+    21
+   ],
+   "pages": [
+    [
+     "so I showed",
+     "Codex"
+    ],
+    [
+     "three designs,"
+    ],
+    [
+     "and after",
+     "some polish,"
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "spin",
+   "para": "A",
+   "in": 7.57,
+   "out": 9.42,
+   "words": [
+    21,
+    28
+   ],
+   "pages": [
+    [
+     "I had",
+     "a mountain"
+    ],
+    [
+     "you can spin,"
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "ledger",
+   "para": "A",
+   "in": 9.42,
+   "out": 10.87,
+   "words": [
+    28,
+    33
+   ],
+   "pages": [
+    [
+     "a ledger",
+     "that adds up,"
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "boss",
+   "para": "A",
+   "in": 10.87,
+   "words": [
+    33,
+    40
+   ],
+   "tail": 0.1,
+   "pages": [
+    [
+     "and a",
+     "boss fight"
+    ],
+    [
+     "you can play."
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "picture",
+   "para": "B",
+   "in": 0,
+   "out": 5.1,
+   "words": [
+    0,
+    17
+   ],
+   "pages": [
+    [
+     "but the model",
+     "can only build"
+    ],
+    [
+     "what you",
+     "show it,"
+    ],
+    [
+     "so the",
+     "real work"
+    ],
+    [
+     "is the picture,"
+    ]
+   ],
+   "at": [
+    64,
+    1120
+   ]
+  },
+  {
+   "name": "tool",
+   "para": "B",
+   "in": 5.1,
+   "words": [
+    17,
+    32
+   ],
+   "tail": 0.1,
+   "pages": [
+    [
+     "and I design",
+     "mine in my design tool,"
+    ],
+    [
+     "as one",
+     "long page,"
+    ],
+    [
+     "one section",
+     "at a time."
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "turn",
+   "para": "T",
+   "in": 0,
+   "words": [
+    0,
+    14
+   ],
+   "pages": [
+    [
+     "so here's how",
+     "I write"
+    ],
+    [
+     "the prompt."
+    ],
+    [
+     "one, describe",
+     "the layout,"
+    ],
+    [
+     "not the vibe,"
+    ]
+   ],
+   "at": [
+    64,
+    1130
+   ]
+  },
+  {
+   "name": "layout",
+   "para": "C",
+   "in": 5.55,
+   "out": 10.33,
+   "words": [
+    14,
+    26
+   ],
+   "pages": [
+    [
+     "so say",
+     "the headline's size,"
+    ],
+    [
+     "its exact word,"
+    ],
+    [
+     "and where",
+     "it sits."
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "numbers",
+   "para": "C",
+   "in": 10.33,
+   "out": 15.57,
+   "words": [
+    26,
+    39
+   ],
+   "pages": [
+    [
+     "two, put",
+     "real numbers in,"
+    ],
+    [
+     "like a nine thousand",
+     "six hundred"
+    ],
+    [
+     "dollar advance."
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "leave",
+   "para": "C",
+   "in": 15.57,
+   "out": 20.46,
+   "words": [
+    39,
+    50
+   ],
+   "pages": [
+    [
+     "three, say",
+     "what to leave out,"
+    ],
+    [
+     "no cards and",
+     "no gradients."
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "pick",
+   "para": "C",
+   "in": 20.46,
+   "words": [
+    50,
+    64
+   ],
+   "tail": 0.1,
+   "pages": [
+    [
+     "and four,",
+     "pick the layout,"
+    ],
+    [
+     "not the polish,"
+    ],
+    [
+     "because you can",
+     "fix polish later."
+    ]
+   ],
+   "at": [
+    64,
+    238
+   ],
+   "ink": "dark",
+   "scale": 0.8
+  },
+  {
+   "name": "ask",
+   "para": "K",
+   "in": 0,
+   "words": [
+    0,
+    19
+   ],
+   "tail": 1.0,
+   "pages": [
+    [
+     "then you hand",
+     "the whole page"
+    ],
+    [
+     "to Codex",
+     "with one line."
+    ],
+    [
+     "comment",
+     "DESIGN"
+    ],
+    [
+     "and I'll",
+     "send you"
+    ],
+    [
+     "every prompt."
+    ]
+   ],
+   "at": [
+    64,
+    1150
+   ]
+  }
+ ],
+ "camera": {},
+ "grades": {}
+}

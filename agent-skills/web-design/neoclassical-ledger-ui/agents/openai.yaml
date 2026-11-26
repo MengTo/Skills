@@ -1,0 +1,4 @@
+interface:
+  display_name: "Neoclassical Ledger UI"
+  short_description: "Build a parchment UI around a painted object"
+  default_prompt: "Use $neoclassical-ledger-ui to build a parchment UI around a painted object."

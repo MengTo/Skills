@@ -1,0 +1,4 @@
+interface:
+  display_name: "Moss Glass Controls"
+  short_description: "Build dark moss glass cards and perimeter-lit buttons."
+  default_prompt: "Use $moss-glass-controls to implement this treatment in my project."

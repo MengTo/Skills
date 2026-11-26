@@ -1,0 +1,9 @@
+{"out": "/abs/gm-tutorial/a6/judge-final", "seed": 4242,
+ "lmdump": "/abs/gm-tutorial/a5/tools/lmdump",
+ "truth": "/abs/gm-tutorial/a4/judge/truth",
+ "sources": {"draft": ["/abs/gm-tutorial/a6/deliver/a6-scene1-draft-4k60-clean.mp4", 19.25],
+             "final": ["/abs/gm-tutorial/a6/deliver/a6-scene1-final-4k60-clean.mp4", 19.25]},
+ "moments": [["m1", 20.68], ["m2", 21.68], ["m3", 23.93], ["m4", 25.30]],
+ "mouth": [["code", 20.50], ["model (m)", 21.33], ["anything (a)", 21.75], ["pause", 22.45], ["about (b)", 23.36],
+           ["hundred (u)", 23.82], ["short (o)", 24.60], ["prompts (p)", 24.85]],
+ "eyes": [19.6, 20.4, 21.2, 22.0, 22.8, 23.6, 24.4, 25.2]}

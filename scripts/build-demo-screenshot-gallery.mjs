@@ -6,6 +6,16 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
+// Entries already in SCREENSHOTS.md / SCREENSHOTS.html are kept verbatim (many carry hand-tuned
+// titles and descriptions); only demos without an entry are generated. --fresh regenerates all.
+const fresh = process.argv.includes("--fresh");
+function readExisting(file, pattern) {
+  const target = path.join(root, file);
+  if (fresh || !existsSync(target)) return new Map();
+  return new Map([...readFileSync(target, "utf8").matchAll(pattern)].map((match) => [match[1], match[0]]));
+}
+const existingMarkdown = readExisting("SCREENSHOTS.md", /^### (\S+)\n[\s\S]*?(?=^###? |(?![\s\S]))/gm);
+const existingCards = readExisting("SCREENSHOTS.html", /<article class="card" data-demo="([^"]+)"[\s\S]*?<\/article>/g);
 const skillFiles = execFileSync(
   "git",
   ["ls-files", "agent-skills/**/SKILL.md"],
@@ -14,6 +24,8 @@ const skillFiles = execFileSync(
   .trim()
   .split("\n")
   .filter(Boolean)
+  // Index only skills that ship a demo folder; demos are optional (README folder contract).
+  .filter((file) => file.split("/").length === 4 && existsSync(path.join(root, path.dirname(file), "demo", "index.html")))
   .sort();
 
 function parseDescription(source) {
@@ -86,7 +98,7 @@ function escapeHtml(value) {
 const lines = [
   "# Demo Screenshot Gallery",
   "",
-  "Every tracked skill is shown as a real browser rendering of its local `demo/index.html`.",
+  "Every skill that ships a `demo/` folder is shown as a real browser rendering of its local `demo/index.html`.",
   "",
   "- Captured demos: " + demos.length,
   "- Browser viewport: 1280 x 720 (a few source pages export a slightly scaled JPEG)",
@@ -100,6 +112,10 @@ const lines = [
 for (const [category, categoryDemos] of [...categories.entries()].sort()) {
   lines.push("## " + category + " (" + categoryDemos.length + ")", "");
   for (const demo of categoryDemos) {
+    if (existingMarkdown.has(demo.slug)) {
+      lines.push(existingMarkdown.get(demo.slug).replace(/\n+$/, ""), "");
+      continue;
+    }
     const sourceLabel = demo.source
       ? "Neuform #1 · " + new Intl.NumberFormat("en-US").format(Number(demo.source?.design?.view_count) || 0) + " views"
       : "Local demo";
@@ -128,6 +144,7 @@ await writeFile(path.join(root, "SCREENSHOTS.md"), lines.join("\n"));
 
 const htmlSections = [...categories.entries()].sort().map(([category, categoryDemos]) => {
   const cards = categoryDemos.map((demo) => {
+    if (existingCards.has(demo.slug)) return existingCards.get(demo.slug);
     const sourceLabel = demo.source
       ? "Neuform #1 · " + new Intl.NumberFormat("en-US").format(Number(demo.source?.design?.view_count) || 0) + " views"
       : "Local demo";

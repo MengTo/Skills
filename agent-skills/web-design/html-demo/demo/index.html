@@ -1,0 +1,1341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HTML Demo · Vanilla JavaScript · DOM/CSS</title>
+    <meta
+      name="description"
+      content="Fil for Mac making a picture, drawn live in HTML: every frame is draw(t), the app at 1200 × 750 scaled by one number. No video, canvas or WebGL."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../scripts/step-window.css" />
+    <script>
+      // ?embed: only the window, for a page that shows the demo in a frame.
+      if (/[?&]embed\b/.test(location.search))
+        document.documentElement.classList.add('embed');
+    </script>
+    <style>
+      :root {
+        --bg: #060607;
+        --fg: #f3f4f5;
+        --fg-2: #c3c6cc;
+        --fg-3: #8a8e96;
+        --line: rgba(255, 255, 255, 0.09);
+        --accent: #a3abff;
+        --hd-font: 'Geist', ui-sans-serif, system-ui, sans-serif;
+        --hd-mono: 'Geist Mono', ui-monospace, monospace;
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg-2);
+        font: 400 15px/1.55 var(--hd-font);
+        -webkit-font-smoothing: antialiased;
+      }
+      main {
+        width: min(1040px, 100% - 32px);
+        margin: 0 auto;
+        padding: 72px 0 64px;
+      }
+      .kicker {
+        margin: 0 0 14px;
+        font: 500 12px/1 var(--hd-mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--fg-3);
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(40px, 7vw, 64px);
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -0.035em;
+        color: var(--fg);
+      }
+      .lede {
+        max-width: 640px;
+        margin: 18px 0 40px;
+        font-size: 17px;
+        color: var(--fg-2);
+      }
+      .lede b {
+        font-weight: 500;
+        color: var(--fg);
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 18px;
+        margin-top: 18px;
+        font-size: 13px;
+        color: var(--fg-3);
+      }
+      .controls button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 34px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: inset 0 0 0 0.5px var(--line);
+        color: var(--fg);
+        font: 500 13px/1 var(--hd-font);
+        cursor: pointer;
+      }
+      .controls button:hover {
+        background: rgba(255, 255, 255, 0.11);
+      }
+      .scrub {
+        flex: 1 1 260px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .scrub input {
+        flex: 1;
+        accent-color: var(--accent);
+      }
+      .scrub output {
+        min-width: 92px;
+        font: 500 12px/1 var(--hd-mono);
+        font-variant-numeric: tabular-nums;
+        color: var(--fg-2);
+      }
+      .still {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+      .still input {
+        accent-color: var(--accent);
+      }
+      :is(button, input):focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .note {
+        margin: 28px 0 0;
+        font-size: 13px;
+        color: var(--fg-3);
+      }
+      .note a {
+        color: var(--fg-2);
+      }
+      .embed body {
+        background: transparent;
+      }
+      .embed main {
+        width: 100%;
+        padding: 0;
+      }
+      .embed :is(.kicker, h1, .lede, .controls, .note) {
+        display: none;
+      }
+      .embed .hd-win {
+        box-shadow: none;
+      }
+      .sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+      }
+
+      /* ---------- Fil for Mac, at 1200 × 750 (the app's own sizes) ---------- */
+      .fd {
+        --s1: #0c0d0f;
+        --s2: #151619;
+        --s3: #1c1d21;
+        --tile: #121316;
+        --l1: rgba(255, 255, 255, 0.06);
+        --l2: rgba(255, 255, 255, 0.095);
+        --l3: rgba(255, 255, 255, 0.15);
+        --f1: #f3f4f5;
+        --f2: #c3c6cc;
+        --f3: #8a8e96;
+        --f4: #5c6067;
+        --amber: #efb36c;
+        --pink: #ef7d9b;
+        --blue: #82c1ee;
+        --violet: #b59cf5;
+        --green: #5fcf98;
+        --acc: #a3abff;
+        letter-spacing: -0.005em;
+      }
+      .fd svg.i {
+        width: 16px;
+        height: 16px;
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .fd-rail {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 54px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        padding: 14px 0;
+        color: var(--f3);
+      }
+      .fd-rail svg.i {
+        width: 17px;
+        height: 17px;
+      }
+      .fd-rail hr {
+        width: 18px;
+        margin: 0;
+        border: 0;
+      }
+      .fd-logo {
+        width: 22px;
+        height: 22px;
+        margin-bottom: 4px;
+      }
+      .fd-sw {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        background: var(--amber);
+        box-shadow:
+          0 0 0 2px var(--bg-0, #08090a),
+          0 0 0 3.5px rgba(255, 255, 255, 0.5);
+      }
+      .fd-gap {
+        flex: 1;
+      }
+      .fd-me {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+      .fd-main {
+        position: absolute;
+        top: 6px;
+        bottom: 8px;
+        left: 56px;
+        right: 8px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--s1);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-top {
+        position: absolute;
+        inset: 0 0 auto;
+        z-index: 3;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 12px 0 18px;
+        color: var(--f3);
+        background: var(--s1);
+        border-bottom: 0.5px solid var(--l1);
+      }
+      .fd-crumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .fd-crumb b {
+        font-weight: 600;
+        color: var(--f1);
+      }
+      .fd-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 248px;
+        height: 32px;
+        margin-left: auto;
+        padding: 0 6px 0 10px;
+        border-radius: 9px;
+        color: var(--f4);
+        background: var(--s2);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-search kbd {
+        margin-left: auto;
+        padding: 2px 5px;
+        border-radius: 5px;
+        font: 500 10.5px/1 var(--hd-font);
+        color: var(--f3);
+        background: var(--s3);
+      }
+      .fd-credits {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-variant-numeric: tabular-nums;
+        color: var(--f1);
+      }
+      .fd-credits .i:first-child {
+        color: var(--amber);
+      }
+      .fd-share {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 9px;
+        color: var(--f1);
+        box-shadow: inset 0 0 0 0.5px var(--l3);
+      }
+      .fd-canvas {
+        position: absolute;
+        inset: 50px 0 0;
+        overflow: hidden;
+        background:
+          radial-gradient(
+              circle at 1px 1px,
+              rgba(255, 255, 255, 0.075) 1px,
+              transparent 1.4px
+            )
+            0 0 / 22px 22px,
+          var(--s1);
+      }
+      .fd-chip {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        height: 34px;
+        padding: 0 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--f1);
+        background: var(--s2);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-chip .fd-sw {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+      .fd-chip .i {
+        color: var(--f3);
+      }
+
+      /* Image nodes, as the canvas draws them. */
+      .fd-node {
+        position: absolute;
+        top: 70px;
+        width: 236px;
+      }
+      .fd-name {
+        height: 18px;
+        padding-left: 2px;
+        font-size: 11.5px;
+        color: var(--f3);
+      }
+      .fd-node.on .fd-name {
+        color: var(--acc);
+      }
+      .fd-card {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 7px;
+        padding: 7px;
+        border-radius: 10px;
+        background: var(--tile);
+        box-shadow:
+          inset 0 0 0 0.5px var(--l2),
+          0 10px 24px -14px rgba(0, 0, 0, 0.8);
+      }
+      .fd-node.on .fd-card {
+        box-shadow:
+          inset 0 0 0 1px var(--acc),
+          0 10px 24px -14px rgba(0, 0, 0, 0.8);
+      }
+      .fd-head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 20px;
+        padding: 0 2px;
+        font-size: 12px;
+        color: var(--f1);
+      }
+      .fd-head > .i {
+        color: var(--amber);
+      }
+      .fd-model {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: auto;
+        font-size: 10.5px;
+        color: var(--f3);
+      }
+      .fd-model .i {
+        width: 11px;
+        height: 11px;
+      }
+      .fd-model + .i {
+        width: 12px;
+        height: 12px;
+        color: var(--f4);
+      }
+      .fd-g {
+        display: grid;
+        place-items: center;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        font: 700 8px/1 var(--hd-font);
+        color: #0c0d0f;
+        background: var(--f2);
+      }
+      .fd-ask {
+        min-height: 54px;
+        padding: 8px 10px;
+        border-radius: 7px;
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: var(--f1);
+        background: var(--s2);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-ask.ph {
+        color: var(--f4);
+      }
+      .fd-ask.focus {
+        box-shadow: inset 0 0 0 1px rgba(163, 171, 255, 0.7);
+      }
+      .fd-caret {
+        display: inline-block;
+        width: 1.5px;
+        height: 12px;
+        margin: 0 0 -2px 1px;
+        background: var(--acc);
+      }
+      .fd-pre {
+        position: relative;
+        aspect-ratio: 2 / 3;
+        overflow: hidden;
+        border-radius: 6px;
+        background: #0d0e10;
+      }
+      .fd-pre img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .fd-empty {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 8px;
+        font-size: 10.5px;
+        color: var(--f4);
+        border: 1px dashed var(--l2);
+        border-radius: 6px;
+      }
+      .fd-making {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            110deg,
+            #101114 30%,
+            #1b1c22 45%,
+            #24252e 50%,
+            #1b1c22 55%,
+            #101114 70%
+          )
+          0 0 / 300% 100%;
+      }
+      .fd-dev {
+        opacity: 0.55;
+        filter: blur(10px) brightness(0.5) saturate(0.4);
+        transform: scale(1.08);
+      }
+      .fd-scan {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 2px;
+        margin-top: -1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 226, 180, 0.95) 30%,
+          rgba(255, 226, 180, 0.95) 70%,
+          transparent
+        );
+        box-shadow: 0 0 12px 2px rgba(255, 186, 110, 0.55);
+      }
+      .fd-glint {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          115deg,
+          transparent 35%,
+          rgba(255, 255, 255, 0.22) 50%,
+          transparent 65%
+        );
+      }
+      .fd-status {
+        position: absolute;
+        left: 7px;
+        top: 7px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 6px;
+        font: 500 10.5px/1 var(--hd-mono);
+        color: var(--f1);
+        background: rgba(12, 13, 15, 0.82);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-spin {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(163, 171, 255, 0.25);
+        border-top-color: var(--acc);
+      }
+      .fd-full-btn {
+        position: absolute;
+        right: 7px;
+        top: 7px;
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        color: var(--f1);
+        background: rgba(12, 13, 15, 0.78);
+        box-shadow: inset 0 0 0 0.5px var(--l3);
+      }
+      .fd-last {
+        height: 14px;
+        padding: 0 2px;
+        font-size: 10px;
+        color: var(--f4);
+      }
+      .fd-foot {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        overflow: hidden;
+        font-size: 10.5px;
+        color: var(--f3);
+        white-space: nowrap;
+      }
+      .fd-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 19px;
+        padding: 0 5px;
+        font-size: 10px;
+        border-radius: 5px;
+        background: var(--s2);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-tag .i {
+        width: 11px;
+        height: 11px;
+      }
+      .fd-go {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--f4);
+      }
+      .fd-go .i {
+        width: 12px;
+        height: 12px;
+      }
+      .fd-run {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 6px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: #0c0d0f;
+        background: #f3f4f5;
+      }
+      .fd-run.hover {
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+      }
+      .fd-run.busy {
+        color: var(--f2);
+        background: var(--s3);
+      }
+      .fd-run small {
+        display: inline-flex;
+        align-items: center;
+        font-size: 10px;
+        font-weight: 500;
+        opacity: 0.6;
+      }
+      .fd-run small .i {
+        width: 10px;
+        height: 10px;
+      }
+      .fd-port {
+        position: absolute;
+        top: 50%;
+        width: 8px;
+        height: 8px;
+        margin-top: -4px;
+        border-radius: 50%;
+        background: var(--amber);
+      }
+
+      /* The inspector beside the canvas. */
+      .fd-insp {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        width: 232px;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 11.5px;
+        background: var(--s2);
+        box-shadow:
+          inset 0 0 0 0.5px var(--l2),
+          0 16px 40px -16px rgba(0, 0, 0, 0.9);
+      }
+      .fd-insp h4 {
+        margin: 2px 0 10px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--f1);
+      }
+      .fd-insp dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px 10px;
+        margin: 0 0 14px;
+      }
+      .fd-insp dt {
+        color: var(--f3);
+      }
+      .fd-insp dd {
+        margin: 0;
+        text-align: right;
+        font: 500 10.5px/1.5 var(--hd-mono);
+        color: var(--f2);
+      }
+      .fd-insp dd .i {
+        width: 11px;
+        height: 11px;
+        vertical-align: -2px;
+      }
+      .fd-insp hr {
+        margin: 0 -12px 12px;
+        border: 0;
+        border-top: 0.5px solid var(--l2);
+      }
+      .fd-note {
+        height: 44px;
+        margin-bottom: 12px;
+        padding: 8px 10px;
+        border-radius: 7px;
+        color: var(--f4);
+        background: var(--s1);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-wide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 28px;
+        margin-bottom: 6px;
+        border-radius: 7px;
+        font-weight: 600;
+        color: #0c0d0f;
+        background: #f3f4f5;
+      }
+      .fd-wide.busy {
+        color: var(--f2);
+        background: var(--s3);
+      }
+      .fd-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .fd-pair span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 28px;
+        border-radius: 7px;
+        color: var(--f1);
+        box-shadow: inset 0 0 0 0.5px var(--l3);
+      }
+      .fd-pair .i {
+        width: 13px;
+        height: 13px;
+      }
+      .fd-insp-pic {
+        aspect-ratio: 2 / 3;
+        max-height: 240px;
+        margin: 0 auto 10px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .fd-insp-pic img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .fd-tools {
+        position: absolute;
+        left: 50%;
+        bottom: 14px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 5px;
+        border-radius: 12px;
+        transform: translateX(-50%);
+        color: var(--f2);
+        background: rgba(19, 20, 23, 0.94);
+        box-shadow:
+          inset 0 0 0 0.5px var(--l2),
+          0 16px 40px -16px rgba(0, 0, 0, 0.9);
+      }
+      .fd-tools span {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+      }
+      .fd-tools span.on {
+        color: #0c0d0f;
+        background: #f3f4f5;
+      }
+      .fd-tools i {
+        width: 1px;
+        height: 18px;
+        margin: 0 4px;
+        background: var(--l2);
+      }
+
+      /* The full view over the canvas. */
+      .fd-full {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        background: #0a0b0d;
+      }
+      .fd-fimg {
+        position: absolute;
+        z-index: 6;
+        object-fit: cover;
+        display: block;
+      }
+      .fd-fbar {
+        position: absolute;
+        inset: 0 0 auto;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px 0 18px;
+        font-size: 12.5px;
+        color: var(--f1);
+      }
+      .fd-fbar .who {
+        display: grid;
+        gap: 2px;
+        margin-right: auto;
+      }
+      .fd-fbar .who b {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .fd-fbar .who small {
+        font-size: 11px;
+        color: var(--f3);
+      }
+      .fd-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        height: 30px;
+        padding: 0 11px;
+        border-radius: 8px;
+        background: var(--s2);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-seg {
+        display: inline-flex;
+        padding: 2px;
+        border-radius: 9px;
+        background: var(--s2);
+        box-shadow: inset 0 0 0 0.5px var(--l2);
+      }
+      .fd-seg span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 26px;
+        padding: 0 10px;
+        border-radius: 7px;
+        color: var(--f3);
+      }
+      .fd-seg span.on {
+        color: var(--f1);
+        background: var(--s3);
+      }
+      .fd-seg span.hover {
+        color: var(--f1);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .fd-fbar .fd-x {
+        color: var(--f3);
+      }
+      .fd-tip {
+        position: absolute;
+        z-index: 6;
+        padding: 6px 9px;
+        border-radius: 7px;
+        font-size: 11.5px;
+        white-space: nowrap;
+        color: var(--f1);
+        background: #26272c;
+        box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.8);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="kicker">Vanilla JavaScript · DOM/CSS</p>
+      <h1>HTML Demo</h1>
+      <p class="lede">
+        Fil for Mac making a picture, drawn live in HTML.
+        <b>Every frame is <code>draw(t)</code></b
+        >: the app at 1200 × 750, built once a step and set from the step's
+        clock alone, then scaled to this window by one number. Drag the clock
+        and the window shows exactly that frame. Leave the state to timers
+        instead and it couldn't: no jumping to a step, no still for reduced
+        motion, no two screenshots alike. No video, canvas or WebGL.
+      </p>
+      <div id="demo"></div>
+      <div class="controls">
+        <button type="button" id="play" aria-pressed="false">Pause</button>
+        <label class="scrub">
+          <span class="sr">The demo's clock</span>
+          <input
+            id="clock"
+            type="range"
+            min="0"
+            max="18"
+            step="0.01"
+            value="0"
+          />
+          <output id="time" for="clock">0:00.0 / 0:18.0</output>
+        </label>
+        <label class="still">
+          <input id="still" type="checkbox" />
+          End frames (reduced motion)
+        </label>
+      </div>
+      <p class="note">
+        From <a href="https://fil.design/download">fil.design/download</a>,
+        where Fil for Mac's windows are drawn this way. The skill:
+        <a href="https://fil.design/skills/html-demo"
+          >fil.design/skills/html-demo</a
+        >.
+      </p>
+    </main>
+
+    <script src="../scripts/step-window.js"></script>
+    <script>
+      // Fil's own icon paths (src/data/icons.js), 24 × 24 strokes.
+      const IC = {
+        home: '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+        comment:
+          '<path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>',
+        image:
+          '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+        film: '<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+        cube: '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
+        terminal:
+          '<path d="m7 11 2-2-2-2"/><path d="M11 13h4"/><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>',
+        grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+        star: '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
+        globe:
+          '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+        compass:
+          '<path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/>',
+        workflow:
+          '<rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/>',
+        puzzle:
+          '<path d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"/>',
+        bot: '<path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>',
+        book: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+        pointer:
+          '<path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"/>',
+        hand: '<path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+        annotate:
+          '<rect width="11" height="9" x="10" y="3" rx="2"/><path d="M13 6.5h5"/><path d="M13 9.5h3"/><path d="M10 10.5 5.5 15"/><circle cx="4.5" cy="16.5" r="1.5"/><path d="M3 21h8"/>',
+        undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+        redo: '<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"/>',
+        type: '<path d="M12 4v16"/><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><path d="M9 20h6"/>',
+        music:
+          '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+        frame:
+          '<line x1="22" x2="2" y1="6" y2="6"/><line x1="22" x2="2" y1="18" y2="18"/><line x1="6" x2="6" y1="2" y2="22"/><line x1="18" x2="18" y1="2" y2="22"/>',
+        'img-plus':
+          '<path d="M16 5h6"/><path d="M19 2v6"/><path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><circle cx="9" cy="9" r="2"/>',
+        search: '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>',
+        bolt: '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+        share:
+          '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
+        'chev-r': '<path d="m9 18 6-6-6-6"/>',
+        'chev-d': '<path d="m6 9 6 6 6-6"/>',
+        x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+        lock: '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+        play: '<path d="M7.5 4.8v14.4a.8.8 0 0 0 1.22.68l11.2-7.2a.8.8 0 0 0 0-1.36L8.72 4.12A.8.8 0 0 0 7.5 4.8z" fill="currentColor" stroke="none"/>',
+        layers:
+          '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>',
+        eye: '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+        download:
+          '<path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>',
+        upscale:
+          '<rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m14 10 4-4"/><path d="M14 6h4v4"/>',
+        trash:
+          '<path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+        shuffle:
+          '<path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/>',
+        expand:
+          '<path d="M15 3h6v6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M9 21H3v-6"/>',
+        check: '<path d="M20 6 9 17l-5-5"/>',
+        'panel-l':
+          '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>',
+        dup: '<line x1="15" x2="15" y1="12" y2="18"/><line x1="12" x2="18" y1="15" y2="15"/><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+        pencil:
+          '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+        cutout:
+          '<path d="M5 3a2 2 0 0 0-2 2"/><path d="M19 3a2 2 0 0 1 2 2"/><path d="M21 19a2 2 0 0 1-2 2"/><path d="M5 21a2 2 0 0 1-2-2"/><path d="M9 3h1"/><path d="M14 3h1"/><path d="M3 9v1"/><path d="M3 14v1"/><path d="M21 9v1"/><path d="M21 14v1"/><circle cx="12" cy="10" r="3"/><path d="M7 21a5 5 0 0 1 10 0"/>',
+        spark:
+          '<circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94"/><path d="M9.69 8h11.48"/><path d="m7.38 12 5.74-9.94"/><path d="M9.69 16 3.95 6.06"/><path d="M14.31 16H2.83"/><path d="m16.62 12-5.74 9.94"/>',
+        brush:
+          '<path d="m9.06 11.9 8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/>',
+        plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+      };
+      const { ease, typed, glide, mount } = HTMLDemo;
+      const ic = (n) =>
+        `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[n] || ''}</svg>`;
+      const ASK =
+        'The Ashen One, a knight in blackened armour resting on his sword, torn cloak, on plain light grey';
+      const CATHEDRAL =
+        'A ruined gothic cathedral in ash fog, a small bonfire on the stones to one side';
+
+      // The app around every step: Fil's rail, its top bar and the canvas.
+      const RAIL = [
+        'home',
+        'comment',
+        'image',
+        'film',
+        'cube',
+        'terminal',
+        '',
+        'grid',
+        'star',
+        'globe',
+        'compass',
+        'workflow',
+        'puzzle',
+        'bot',
+        'book',
+      ];
+      const COL = {
+        image: '#efb36c',
+        film: '#ef7d9b',
+        cube: '#82c1ee',
+        terminal: '#5fcf98',
+      };
+      const TOOLS = [
+        'pointer',
+        'hand',
+        'annotate',
+        'comment',
+        '',
+        'undo',
+        'redo',
+        '',
+        'type',
+        'image',
+        'film',
+        'cube',
+        'terminal',
+        'music',
+        '',
+        'frame',
+        'img-plus',
+      ];
+      const app = (canvas, over = '') => `<div class="fd">
+        <nav class="fd-rail">
+          <svg class="fd-logo" viewBox="0 0 32 32"><path d="m16 5 10 6-10 6-10-6z" fill="#efb36c"/><path d="m6 11 10 6v11L6 22z" fill="#ef7d9b"/><path d="m26 11-10 6v11l10-6z" fill="#82c1ee"/></svg>
+          ${RAIL.map((n) => (n ? `<span style="color:${COL[n] || 'inherit'}">${ic(n)}</span>` : '<hr>')).join('')}
+          <span class="fd-sw"></span>
+          <span class="fd-gap"></span>
+          <img class="fd-me" src="avatar.webp" alt="">
+        </nav>
+        <div class="fd-main">
+          <div class="fd-top">
+            <span class="fd-crumb">Drafts ${ic('chev-r')} <b>The Ashen One</b></span>
+            <span class="fd-search">${ic('search')}<span>Search or run a command</span><kbd>⌘K</kbd></span>
+            <span class="fd-credits">${ic('bolt')}<span data-k="credits">2,400</span>${ic('chev-d')}</span>
+            <img class="fd-me" src="avatar.webp" alt="">
+            <span class="fd-share">${ic('share')}<span>Share</span></span>
+          </div>
+          <div class="fd-canvas">
+            <span class="fd-chip">${ic('panel-l')}<span class="fd-sw"></span>The Ashen One${ic('comment')}</span>
+            ${canvas}
+            <div class="fd-tools">${TOOLS.map((n, j) => (n ? `<span class="${j ? '' : 'on'}" style="color:${j ? COL[n] || 'inherit' : ''}">${ic(n)}</span>` : '<i></i>')).join('')}</div>
+          </div>
+          ${over}
+        </div>
+      </div>`;
+
+      // A node's button: Generate until it has made something, then Add
+      // (another run), with its price.
+      const button = (label, key) =>
+        `${ic(label === 'Add' ? 'plus' : 'play')}<span data-k="${key}-run-l">${label}</span><small>${ic('bolt')}7</small>`;
+      // An image node: its name, model, prompt, picture and footer.
+      const node = (key, name, left, { ask, pic, made }) => `
+        <div class="fd-node" data-k="${key}" style="left:${left}px">
+          <div class="fd-name">${name}</div>
+          <div class="fd-card">
+            <div class="fd-head">${ic('image')}Image<span class="fd-model"><span class="fd-g">G</span>Nano Banana 2.1${ic('chev-d')}</span>${ic('x')}</div>
+            <div class="fd-ask" data-k="${key}-ask">${ask}</div>
+            <div class="fd-pre" data-k="${key}-pre">${pic}</div>
+            <div class="fd-last" data-k="${key}-last">${made || ''}</div>
+            <div class="fd-foot"><span class="fd-tag">${ic('layers')}Template</span><span class="fd-tag">2:3</span><span class="fd-tag">2K</span><span class="fd-tag">Medium effort</span><span class="fd-tag">×1</span></div>
+            <div class="fd-go">${ic('lock')}<span class="fd-run" data-k="${key}-run">${button(made ? 'Add' : 'Generate', key)}</span></div>
+          </div>
+        </div>`;
+      const cathedral = node('c', 'Cathedral', 196, {
+        ask: CATHEDRAL,
+        pic: '<img src="cathedral.webp" alt="">',
+        made: 'Last run · 0:05 · 7 credits',
+      });
+      const knight = (pic, made) =>
+        node('k', 'Knight', 448, {
+          ask: '',
+          made,
+          pic:
+            pic ||
+            `<div class="fd-empty">${ic('image')}<span>Images will appear here</span></div>`,
+        });
+      const MAKING = `<div class="fd-making" data-k="shimmer"></div>
+        <img class="fd-dev" data-k="dev" src="knight.webp" alt="">
+        <img data-k="rev" src="knight.webp" alt="">
+        <span class="fd-scan" data-k="scan"></span>
+        <span class="fd-glint" data-k="glint"></span>
+        <span class="fd-status" data-k="status"><span class="fd-spin" data-k="spin"></span><span data-k="elapsed">Generating 0:00</span></span>
+        <span class="fd-full-btn" data-k="full-btn">${ic('expand')}</span>`;
+      const details = (rows) =>
+        `<dl>${rows.map(([a, b, k]) => `<dt>${a}</dt><dd${k ? ` data-k="${k}"` : ''}>${b}</dd>`).join('')}</dl>`;
+      const inspector = (head) =>
+        `<aside class="fd-insp" data-k="insp">${head}</aside>`;
+      const before = `<h4>Details</h4>${details([
+        ['Status', 'Not generated yet', 'st'],
+        ['Visibility', `${ic('lock')} Private`],
+        ['Model', 'Nano Banana 2.1'],
+        ['Effort', 'Medium'],
+        ['Runs', '0', 'runs'],
+        ['Cost per run', '7 credits'],
+        ['Credits left', '2,400', 'left'],
+      ])}<hr><h4>Note</h4><div class="fd-note">Where it comes from, what it's for</div>
+        <div class="fd-wide" data-k="insp-go">${ic('play')}<span data-k="insp-go-l">Generate</span></div>
+        <div class="fd-pair"><span>${ic('dup')}Duplicate</span><span>${ic('trash')}Delete</span></div>`;
+      const after = `<div class="fd-insp-pic"><img src="knight.webp" alt=""></div>
+        <div class="fd-pair" style="margin-bottom:14px"><span>${ic('pencil')}Edit</span><span>${ic('shuffle')}Variations</span></div>
+        <h4>Details</h4>${details([
+          ['Status', 'Generated'],
+          ['Visibility', `${ic('lock')} Private`],
+          ['Model', 'Nano Banana 2.1'],
+          ['Format', 'WEBP'],
+          ['Time', '0:04'],
+          ['Cost', '7 credits'],
+          ['Runs', '1'],
+        ])}`;
+
+      const show = (el, on) => el && (el.style.display = on ? '' : 'none');
+
+      // 1 · The prompt typed into the Knight node, the pointer onto Generate.
+      const PROMPT = {
+        id: 'prompt',
+        name: 'Write the prompt',
+        dur: 6,
+        html: app(cathedral + knight() + inspector(before)),
+        draw(t, $) {
+          const box = $('[data-k="k-ask"]');
+          const on = t >= 1.05;
+          const text = typed(ASK, t, 1.25, 3.45);
+          box.className = `fd-ask${on ? ' focus' : text ? '' : ' ph'}`;
+          box.innerHTML =
+            on || text
+              ? `${text}${on && t < 3.9 ? '<i class="fd-caret"></i>' : ''}`
+              : 'Describe what to make';
+          $('[data-k="k"]').classList.toggle('on', t >= 0.95);
+          $('[data-k="k-run"]').classList.toggle('hover', t >= 4.55);
+          return {
+            cursor: glide(
+              t,
+              [
+                [0, 0, 840, 600],
+                [0.2, 0.9, 620, 205],
+                [3.8, 4.5, 686, 650],
+              ],
+              [0.95],
+            ),
+          };
+        },
+      };
+
+      // 2 · Generate pressed: making, the picture drawing in from the
+      // top under a scan line, then settled, paid for and in the inspector.
+      const RUN = 0.45;
+      const REV = [1.15, 4.35];
+      const GENERATE = {
+        id: 'generate',
+        name: 'Generate',
+        dur: 6.5,
+        html: app(cathedral + knight(MAKING) + inspector(before)),
+        draw(t, $) {
+          $('[data-k="k"]').classList.add('on');
+          $('[data-k="k-ask"]').textContent = ASK;
+          const running = t >= RUN && t < REV[1];
+          const done = t >= REV[1];
+          const r = ease(t, REV[0], REV[1]);
+          const lin = Math.min(
+            1,
+            Math.max(0, (t - REV[0]) / (REV[1] - REV[0])),
+          );
+          // Making: a shimmer, then the picture from the top down.
+          show($('[data-k="shimmer"]'), t >= RUN && t < REV[0] + 0.4);
+          $('[data-k="shimmer"]').style.backgroundPosition =
+            `${100 - ((t * 70) % 100)}% 0`;
+          show($('[data-k="dev"]'), t >= REV[0] && !done);
+          $('[data-k="dev"]').style.opacity =
+            0.55 * Math.min(1, (t - REV[0]) / 0.4);
+          const rev = $('[data-k="rev"]');
+          show(rev, t >= REV[0]);
+          rev.style.clipPath = `inset(0 0 ${(1 - lin) * 100}% 0)`;
+          const settle = done ? ease(t, REV[1], REV[1] + 0.9) : 0;
+          rev.style.filter = done
+            ? `brightness(${1.35 - 0.35 * settle}) saturate(${1.1 - 0.1 * settle})`
+            : '';
+          const scan = $('[data-k="scan"]');
+          show(scan, t >= REV[0] && !done);
+          scan.style.top = `${lin * 100}%`;
+          const glint = $('[data-k="glint"]');
+          show(glint, done && t < REV[1] + 0.9);
+          glint.style.transform = `translateX(${-100 + 200 * ease(t, REV[1], REV[1] + 0.9)}%)`;
+          show($('[data-k="status"]'), t >= RUN && !done);
+          $('[data-k="spin"]').style.transform = `rotate(${t * 450}deg)`;
+          $('[data-k="elapsed"]').textContent =
+            `Generating 0:0${Math.min(4, Math.floor(Math.max(0, t - RUN)))}`;
+          show($('[data-k="full-btn"]'), false);
+          // The node's button, the canvas's balance and the inspector.
+          const run = $('[data-k="k-run"]');
+          run.classList.toggle('busy', running);
+          run.classList.toggle('hover', t < 0.3);
+          const label = done ? 'Add' : running ? 'Generating' : 'Generate';
+          if ($('[data-k="k-run-l"]').textContent !== label)
+            run.innerHTML = button(label, 'k');
+          $('[data-k="k-last"]').textContent = done
+            ? 'Last run · 0:04 · 7 credits'
+            : running
+              ? 'Usually under a minute'
+              : '';
+          $('[data-k="credits"]').textContent =
+            t >= REV[1] + 0.15 ? '2,393' : '2,400';
+          const insp = $('[data-k="insp"]');
+          const want = t >= REV[1] + 0.3 ? 'after' : 'before';
+          if (insp.dataset.v !== want) {
+            insp.dataset.v = want;
+            insp.innerHTML = want === 'after' ? after : before;
+          }
+          if (want === 'before') {
+            $('[data-k="st"]').textContent = running
+              ? 'Generating'
+              : 'Not generated yet';
+            $('[data-k="runs"]').textContent = running ? '1' : '0';
+            $('[data-k="insp-go"]').classList.toggle('busy', running);
+            $('[data-k="insp-go-l"]').textContent = running
+              ? 'Generating'
+              : 'Generate';
+          }
+          return {
+            cursor: glide(
+              t,
+              [
+                [0, 0, 686, 650],
+                [1.0, 1.8, 840, 600],
+              ],
+              [0.3],
+            ),
+          };
+        },
+      };
+
+      // 3 · The picture opened full size: it flies from its node to the
+      // middle of the full view as the view darkens in behind it, then Edit.
+      const FROM = { x: 455, y: 245, w: 222, h: 333 };
+      const TO = { x: 350, y: 70, w: 435, h: 652 };
+      const OPEN = [1.6, 2.35];
+      const FULL = {
+        id: 'full',
+        name: 'Open it',
+        dur: 5.6,
+        html: app(
+          cathedral +
+            knight(
+              '<img src="knight.webp" alt=""><span class="fd-full-btn" data-k="full-btn">' +
+                ic('expand') +
+                '</span>',
+              'Last run · 0:04 · 7 credits',
+            ) +
+            inspector(after),
+          `<div class="fd-full" data-k="full">
+            <div class="fd-fbar" data-k="fbar">
+              <span class="who"><b>Knight</b><small>Image · Nano Banana 2.1 · 2:3 · 2K</small></span>
+              <span style="color:var(--f3)">${ic('star')}</span>
+              <span class="fd-btn">${ic('upscale')}Upscale</span>
+              <span class="fd-btn">${ic('cutout')}Remove background</span>
+              <span class="fd-seg"><span class="on">${ic('eye')}View</span><span data-k="edit">${ic('brush')}Edit</span></span>
+              <span class="fd-btn">${ic('download')}Download</span>
+              <span class="fd-x">${ic('x')}</span>
+            </div>
+          </div>
+          <img class="fd-fimg" data-k="fimg" src="knight.webp" alt="">`,
+        ),
+        draw(t, $) {
+          $('[data-k="k"]').classList.add('on');
+          $('[data-k="k-ask"]').textContent = ASK;
+          $('[data-k="k-last"]').textContent = 'Last run · 0:04 · 7 credits';
+          $('[data-k="credits"]').textContent = '2,393';
+          show($('[data-k="full-btn"]'), t >= 0.85 && t < OPEN[0] + 0.1);
+          const o = ease(t, OPEN[0], OPEN[1]);
+          const full = $('[data-k="full"]');
+          show(full, t >= OPEN[0]);
+          full.style.opacity = ease(t, OPEN[0], OPEN[1] - 0.25);
+          $('[data-k="fbar"]').style.opacity = ease(
+            t,
+            OPEN[1] - 0.3,
+            OPEN[1] + 0.2,
+          );
+          const img = $('[data-k="fimg"]');
+          show(img, t >= OPEN[0]);
+          for (const [prop, k] of [
+            ['left', 'x'],
+            ['top', 'y'],
+            ['width', 'w'],
+            ['height', 'h'],
+          ])
+            img.style[prop] = `${FROM[k] + (TO[k] - FROM[k]) * o}px`;
+          img.style.borderRadius = `${6 - 2 * o}px`;
+          $('[data-k="edit"]').classList.toggle('hover', t >= 3.75);
+          return {
+            cursor: glide(
+              t,
+              [
+                [0, 0, 840, 600],
+                [0.2, 0.85, 620, 420],
+                [1.0, 1.4, 713, 271],
+                [3.0, 3.7, 1005, 36],
+              ],
+              [1.5],
+            ),
+          };
+        },
+      };
+
+      const STEPS = [PROMPT, GENERATE, FULL];
+      const demo = mount(document.getElementById('demo'), {
+        steps: STEPS,
+        tabs: ['The Ashen One'],
+        label: 'Fil for Mac making a picture',
+      });
+
+      // For screenshots of exact frames (scripts/shoot.mjs --frozen).
+      window.__hd = demo;
+
+      // The controls: pause, the clock to scrub, and the still end frames.
+      const play = document.getElementById('play');
+      const clock = document.getElementById('clock');
+      const time = document.getElementById('time');
+      const still = document.getElementById('still');
+      const fmt = (s) =>
+        `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
+      clock.max = demo.state().total;
+      still.checked = demo.state().still;
+      demo.onChange((s) => {
+        clock.value = s.elapsed;
+        time.value = `${fmt(s.elapsed)} / ${fmt(s.total)}`;
+        play.textContent = s.paused ? 'Play' : 'Pause';
+        play.setAttribute('aria-pressed', String(s.paused));
+      });
+      play.addEventListener('click', () =>
+        demo.state().paused ? demo.resume() : demo.pause(),
+      );
+      clock.addEventListener('input', () => {
+        // Read the slider before pausing: pause() redraws, and the redraw
+        // writes the old time back into it.
+        const s = Number(clock.value);
+        demo.pause();
+        demo.seek(s);
+      });
+      still.addEventListener('change', () => demo.setStill(still.checked));
+      // The controls' first reading: the window drew before they listened.
+      demo.resume();
+    </script>
+  </body>
+</html>

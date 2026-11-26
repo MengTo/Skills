@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create AI Avatar"
+  short_description: "A digital twin of you, in your own voice, judged by its mouth"
+  default_prompt: "Use $create-ai-avatar to make my HeyGen digital twin from my best talking takes, speaking in my ElevenLabs voice: say the price first, render the same line on Avatar V, IV and III, and show me the mouths beside my real footage before picking one."

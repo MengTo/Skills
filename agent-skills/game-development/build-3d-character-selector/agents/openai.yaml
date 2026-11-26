@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Character Selector"
+  short_description: "Generate a textured cast and build a full-body selector"
+  default_prompt: "Use $build-3d-character-selector for this task. Create a consistent cast from references and build an interactive full-body selector."

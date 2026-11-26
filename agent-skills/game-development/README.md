@@ -9,6 +9,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 | Need | Start with |
 | --- | --- |
 | Build a complete playable vertical slice | [`build-isometric-arpg`](build-isometric-arpg/SKILL.md) |
+| Match a photoreal first-person interior to reference and verify the look during play | [`build-ultra-realistic-game-interiors`](build-ultra-realistic-game-interiors/SKILL.md) |
 | Author readable flat-world routes and motivated lighting | [`author-game-levels`](author-game-levels/SKILL.md) |
 | Implement camera framing, lock-on, occlusion, or touch gestures | [`build-game-camera-controls`](build-game-camera-controls/SKILL.md) |
 | Define enemy archetypes, movesets, model conventions, and runtime hooks | [`build-threejs-enemy-systems`](build-threejs-enemy-systems/SKILL.md) |
@@ -17,8 +18,12 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 | Define attack timing, contact authority, defense, and combat feedback | [`design-action-combat`](design-action-combat/SKILL.md) |
 | Compose arenas, waves, objectives, boss phases, and rewards | [`design-game-encounters`](design-game-encounters/SKILL.md) |
 | Build inventory, loot, equipment, or persistence | [`build-game-inventory`](build-game-inventory/SKILL.md) |
+| Create a realistic, rigged, posed character model from a description or reference | [`game-dev-character-model`](game-dev-character-model/SKILL.md) |
 | Choose and integrate imported, procedural, generated, or 2D assets | [`build-hybrid-game-assets`](build-hybrid-game-assets/SKILL.md) |
 | Pair Vesperfall catalog PNGs with truthful live model review routes | [`build-vesperfall-review-assets`](build-vesperfall-review-assets/SKILL.md) |
+| Scan real mesh edges and points across a district or character | [`build-point-cloud-scan`](build-point-cloud-scan/SKILL.md) |
+| Refract the scene through moving lens raindrops | [`build-lens-raindrops`](build-lens-raindrops/SKILL.md) |
+| Build a full-body character selector with rotation and animated swaps | [`build-3d-character-selector`](build-3d-character-selector/SKILL.md) |
 | Add readable visual or audio feedback | [`create-game-vfx`](create-game-vfx/SKILL.md) and [`build-game-audio-feedback`](build-game-audio-feedback/SKILL.md) |
 | Adapt controls, HUD, quality, and QA for mobile | [`build-mobile-threejs-games`](build-mobile-threejs-games/SKILL.md) |
 | Diagnose frame-time, draw-call, memory, or quality problems | [`optimize-threejs-games`](optimize-threejs-games/SKILL.md) |
@@ -29,6 +34,7 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 
 - [`build-isometric-arpg`](build-isometric-arpg/SKILL.md) — assemble one coherent production-ready action-RPG loop in vertical slices.
 - [`author-game-levels`](author-game-levels/SKILL.md) — author flat, readable routes with separated collision/navigation/visual layers and source-motivated lighting.
+- [`build-game-map-editor`](build-game-map-editor/SKILL.md) — build or audit production-linked browser map editors for Three.js and isometric games.
 - [`build-game-camera-controls`](build-game-camera-controls/SKILL.md) — create readable isometric, follow, lock-on, occlusion, shake, and touch-camera behavior.
 - [`build-mobile-threejs-games`](build-mobile-threejs-games/SKILL.md) — treat mobile controls, safe areas, responsive HUD, orientation, and performance as primary surfaces.
 
@@ -45,9 +51,12 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 - [`build-game-inventory`](build-game-inventory/SKILL.md) — create atomic inventory, loot, equipment, drag/drop, migration, and no-loss persistence flows.
 - [`create-game-vfx`](create-game-vfx/SKILL.md) — build readable, bounded, pooled, reduced-motion-aware gameplay effects.
 - [`build-game-audio-feedback`](build-game-audio-feedback/SKILL.md) — connect player intent and combat state to prioritized, accessible, browser-safe audio cues.
+- [`build-game-changelog`](build-game-changelog/SKILL.md) — design, backfill and release in-game changelogs with contiguous versions and an accessible release ledger.
 
 ## Assets, performance, QA, and release
 
+- [`game-dev-character-model`](game-dev-character-model/SKILL.md) — make a photoreal character as a textured, rigged GLB: A-pose concept image, image-to-3D, rig, pose by direction, hangar lighting, headless capture and checks. [Demo](game-dev-character-model/demo/index.html).
+- [`build-rigged-game-assets`](build-rigged-game-assets/SKILL.md) — production-ready rigged characters and monsters with a skeleton, animation library, sockets, collision, equipment and catalog media.
 - [`build-hybrid-game-assets`](build-hybrid-game-assets/SKILL.md) — choose the correct runtime representation and preserve provenance, scale, sockets, collision, and budgets.
 - [`build-vesperfall-review-assets`](build-vesperfall-review-assets/SKILL.md) — pair transparent catalog references with truthful live model previews, provenance, grounding, and deterministic review routes.
 - [`optimize-threejs-games`](optimize-threejs-games/SKILL.md) — measure and improve representative encounters without sacrificing controls or combat readability.

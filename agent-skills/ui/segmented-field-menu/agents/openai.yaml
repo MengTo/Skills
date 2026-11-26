@@ -1,0 +1,4 @@
+interface:
+  display_name: "Segmented Field Menu"
+  short_description: "Create the upper-right dock and synchronized section state."
+  default_prompt: "Use $segmented-field-menu to implement this treatment in my project."

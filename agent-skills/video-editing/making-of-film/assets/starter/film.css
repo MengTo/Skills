@@ -1,0 +1,91 @@
+/* The film's look, adapted to the project. These values are Greymourn's (the game's ivory and antique gold on
+   near-black, set in Geist): replace each token with the project's own, measured from its UI and its captures,
+   and keep the type scale and the rules. Stage 1920 × 1080, rendered at 2× (4K): display 150–170, head 84,
+   rows 50–56, body 32, labels 22–24, nothing under 20 (40 px in the 4K file). Serif display tracked in
+   (−0.035 em), caps labels out (0.14 em). Numerals in Geist Sans 200, tabular (Geist Mono's slashed zero lost). */
+@font-face { font-family: 'Geist Serif'; font-weight: 100 900; font-display: block; src: url(fonts/GeistSerifVF.woff2) format('woff2'); }
+@font-face { font-family: 'Geist'; font-weight: 100 900; font-display: block; src: url(fonts/Geist-Variable.woff2) format('woff2'); }
+@font-face { font-family: 'Geist Mono'; font-weight: 100 900; font-display: block; src: url(fonts/GeistMono-Variable.woff2) format('woff2'); }
+[data-look='project'] {
+  --x-ground: #090806;                          /* the project's darkest ground */
+  --x-ground-image: radial-gradient(70% 80% at 22% 28%, rgba(168, 136, 79, 0.12), transparent 70%), radial-gradient(50% 60% at 86% 96%, rgba(255, 140, 50, 0.07), transparent 70%);
+  --x-panel: rgba(20, 17, 12, 0.74);            /* frosted glass, tinted with the ground */
+  --x-ink: #f2ebdc;                             /* the project's text colour (Greymourn: ivory) */
+  --x-dim: #a89e88;
+  --x-line: rgba(217, 194, 138, 0.2);           /* hairlines in the project's metal (antique gold) */
+  --x-accent: #d9c28a;                          /* labels */
+  --x-ring: #ffb347;
+  --x-motion: focus;                            /* the forked engine's soft-focus resolve for show() */
+  --x-motion-dur: 0.62;
+  --x-motion-dist: 26;
+  --serif: 'Geist Serif', Georgia, serif;
+  --sans: 'Geist', system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+  --fire: #ffb347;                              /* the one accent: highlights, rings, the wipe line, step numerals */
+  --gilt: #e6cf94;                              /* the ornament's linework */
+}
+#stage { font-family: var(--sans); font-weight: 400; color: var(--x-ink); }
+.x-scene { background: transparent; }
+.x-ground { background: none; }
+#bg { position: absolute; inset: 0; background: var(--x-ground) var(--x-ground-image); }
+.gp { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.slot { position: absolute; left: 120px; top: 480px; margin: 0; font: 400 28px/1.3 var(--mono); color: var(--x-dim); border: 1px dashed var(--x-line); padding: 24px 30px; }
+
+/* type */
+.label, .badge span, .rows b, .st-grid small, .links span { font-family: var(--sans); font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em; color: var(--x-accent); }
+.label { font-size: 24px; margin: 0 0 18px; }
+.sub { font: 400 40px/1.3 var(--sans); color: var(--x-dim); margin: 18px 0 0; letter-spacing: -0.005em; }
+.head { margin: 0; font: 400 84px/1.02 var(--serif); letter-spacing: -0.03em; text-wrap: balance; }
+.head.top { position: absolute; left: 120px; top: 92px; width: 1500px; }
+.hero { margin: 0; font: 400 164px/0.94 var(--serif); letter-spacing: -0.04em; text-wrap: balance; }
+.num { margin: 0; font: 200 210px/0.88 var(--sans); letter-spacing: -0.045em; font-variant-numeric: tabular-nums; }
+.col { position: absolute; left: 120px; top: 0; bottom: 0; width: 1040px; display: flex; flex-direction: column; justify-content: center; }
+
+/* the masked word reveal (motion.js words()) */
+.mw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.mi { display: inline-block; will-change: transform; }
+
+/* frosted glass panels with the project's frame drawn on as linework (motion.js panel(), ornament()) */
+.glass { background: var(--x-panel); border: 1px solid var(--x-line); box-shadow: 0 40px 100px -30px #000; backdrop-filter: blur(18px) saturate(1.1); }
+.orn { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.orn path { fill: none; stroke: var(--gilt); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--draw, 1)); }
+.orn .o-edge { stroke-opacity: 0.55; }
+.orn .o-in { stroke-opacity: 0.18; }
+
+/* badge, hook */
+.badge { position: absolute; left: 50%; top: 56px; transform: translateX(-50%); text-align: center; text-shadow: 0 2px 14px #000; }
+.badge b { display: block; font: 500 34px/1 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; }
+.badge span { display: block; font-size: 20px; margin-top: 10px; }
+.hk-type { position: absolute; left: 120px; bottom: 260px; width: 1400px; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8); }
+
+/* rows: the promise, with each row's chapter time on the right */
+.rows { list-style: none; margin: 44px 0 0; padding: 0; }
+.rows li { display: flex; align-items: baseline; gap: 28px; font: 500 52px/1.1 var(--serif); padding: 17px 0; border-top: 1px solid var(--x-line); opacity: calc(0.45 + 0.55 * var(--on, 1)); }
+.rows li b { font-size: 22px; width: 54px; color: var(--fire); }
+.rows li span { margin-left: auto; font: 300 30px/1 var(--sans); color: var(--x-dim); font-variant-numeric: tabular-nums; }
+
+/* the stack: the card being said is lit, the others step back */
+.st-grid { position: absolute; left: 120px; top: 300px; display: grid; grid-template-columns: repeat(3, 540px); gap: 30px; }
+.st-grid article { position: relative; padding: 30px 32px 34px; height: 300px; display: flex; flex-direction: column; justify-content: space-between; opacity: var(--dim, 1); border-color: color-mix(in srgb, var(--fire) calc(var(--hl, 0) * 70%), var(--x-line)); }
+.st-grid small { font-size: 22px; }
+.st-grid b { display: block; font: 500 64px/1.05 var(--serif); white-space: nowrap; }
+.st-grid span { display: block; font-size: 28px; color: var(--x-dim); margin-top: 10px; }
+
+/* step titles */
+.steptitle .st-l { color: var(--fire); }
+.steptitle .st-n { color: var(--x-ink); }
+.steptitle .st-rule { display: block; width: 520px; height: 1px; margin: 34px 0 40px; background: linear-gradient(90deg, var(--gilt), transparent); transform-origin: left; }
+
+/* a drawn window with the real words in it */
+.win { position: absolute; left: 120px; top: 170px; width: 1040px; height: 680px; border-radius: 14px; overflow: hidden; }
+.win .bar { height: 56px; display: flex; align-items: center; gap: 9px; padding: 0 22px; border-bottom: 1px solid var(--x-line); font: 500 21px/1 var(--mono); color: var(--x-dim); }
+.win .bar i { width: 13px; height: 13px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); }
+.win .bar span { margin-left: 12px; }
+.win .body { padding: 40px 44px; }
+.prompt { margin: 0; font: 500 52px/1.35 var(--mono); letter-spacing: -0.02em; }
+.caret { display: inline-block; width: 18px; height: 54px; margin-left: 6px; vertical-align: -10px; background: var(--fire); }
+
+/* the end card: the address as big as its name */
+.links p { margin: 34px 0 0; padding-top: 22px; border-top: 1px solid var(--x-line); }
+.links b { display: block; font: 500 46px/1.1 var(--serif); }
+.links span { display: block; font: 400 32px/1.2 var(--mono); margin-top: 10px; letter-spacing: 0.02em; text-transform: none; }

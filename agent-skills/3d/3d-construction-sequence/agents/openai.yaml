@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Construction Sequence"
+  short_description: "Assemble rigid parts from wireframes into finished solids"
+  default_prompt: "Use $3d-construction-sequence to animate this model assembling from its foundations upward."

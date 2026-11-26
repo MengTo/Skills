@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scroll Mesh Survey"
+  short_description: "Sweep a reversible topology band over a living form."
+  default_prompt: "Use $scroll-mesh-survey to implement this treatment in my project."

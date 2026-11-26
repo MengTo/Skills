@@ -23,6 +23,13 @@ Portable by default. Each skill should work for any user, repo, or workspace unl
 
 Browse [all runnable demos and recreation prompts](DEMOS.md).
 
+## Saltmere interaction skills
+
+1. [Hover Particle Dissolve](agent-skills/3d/hover-particle-dissolve/SKILL.md) — Brush grains off an actual model surface and let them settle back into its silhouette.
+2. [3D Feature Objects](agent-skills/3d/3d-feature-objects/SKILL.md) — Model and light a shelf of instruments that turn independently on hover.
+3. [Interactive Topography](agent-skills/3d/interactive-topography/SKILL.md) — Draw fine contours for a timeline atlas and a raised relief with a press-triggered seismic wave.
+4. [Gradient Border Flashlight](agent-skills/web-design/gradient-border-flashlight/SKILL.md) — Carry one soft pointer light across surfaces and adjacent gradient borders.
+
 Explore the [3D rendering skills](agent-skills/3d/README.md) for ultra-realistic water, underwater god rays, virtual tours, sky rays, sky backgrounds, falling leaves, four seasons, detailed textures and models, and Retina rendering at 200%.
 
 Explore the [illustration skills](agent-skills/illustration/README.md) for 14 hand-written SVG illustration styles, from flat and outlined cartoon to halftone, one-line, isometric and vintage emblem, each with example cards, a palette, a drawing kit and a render-and-lint loop.
@@ -80,14 +87,22 @@ agent-skills/
   3d/
     README.md
     3d-ultra-realistic-water/
+    animate-procedural-birds/
+    control-camera-lenses/
     3d-underwater-god-rays/
     3d-virtual-tour/
     3d-sky-rays/
     3d-sky-background/
     3d-falling-leaves/
     3d-four-seasons/
+    relight-painted-surfaces/
     3d-high-resolution-textures/
     3d-high-poly-models/
+    3d-harbour-water/
+    3d-kasumidera-ultra-realism/
+    3d-survey-scan/
+    3d-construction-sequence/
+    3d-modular-buildings/
     3d-retina-resolution/
   codex/
     audit-verify-explain-grade-5/
@@ -128,6 +143,8 @@ agent-skills/
     README.md
     build-isometric-arpg/
       SKILL.md
+    build-ultra-realistic-game-interiors/
+      SKILL.md
     author-game-levels/
       SKILL.md
     design-action-combat/
@@ -138,6 +155,11 @@ agent-skills/
       SKILL.md
     build-vesperfall-review-assets/
       SKILL.md
+    game-dev-character-model/
+      SKILL.md
+      assets/
+      demo/
+      scripts/
     test-playable-web-games/
       SKILL.md
   illustration/
@@ -161,6 +183,29 @@ agent-skills/
       SKILL.md
     unsplash-asset-images/
       SKILL.md
+  video-editing/
+    making-of-film/
+      SKILL.md
+      references/
+      scripts/
+      assets/
+    genjutsu-scene/
+      SKILL.md
+      references/
+      scripts/
+    landing-page-to-tutorial/
+      SKILL.md
+      references/
+      scripts/
+    long-video-to-short/
+      SKILL.md
+      references/
+      scripts/
+    room-short-9x16/
+      SKILL.md
+      references/
+      scripts/
+      assets/
   ui/
     design-first-ui-prompting/
       SKILL.md
@@ -209,6 +254,7 @@ agent-skills/
       REFERENCES.md
   workflow/
     README.md
+    release-threeui-demo/
     workflow-progress-screenshots/
     workflow-score-to-target/
     workflow-ship-change/
@@ -243,11 +289,49 @@ Conventions:
 
 ## Current library
 
-This snapshot contains **177 skills** across nine categories.
+This snapshot contains **218 skills** across ten categories.
 
 Use `find agent-skills -name SKILL.md | sort` for the source of truth.
 
-### Codex workflows (19)
+### 3D rendering (30)
+
+- [Hover Particle Dissolve](agent-skills/3d/hover-particle-dissolve/SKILL.md) — Brush grains off an actual model surface and let them settle back into its silhouette.
+- [3D Feature Objects](agent-skills/3d/3d-feature-objects/SKILL.md) — Model and light a shelf of instruments that turn independently on hover.
+- [Interactive Topography](agent-skills/3d/interactive-topography/SKILL.md) — Draw fine contours for a timeline atlas and a raised relief with a press-triggered seismic wave.
+- [Light a Three.js Workspace](agent-skills/3d/light-a-threejs-workspace/SKILL.md) — Build a textured desk scene with working blinds and depth-clipped god rays.
+- [Model Three.js Control Icons](agent-skills/3d/model-threejs-control-icons/SKILL.md) — Model small physical instruments and render them into a shared icon atlas.
+
+- [Woodland Chapter Cameras](agent-skills/3d/woodland-chapter-cameras/SKILL.md) — Stage one live woodland across several scroll chapters.
+- [Perching Butterfly](agent-skills/3d/perching-butterfly/SKILL.md) — Animate a butterfly with a grounded perch and a flight loop.
+- [Forest Floor Specimen](agent-skills/3d/forest-floor-specimen/SKILL.md) — Grow an inspectable fern and moss specimen for a field guide.
+
+Atmospheric, detailed 3D scenes in Three.js. See the [3D guide](agent-skills/3d/README.md).
+- [3D ultra-realistic water](agent-skills/3d/3d-ultra-realistic-water/) covers open oceans and shallow creek flow, refraction and reflections around stones.
+- [Animate procedural birds](agent-skills/3d/animate-procedural-birds/) covers species silhouette, folding feathers, planted feet and flight.
+- [Control camera lenses](agent-skills/3d/control-camera-lenses/) covers focal length, eye tracking and shallow focus in Three.js.
+- `3d-underwater-god-rays` - volumetric light shafts through water with caustics and a rippling surface.
+- `3d-virtual-tour` - guided walkthroughs, room and floor-plan navigation, and orbit inspection.
+- `3d-sky-rays` - sunlight shafts shaped by roofs, foliage and scene occlusion.
+- `3d-sky-background` - procedural or panoramic skies with a coherent horizon and environment light.
+- `3d-falling-leaves` - instanced leaves that tumble and catch the wind.
+- `3d-four-seasons` - coordinated spring, summer, fall and winter materials, foliage, light and particles.
+- [relight-painted-surfaces](agent-skills/3d/relight-painted-surfaces/SKILL.md) - moving studio light on painted metal, skin and cloth using depth, normal and roughness maps.
+- `3d-high-resolution-textures` - sharp PBR materials with the right UVs, filtering and progressive loading.
+- `3d-high-poly-models` - detailed silhouettes with practical levels of detail.
+- [3d-survey-scan](agent-skills/3d/3d-survey-scan/SKILL.md) - Sweep the occupied scene with a cyan pulse that traces its actual mesh edges.
+- [3d-construction-sequence](agent-skills/3d/3d-construction-sequence/SKILL.md) - Assemble a structure from its foundations through its roof with synchronized wires and rigid parts.
+- [3d-modular-buildings](agent-skills/3d/3d-modular-buildings/SKILL.md) - Model structural bays, entrances and rooflines that read from the approach and at eye height.
+- [3d-harbour-water](agent-skills/3d/3d-harbour-water/SKILL.md) - Reflect quay lights on rain-dappled water, float a launch on the swell and leave a wake through turns.
+- [3d-kasumidera-ultra-realism](agent-skills/3d/3d-kasumidera-ultra-realism/SKILL.md) - Build walkable painterly Three.js environments with warm lacquer, modeled joinery, layered clouds and materials reviewed at 200%.
+- `3d-wood-material` - procedural wood with grain, pores, finishes, tool marks and end grain.
+- `3d-cloth-material` - woven cloth with thread structure, sheen, folds, hems and frayed edges.
+- `3d-paper-material` - washi, rag and kraft paper with fibres, deckled edges, translucency and creases.
+- `3d-metal-material` - steel, brass, gold and copper with brushed streaks, scratches and patina.
+- `3d-orbit-inspect-demo` - an object that leans on hover and lifts to a full inspect view on click.
+- `3d-wood-lighting-scorecard` - warm key light, shafts and dust, with a scorecard that rates the render out of 10.
+- `3d-retina-resolution` - fixed 200% rendering with correct HiDPI sizing.
+
+### Codex workflows (20)
 
 Operational skills for repeatable Codex work:
 - `article-prompts-to-skills` - turn articles and prompt packs into focused, validated skill packages.
@@ -255,26 +339,52 @@ Operational skills for repeatable Codex work:
 - `audit-verify-explain-grade-5` - audit work, verify claims, and explain results simply.
 - `browser-video-recording` - render polished browser screen-recording videos from scripted UI scenes.
 - `build-daily-inspiration-sites` - turn five captured references into five original Sites builds.
+- `codex-gpt-image-2-5-flare` - generate or edit artwork with built-in Codex image gen: transparent ornaments, sprites, emblems and UI graphics.
 - `daily-ui-inspiration-capture` - recurring UI inspiration bundles with screenshots, motion, and prompts.
 - `elevenlabs-tts` - generate reusable ElevenLabs voiceovers from local profiles.
 - `generate-reference-inspired-brand-worlds` - turn reference grammar into original brand-world directions.
 - `html-to-interaction-prompts` - turn HTML pages into screenshot-backed interaction prompt articles.
+- `implement-fog-of-war` - soft, wall-aware fog of war and perception for Three.js action games.
+- `iterate-until-verified` - a prompt-agnostic execute-and-verify loop for substantial tasks.
 - `optimize-web-animations` - profile and reduce animation, canvas, and WebGL performance cost.
 - `performance-profiling` - Apple platform profiling with Instruments, diagnostics, and MetricKit.
+- `publish-project-to-github` - package a finished project into a GitHub repo with a README, preview and Pages URL.
 - `stitched-full-page-capture` - reliable full-page screenshots for lazy, animated, and WebGL pages.
 - `video-to-superprompt` - analyze reference videos into detailed recreation prompts.
 - `web-technique-to-skill` - turn an effect you already built into a reusable web-design skill.
 - `write-like-meng-on-x` - calibrate concise X drafts against an authored voice corpus.
 - `x-bookmark-quote-posts` - turn recent X bookmarks into source-backed quote-post drafts.
 
-### Media (3)
+### Media (8)
 
-Image sourcing and generation skills:
+Image sourcing, generation, video and likeness skills:
 - `atlas-image-generation` - generate original images through a live, schema-validated Atlas Cloud workflow.
 - `aura-asset-images` - use Aura Assets for stock-style design and marketing imagery.
 - `unsplash-asset-images` - pick high-quality Unsplash assets by use case, crop, and ratio.
+- `create-ai-avatar` - a HeyGen digital twin of yourself that says new lines in your own cloned voice.
+- `digital-twin` - photoreal stills, talking clips and cloned-voice lines of you in your own room.
+- `html-explainer-video` - a one-minute explainer video from a script, a voice and HTML scenes.
+- `html-reel` - turn a tweet, video or landing page into a 9:16 reel with every cut on a word.
+- `url-to-motion-design` - turn a launch film or post at a URL into Fil HTML motion scenes.
 
-### UI (1)
+### Video editing (3)
+
+- `genjutsu-scene` - a scene of yourself inside a game, three.js or Blender world, in its costume and light, saying your line with your own face and voice: your HeyGen Avatar 6 twin drives Genjutsu motion transfer, Sync Lipsync 3 on your voice, a 4K60 insert, blind judges.
+- `landing-page-to-tutorial` - the whole chain for a 15 to 25 minute YouTube tutorial that starts by designing and building landing pages with a coding model: fourteen setup questions first, then the plan, page prompts in a fixed order, builds with a logged trail, real demos at 4K60, a script from checked facts, a film that is a demo and not a presentation, export checks, the free pack, release, the short and the posts, handing each stage to the skill that owns it.
+- `long-video-to-short` - a 60-second 9:16 short (Reels, Shorts, TikTok) from a finished long video: the script in your cloned voice, captions timed to the sound by phrases, the long video's own footage behind, you on camera as your HeyGen Avatar 6 twin (a Higgsfield Genjutsu re-skin only where a scene needs it), two cuts under 30 MB, checks on the rendered file, independent judges, posts saved paused.
+- `room-short-9x16` - a 60-second 9:16 short set in your own 3D room: it asks first how the stills, storyboard, Blender scenes, script, cover and posting should be set up, then a black-and-white storyboard, scene stills in one look, the demo on your real devices rendered in Blender on a rented GPU, you on camera from Seedance 2.5 (drafts, then 1080p finals of the picked takes), words set in the scene, music from a measured reference, the cover as the first frame, two cuts, checks and a judge, with every prompt.
+- `making-of-film` - a 4–5 minute "how I made X" YouTube film from a finished project: script in your voice, the project's own look and captures, every cut on a word, a digital twin at key places, 4K60, blind judges.
+
+### UI (7)
+
+- [Refract Liquid Glass](agent-skills/ui/refract-liquid-glass/SKILL.md) — Bend the live backdrop through a draggable, rounded glass lens.
+- [Shade a Glass Button Press](agent-skills/ui/shade-glass-button-press/SKILL.md) — Indent the lens at contact and release a wave through its surface.
+
+- [Moss Glass Controls](agent-skills/ui/moss-glass-controls/SKILL.md) — Build dark moss glass cards and perimeter-lit buttons.
+- [Segmented Field Menu](agent-skills/ui/segmented-field-menu/SKILL.md) — Create the upper-right dock and synchronized section state.
+
+- `audit-ai-design-slop` - audit sites, apps and mockups for AI-design clichés and UI defects, with evidence.
+- `no-ai-design-slop` - prevent and remove generic AI design defaults while creating or revising UI.
 
 #### `design-first-ui-prompting`
 Design-first UI prompting system:
@@ -315,32 +425,49 @@ Combat animation and combat skills that read and look like Diablo IV, measured a
 - `lightning-energy-skill-vfx` - a skill's effects as one language in Three.js: lightning that reaches out as a stepped leader, flares, holds and fades, one discharge at a time, with forks of forks and hair-fine branchlets; a storm-cloud orb with plasma-globe arcs that churns in place and carries its own torn black shadow; ground strikes that crawl along the stone's cracks; refraction-only air fronts, sparks, fractured debris and ink-negative impact frames, with a reusable module, a five-beat demo on a scanned CC0 floor and a blind-judged scorecard.
 - `water-crystal-skill-vfx` - a water and crystal skill's effects as one language in Three.js: clear water that bends and mirrors instead of glowing teal; a sphere-traced water orb whose drop modes, capillary rings and drifting warp deform it in place, with a crisp inverted horizon and a silver rim; beaded streams wound up out of tide pools, a lash that whips into a torn, lopsided splash crown, and analytic ripple rings and rain; quartz traced against its own planes (total internal reflection, a clamped dispersion fringe, fracture discs, a white-hot root glow and a climbing resonance band) that grows out of the water and shatters into splinters resting on the rock with real contact; flat mirror pools with a moon-glitter column on a tidal rock flat laid out from target images, with a reusable module, a five-beat demo on a scanned CC0 floor and a target-image scorecard.
 
-### Game development (20)
+### Game development (25)
 
 Playable Three.js and browser-game workflows. See the [game-development guide](agent-skills/game-development/README.md) for the skill-selection table and system boundaries.
 
 Foundation and world:
-- `build-isometric-arpg`, `author-game-levels`, `build-game-camera-controls`, `build-mobile-threejs-games`
+- [`build-ultra-realistic-game-interiors`](agent-skills/game-development/build-ultra-realistic-game-interiors/SKILL.md), `build-isometric-arpg`, `author-game-levels`, `build-game-map-editor`, `build-game-camera-controls`, `build-mobile-threejs-games`
 
 Combat, enemies, and encounters:
 - `design-action-combat`, `build-threejs-enemy-systems`, `build-game-monster-system`, `tune-enemy-ai`, `design-game-encounters`
 
 Player systems and feedback:
-- `build-game-inventory`, `create-game-vfx`, `build-game-audio-feedback`
+- `build-game-inventory`, `create-game-vfx`, `build-game-audio-feedback`, `build-game-changelog`
+- [`build-point-cloud-scan`](agent-skills/game-development/build-point-cloud-scan/SKILL.md), [`build-lens-raindrops`](agent-skills/game-development/build-lens-raindrops/SKILL.md), [`build-3d-character-selector`](agent-skills/game-development/build-3d-character-selector/SKILL.md)
 
 Assets, performance, QA, and release:
-- `build-hybrid-game-assets`, `build-vesperfall-review-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`
+- `game-dev-character-model`, `build-rigged-game-assets`, `build-hybrid-game-assets`, `build-vesperfall-review-assets`, `optimize-threejs-games`, `test-playable-web-games`, `ship-web-games`
 
-### Web design (81)
+Demo: [`game-dev-character-model`](agent-skills/game-development/game-dev-character-model/demo/index.html) - a concept image, the A-pose before/after and the four check views of an original heroine.
+
+### Web design (102)
+
+- [Gradient Border Flashlight](agent-skills/web-design/gradient-border-flashlight/SKILL.md) — Carry one soft pointer light across surfaces and adjacent gradient borders.
+- [Scroll Mesh Survey](agent-skills/web-design/scroll-mesh-survey/SKILL.md) — Sweep a reversible topology band over a living form.
+- [Sylva Field Guide Layout](agent-skills/web-design/sylva-field-guide-layout/SKILL.md) — Align field-guide typography, rules and figure captions.
+- [Compose a Woodland Landing Page](agent-skills/web-design/compose-a-woodland-landing-page/SKILL.md) — Compose an editorial landing page around a living grove.
+- [Pollen Pointer Trail](agent-skills/web-design/pollen-pointer-trail/SKILL.md) — Emit soft pollen along a pointer path with a fixed budget.
+
+Folvra studio techniques
+
+- [Neoclassical Ledger UI](agent-skills/web-design/neoclassical-ledger-ui/SKILL.md)
+- [Dither and ASCII Ink Hover](agent-skills/web-design/dither-ascii-ink-hover/SKILL.md)
+- [Generate a Ledger Logo Register](agent-skills/web-design/generate-ledger-logo-register/SKILL.md)
+- [Painted Product Showcase](agent-skills/web-design/painted-product-showcase/SKILL.md)
+- [Scroll-Scrubbed Object Handoff](agent-skills/web-design/scroll-scrubbed-object-handoff/SKILL.md)
 
 Conversion and implementation:
 - `build-awwwards-quality-sites`, `landing-page`, `pricing-page`, `tailwindcss`, `animation-systems`, `webgl-landing-steering`
 
 Motion and scroll:
-- `animation-on-scroll`, `cinematic-gsap-lenis-motion-system`, `cinematic-scroll-storytelling`, `gsap`, `gsap-scrolltrigger-storytelling`, `marquee-loop`, `masked-reveal`, `staggered-word-reveal`
+- `animation-on-scroll`, `cinematic-gsap-lenis-motion-system`, `cinematic-scroll-storytelling`, `gsap`, `gsap-scrolltrigger-storytelling`, `horizontal-scroll-scenes`, `marquee-loop`, `masked-reveal`, `staggered-word-reveal`
 
 WebGL, canvas, and 3D:
-- `add-shader-cursor-trail`, `background-grid-webgl`, `cobejs`, `globe-gl`, `globe-particles`, `matterjs`, `threejs`, `threejs-landscape`, `threejs-towers`, `threejs-weather`, `unicorn-studio`, `vantajs`, `webgl-3d-object`, `webgl-laser`
+- `add-mouse-driven-orbit`, `add-shader-cursor-trail`, `background-grid-webgl`, `build-interactive-particle-trail`, `build-threejs-scroll-worlds`, `build-wireframe-scan-reveal`, `fire-paper-loader`, `cobejs`, `globe-gl`, `globe-particles`, `matterjs`, `threejs`, `threejs-landscape`, `threejs-towers`, `threejs-weather`, `paper-cinder-transition`, `unicorn-studio`, `vantajs`, `webgl-3d-object`, `webgl-laser`
 
 CSS treatments and details:
 - `beautiful-shadows`, `company-logos`, `container-lines`, `corner-diagonals`, `corner-lasers`, `css-alpha-masking`, `css-border-gradient`, `gooey-blob-system`, `number-details`, `progressive-blur`, `solar-duotone-bold`
@@ -352,11 +479,13 @@ Visual styles and page moods:
 - `atmosphere-background`, `blue-cloudy-clean-modern`, `blue-laser-clean-glass-layout`, `bright-green-tech-system-webgl`, `clean-minimal-beige-light-mode`, `dark-blue-contrasting-clean`, `dark-glass-clean-layout`, `dither-background`, `dither-laser-dark-mode`, `framed-tech-dark-border-gradient`, `funky-purple-container-tech`, `glass-dark-mode-clock`, `glass-dark-ui`, `high-contrast-skeuomorphic-clean`, `light-mode-paper-technical`, `mesh-gradient-dark-blue-clean`, `nested-container-clean-agency`, `orange-clean-paper-saas`, `skeuomorphic-ui`, `tech-green-dark-mode-modern`
 
 Additional interaction, narrative, and product systems:
-- `ambient-section-particles`, `beam-glow-states`, `documentary-brutalist-agency`, `editorial-portfolio-chapters`, `editorial-service-booking`, `falling-leaves`, `liquid-metal-border`, `operational-enterprise-ai`, `pointer-trail-emitter`, `product-proof-saas`, `reveal-hover-effect`, `scroll-progress-timeline`, `scroll-scrubbed-visual-sequence`, `scroll-scrubbed-word-reveal`, `scroll-world-storytelling`, `shaders-cursor-ripples`, `thinking-orbs`
+- `ambient-section-particles`, `beam-glow-states`, `documentary-brutalist-agency`, `editorial-portfolio-chapters`, `editorial-service-booking`, `falling-leaves`, `html-demo`, `liquid-metal-border`, `operational-enterprise-ai`, `pointer-trail-emitter`, `product-proof-saas`, `reveal-hover-effect`, `scroll-progress-timeline`, `scroll-scrubbed-visual-sequence`, `scroll-scrubbed-word-reveal`, `scroll-world-storytelling`, `shaders-cursor-ripples`, `thinking-orbs`
 
-### Workflow (4)
+### Workflow (5)
 
 How to work with agents on a real project: the rules repeated in every thread, turned into procedures with scripts. See the [workflow guide](agent-skills/workflow/README.md).
+
+- [Release a ThreeUI Demo](agent-skills/workflow/release-threeui-demo/SKILL.md) - capture a 4K60 master, ship the interactive preview and three skills, and prepare platform-specific Fil posts.
 - `workflow-progress-screenshots` - send real screenshots of the start, key moment and result as work progresses, unasked, with headless capture and side-by-side scripts.
 - `workflow-score-to-target` - score work out of 10 on an anchored rubric, judge it independently, and improve round by round until every item hits the target.
 - `workflow-ship-change` - ship every change: screenshots, changelog, tests, own files only, fast-forward push, draft-then-live publish, measured sizes and a 50 MB stop.

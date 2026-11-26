@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Modular Buildings"
+  short_description: "Model readable, human-scale architecture for real-time scenes"
+  default_prompt: "Use $3d-modular-buildings to model a waterfront terminal with a recognizable roofline and a walkable entrance."

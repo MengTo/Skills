@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Demo"
+  short_description: "Show an app working, drawn live in HTML instead of recorded"
+  default_prompt: "Use $html-demo to show this app's main flow in a live HTML window on the landing page: 3–5 steps drawn from t at 1200 × 750, the real UI's words and pictures, a scripted pointer, a steps bar, and designed end frames for reduced motion."

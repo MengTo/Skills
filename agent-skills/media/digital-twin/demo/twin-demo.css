@@ -1,0 +1,1699 @@
+/* The Digital twin workflow in Fil (twin-demo.js), drawn at 1200 x 750
+   in Fil's own dark tokens and sizes (src/styles/studio.css, as fil.design's
+   windows draw them). Every class and keyframe is xtw-. Nothing here
+   moves on its own: draw(t) sets what changes. */
+.xtw {
+  --xtw-bg: #08090a;
+  --xtw-surface: #0c0d0f;
+  --xtw-raise: #111215;
+  --xtw-s2: #151619;
+  --xtw-s3: #1c1d21;
+  --xtw-line: rgba(255, 255, 255, 0.06);
+  --xtw-line-2: rgba(255, 255, 255, 0.095);
+  --xtw-line-3: rgba(255, 255, 255, 0.15);
+  --xtw-fg: #f3f4f5;
+  --xtw-fg-2: #c3c6cc;
+  --xtw-fg-3: #8a8e96;
+  --xtw-fg-4: #5c6067;
+  --xtw-accent: #a3abff;
+  --xtw-c1: #efb36c;
+  --xtw-c2: #ef7d9b;
+  --xtw-c3: #82c1ee;
+  --xtw-c5: #b59cf5;
+  --xtw-ok: #5fcf98;
+  --xtw-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.35);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--xtw-bg);
+  font: 500 13px/1.35 var(--f-ui, 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif);
+  letter-spacing: -0.005em;
+  color: var(--xtw-fg-2);
+  text-align: left;
+  user-select: none;
+  pointer-events: none;
+  -webkit-font-smoothing: antialiased;
+}
+.xtw *,
+.xtw *::before,
+.xtw *::after {
+  box-sizing: border-box;
+}
+.xtw svg.i {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.6;
+}
+.xtw svg.i * {
+  vector-effect: none;
+}
+.xtw b {
+  font-weight: 600;
+  color: var(--xtw-fg);
+}
+.xtw code,
+.xtw kbd {
+  font: 500 11px var(--f-mono, 'Geist Mono', ui-monospace, Menlo, monospace);
+}
+.xtw-gap {
+  flex: 1;
+}
+.xtw-sw {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+}
+.xtw-sw0 {
+  background: linear-gradient(135deg, var(--xtw-c1), var(--xtw-c2));
+}
+.xtw-sw1 {
+  background: linear-gradient(135deg, var(--xtw-c2), var(--xtw-c3));
+}
+.xtw-sw2 {
+  background: linear-gradient(135deg, var(--xtw-c3), var(--xtw-c1));
+}
+/* Your initial where Fil shows your picture. */
+.xtw-me {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0b0c10;
+  background: #8fd3b0;
+}
+
+/* ---------- Fil for Mac ---------- */
+.xtw-rail {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 0;
+  color: var(--xtw-fg-3);
+}
+.xtw-rail > i {
+  height: 2px;
+}
+.xtw-rail svg.i {
+  width: 17px;
+  height: 17px;
+}
+.xtw-logo {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 4px;
+}
+.xtw-rail .xtw-sw {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+}
+.xtw-rail .xtw-sw.xtw-on {
+  box-shadow:
+    0 0 0 2px var(--xtw-bg),
+    0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+.xtw-main {
+  position: absolute;
+  top: 6px;
+  bottom: 8px;
+  left: 56px;
+  right: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--xtw-surface);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+}
+.xtw-top {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 0 18px;
+  color: var(--xtw-fg-3);
+  border-bottom: 0.5px solid var(--xtw-line);
+  background: var(--xtw-surface);
+}
+.xtw-crumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.xtw-crumb svg.i {
+  width: 13px;
+  height: 13px;
+}
+.xtw-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 248px;
+  height: 32px;
+  padding: 0 6px 0 10px;
+  border-radius: 9px;
+  white-space: nowrap;
+  color: var(--xtw-fg-4);
+  background: var(--xtw-s2);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+}
+.xtw-search kbd {
+  margin-left: auto;
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-size: 10.5px;
+  color: var(--xtw-fg-3);
+  background: var(--xtw-s3);
+}
+.xtw-credits {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--xtw-fg);
+}
+.xtw-credits svg.i:first-child {
+  color: var(--xtw-c1);
+}
+.xtw-credits svg.i:last-child {
+  width: 12px;
+  height: 12px;
+  color: var(--xtw-fg-3);
+}
+.xtw-share {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 9px;
+  color: var(--xtw-fg);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-3);
+}
+.xtw-canvas {
+  position: absolute;
+  inset: 50px 0 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.075) 1px, transparent 1.4px) 0 0 / 22px 22px,
+    var(--xtw-surface);
+}
+.xtw-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1400px;
+  height: 1100px;
+  transform-origin: 0 0;
+}
+.xtw-cchip {
+  position: absolute;
+  z-index: 3;
+  left: 12px;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--xtw-fg);
+  background: rgba(19, 20, 23, 0.94);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-2),
+    0 12px 30px -14px rgba(0, 0, 0, 0.8);
+}
+.xtw-cchip svg.i {
+  width: 15px;
+  height: 15px;
+  color: var(--xtw-fg-3);
+}
+.xtw-cchip .xtw-sw {
+  width: 13px;
+  height: 13px;
+}
+.xtw-tools {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px;
+  border-radius: 12px;
+  transform: translateX(-50%);
+  color: var(--xtw-fg-2);
+  background: rgba(19, 20, 23, 0.94);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-2),
+    0 16px 40px -16px rgba(0, 0, 0, 0.9);
+}
+.xtw-tools span {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+.xtw-tools span.xtw-on {
+  color: #0a0b0c;
+  background: #f3f4f5;
+}
+.xtw-tools > i {
+  width: 0.5px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--xtw-line-3);
+}
+/* What the canvas is doing, at its top. */
+.xtw-toast {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 14px;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  color: var(--xtw-fg);
+  background: rgba(19, 20, 23, 0.96);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-3),
+    0 12px 30px -12px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  opacity: 0;
+}
+.xtw-toast .xtw-ta2,
+.xtw-toast.xtw-second .xtw-ta1 {
+  display: none;
+}
+.xtw-toast.xtw-second .xtw-ta2 {
+  display: inline;
+}
+
+/* ---------- the threads ---------- */
+.xtw-threads {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.xtw-edge {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+.xtw-edge.xtw-quiet {
+  opacity: 0.14;
+}
+.xtw-edge.xtw-live {
+  stroke-dasharray: 6 7;
+}
+.xtw-edge.xtw-quiet.xtw-live {
+  opacity: 0.5;
+}
+
+/* ---------- a node (studio.css .node) ---------- */
+.xtw-node {
+  position: absolute;
+  border-radius: 14px;
+  background: var(--xtw-raise);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-2),
+    0 0 0 calc(var(--glow, 0) * 1.5px) rgba(255, 206, 140, calc(var(--glow, 0) * 0.75)),
+    0 0 calc(var(--glow, 0) * 26px) calc(var(--glow, 0) * 2px) rgba(239, 179, 108, calc(var(--glow, 0) * 0.32)),
+    0 18px 40px -18px rgba(0, 0, 0, 0.65),
+    0 2px 6px rgba(0, 0, 0, 0.18);
+}
+.xtw-node.xtw-sel {
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-2),
+    0 0 0 1px rgba(163, 171, 255, calc(0.7 - var(--glow, 0) * 0.6)),
+    0 0 0 calc(var(--glow, 0) * 1.5px) rgba(255, 206, 140, calc(var(--glow, 0) * 0.75)),
+    0 0 calc(var(--glow, 0) * 26px) calc(var(--glow, 0) * 2px) rgba(239, 179, 108, calc(var(--glow, 0) * 0.32)),
+    0 18px 40px -18px rgba(0, 0, 0, 0.65);
+}
+.xtw-nname {
+  position: absolute;
+  left: 2px;
+  bottom: calc(100% + 7px);
+  font-size: 12px;
+  color: var(--xtw-fg-3);
+  white-space: nowrap;
+}
+.xtw-node.xtw-sel .xtw-nname {
+  color: var(--xtw-accent);
+}
+.xtw-hd {
+  position: absolute;
+  z-index: 5;
+  display: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--xtw-surface);
+  box-shadow: inset 0 0 0 1.5px var(--xtw-accent);
+}
+.xtw-node.xtw-sel .xtw-hd {
+  display: block;
+}
+.xtw-htl {
+  left: -4px;
+  top: -4px;
+}
+.xtw-htr {
+  right: -4px;
+  top: -4px;
+}
+.xtw-hbl {
+  left: -4px;
+  bottom: -4px;
+}
+.xtw-hbr {
+  right: -4px;
+  bottom: -4px;
+}
+.xtw-port {
+  position: absolute;
+  z-index: 4;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--xtw-raise);
+  box-shadow: inset 0 0 0 1px var(--xtw-line-3);
+}
+.xtw-port::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--pc, var(--xtw-fg-3));
+}
+.xtw-pin {
+  left: -7px;
+}
+.xtw-pout {
+  right: -7px;
+}
+.xtw-nh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 6px 0 12px;
+  font-size: 13px;
+  color: var(--xtw-fg);
+  border-bottom: 0.5px solid var(--xtw-line-2);
+  white-space: nowrap;
+}
+.xtw-nh b {
+  font-weight: 500;
+}
+.xtw-nh > svg.i:last-child {
+  display: none;
+  width: 15px;
+  height: 15px;
+  margin: 0 4px;
+  color: var(--xtw-fg-3);
+}
+/* Its close button, once it's picked. */
+.xtw-node.xtw-sel .xtw-nh > svg.i:last-child {
+  display: block;
+}
+.xtw-nmodel {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--xtw-fg-2);
+  background: var(--xtw-s2);
+}
+.xtw-nmodel svg.i {
+  width: 12px;
+  height: 12px;
+  margin-right: -3px;
+  color: var(--xtw-fg-4);
+}
+.xtw-mk {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  color: var(--xtw-fg);
+}
+.xtw-mono {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--xtw-fg-2);
+  background: var(--xtw-s3);
+}
+.xtw-tag {
+  margin-left: auto;
+  margin-right: 6px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 11.5px;
+  color: var(--xtw-fg-3);
+  background: var(--xtw-s2);
+}
+.xtw-tag.xtw-need {
+  color: #f0c08a;
+  background: rgba(239, 179, 108, 0.12);
+}
+.xtw-tag.xtw-added {
+  display: none;
+  color: var(--xtw-ok);
+  background: rgba(95, 207, 152, 0.12);
+}
+.xtw-node.xtw-in .xtw-need {
+  display: none;
+}
+.xtw-node.xtw-in .xtw-added {
+  display: inline;
+}
+/* What feeds it: the files' pictures, a chip for each doc, and the words. */
+.xtw-refs {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  font-size: 12px;
+  color: var(--xtw-fg-3);
+  white-space: nowrap;
+}
+.xtw-rt {
+  position: relative;
+  display: none;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #000;
+}
+.xtw-rt.xtw-on,
+.xtw-framed .xtw-rt-s2 {
+  display: block;
+}
+.xtw-rt > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.xtw-dchip {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  color: var(--xtw-fg-3);
+  background: var(--xtw-s2);
+}
+.xtw-dchip svg.i {
+  width: 12px;
+  height: 12px;
+}
+.xtw-rl {
+  margin-left: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.xtw-rl-b,
+.xtw-framed .xtw-rl-a,
+.xtw-framed .xtw-d1,
+.xtw-framed .xtw-d2 {
+  display: none;
+}
+.xtw-framed .xtw-rl-b {
+  display: inline;
+}
+.xtw-np {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  overflow: hidden;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--xtw-fg);
+  background: var(--xtw-s2);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+/* The picture, or what it will be. */
+.xtw-pre,
+.xtw-body {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #0e0f12;
+}
+.xtw-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--xtw-fg-4);
+  border-radius: 8px;
+  outline: 1px dashed var(--xtw-line-3);
+  outline-offset: -1px;
+  background: var(--xtw-raise);
+}
+.xtw-empty svg.i {
+  width: 20px;
+  height: 20px;
+}
+.xtw-dots {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at 1px 1px, rgba(255, 220, 170, 0.22) 1px, transparent 1.5px) 0 0 / 9px 9px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 45% at 50% 40%, #000, transparent 75%);
+  mask-image: radial-gradient(ellipse 60% 45% at 50% 40%, #000, transparent 75%);
+}
+.xtw-dev,
+.xtw-rev,
+.xtw-v {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.xtw-dev {
+  opacity: 0;
+  filter: blur(12px) brightness(0.55) saturate(0.4);
+  transform: scale(1.08);
+}
+.xtw-rev {
+  clip-path: inset(0 0 100% 0);
+}
+.xtw-v {
+  opacity: 0;
+  background: #000;
+}
+.xtw-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  margin-top: -1px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 226, 180, 0.95) 30%, rgba(255, 226, 180, 0.95) 70%, transparent);
+  box-shadow: 0 0 12px 2px rgba(255, 186, 110, 0.55);
+}
+.xtw-pill {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 6px;
+  font: 500 11.5px var(--f-mono, 'Geist Mono', ui-monospace, Menlo, monospace);
+  color: var(--xtw-fg);
+  background: rgba(10, 11, 13, 0.85);
+  opacity: 0;
+}
+.xtw-pill code {
+  font-size: 11.5px;
+  color: var(--xtw-fg-3);
+}
+.xtw-usual {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  font-size: 12px;
+  color: var(--xtw-fg-3);
+  opacity: 0;
+}
+.xtw-spin {
+  flex: none;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+}
+.xtw-run-a,
+.xtw-run-b {
+  position: absolute;
+  inset: 0;
+}
+.xtw-run-b {
+  opacity: 0;
+}
+.xtw-badge {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font: 500 11.5px var(--f-mono, 'Geist Mono', ui-monospace, Menlo, monospace);
+  color: var(--xtw-fg);
+  background: rgba(10, 11, 13, 0.75);
+  opacity: 0;
+}
+.xtw-badge svg.i {
+  width: 10px;
+  height: 10px;
+  fill: currentColor;
+}
+.xtw-last {
+  position: absolute;
+  left: 12px;
+  font-size: 12px;
+  color: var(--xtw-fg-4);
+  opacity: 0;
+}
+.xtw-nf,
+.xtw-foot {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.xtw-hint {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--xtw-fg-4);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.xtw-h-done,
+.xtw-node.xtw-in .xtw-h-need {
+  display: none;
+}
+.xtw-node.xtw-in .xtw-h-done {
+  display: inline;
+}
+.xtw-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: var(--xtw-fg-2);
+  background: var(--xtw-s2);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+  white-space: nowrap;
+}
+.xtw-chip.xtw-ic {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  justify-content: center;
+}
+.xtw-chip svg.i {
+  width: 14px;
+  height: 14px;
+  color: var(--xtw-fg-3);
+}
+.xtw-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--xtw-fg);
+  background: var(--xtw-s2);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+}
+.xtw-btn.xtw-pri {
+  color: #0a0b0c;
+  background: #f3f4f5;
+  box-shadow: none;
+}
+.xtw-btn.xtw-off {
+  opacity: 0.6;
+}
+.xtw-btn.xtw-pri.xtw-off {
+  background: #b9bbc0;
+}
+.xtw-btn.xtw-plain {
+  background: none;
+  box-shadow: none;
+  color: var(--xtw-fg-2);
+}
+.xtw-btn svg.i {
+  width: 14px;
+  height: 14px;
+}
+.xtw-btn > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.xtw-cost {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 2px;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+.xtw-btn .xtw-cost svg.i {
+  width: 13px;
+  height: 13px;
+}
+.xtw-b-go svg.i:first-child {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+/* A run button: Generate, busy, then Add another take. */
+.xtw-run .xtw-b-busy,
+.xtw-run .xtw-b-add,
+.xtw-done .xtw-run .xtw-b-go,
+.xtw-run.xtw-is-add .xtw-b-go {
+  display: none;
+}
+.xtw-done .xtw-run .xtw-b-add,
+.xtw-run.xtw-is-add .xtw-b-add {
+  display: inline-flex;
+}
+.xtw-busy .xtw-run .xtw-b-go,
+.xtw-busy .xtw-run .xtw-b-add,
+.xtw-run.xtw-is-busy .xtw-b-go,
+.xtw-run.xtw-is-busy .xtw-b-add {
+  display: none;
+}
+.xtw-busy .xtw-run .xtw-b-busy,
+.xtw-run.xtw-is-busy .xtw-b-busy {
+  display: inline-flex;
+}
+.xtw-busy .xtw-run,
+.xtw-run.xtw-is-busy {
+  background: #b9bbc0;
+  opacity: 0.6;
+}
+
+/* A workflow's place for a file (canvasNodes.jsx SlotDrop). */
+.xtw-slot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  text-align: center;
+  outline: 1px dashed var(--xtw-line-3);
+  outline-offset: -1px;
+  background: var(--xtw-raise);
+}
+.xtw-slot-ic {
+  display: grid;
+  margin-bottom: 2px;
+  color: var(--xtw-fg-3);
+}
+.xtw-slot-ic svg.i {
+  grid-area: 1 / 1;
+  width: 20px;
+  height: 20px;
+}
+.xtw-slot-ic svg.i:last-child,
+.xtw-slot-o {
+  display: none;
+}
+.xtw-slot b {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.xtw-slot small {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--xtw-fg-3);
+}
+.xtw-slot-tag {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--xtw-fg-4);
+}
+/* A file held over it. */
+.xtw-over .xtw-slot {
+  outline: 1.5px dashed var(--xtw-accent);
+  background: rgba(163, 171, 255, 0.08);
+}
+.xtw-over .xtw-slot-ic {
+  color: var(--xtw-accent);
+}
+.xtw-over .xtw-slot-ic svg.i:first-child,
+.xtw-over .xtw-slot-a,
+.xtw-over .xtw-slot small,
+.xtw-over .xtw-slot-tag {
+  display: none;
+}
+.xtw-over .xtw-slot-ic svg.i:last-child,
+.xtw-over .xtw-slot-o {
+  display: inline;
+}
+.xtw-adding {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--xtw-fg-3);
+  opacity: 0;
+}
+.xtw-pic {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 100% 0);
+}
+.xtw-pic > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The room's photo: the corner of it still 2 sees (0–468, 160–452 of
+   1280 x 720). */
+.xtw-room {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.xtw-room > img {
+  position: absolute;
+  left: 0;
+  top: -54.7%;
+  width: 273.5%;
+  height: auto;
+  max-width: none;
+}
+
+/* A document and a skill. */
+.xtw-dtabs {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 48px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11.5px;
+  color: var(--xtw-fg-3);
+}
+.xtw-dtabs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+.xtw-dtabs span.on {
+  color: var(--xtw-fg);
+  background: var(--xtw-s2);
+}
+.xtw-dtabs i {
+  flex: 1;
+}
+.xtw-dtabs svg.i {
+  width: 12px;
+  height: 12px;
+}
+.xtw-dbody {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 78px;
+  height: 148px;
+  overflow: hidden;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--xtw-fg-2);
+  -webkit-mask-image: linear-gradient(#000 75%, transparent);
+  mask-image: linear-gradient(#000 75%, transparent);
+}
+.xtw-dbody h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--xtw-fg);
+}
+.xtw-dbody ul {
+  margin: 0;
+  padding-left: 13px;
+}
+.xtw-dbody li {
+  margin-bottom: 3px;
+}
+.xtw-dbody b {
+  font-weight: 600;
+}
+.xtw-sbody {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 50px;
+  height: 72px;
+  overflow: hidden;
+  display: grid;
+  align-content: start;
+  gap: 1px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--xtw-fg-2);
+  background: var(--xtw-s2);
+}
+.xtw-sbody small {
+  font-size: 9.5px;
+  color: var(--xtw-fg-4);
+}
+.xtw-sdesc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* A voice: its waveform, to play. */
+.xtw-player {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px 0 12px;
+  opacity: 0;
+  background: #121317;
+}
+.xtw-heard .xtw-player {
+  opacity: 1;
+}
+.xtw-playbtn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--xtw-fg);
+  background: rgba(255, 255, 255, 0.1);
+}
+.xtw-playbtn svg.i {
+  grid-area: 1 / 1;
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
+.xtw-playbtn svg.i:last-child,
+.xtw-playing .xtw-playbtn svg.i:first-child {
+  display: none;
+}
+.xtw-playing .xtw-playbtn svg.i:last-child {
+  display: block;
+}
+.xtw-bars {
+  position: relative;
+  flex: 1;
+  height: 52px;
+  clip-path: inset(0 100% 0 0);
+}
+.xtw-bl {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.xtw-bl i {
+  flex: 1;
+  height: calc(var(--h) * 100%);
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+.xtw-bl-lit {
+  clip-path: inset(0 100% 0 0);
+}
+.xtw-bl-lit i {
+  background: var(--xtw-fg);
+}
+.xtw-wtime {
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  font: 500 10.5px var(--f-mono, 'Geist Mono', ui-monospace, Menlo, monospace);
+  color: var(--xtw-fg-3);
+}
+.xtw-wave .xtw-pill {
+  top: 8px;
+}
+
+/* ---------- a box drawn round nodes, and menus ---------- */
+.xtw-marq {
+  position: absolute;
+  z-index: 8;
+  opacity: 0;
+  border: 1px solid rgba(163, 171, 255, 0.85);
+  border-radius: 2px;
+  background: rgba(163, 171, 255, 0.08);
+}
+.xtw-menu {
+  position: absolute;
+  z-index: 7;
+  width: 300px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #121316;
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-3),
+    var(--xtw-pop);
+  opacity: 0;
+}
+.xtw-menu-h {
+  display: block;
+  padding: 7px 10px 6px;
+  font-size: 12px;
+  color: var(--xtw-fg-3);
+}
+.xtw-mi {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--xtw-fg);
+}
+.xtw-mi.xtw-off {
+  opacity: 0.4;
+}
+.xtw-mi.xtw-on {
+  background: rgba(255, 255, 255, 0.045);
+}
+.xtw-mi.xtw-over {
+  background: rgba(255, 255, 255, 0.085);
+}
+.xtw-mi > svg.i {
+  width: 15px;
+  height: 15px;
+  color: var(--xtw-fg-2);
+}
+.xtw-mi-t {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+}
+.xtw-mi-t small {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--xtw-fg-3);
+}
+.xtw-mi kbd {
+  font-size: 11.5px;
+  color: var(--xtw-fg-3);
+}
+.xtw-ctx {
+  width: 236px;
+}
+.xtw-ctx .xtw-mi {
+  min-height: 32px;
+}
+.xtw-vmenu .xtw-mi,
+.xtw-dmenu .xtw-mi {
+  min-height: 44px;
+}
+.xtw-vmenu .xtw-mi > svg.i,
+.xtw-dmenu .xtw-mi > svg.i {
+  opacity: 0;
+}
+.xtw-vmenu .xtw-mi.xtw-on > svg.i,
+.xtw-dmenu .xtw-mi.xtw-on > svg.i {
+  opacity: 1;
+}
+.xtw-dmenu .xtw-mi {
+  min-height: 50px;
+}
+/* ---------- the canvas's inspector ---------- */
+.xtw-insp {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  top: 12px;
+  width: 262px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(17, 18, 21, 0.97);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-2),
+    0 16px 40px -18px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+}
+.xtw-i-take {
+  display: none;
+  padding: 12px 12px 12px;
+  border-bottom: 0.5px solid var(--xtw-line-2);
+}
+.xtw-insp.xtw-tall .xtw-i-take {
+  display: block;
+}
+.xtw-i-pic {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #000;
+}
+.xtw-i-pic img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.xtw-i-b {
+  opacity: 0;
+}
+.xtw-i-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.xtw-i-acts .xtw-btn {
+  height: 28px;
+  padding: 0 9px;
+  font-size: 12px;
+}
+.xtw-final .xtw-spin,
+.xtw-final.xtw-off svg.i:first-child,
+.xtw-insp.xtw-fin .xtw-final {
+  display: none;
+}
+.xtw-final.xtw-off .xtw-spin {
+  display: inline-block;
+}
+.xtw-isec {
+  display: grid;
+  gap: 10px;
+  padding: 14px 14px 16px;
+  border-bottom: 0.5px solid var(--xtw-line-2);
+}
+.xtw-isec h4 {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--xtw-fg);
+}
+.xtw-kv {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px 10px;
+  margin: 0;
+  font-size: 12px;
+}
+.xtw-kv dt {
+  color: var(--xtw-fg-3);
+}
+.xtw-kv dd {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  margin: 0;
+  font: 500 11.5px var(--f-mono, 'Geist Mono', ui-monospace, Menlo, monospace);
+  color: var(--xtw-fg-2);
+  text-align: right;
+}
+.xtw-kv dd svg.i {
+  width: 12px;
+  height: 12px;
+}
+.xtw-kv .xtw-r-took,
+.xtw-insp.xtw-tall .xtw-kv .xtw-r-per {
+  display: none;
+}
+.xtw-insp.xtw-tall .xtw-kv .xtw-r-took {
+  display: flex;
+}
+.xtw-insp.xtw-tall .xtw-kv dt.xtw-r-took {
+  display: block;
+}
+.xtw-ifoot {
+  display: grid;
+  padding: 12px;
+}
+.xtw-insp.xtw-tall .xtw-ifoot {
+  display: none;
+}
+.xtw-wide {
+  width: 100%;
+  height: 32px;
+}
+
+/* ---------- the image editor (ImageEditor.jsx) ---------- */
+.xtw-ed {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  opacity: 0;
+  background: var(--xtw-bg);
+}
+.xtw-ebar {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 16px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.xtw-etitle {
+  flex: 0 0 260px;
+  min-width: 0;
+  display: grid;
+  margin-right: 8px;
+  line-height: 1.35;
+}
+.xtw-etitle b {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.xtw-etitle small {
+  font-size: 12px;
+  color: var(--xtw-fg-3);
+  white-space: nowrap;
+}
+.xtw-sub-b,
+.xtw-zoned .xtw-sub-a {
+  display: none;
+}
+.xtw-zoned .xtw-sub-b {
+  display: inline;
+}
+.xtw-seg {
+  flex: none;
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 9px;
+  background: var(--xtw-s2);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+}
+.xtw-seg > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  color: var(--xtw-fg-3);
+  white-space: nowrap;
+}
+.xtw-tseg > span {
+  width: 30px;
+  padding: 0;
+  justify-content: center;
+}
+.xtw-seg > span.xtw-on {
+  color: var(--xtw-fg);
+  background: var(--xtw-s3);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+}
+.xtw-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 6px 0 4px;
+}
+.xtw-size > i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--xtw-fg-2);
+}
+.xtw-range {
+  position: relative;
+  display: block;
+  width: 100px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--xtw-accent) 16%, var(--xtw-s3) 16%);
+}
+.xtw-range::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 16%;
+  width: 15px;
+  height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border-radius: 50%;
+  background: #f3f4f5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.xtw-ib {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  color: var(--xtw-fg-3);
+}
+.xtw-ib.xtw-dim,
+.xtw-btn.xtw-dim {
+  opacity: 0.4;
+}
+.xtw-erail {
+  position: absolute;
+  left: 20px;
+  top: 156px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 72px;
+  padding: 5px;
+  border-radius: 14px;
+  background: var(--xtw-surface);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-3),
+    var(--xtw-pop);
+}
+.xtw-erail > span {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 9px 2px 8px;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--xtw-fg-3);
+}
+.xtw-erail em {
+  font-style: normal;
+}
+.xtw-erail > span.xtw-on {
+  color: var(--xtw-fg);
+  background: var(--xtw-s3);
+  box-shadow: inset 0 0 0 0.5px var(--xtw-line-2);
+}
+.xtw-erail svg.i {
+  width: 18px;
+  height: 18px;
+}
+.xtw-frame {
+  position: absolute;
+  z-index: 11;
+  overflow: hidden;
+  border-radius: 10px;
+  transform-origin: 0 0;
+  opacity: 0;
+  box-shadow: 0 0 0 0.5px var(--xtw-line-2);
+}
+.xtw-frame > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.xtw-frame .xtw-pill {
+  left: 14px;
+  top: 14px;
+}
+.xtw-mark {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  border: 1.5px solid var(--xtw-accent);
+  border-radius: 3px;
+  background: rgba(163, 171, 255, 0.32);
+}
+.xtw-num {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0b0c10;
+  background: var(--xtw-accent);
+  font-variant-numeric: tabular-nums;
+}
+.xtw-pin {
+  position: absolute;
+  z-index: 12;
+  opacity: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.xtw-ask {
+  position: absolute;
+  z-index: 13;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 320px;
+  padding: 6px 6px 6px 8px;
+  border-radius: 10px;
+  opacity: 0;
+  background: var(--xtw-surface);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-3),
+    var(--xtw-pop);
+}
+.xtw-ask-in {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  height: 28px;
+  line-height: 28px;
+  font-size: 13px;
+  color: var(--xtw-fg);
+  white-space: nowrap;
+}
+.xtw-ask-ph {
+  color: var(--xtw-fg-4);
+}
+.xtw-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.1em;
+  margin: 0 1px -0.2em 1px;
+  background: var(--xtw-fg);
+}
+.xtw-compose {
+  position: absolute;
+  left: 210px;
+  width: 780px;
+  bottom: 20px;
+  display: grid;
+  gap: 8px;
+  padding: 12px 12px 10px 16px;
+  border-radius: 14px;
+  background: var(--xtw-surface);
+  box-shadow:
+    inset 0 0 0 0.5px var(--xtw-line-3),
+    var(--xtw-pop);
+}
+.xtw-zone {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  margin-left: -6px;
+  padding: 0 6px;
+  font-size: 13px;
+  color: var(--xtw-fg);
+  white-space: nowrap;
+}
+.xtw-zoned .xtw-zone {
+  display: flex;
+}
+.xtw-where {
+  font-size: 12px;
+  color: var(--xtw-fg-3);
+}
+.xtw-zone-t,
+.xtw-noted .xtw-zone-ph {
+  display: none;
+}
+.xtw-noted .xtw-zone-t {
+  display: inline;
+}
+.xtw-zone-ph {
+  color: var(--xtw-fg-4);
+}
+.xtw-ta {
+  min-height: 44px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--xtw-fg-4);
+}
+.xtw-ta-b,
+.xtw-zoned .xtw-ta-a,
+.xtw-eh-b,
+.xtw-zoned .xtw-eh-a {
+  display: none;
+}
+.xtw-zoned .xtw-ta-b,
+.xtw-zoned .xtw-eh-b {
+  display: inline;
+}
+.xtw-zoned .xtw-ta {
+  min-height: 24px;
+}
+.xtw-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.xtw-ehint {
+  flex: 1;
+  min-width: 140px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--xtw-fg-3);
+}
+.xtw-row .xtw-chip {
+  height: 28px;
+  padding: 0 10px;
+}
+.xtw-mchip {
+  gap: 7px;
+}
+.xtw-mchip svg.i {
+  width: 13px;
+  height: 13px;
+  margin-right: -3px;
+  color: var(--xtw-fg-4);
+}
+.xtw-ego {
+  min-width: 100px;
+  height: 32px;
+  padding: 0 13px;
+  font-size: 13px;
+}
+.xtw-ego .xtw-b-busy,
+.xtw-ego.xtw-going .xtw-b-go {
+  display: none;
+}
+.xtw-ego.xtw-going .xtw-b-busy {
+  display: inline;
+}
+
+/* ---------- a file carried in from Finder ---------- */
+.xtw-ghost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: -46px 0 0 -62px;
+  opacity: 0;
+}
+.xtw-gpic {
+  position: relative;
+  display: block;
+  width: 124px;
+  height: 78px;
+  overflow: hidden;
+  border-radius: 4px;
+  opacity: 0.85;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 10px 24px rgba(0, 0, 0, 0.45);
+}
+.xtw-gpic > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.xtw-gname {
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 11.5px;
+  color: #fff;
+  background: #2f62d9;
+}
+
+/* On fil.design, each step's HTML sits in a host on StepWindow's stage
+   (src/pages/stepsTwin.jsx). */
+.xtw-host {
+  position: absolute;
+  inset: 0;
+}

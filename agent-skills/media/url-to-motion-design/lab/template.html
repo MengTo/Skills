@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="fil:duration" content="5">
+<title>Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- crossorigin lets the frame renderer read and embed the fonts; without it frames draw a fallback face. -->
+<link crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+  /* The scene's own mode (dark, Fil's) and its fonts. Every colour and font
+     in the scene comes from these variables. */
+  :root {
+    --bg: #08090a;
+    --ink: #f3f4f5;
+    --muted: #8a8e96;
+    --card: #141518;
+    --line: #26282c;
+    --accent: #a3abff;
+    --accent-ink: #0b0c10;
+    --c1: #efb36c;
+    --c2: #ef7d9b;
+    --c3: #82c1ee;
+    --font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    --font-text: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --display-weight: 560;
+    --display-track: -0.045em;
+  }
+  /* The other mode's colours (the editor's Light). */
+  :root[data-mode="light"] {
+    --bg: #f5f5f3;
+    --ink: #111215;
+    --muted: #6a6e75;
+    --card: #ffffff;
+    --line: #dddcd8;
+    --accent: #5560e0;
+    --accent-ink: #ffffff;
+    --c1: #e39a45;
+    --c2: #e2617f;
+    --c3: #4f9fd8;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden; }
+  .stage {
+    position: absolute; inset: 0; margin: auto;
+    width: min(100vw, 177.78vh); aspect-ratio: 16 / 9;
+    container-type: size; overflow: hidden;
+    background: var(--bg); color: var(--ink);
+    font-family: var(--font-text);
+  }
+  .headline {
+    position: absolute; left: 50%; top: 50%; margin: 0; width: 76cqw;
+    transform: translate(-50%, -50%); text-align: center; text-wrap: balance;
+    font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-track);
+    font-size: 6cqw; line-height: 1.04;
+  }
+  .headline .w { display: inline-block; white-space: pre; clip-path: inset(-0.2em -0.2em -0.25em -0.2em); }
+  .headline .wi { display: inline-block; }
+  .label {
+    position: absolute; left: 50%; top: 67%; transform: translateX(-50%); margin: 0;
+    font-family: var(--font-mono); font-size: 1.4cqw; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+  <h1 class="headline" data-fil-text="headline" data-fil-label="Headline">One thread from idea to finished work.</h1>
+  <p class="label" data-fil-text="label" data-fil-label="Small label">Fil · Workflows</p>
+</main>
+<script>
+  // The words are read from their marked elements at load (a clip's words
+  // replace them before this runs); layout that depends on them is measured,
+  // never while the stage has no size, and redone when fonts arrive or the
+  // stage changes size: the same Animation objects get new keyframes, so the
+  // timing never moves.
+  (() => {
+    const D = 5000;
+    const stage = document.querySelector('.stage');
+    const h = document.querySelector('.headline');
+    const words = h.textContent.trim().split(/\s+/).filter(Boolean);
+    h.textContent = '';
+    const inner = words.map((w, i) => {
+      const o = document.createElement('span'), x = document.createElement('span');
+      o.className = 'w'; x.className = 'wi'; x.textContent = w;
+      o.append(x); h.append(o);
+      if (i < words.length - 1) h.append(' ');
+      return x;
+    });
+    inner.forEach((x, i) => x.animate(
+      [{ transform: 'translateY(110%)' }, { transform: 'none' }],
+      { duration: 700, delay: 80 + i * 60, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' },
+    ));
+    const fit = () => {
+      const u = stage.getBoundingClientRect().width / 100;
+      if (!(u > 0)) return;
+      // Two lines at most, as big as fits.
+      let fs = 6.4;
+      for (let k = 0; k < 40; k++) {
+        h.style.fontSize = fs + 'cqw';
+        const lines = new Set(inner.map((x) => Math.round(x.parentNode.offsetTop))).size;
+        if (lines <= 2 && h.scrollWidth <= h.clientWidth + 1) break;
+        fs *= 0.95;
+      }
+    };
+    fit();
+    if (document.fonts) { document.fonts.ready.then(fit); document.fonts.addEventListener('loadingdone', fit); }
+    addEventListener('resize', fit);
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+  })();
+</script>
+</body>
+</html>

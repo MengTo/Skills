@@ -1,0 +1,4 @@
+interface:
+  display_name: "Digital Twin"
+  short_description: "Your likeness, your room, your voice: photoreal stills, talking clips and voice lines of yourself"
+  default_prompt: "Use $digital-twin to build my digital twin from my own recordings: pick a lean reference set and held-out judge frames, write my identity block, make 3 Seedream 5 Pro stills in my real room with only the camera changing, measure and audit them, clone my voice and score it to 9/10, then make one Seedance 2.5 draft per picked still. Price every step first."

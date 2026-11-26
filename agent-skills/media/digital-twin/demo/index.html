@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Your Digital Twin</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A skill for making photoreal stills, talking clips and voice lines of yourself, with one creator's twin as the worked example.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="step-window.css">
+<link rel="stylesheet" href="twin-demo.css">
+<style>
+/* Layout: a shot log. The hero leads with real frames; the stages run as a production sequence; the worked example is
+   logged frame by frame with its lens and measured proportions, the way a camera report reads. Dark-first, like a grade suite. */
+:root {
+  --ink: #14110d;        /* page: warm near-black */
+  --ink-2: #1d1914;      /* raised surface */
+  --rule: #37302a;       /* hairlines */
+  --paper: #eee6d6;      /* text: warm ivory */
+  --muted: #a69c8a;      /* secondary text */
+  --amber: #e2a65a;      /* accent: practical-lamp amber */
+  --olive: #a3ab73;      /* second accent: olive-earth light */
+  --chart-bg: #2a241d;
+  --display: "Gloock", "Bodoni 72", Didot, "Times New Roman", serif;
+  --body: "Schibsted Grotesk", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --step--1: 0.8125rem; --step-0: 1rem; --step-1: 1.1875rem; --step-2: 1.5rem; --step-3: 2.125rem; --step-4: clamp(2.75rem, 7vw, 5.25rem);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ink: #f2ece1; --ink-2: #e9e1d2; --rule: #cfc4b1; --paper: #1d1813; --muted: #6a604f;
+    --amber: #9a5d14; --olive: #5c6530; --chart-bg: #ddd3c1; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --ink: #f2ece1; --ink-2: #e9e1d2; --rule: #cfc4b1; --paper: #1d1813; --muted: #6a604f;
+  --amber: #9a5d14; --olive: #5c6530; --chart-bg: #ddd3c1; color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--ink); color: var(--paper); font-family: var(--body); font-size: var(--step-0); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: var(--amber); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.08; text-wrap: balance; margin: 0; letter-spacing: -0.005em; }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); font-family: var(--body); font-weight: 600; letter-spacing: 0; }
+p { margin: 0; }
+.kicker { font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.08em; text-transform: uppercase; color: var(--olive); }
+.muted { color: var(--muted); }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+code { font-family: var(--mono); font-size: 0.9em; background: var(--ink-2); border: 1px solid var(--rule); padding: 0.05em 0.35em; border-radius: 3px; overflow-wrap: anywhere; }
+section { padding-block: clamp(56px, 8vw, 104px); border-top: 1px solid var(--rule); }
+.sec-head { display: grid; gap: 14px; align-content: start; max-width: 64ch; margin-bottom: 40px; }
+.sec-head p:not(.kicker) { color: var(--muted); font-size: var(--step-1); line-height: 1.5; }
+
+/* top bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--ink) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--ink); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.mark { font-family: var(--mono); font-size: var(--step--1); color: var(--paper); text-decoration: none; letter-spacing: 0.02em; }
+.mark span { color: var(--amber); }
+.nav { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
+.nav a { color: var(--muted); text-decoration: none; font-size: var(--step--1); }
+.nav a:hover { color: var(--paper); }
+@media (max-width: 720px) { .nav { display: none; } }
+
+/* hero */
+.hero { padding-block: clamp(40px, 7vw, 88px) clamp(48px, 7vw, 80px); border-top: 0; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.hero h1 { font-size: var(--step-4); margin-block: 16px 22px; }
+.hero h1 em { font-style: normal; color: var(--amber); }
+.lede { font-size: var(--step-1); line-height: 1.55; max-width: 46ch; color: var(--paper); }
+.lede + .lede { margin-top: 14px; color: var(--muted); font-size: var(--step-0); }
+.strip { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.strip figure:first-child { grid-column: 1 / -1; }
+figure { margin: 0; min-width: 0; }
+.frame { position: relative; overflow: hidden; border-radius: 4px; background: var(--ink-2); aspect-ratio: 16 / 9; }
+.frame img, .frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+figcaption { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); padding-top: 8px; line-height: 1.45; font-variant-numeric: tabular-nums; }
+figcaption b { color: var(--paper); font-weight: 500; }
+.slate { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.06em; background: rgba(12, 10, 8, 0.72); color: #eee6d6; padding: 3px 7px; border-radius: 2px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; align-items: center; }
+.btn { font: 500 var(--step--1)/1 var(--body); padding: 12px 16px; border-radius: 3px; border: 1px solid var(--amber); background: var(--amber); color: #1a140c; cursor: pointer; text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--paper); border-color: var(--rule); }
+.btn:hover { filter: brightness(1.06); }
+@media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+
+/* makes */
+.makes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.make { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.make .meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: var(--step--1); padding-top: 4px; }
+.make .meta dt { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; padding-top: 2px; }
+.make .meta dd { margin: 0; }
+audio { width: 100%; height: 40px; }
+.voicecard { background: var(--ink-2); border: 1px solid var(--rule); border-radius: 4px; padding: 18px; display: grid; gap: 12px; aspect-ratio: 16 / 9; align-content: center; }
+.voicecard .row { display: grid; gap: 4px; }
+.voicecard .row span { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+@media (max-width: 900px) { .makes { grid-template-columns: 1fr; } .voicecard { aspect-ratio: auto; } }
+
+/* stages */
+.stages { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--rule); counter-reset: none; }
+.stage { display: grid; grid-template-columns: 70px minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding-block: 20px; border-bottom: 1px solid var(--rule); align-items: start; }
+.stage .n { font-family: var(--display); font-size: var(--step-3); line-height: 1; color: var(--amber); }
+.stage h3 { margin-bottom: 6px; }
+.stage p { color: var(--muted); font-size: 0.9375rem; }
+.stage .lab { display: block; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--olive); margin-bottom: 4px; }
+.stage .cell { font-size: 0.9375rem; min-width: 0; }
+@media (max-width: 860px) {
+  .stage { grid-template-columns: 52px minmax(0, 1fr); }
+  .stage .cell { grid-column: 2; }
+}
+
+/* example */
+.note { border-left: 2px solid var(--olive); padding: 4px 0 4px 16px; color: var(--muted); max-width: 70ch; margin-bottom: 32px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 14px; }
+@media (max-width: 1000px) { .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .grid4 { grid-template-columns: 1fr; } }
+.clip { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; margin-top: 56px; align-items: center; }
+.readout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; margin-top: 18px; }
+.readout div { background: var(--ink); padding: 14px; }
+.readout b { display: block; font-family: var(--mono); font-weight: 500; font-size: var(--step-2); font-variant-numeric: tabular-nums; color: var(--paper); line-height: 1.1; }
+.readout span { font-size: 0.75rem; color: var(--muted); font-family: var(--mono); }
+@media (max-width: 860px) { .clip { grid-template-columns: 1fr; } }
+.takes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.take-cap { margin: 6px 0 0; font-size: var(--step--1); color: var(--muted); }
+.take-cap b { color: var(--paper); font-weight: 600; }
+@media (max-width: 480px) { .takes { grid-template-columns: 1fr; } }
+
+/* voice */
+.voice { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 48px; align-items: start; }
+.chart { display: grid; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 2.6rem; gap: 12px; align-items: center; font-size: var(--step--1); }
+.bar-row .lbl { min-width: 0; }
+.bar-row .lbl code { font-size: 0.75rem; }
+.track { position: relative; height: 14px; background: var(--chart-bg); border-radius: 2px; }
+.fill { position: absolute; inset: 0 auto 0 0; background: var(--muted); border-radius: 2px; }
+.bar-row.win .fill { background: var(--amber); }
+.bar-row.old .fill { background: var(--olive); }
+.target { position: absolute; top: -5px; bottom: -5px; left: 90%; width: 0; border-left: 1px dashed var(--paper); opacity: 0.55; }
+.val { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.axis { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 2.6rem; gap: 12px; font-family: var(--mono); font-size: 0.6875rem; color: var(--muted); }
+.axis .ticks { display: flex; justify-content: space-between; }
+.players { display: grid; gap: 14px; margin-top: 28px; }
+.players .row { display: grid; gap: 6px; }
+.players .row span { font-size: var(--step--1); }
+.players .row span i { font-style: normal; font-family: var(--mono); color: var(--muted); font-size: 0.75rem; margin-left: 6px; }
+.formula { font-family: var(--mono); font-size: var(--step--1); background: var(--ink-2); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; margin-block: 18px; overflow-x: auto; }
+.voice ul { margin: 14px 0 0; padding-left: 1.1em; color: var(--muted); display: grid; gap: 8px; }
+.voice ul b { color: var(--paper); font-weight: 500; }
+@media (max-width: 900px) { .voice { grid-template-columns: 1fr; } .bar-row, .axis { grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr) 2.4rem; } }
+
+/* lessons */
+.lessons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+.lesson { padding-block: 18px; border-top: 1px solid var(--rule); display: grid; gap: 6px; min-width: 0; }
+.lesson h3 { font-size: var(--step-0); }
+.lesson p { color: var(--muted); font-size: 0.9375rem; }
+.lesson p b { color: var(--olive); font-weight: 500; font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; margin-right: 6px; }
+@media (max-width: 760px) { .lessons { grid-template-columns: 1fr; } }
+
+/* tables */
+.tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9375rem; min-width: 560px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--mono); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td.mono { white-space: nowrap; }
+
+/* consent + use */
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
+@media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+.consent ul, .files ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; color: var(--muted); }
+.consent ul b { color: var(--paper); font-weight: 500; }
+.prompt { position: relative; background: var(--ink-2); border: 1px solid var(--rule); border-radius: 4px; padding: 18px 18px 18px; font-family: var(--mono); font-size: var(--step--1); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.prompt + .prompt { margin-top: 14px; }
+.prompt .copy { position: absolute; top: 10px; right: 10px; font: 500 0.75rem/1 var(--body); padding: 7px 10px; border-radius: 3px; border: 1px solid var(--rule); background: var(--ink); color: var(--paper); cursor: pointer; }
+.prompt .tag { display: block; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--olive); margin-bottom: 8px; padding-right: 64px; }
+.files code { font-size: 0.8125rem; }
+footer { border-top: 1px solid var(--rule); padding-block: 36px 56px; color: var(--muted); font-size: var(--step--1); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; }
+
+/* In Fil: the workflow's window (twin-demo.js on step-window.js), and its clock */
+.in-fil .sec-head { max-width: 70ch; }
+.twin-window { --hd-font: "Geist", ui-sans-serif, system-ui, sans-serif; --hd-mono: "Geist Mono", ui-monospace, monospace; --hd-focus: var(--amber); }
+.clockbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 18px; font-size: var(--step--1); color: var(--muted); }
+.clockbar button { font: 500 var(--step--1)/1 var(--body); min-width: 72px; padding: 9px 14px; border-radius: 3px; border: 1px solid var(--rule); background: var(--ink-2); color: var(--paper); cursor: pointer; }
+.clockbar button:hover { border-color: var(--amber); }
+.scrub { flex: 1 1 260px; display: flex; align-items: center; gap: 12px; }
+.scrub input { flex: 1; min-width: 0; accent-color: var(--amber); }
+.scrub output { min-width: 96px; font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--paper); }
+.still { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.still input { accent-color: var(--amber); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.in-fil .fine { margin-top: 14px; font-size: var(--step--1); color: var(--muted); max-width: 72ch; }
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="#top">$<span>digital-twin</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#in-fil">In Fil</a><a href="#workflow">Workflow</a><a href="#example">Example</a><a href="#voice">Voice</a><a href="#lessons">Lessons</a><a href="#consent">Consent</a><a href="#use">Use it</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="kicker">A Claude Code skill · Seedream 5 Pro · Seedance 2.5 · ElevenLabs</p>
+        <h1>Your digital <em>twin</em></h1>
+        <p class="lede">Photoreal stills of you in your own room, talking clips of you, and lines in your own voice, good enough that people who know you say “that’s you”.</p>
+        <p class="lede">The workflow comes from one creator’s twin: more than 160 numbered stills, over 20 talking drafts and a voice taken from 8.7 to 9.2 out of 10. Every rule came from a correction he made or a measured failure.</p>
+        <div class="cta">
+          <button class="btn" type="button" data-copy="p-min" id="copy-hero">Copy the prompt</button>
+          <a class="btn ghost" href="#workflow">See the workflow</a>
+        </div>
+      </div>
+      <div class="strip" aria-label="Three stills from one batch">
+        <figure>
+          <div class="frame"><img src="still-2.webp" alt="Mai, an example presenter, at her desk in the evening, talking into the lens" width="1280" height="720"><span class="slate">Still 2 · evening</span></div>
+          <figcaption><b>Evening, 85 mm</b> · eye contact · the one picked for the clip</figcaption>
+        </figure>
+        <figure>
+          <div class="frame"><img src="still-3.webp" alt="The same room at early sunrise, from slightly above the monitor" width="1280" height="720" loading="lazy"><span class="slate">Still 3</span></div>
+          <figcaption><b>Early sunrise</b> · 35 mm, slightly high</figcaption>
+        </figure>
+        <figure>
+          <div class="frame"><img src="still-1.webp" alt="The same room in late afternoon light, three-quarter view past the lens" width="1280" height="720" loading="lazy"><span class="slate">Still 1</span></div>
+          <figcaption><b>Late afternoon</b> · 50 mm, 3/4 past the lens</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="in-fil" class="in-fil">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">In Fil</p>
+        <h2>The workflow, step by step</h2>
+        <p>Mai’s batch in Fil’s Digital twin workflow: her face frames and her room dropped in, three Seedream 5.0 Pro stills, the iMac fixed in one edit, her line on ElevenLabs v4, then still 2 as a Seedance 2.5 draft, made final at 1080p. Drawn live in HTML from one clock, with Fil’s own prices.</p>
+      </div>
+      <div id="twin-window" class="twin-window"></div>
+      <div class="clockbar">
+        <button type="button" id="twin-play" aria-pressed="false">Pause</button>
+        <label class="scrub">
+          <span class="sr">The window’s clock</span>
+          <input id="twin-clock" type="range" min="0" max="33" step="0.01" value="0">
+          <output id="twin-time" for="twin-clock">0:00.0 / 0:33.0</output>
+        </label>
+        <label class="still"><input id="twin-still" type="checkbox"> End frames (reduced motion)</label>
+      </div>
+      <p class="fine">Mai is one of Fil’s example presenters, standing in for you; her room’s photo is the corner of it still 2 sees. Credits as Fil prices them: 12 a still, 9 an edit, 1 for the line, 55 for the draft and 289 to make it final.</p>
+    </div>
+  </section>
+
+  <section id="makes">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">What it makes</p>
+        <h2>Three things that should pass for you</h2>
+        <p>Your own eye is the final judge. Blind judges and scorers find the faults; you decide.</p>
+      </div>
+      <div class="makes">
+        <div class="make">
+          <div class="frame"><img src="still-1.webp" alt="Mai at her desk in late afternoon light" width="1280" height="720" loading="lazy"><span class="slate">Still 1</span></div>
+          <h3>Stills in your real room</h3>
+          <p class="muted">Three at a time. The room, gear and face stay fixed; only the camera and the time of day change.</p>
+          <dl class="meta"><dt>model</dt><dd>Seedream 5 Pro, 16:9, 2k</dd><dt>price</dt><dd class="mono">$0.10–0.12 a still</dd><dt>gate</dt><dd>your pick; face measured against your real frames</dd></dl>
+        </div>
+        <div class="make">
+          <div class="frame"><video src="talk-final.mp4" poster="talk-final.webp" controls playsinline preload="metadata" aria-label="A six-second Seedance 2.5 final of Mai saying her line, 1080p"></video></div>
+          <h3>Talking clips</h3>
+          <p class="muted">Five or six seconds from a picked still, with a line in your voice. One draft per still, measured before you see it; the final, from the draft you like.</p>
+          <dl class="meta"><dt>model</dt><dd>Seedance 2.5 draft 480p, then its final 1080p</dd><dt>price</dt><dd class="mono">$0.52–0.59 a draft · $3.12 a final</dd><dt>gate</dt><dd>words exact; mouth and head against how you talk</dd></dl>
+        </div>
+        <div class="make">
+          <div class="voicecard">
+            <div class="row"><span>Mai’s line · Kristen voice, v4, read conversationally</span><audio controls preload="none" src="voice.mp3"></audio></div>
+          </div>
+          <h3>Lines in your voice</h3>
+          <p class="muted">An instant clone from three minutes of your cleanest speech, tuned with an audio tag and scored against your real voice.</p>
+          <dl class="meta"><dt>model</dt><dd>ElevenLabs v4 + <code>[calm]</code></dd><dt>price</dt><dd class="mono">~$0.01 a line</dd><dt>gate</dt><dd>≥ 9 on the scorer; your ear on a before/after</dd></dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="workflow">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">The workflow</p>
+        <h2>Eight stages, each with a gate</h2>
+        <p>Price every run before it starts, log every spend, and put every result on one canvas with its recipe and your verdict.</p>
+      </div>
+      <ol class="stages">
+        <li class="stage"><span class="n">0</span><div><h3>Consent and setup</h3><p>Only your own face and voice, or someone who gave documented consent. Accounts, a project folder, a canvas, a ledger.</p></div><div class="cell"><span class="lab">Needs</span>Fil, the Higgsfield CLI, ElevenLabs, ffmpeg, whisper, Swift</div><div class="cell"><span class="lab">Gate</span>consent recorded; price before every spend</div></li>
+        <li class="stage"><span class="n">1</span><div><h3>References from your recordings</h3><p>Face crops from your own talking-head videos: a lean set of 8 (no smiling or mid-word frames), angle sets, 3 room photos, 5 held-out frames for the judge.</p></div><div class="cell"><span class="lab">Cost</span>free · <code>extract_frames.sh</code>, <code>faces.swift</code>, <code>measure.py</code></div><div class="cell"><span class="lab">Gate</span>never a selfie, a generated face or someone else’s frame</div></li>
+        <li class="stage"><span class="n">2</span><div><h3>The identity block</h3><p>One paragraph from a blind judge’s feature list. One fix, one phrase; say the near misses (“not a quiff”). Longer blocks over-correct.</p></div><div class="cell"><span class="lab">Cost</span>free</div><div class="cell"><span class="lab">Gate</span>under 4,000 characters with the rest of the stack on Fil</div></li>
+        <li class="stage"><span class="n">3</span><div><h3>Stills, three at a time</h3><p>Identity → shared workspace → shot → gear and finish. Your real room with its photos last; only the camera and the time change.</p></div><div class="cell"><span class="lab">Cost</span>Seedream 5 Pro: 12 Fil ($0.12) or 2.5 Higgsfield (~$0.10)</div><div class="cell"><span class="lab">Gate</span>your pick; chin and width within ±0.05 n of your real frames</div></li>
+        <li class="stage"><span class="n">4</span><div><h3>Audit and fix</h3><p>Two fresh reviewers in 3×3 tiles. One edit lists every mistake; only the flagged regions are pasted back, with the face masked.</p></div><div class="cell"><span class="lab">Cost</span>an edit: 9 Fil or 2.5 Higgsfield · <code>fix_still.py</code></div><div class="cell"><span class="lab">Gate</span>no wrong gear, grey hair, extra objects, stands or mics</div></li>
+        <li class="stage"><span class="n">5</span><div><h3>Your voice</h3><p>An instant clone first. v4 with an audio tag if the pitch runs high. Score 7–10 s lines; then a before/after for your ear.</p></div><div class="cell"><span class="lab">Cost</span>ElevenLabs characters · <code>score_voice.py</code> is free</div><div class="cell"><span class="lab">Gate</span>≥ 9 out of 10; “sounds like me”</div></li>
+        <li class="stage"><span class="n">6</span><div><h3>Talking clips</h3><p>Seedance 2.5 draft from an audited close-up, the still as image reference too, your line as the audio reference, the soft-mouth clause.</p></div><div class="cell"><span class="lab">Cost</span>15 Higgsfield (~$0.59) or ~52 Fil ($0.52)</div><div class="cell"><span class="lab">Gate</span>one draft per still; English exact; mouth p50 near yours</div></li>
+        <li class="stage"><span class="n">7</span><div><h3>Deliver</h3><p>A canvas section per batch, notes on every node, picks marked and moved to a keep section, one question: which are you?</p></div><div class="cell"><span class="lab">Cost</span>free</div><div class="cell"><span class="lab">Gate</span>ledger and log updated before you report</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="example">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Worked example</p>
+        <h2>One batch, start to finish</h2>
+        <p>Mai is one of Fil’s example presenters, an AI portrait standing in for you. Eight frames of her face from one of her clips went in as references, one room described in words, and three shots that change only the camera and the time of day. Every picture, sound and clip here was made that way.</p>
+      </div>
+      <div class="grid4" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <figure><div class="frame"><img src="face.webp" alt="Eight frames of Mai’s face from one of her clips" width="800" height="500" loading="lazy"><span class="slate">references</span></div><figcaption><b>Her face</b> · eight frames from her own video, never a selfie</figcaption></figure>
+        <figure><div class="frame"><img src="still-1-before.webp" alt="Still 1 as it came: an iMac with a chin and a logo on the desk" width="1280" height="720" loading="lazy"><span class="slate">Still 1 · as it came</span></div><figcaption><b>The most common miss</b> · all three drew an iMac, chin and logo, though the prompt said no chin</figcaption></figure>
+        <figure><div class="frame"><img src="still-1.webp" alt="Still 1 fixed: a thin display with no chin" width="1280" height="720" loading="lazy"><span class="slate">Still 1 · fixed</span></div><figcaption><b>Fixed</b> · one Seedream edit, then only the display pasted back (drift 5.3 levels outside it)</figcaption></figure>
+        <figure><div class="frame"><img src="still-2.webp" alt="Still 2, evening, eye contact" width="1280" height="720" loading="lazy"><span class="slate">Still 2</span></div><figcaption><b>Evening, 85 mm, eye contact</b> · picked for the talking clip</figcaption></figure>
+      </div>
+
+      <div class="clip">
+        <figure>
+          <div class="takes">
+            <div><div class="frame"><video src="talk.mp4" poster="talk.webp" controls playsinline preload="metadata" aria-label="Seedance 2.5 draft: Mai from still 2 says her line, 480p"></video></div><p class="take-cap"><b>Draft</b> · 480p · 18 Higgsfield credits</p></div>
+            <div><div class="frame"><video src="talk-final.mp4" poster="talk-final.webp" controls playsinline preload="metadata" aria-label="The same take as the non-draft final, 1080p"></video></div><p class="take-cap"><b>Final</b> · the same take, 1080p · 96 credits</p></div>
+          </div>
+          <figcaption><b>Talking clip</b> · Seedance 2.5, 6 s, from still 2, with her line in a stock ElevenLabs voice as the audio reference: the draft, then the final made from it</figcaption>
+        </figure>
+        <div>
+          <h3>Checked before anyone sees it</h3>
+          <p class="muted" style="margin-top:8px">Written down by whisper, the words came back exactly: “This course is different. The agent writes the code and you shape how it feels.” Read conversationally at 175 words a minute, it fills the clip. The face, the display and the room held through the clip, and the final keeps the draft’s take with the detail back.</p>
+          <div class="readout">
+            <div><b>3 + 3</b><span>stills, then one edit each</span></div>
+            <div><b>~60</b><span>Fil credits for the batch and fixes</span></div>
+            <div><b>18 + 96</b><span>Higgsfield credits: draft, then 1080p final</span></div>
+            <div><b>exact</b><span>the line, word for word</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="voice">
+    <div class="wrap voice">
+      <div>
+        <p class="kicker">Voice</p>
+        <h2 style="margin-top:14px">A score you can trust, then your ear</h2>
+        <p class="muted" style="margin-top:14px">A speaker model (ECAPA-TDNN) compares each clip with your own clips, after the same band-pass and loudness chain, so a different mic can’t pass for a different person.</p>
+        <div class="formula">score = 0.7 × similarity + 0.3 × pitch<br>similarity: your held-out clips = 10, other people = 0<br>pitch: 10 inside your own p10–p90 range</div>
+        <ul>
+          <li><b>9 is you.</b> One creator’s own voice, denoised, scored 9.3.</li>
+          <li><b>Score 7–10 s lines.</b> A 4 s clip of the right voice scored 4.7.</li>
+          <li><b>Stability didn’t move v4’s pitch.</b> The tag did, and whisper confirms it isn’t spoken.</li>
+          <li><b>Professional voice clones have a trap:</b> adding samples resets verification, and the voice goes offline everywhere. You get five tries, then a 24-hour lock. Keep an instant clone as the stand-in.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>One creator’s clone on each model and tag, mean of three test lines</h3>
+        <p class="muted" style="margin:6px 0 22px;font-size:0.9375rem">The dashed line is 9, his own processed voice. The amber bar is the one he kept.</p>
+        <div class="chart" role="img" aria-label="Voice scores out of 10: instant clone v4 with calm tag 9.2, calm deep voice 9.1, old professional clone 8.7, calm low voice 8.6, calm relaxed 8.6, Multilingual v2 8.1, v4 without a tag 7.7, v3 5.9">
+          <div class="bar-row win"><span class="lbl">v4 + <code>[calm]</code></span><div class="track"><div class="fill" style="width:92%"></div><div class="target"></div></div><span class="val">9.2</span></div>
+          <div class="bar-row"><span class="lbl">v4 + <code>[calm, deep voice]</code></span><div class="track"><div class="fill" style="width:91%"></div><div class="target"></div></div><span class="val">9.1</span></div>
+          <div class="bar-row old"><span class="lbl">his professional clone</span><div class="track"><div class="fill" style="width:87%"></div><div class="target"></div></div><span class="val">8.7</span></div>
+          <div class="bar-row"><span class="lbl">v4 + <code>[calm, low voice]</code></span><div class="track"><div class="fill" style="width:86%"></div><div class="target"></div></div><span class="val">8.6</span></div>
+          <div class="bar-row"><span class="lbl">v4 + <code>[calm, relaxed]</code></span><div class="track"><div class="fill" style="width:86%"></div><div class="target"></div></div><span class="val">8.6</span></div>
+          <div class="bar-row"><span class="lbl">Multilingual v2</span><div class="track"><div class="fill" style="width:81%"></div><div class="target"></div></div><span class="val">8.1</span></div>
+          <div class="bar-row"><span class="lbl">v4, no tag <span class="muted">(30 Hz high)</span></span><div class="track"><div class="fill" style="width:77%"></div><div class="target"></div></div><span class="val">7.7</span></div>
+          <div class="bar-row"><span class="lbl">v3</span><div class="track"><div class="fill" style="width:59%"></div><div class="target"></div></div><span class="val">5.9</span></div>
+          <div class="axis" aria-hidden="true"><span></span><span class="ticks"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lessons">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">What we learned</p>
+        <h2>Ten rules, and the failure each one prevents</h2>
+      </div>
+      <div class="lessons">
+        <div class="lesson"><h3>Use a lean reference set</h3><p><b>Prevents</b>a face 8–10 % long in the chin and 7 % wide. Seedream copies its references’ proportions, so smiling and mid-word frames stretch every image.</p></div>
+        <div class="lesson"><h3>Your real room, only the camera changes</h3><p><b>Prevents</b>invented lofts and cabins that read as fake, break continuity and, in that project, ran long in the chin.</p></div>
+        <div class="lesson"><h3>Three at a time, numbered</h3><p><b>Prevents</b>big batches nobody can judge. Three numbered shots make a pick one line: “144 145 are good”.</p></div>
+        <div class="lesson"><h3>Angle references for every angle</h3><p><b>Prevents</b>eye-contact and side shots drifting into someone else. Front frames gave the closest faces of all.</p></div>
+        <div class="lesson"><h3>Reference videos as words only</h3><p><b>Prevents</b>another person’s face blending into yours. Describe the composition and the light; never wire their frame in.</p></div>
+        <div class="lesson"><h3>Words become features</h3><p><b>Prevents</b>silver hair from “grey scalp”, blue hair from “blue-black sheen”, a longer chin from “short chin”. One fix, one phrase.</p></div>
+        <div class="lesson"><h3>Audit before video</h3><p><b>Prevents</b>an iMac, a ghost finger or a second laptop showing in every frame of a clip. Fix with one edit and paste back only those regions.</p></div>
+        <div class="lesson"><h3>Calm mouth, calm head, one draft per still</h3><p><b>Prevents</b>Seedance’s 50 % too-wide mouth, a busy head, and near-duplicate drafts that waste money.</p></div>
+        <div class="lesson"><h3>An instant clone and an audio tag</h3><p><b>Prevents</b>a clone that has your timbre but speaks 30 Hz high. <code>[calm]</code> on v4 scored 9.2; stability changed nothing.</p></div>
+        <div class="lesson"><h3>Never add samples to a voice in use</h3><p><b>Prevents</b>a professional clone going offline on every model, then a 24-hour verification lock.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="numbers">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Numbers that shipped</p>
+        <h2>One person’s measured results</h2>
+        <p>Measure your own. These show the scale and the targets the workflow aims at.</p>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>What</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>his face, real frames</td><td class="mono">chin 0.80 n · width 2.63 n (nose) · 2.24 n (mouth)</td></tr>
+            <tr><td>a good take</td><td>within ±0.05 n of those; his room plus front refs gave 0.78–0.83 on most shots</td></tr>
+            <tr><td>blind identity plateau</td><td class="mono">8.75 / 10 · judges drift 0.4–1.25 between rounds</td></tr>
+            <tr><td>his mouth when talking</td><td class="mono">p50 0.092 · Seedance alone 0.135 · best drafts 0.085–0.10</td></tr>
+            <tr><td>his head when talking</td><td class="mono">turn sd 0.100 · tilt 3.9° · Seedance alone 0.034 · 1.7°</td></tr>
+            <tr><td>his voice</td><td class="mono">median 116 Hz · p10–p90 106–131 Hz · clone 9.2 / 10</td></tr>
+            <tr><td>what the whole project spent</td><td class="mono">about $45 over three days (~1,300 Fil + ~800 Higgsfield credits)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="consent" class="consent">
+    <div class="wrap two">
+      <div class="sec-head" style="margin:0">
+        <p class="kicker">Consent</p>
+        <h2>Only your own face and voice</h2>
+        <p>A twin can say things the person never said. Build one only for yourself, or for someone who gave you documented consent for this exact use.</p>
+      </div>
+      <ul>
+        <li><b>Never</b> a public figure, a client, a friend “as a surprise”, anyone from photos found online, or a child.</li>
+        <li><b>Platform checks are the owner’s to do:</b> the voice captcha, the phone face check. Never use a recording to pass one, and never click Skip.</li>
+        <li><b>Never work around a safety filter.</b> If a check refuses something, stop and ask the owner.</li>
+        <li><b>Keep keys and samples private:</b> API keys in a <code>.env</code> file, never in prompts, logs or screenshots.</li>
+        <li><b>Ask before publishing,</b> and label generated media where a platform asks for it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="use">
+    <div class="wrap two">
+      <div>
+        <div class="sec-head" style="margin-bottom:24px">
+          <p class="kicker">Use it</p>
+          <h2>Start with your recordings</h2>
+          <p>Put the skill in <code>~/.claude/skills/digital-twin/</code>, then ask in plain words.</p>
+        </div>
+        <div class="prompt" id="p-min"><span class="tag">Minimal prompt</span><button class="copy" type="button" data-copy="p-min-text" id="copy-min">Copy</button><span id="p-min-text">Use $digital-twin to build my digital twin from my own recordings in ~/Videos: pick a lean reference set and held-out judge frames, write my identity block, make 3 Seedream 5 Pro stills in my real room with only the camera changing, measure and audit them, clone my voice and score it to 9/10, then make one Seedance 2.5 draft per picked still. Price every step first.</span></div>
+        <div class="prompt" id="p-voice"><span class="tag">Just the voice</span><button class="copy" type="button" data-copy="p-voice-text" id="copy-voice">Copy</button><span id="p-voice-text">Use $digital-twin to clone my voice from my last three recordings: label my own speech, build an instant clone from my cleanest 3 minutes, try v4 with and without audio tags, score every take with the ECAPA scorer on 7–10 s lines, and send me a before/after with my real voice.</span></div>
+      </div>
+      <div class="files">
+        <p class="kicker" style="margin-bottom:16px">What’s in the skill</p>
+        <ul>
+          <li><code>SKILL.md</code>: the stages, the rules, what fails and the fix, numbers, a checklist.</li>
+          <li><code>references/</code>: consent, references, identity template, stills, workspace, cinematic looks, audit, voice, speaking, video, judging, costs, the Fil workflow.</li>
+          <li><code>scripts/</code>: frames and face crops, landmarks and proportions, a round builder and batch runner, numbered sheets, the paste-back fix, film grades, speaking stats, draft measuring.</li>
+          <li><code>scripts/voice/</code>: speaker labelling, dataset scan, instant-clone builder, a line generator, the scorer, a training watcher, an API helper that never prints your key.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Built from one creator’s twin, 6–8 November 2026. Prices as of November 2026.</span>
+    <span class="mono">digital-twin · a Claude Code skill</span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var id = btn.getAttribute('data-copy');
+    if (id === 'p-min') id = 'p-min-text';
+    var el = document.getElementById(id);
+    var text = el ? el.textContent.trim() : '';
+    var label = btn.textContent;
+    function done(ok) { btn.textContent = ok ? 'Copied' : 'Selected'; setTimeout(function () { btn.textContent = label; }, 1600); }
+    function select() { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done(false); }
+    try { navigator.clipboard.writeText(text).then(function () { done(true); }, select); } catch (e) { select(); }
+  });
+});
+</script>
+<script src="step-window.js"></script>
+<script src="twin-demo.js"></script>
+<script>
+(function () {
+  var el = document.getElementById('twin-window');
+  if (!el || !window.HTMLDemo || !window.TwinDemo) return;
+  var demo = HTMLDemo.mount(el, {
+    steps: TwinDemo.steps(''),
+    tabs: ['Digital twin'],
+    label: 'The Digital twin workflow in Fil',
+  });
+  // For screenshots of exact frames (html-demo's shoot.mjs --frozen).
+  window.__hd = demo;
+  var play = document.getElementById('twin-play');
+  var clock = document.getElementById('twin-clock');
+  var time = document.getElementById('twin-time');
+  var still = document.getElementById('twin-still');
+  function fmt(s) { return Math.floor(s / 60) + ':' + (s % 60).toFixed(1).padStart(4, '0'); }
+  clock.max = demo.state().total;
+  still.checked = demo.state().still;
+  demo.onChange(function (s) {
+    clock.value = s.elapsed;
+    time.value = fmt(s.elapsed) + ' / ' + fmt(s.total);
+    play.textContent = s.paused ? 'Play' : 'Pause';
+    play.setAttribute('aria-pressed', String(s.paused));
+    play.disabled = s.still;
+  });
+  play.addEventListener('click', function () { demo.state().paused ? demo.resume() : demo.pause(); });
+  clock.addEventListener('input', function () {
+    // Read it before pausing: pausing draws again.
+    var s = Number(clock.value);
+    demo.pause();
+    demo.seek(s);
+  });
+  still.addEventListener('change', function () { demo.setStill(still.checked); });
+  demo.resume();
+})();
+</script>

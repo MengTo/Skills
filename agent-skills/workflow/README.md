@@ -12,6 +12,7 @@ They're portable. Project specifics (hosting, changelog format, capture folders)
 
 | Need | Start with |
 | --- | --- |
+| Release an interactive ThreeUI project with a 4K60 demo, three skills and Fil posts for X, Threads and LinkedIn | [Release a ThreeUI Demo](release-threeui-demo/SKILL.md) |
 | Show real screenshots of the start, key moment and result as work progresses, unasked | [`workflow-progress-screenshots`](workflow-progress-screenshots/SKILL.md) |
 | Score work out of 10 on an anchored rubric and improve it round by round to a target | [`workflow-score-to-target`](workflow-score-to-target/SKILL.md) |
 | Ship a change: screenshots, changelog, tests, commit, fast-forward push, draft-then-live publish, measured sizes, a 50 MB stop | [`workflow-ship-change`](workflow-ship-change/SKILL.md) |

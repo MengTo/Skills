@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kasumidera · Visual field study</title>
+<style>
+  * { box-sizing: border-box; }
+  :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #242820; background: #eee9db; }
+  body { margin: 0; min-height: 100vh; display: grid; align-content: center; }
+  main { width: min(100%, 1440px); margin: auto; }
+  .board { width: 100%; position:relative; }
+  .proof { display: block; width: 100%; }
+  h1, h2, h3 { font-family: Georgia, serif; font-weight: normal; }
+  .card span, .card img { display:none; }
+  .card { position: absolute; left: var(--x); top: var(--y); width: 30%; height: 34%; border-radius: 2px; }
+  .card:focus-visible, .card:hover { outline: 3px solid #9e4026; outline-offset: 4px; }
+  @media (min-width: 721px) { .intro { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } }
+  dialog { width: min(1150px,96vw); max-width: none; max-height: 94dvh; overflow-y: auto; padding: 0; color: #efeddf; background: #22261f; border: 1px solid #696b58; }
+  dialog::backdrop { background: rgb(12 15 12 / 85%); }
+  .detail-head, .actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .detail-head { padding: 13px 22px; }
+  h2 { font-size: clamp(23px,3vw,32px); line-height: 1.15; margin: 0; }
+  button { cursor: pointer; color: inherit; background: transparent; font: inherit; border: 1px solid #838974; min-height: 40px; padding: 5px 12px; }
+  button:hover, button[aria-pressed="true"] { background: #454d3f; }
+  button:focus-visible { outline: 2px solid #ffda8c; outline-offset: 2px; }
+  .viewport { margin: 0; overflow: hidden; aspect-ratio: 16/9; background: #141711; position: relative; }
+  .viewport img { display: block; width: 100%; height: 100%; transform-origin: var(--focus, 50% 50%); }
+  .viewport[data-zoom="true"] img { transform: scale(2); }
+  .detail-foot { padding: 12px 22px 18px; }
+  #note { margin: 0 0 .85em; max-width: 83ch; }
+  .pages { display: flex; gap: 8px; }
+  @media (prefers-reduced-motion: no-preference) { .viewport img { transition: transform 160ms ease; } }
+  @media (max-width: 720px) {
+    body { display: block; } .board { padding: 20px; } .proof { display: none; }
+    .intro { display:block; } .intro h1 { margin: 0; font-size: 40px; } .intro p { margin: 0 0 20px; color: #505647; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(190px,100%),1fr)); gap: 20px 12px; }
+    .card { position: static; width: auto; height: auto; color: inherit; text-decoration: none; }
+    .card span, .card img { display: block; } .card img { width: 100%; aspect-ratio: 16/9; object-fit:cover; }
+    .card span { font: 21px/1.5 Georgia,serif; } .detail-head, .detail-foot { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="board">
+    <div class="intro"><h1>Kasumidera</h1><p>Select a frame to inspect the materials, light and composition.</p></div>
+    <img class="proof" src="preview.jpg" alt="Kasumidera. Six frames from the game. Select a frame to inspect it.">
+    <nav class="cards" aria-label="Game frames">
+      <a class="card" style="--x:3.594%;--y:21.528%" href="assets/gate.jpg" aria-label="The torii gate" data-focus="48% 38%" data-note="Follow the rope through the gate opening. Pale air separates its dark silhouette from the valley, while the offset roof gives the eye a destination."><img src="assets/gate.jpg" alt=""><span>The torii gate</span></a>
+      <a class="card" style="--x:35%;--y:21.528%" href="assets/eaves.jpg" aria-label="Under the eaves" data-focus="65% 36%" data-note="Look along the lit rafter ends, then into the dark space behind them. Repeating pieces read as a structure because each one has an underside, a cut end and a gap."><img src="assets/eaves.jpg" alt=""><span>Under the eaves</span></a>
+      <a class="card" style="--x:66.406%;--y:21.528%" href="assets/bridge.jpg" aria-label="The bridge" data-focus="58% 87%" data-note="Inspect the grain and board joints in the approach, then follow the vermilion rails toward the door. The warm deck gives the red lacquer a distinct material to sit against."><img src="assets/bridge.jpg" alt=""><span>The bridge</span></a>
+      <a class="card" style="--x:3.594%;--y:57.917%" href="assets/cliff.jpg" aria-label="The near ridge" data-focus="72% 45%" data-note="Trace the nearest fracture up to the skyline. The projecting rock and rooted firs stay readable against the softer ridges beyond."><img src="assets/cliff.jpg" alt=""><span>The near ridge</span></a>
+      <a class="card" style="--x:35%;--y:57.917%" href="assets/cloud.jpg" aria-label="Clouds in the pass" data-focus="63% 31%" data-note="Find the gap between the nearer roof and the bright cloud bank. The far ridge appears through breaks in the density and gives the bank a place in the valley."><img src="assets/cloud.jpg" alt=""><span>Clouds in the pass</span></a>
+      <a class="card" style="--x:66.406%;--y:57.917%" href="assets/journal.jpg" aria-label="The field journal" data-focus="49% 57%" data-note="Compare the broad, softly reflective paper with the narrow central gutter. The broken ink and uneven edges carry the material detail at reading distance."><img src="assets/journal.jpg" alt=""><span>The field journal</span></a>
+    </nav>
+  </div>
+  <dialog aria-labelledby="name">
+    <div class="detail-head"><h2 id="name"></h2><button id="close" type="button" autofocus>Close</button></div>
+    <figure class="viewport"><img id="photo" alt=""></figure>
+    <div class="detail-foot" aria-live="polite"><p id="note"></p><div class="actions"><button id="zoom" type="button" aria-pressed="false">2× detail crop</button><div class="pages"><button id="previous" type="button">Previous</button><button id="next" type="button">Next</button></div></div></div>
+  </dialog>
+</main>
+<script>
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const dialog = document.querySelector('dialog');
+  const photo = document.querySelector('#photo');
+  const viewport = document.querySelector('.viewport');
+  const zoom = document.querySelector('#zoom');
+  let current = 0;
+  function setZoom(enabled) {
+    viewport.dataset.zoom = String(enabled);
+    zoom.setAttribute('aria-pressed', String(enabled));
+  }
+  function selectFrame(index) {
+    current = (index + cards.length) % cards.length;
+    const card = cards[current];
+    const title = card.getAttribute('aria-label');
+    document.querySelector('#name').textContent = title;
+    document.querySelector('#note').textContent = card.dataset.note;
+    photo.alt = title;
+    photo.src = card.href;
+    viewport.style.setProperty('--focus', card.dataset.focus);
+    setZoom(false);
+  }
+  cards.forEach((card, index) => card.addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    selectFrame(index);
+    dialog.showModal();
+  }));
+  document.querySelector('#close').addEventListener('click', () => dialog.close());
+  document.querySelector('#previous').addEventListener('click', () => selectFrame(current - 1));
+  document.querySelector('#next').addEventListener('click', () => selectFrame(current + 1));
+  zoom.addEventListener('click', () => setZoom(zoom.getAttribute('aria-pressed') !== 'true'));
+  dialog.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    selectFrame(current + (event.key === 'ArrowRight' ? 1 : -1));
+  });
+  dialog.addEventListener('click', event => {
+    if (event.target !== dialog) return;
+    const bounds = dialog.getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+  });
+</script>
+</body>
+</html>

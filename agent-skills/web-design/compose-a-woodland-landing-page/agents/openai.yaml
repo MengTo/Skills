@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compose a Woodland Landing Page"
+  short_description: "Compose an editorial landing page around a living grove."
+  default_prompt: "Use $compose-a-woodland-landing-page to implement this treatment in my project."

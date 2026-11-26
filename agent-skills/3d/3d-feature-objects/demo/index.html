@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field instruments</title>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#0a1017;color:#e9eff2;font:16px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}main{min-height:100svh;max-width:1540px;margin:auto;padding:clamp(22px,4vw,66px)}h1,h2,p{margin:0}h1{font-size:clamp(38px,6.4vw,94px);line-height:.98;letter-spacing:-.06em;font-weight:510}h2{font-weight:490;letter-spacing:-.035em;line-height:1.06}p{color:#a8b8c8}button{font:inherit;color:inherit;border:1px solid #587189;border-radius:3em;background:#132231;padding:8px 16px;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #b6ffec;outline-offset:4px}button[aria-pressed=true]{background:#a7d8d6;color:#10262c}.eyebrow,figcaption,small{font:500 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase;color:#9ccecc}.eyebrow{margin-bottom:15px}header p:last-child{margin-top:14px}canvas{display:block}figure{margin:0}button:disabled{opacity:.55;cursor:default}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
+
+main{display:flex;flex-direction:column;justify-content:center;gap:clamp(22px,5vh,55px)}
+.grid{display:grid;grid-template-columns:1.16fr 1fr 1fr;gap:14px}
+article{display:flex;flex-direction:column;min-width:0;position:relative;background:radial-gradient(ellipse at 50% 51%,#263448 0,#121d29 53%,#0f1923 90%);border:1px solid #354152;border-radius:18px;padding:clamp(15px,2vw,30px)}
+article h2{font-size:clamp(21px,2.7vw,44px);margin-bottom:6px}article p{font-size:14px}canvas{width:100%;height:clamp(180px,36vh,340px)}small{margin-top:8px}.grid button{position:absolute;right:14px;bottom:12px;font-size:12px;padding:5px 10px}
+@media(max-width:690px){.grid{grid-template-columns:1fr}canvas{height:210px}}
+
+</style>
+</head>
+<body>
+<main><header><p class="eyebrow">The instrument shelf</p><h1>Field instruments</h1><p>Hover across an instrument to turn it in the light.</p></header>
+<section class="grid" aria-label="Interactive instrument models">
+<article><h2>Depth gauge</h2><p>Pressure at the sampling point.</p><canvas role="img" aria-label="Analog gauge with a graduated face"></canvas><small>Pressure · kPa</small><button>Turn gauge</button></article>
+<article><h2>Flow meter</h2><p>Direction of the current.</p><canvas role="img" aria-label="Three-bladed bronze impeller inside a protective ring"></canvas><small>Velocity · m/s</small><button>Turn meter</button></article>
+<article><h2>Water probe</h2><p>Temperature beneath the surface.</p><canvas role="img" aria-label="A metal probe with a slotted sampling cage"></canvas><small>Temperature · °C</small><button>Turn probe</button></article>
+</section></main>
+<script src="assets/three.min.js"></script>
+<script>
+
+const motion=matchMedia('(prefers-reduced-motion: reduce)');
+function mount(){
+  const render=new THREE.WebGLRenderer({alpha:true,antialias:true,preserveDrawingBuffer:false});
+  render.toneMapping=THREE.ACESFilmicToneMapping;render.toneMappingExposure=.86;
+  const ratio=Math.min(devicePixelRatio||1,2);render.setPixelRatio(ratio);
+  const metal=(color,shine=75)=>new THREE.MeshPhongMaterial({color,shininess:shine,specular:0x758692});
+  const steel=metal(0x84a0af), brass=metal(0xc99455), graphite=metal(0x283643), blue=metal(0x426777), enamel=metal(0x112331);
+  function part(group,geometry,material,x=0,y=0,z=0){
+    const obj=new THREE.Mesh(geometry,material);obj.position.set(x,y,z);group.add(obj);return obj;
+  }
+  const cyl=(a,b,h,n=48)=>new THREE.CylinderGeometry(a,b,h,n);
+  function ring(group,r,t,z,mat){return part(group,new THREE.TorusGeometry(r,t,12,80),mat,0,0,z);}
+  function housing(g,r,h,z,mat){const p=part(g,cyl(r,r,h,80),mat,0,0,z);p.rotation.x=Math.PI/2;return p;}
+  function gauge(){
+    const g=new THREE.Group();housing(g,.86,.35,0,graphite);housing(g,.78,.04,.19,enamel);
+    ring(g,.82,.055,.19,steel);ring(g,.72,.012,.22,brass);
+    for(let i=0;i<=40;i++){
+      const angle=(i/40*1.5-.75)*Math.PI, major=i%5===0;
+      const t=part(g,new THREE.BoxGeometry(major?.022:.009,major?.105:.045,.012),major?brass:steel,.65*Math.sin(angle),.65*Math.cos(angle),.23);t.rotation.z=-angle;
+    }
+    const hand=part(g,new THREE.ConeGeometry(.042,.64,3),brass,.16,.19,.25);hand.rotation.z=-.7;
+    housing(g,.055,.055,.27,steel);
+    part(g,cyl(.18,.18,.24,6),brass,0,-.94);part(g,cyl(.115,.12,.22),steel,0,-1.12);
+    for(let j=0;j<4;j++){const rib=part(g,new THREE.TorusGeometry(.12,.012,6,28),brass,0,-1.04-j*.042);rib.rotation.x=Math.PI/2;}
+    return g;
+  }
+  function meter(){
+    const g=new THREE.Group();ring(g,.82,.07,0,steel);ring(g,.82,.038,-.21,graphite);
+    for(let i=0;i<3;i++){
+      const carrier=new THREE.Group();carrier.rotation.z=i*Math.PI*2/3;g.add(carrier);
+      const blade=part(carrier,new THREE.SphereGeometry(1,34,20),brass,.10,.35,0);
+      blade.scale.set(.21,.4,.047);blade.rotation.set(.33,.5,-.40);
+      part(carrier,new THREE.BoxGeometry(.032,.74,.04),graphite,0,.42,-.17);
+    }
+    housing(g,.145,.24,.035,graphite);housing(g,.08,.035,.175,brass);
+    part(g,cyl(.10,.14,.34),steel,0,-.95);
+    return g;
+  }
+  function probe(){
+    const g=new THREE.Group();
+    part(g,cyl(.24,.22,1.1),blue,0,.09);part(g,cyl(.25,.24,.11),brass,0,.575);
+    part(g,cyl(.21,.12,.25),graphite,0,.75);part(g,cyl(.09,.09,.32),graphite,0,.99);
+    for(let i=0;i<6;i++)part(g,cyl(.226,.226,.018),graphite,0,-.25+i*.055);
+    part(g,cyl(.23,.22,.10),steel,0,-.54);part(g,cyl(.17,.105,.38),brass,0,-.74);
+    for(let i=0;i<6;i++){const a=i*Math.PI/3;part(g,cyl(.022,.022,.48,10),steel,.19*Math.cos(a),-.80,.19*Math.sin(a));}
+    part(g,cyl(.20,.15,.08),steel,0,-1.05);return g;
+  }
+  const assets=[gauge(),meter(),probe()];
+  const states=[...document.querySelectorAll('article')].map((card,i)=>{
+    const surface=card.querySelector('canvas'), scene=new THREE.Scene(), root=new THREE.Group();
+    root.add(assets[i]);scene.add(root);assets[i].rotation.set(.22,-.20,i===2?-.34:-.12);
+    scene.add(new THREE.HemisphereLight(0xd5efff,0x364453,.95));
+    for(const [x,y,z,intensity,color] of [[-3,4,5,1.25,0xefefe6],[3,1,-2,1.25,0xabdcff],[2,-3,3,.85,0xf4c6a0]]){
+      const l=new THREE.DirectionalLight(color,intensity);l.position.set(x,y,z);scene.add(l);
+    }
+    const camera=new THREE.PerspectiveCamera(32,1,.1,30);camera.position.z=4.8;
+    return {card,surface,ctx:surface.getContext('2d'),root,scene,camera,near:false,dirty:true,hover:false,x:0,spin:0,angle:0,base:0};
+  });
+  let raf=0,previous=0;
+  function schedule(){if(!raf&&!document.hidden)raf=requestAnimationFrame(tick);}
+  function tick(time){
+    raf=0;const dt=Math.min(.05,(time-previous)/1000);previous=time;
+    for(const s of states){
+      if(!s.near)continue;
+      if(s.hover&&!motion.matches)s.spin+=dt*.58;
+      const target=s.base+(s.hover&&!motion.matches?s.spin+s.x*.7:0);
+      // Take the shortest path home after several turns.
+      const delta=Math.atan2(Math.sin(target-s.angle),Math.cos(target-s.angle));
+      const moving=!motion.matches&&(s.hover||Math.abs(delta)>.001);
+      if(!s.dirty&&!moving)continue;
+      s.angle+=moving?delta*(1-Math.exp(-10*dt)):delta;s.root.rotation.y=s.angle;
+      const w=s.surface.clientWidth,h=s.surface.clientHeight;if(!w||!h)continue;
+      render.setSize(w,h,false);
+      if(s.surface.width!==render.domElement.width||s.surface.height!==render.domElement.height){
+        s.surface.width=render.domElement.width;s.surface.height=render.domElement.height;
+      }
+      s.camera.aspect=w/h;s.camera.position.z=4.8/Math.min(1,w/h);s.camera.updateProjectionMatrix();
+      render.render(s.scene,s.camera);s.ctx.clearRect(0,0,s.surface.width,s.surface.height);s.ctx.drawImage(render.domElement,0,0);
+      s.dirty=false;if(moving)schedule();
+    }
+  }
+  const visible=new IntersectionObserver(entries=>{for(const e of entries){const s=states.find(s=>s.card===e.target);s.near=e.isIntersecting;s.dirty=true;if(!s.near)release(s);}schedule();});
+  function release(s){s.hover=false;s.spin=0;s.dirty=true;schedule();}
+  for(const s of states){
+    visible.observe(s.card);new ResizeObserver(()=>{s.dirty=true;schedule();}).observe(s.surface);
+    s.card.addEventListener('pointermove',e=>{
+      if(e.pointerType==='touch'||motion.matches)return;
+      const r=s.surface.getBoundingClientRect();s.hover=true;s.x=THREE.MathUtils.clamp(2*(e.clientX-r.left)/r.width-1,-1,1);schedule();
+    });
+    for(const key of ['pointerleave','pointercancel'])s.card.addEventListener(key,()=>release(s));
+    s.card.querySelector('button').onclick=()=>{s.base+=Math.PI/4;s.dirty=true;schedule();};
+  }
+  window.addEventListener('blur',()=>states.forEach(release));motion.addEventListener('change',()=>states.forEach(release));
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)states.forEach(release);else schedule();});
+}
+try{mount();}catch(error){for(const b of document.querySelectorAll('button'))b.disabled=true;document.querySelector('header p:last-child').textContent='WebGL is required to turn the instruments.';console.error(error);}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Forest Floor Specimen"
+  short_description: "Grow an inspectable fern and moss specimen for a field guide."
+  default_prompt: "Use $forest-floor-specimen to implement this treatment in my project."

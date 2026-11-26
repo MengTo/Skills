@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contour atlas</title>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#0a1017;color:#e9eff2;font:16px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}main{min-height:100svh;max-width:1540px;margin:auto;padding:clamp(22px,4vw,66px)}h1,h2,p{margin:0}h1{font-size:clamp(38px,6.4vw,94px);line-height:.98;letter-spacing:-.06em;font-weight:510}h2{font-weight:490;letter-spacing:-.035em;line-height:1.06}p{color:#a8b8c8}button{font:inherit;color:inherit;border:1px solid #587189;border-radius:3em;background:#132231;padding:8px 16px;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #b6ffec;outline-offset:4px}button[aria-pressed=true]{background:#a7d8d6;color:#10262c}.eyebrow,figcaption,small{font:500 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase;color:#9ccecc}.eyebrow{margin-bottom:15px}header p:last-child{margin-top:14px}canvas{display:block}figure{margin:0}button:disabled{opacity:.55;cursor:default}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
+
+main{display:flex;flex-direction:column;justify-content:center;gap:24px}header{display:flex;align-items:end;justify-content:space-between;flex-wrap:wrap;gap:18px}header h1{font-size:clamp(44px,6vw,84px)}.views,.years{display:flex;gap:6px;flex-wrap:wrap}figure{background:#0d1924;border:1px solid #344451;border-radius:18px;position:relative}canvas{height:clamp(300px,54vh,550px);width:100%;border-radius:inherit;touch-action:pan-y}figcaption{position:absolute;left:22px;bottom:17px;color:#d1e1db;background:#0e1924dd;padding:5px 9px;border-radius:5px}.foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.years button{font-variant-numeric:tabular-nums}.foot p{font-size:14px}.years[hidden],button[hidden]{display:none}
+
+</style>
+</head>
+<body>
+<main><header><div><p class="eyebrow">Bathymetry</p><h1>Contour atlas</h1></div><div class="views" aria-label="Map view"><button aria-pressed="true">History</button><button aria-pressed="false">Field access</button></div></header>
+<figure><canvas role="img" aria-label="Elevation contours across a coast with a dotted survey route"></canvas><figcaption>Illustrative shelf · 2 m intervals</figcaption></figure>
+<div class="foot"><div class="years" aria-label="Survey year"><button aria-pressed="true">2017</button><button aria-pressed="false">2020</button><button aria-pressed="false">2024</button></div><button id="pulse" hidden>Send wave</button><p aria-live="polite">Point at a contour or select a survey year.</p></div></main>
+<script>
+
+const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),motion=matchMedia('(prefers-reduced-motion: reduce)');
+const tabs=[...document.querySelectorAll('.views button')], years=[...document.querySelectorAll('.years button')],pulse=document.querySelector('#pulse');
+const stations=[[.23,.69],[.52,.47],[.79,.37]],cols=100,rows=64;
+function height(x,y){
+  const ridge=(cx,cy,sx,sy,amp)=>amp*Math.exp(-((x-cx)**2/sx+(y-cy)**2/sy));
+  const u=x+.045*Math.sin(8*y+2*x),v=y+.035*Math.sin(10*x-3*y);
+  return ridge(.61,.38,.055,.064,.95)+ridge(.31,.66,.064,.044,.7)-ridge(.45,.31,.025,.035,.36)
+    +.12*Math.sin(10*u+4*v)+.06*Math.cos(16*v-4*u)+.038*Math.sin(26*u+11*v);
+}
+const vertices=Array.from({length:(cols+1)*(rows+1)},(_,i)=>{const x=(i%(cols+1))/cols,y=Math.floor(i/(cols+1))/rows;return [x,y,height(x,y)];});
+const levels=new Map();
+function slice(a,b,c){
+  const tri=[a,b,c],step=.043;
+  const low=Math.ceil(Math.min(a[2],b[2],c[2])/step),high=Math.floor(Math.max(a[2],b[2],c[2])/step);
+  for(let k=low;k<=high;k++){
+    const h=k*step,points=[];
+    for(let i=0;i<3;i++){
+      const v=tri[i],w=tri[(i+1)%3];if((v[2]<h)===(w[2]<h))continue;
+      const t=(h-v[2])/(w[2]-v[2]);points.push([v[0]+t*(w[0]-v[0]),v[1]+t*(w[1]-v[1]),h]);
+    }
+    if(points.length===2){if(!levels.has(k))levels.set(k,[]);levels.get(k).push(points);}
+  }
+}
+for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+  const i=y*(cols+1)+x,a=vertices[i],b=vertices[i+1],c=vertices[i+cols+1],d=vertices[i+cols+2];
+  slice(a,b,d);slice(a,d,c);
+}
+let seed=8703;
+function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
+const dust=Array.from({length:1800},()=>[random(),random(),random()]);
+let mode=0,selected=0,w=1,h=1,aim=null,wave=null,frame=0,visible=true;
+function schedule(){if(!frame&&visible&&!document.hidden)frame=requestAnimationFrame(draw);}
+function project(p,raised){
+  if(!raised)return [p[0]*w,p[1]*h];
+  return [(.16+.63*p[0]+.15*p[1])*w,(.44-.19*p[0]+.45*p[1]-.31*p[2])*h];
+}
+function lineLayer(raised,muted=false){
+  ctx.lineJoin='round';
+  for(const [k,segments] of levels){
+    const index=k%5===0;
+    ctx.strokeStyle=raised?(index?'#94d0dd':'#5d8caa'):(muted?(index?'#344958':'#253746'):(index?'#6892a7':'#3d6076'));
+    ctx.lineWidth=index?.92:.53;ctx.beginPath();
+    for(const [a,b] of segments){const p=project(a,raised),q=project(b,raised);ctx.moveTo(...p);ctx.lineTo(...q);}
+    ctx.stroke();
+  }
+}
+const base=document.createElement('canvas');
+function buildBase(){
+  ctx.fillStyle='#0d1924';ctx.fillRect(0,0,w,h);lineLayer(false,mode===1);
+  if(mode===1){
+    const perimeter=[[0,0,0],[1,0,0],[1,1,0],[0,1,0]].map(p=>project(p,true));
+    ctx.beginPath();perimeter.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle='#162735';ctx.fill();
+    // Draw nearer land over the far rows of the relief.
+    for(let y=0;y<rows;y++)for(let x=cols-1;x>=0;x--){
+      const i=y*(cols+1)+x,a=vertices[i],b=vertices[i+1],c=vertices[i+cols+1],d=vertices[i+cols+2];
+      const shade=Math.round(31+28*a[2]+Math.max(-14,Math.min(18,180*(b[2]-a[2])-130*(c[2]-a[2]))));
+      ctx.fillStyle='rgb('+shade+' '+(shade+21)+' '+(shade+33)+')';ctx.beginPath();
+      [a,b,d,c].forEach((p,j)=>j?ctx.lineTo(...project(p,true)):ctx.moveTo(...project(p,true)));ctx.closePath();ctx.fill();
+    }
+    lineLayer(true);
+  }
+  base.width=canvas.width;base.height=canvas.height;base.getContext('2d').drawImage(canvas,0,0);
+}
+function draw(now){
+  frame=0;ctx.drawImage(base,0,0,w,h);
+  if(aim&&!motion.matches){
+    ctx.save();ctx.beginPath();ctx.arc(aim.x,aim.y,Math.min(w,h)*.18,0,2*Math.PI);ctx.clip();
+    const glow=ctx.createRadialGradient(aim.x,aim.y,0,aim.x,aim.y,Math.min(w,h)*.18);
+    glow.addColorStop(0,'rgba(141,220,242,.86)');glow.addColorStop(1,'rgba(141,220,242,0)');
+    ctx.beginPath();for(const seg of levels.values())for(const [a,b] of seg){ctx.moveTo(...project(a,mode===1));ctx.lineTo(...project(b,mode===1));}
+    ctx.strokeStyle=glow;ctx.lineWidth=1.15;ctx.stroke();ctx.restore();
+  }
+  if(!mode){
+    ctx.setLineDash([2,5]);ctx.beginPath();stations.forEach(([x,y],i)=>i?ctx.lineTo(x*w,y*h):ctx.moveTo(x*w,y*h));
+    ctx.strokeStyle='#abc3cd';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+    stations.forEach(([x,y],i)=>{
+      ctx.fillStyle=i===selected?'#bcebe0':'#9cb5c4';ctx.beginPath();ctx.arc(x*w,y*h,i===selected?5:3,0,2*Math.PI);ctx.fill();
+      ctx.font=(i===selected?'500 ':'400 ')+Math.max(19,Math.min(43,w*.04))+'px system-ui';ctx.fillText(years[i].textContent,x*w-20,y*h-14);
+    });
+  }
+  if(wave){
+    const x=wave.u*w,y=wave.v*h, reach=Math.hypot(Math.max(x,w-x),Math.max(y,h-y));
+    const progress=(now-wave.start)/1550,r=(reach+70)*progress;if(progress>=1||motion.matches){wave=null;return;}
+    ctx.strokeStyle='rgba(151,220,250,'+(.38*(1-progress))+')';ctx.lineWidth=.8;ctx.beginPath();ctx.arc(x,y,Math.max(r,0),0,Math.PI*2);ctx.stroke();
+    for(const [u,v,s] of dust){
+      const dx=u*w-x,dy=v*h-y,d=Math.hypot(dx,dy),lag=r-d;if(lag< -25||lag>75)continue;
+      const crest=Math.exp(-((lag/19)**2)),wake=Math.exp(-(((lag-31)/26)**2)),shift=(crest*(10+s*20)-wake*5)/Math.max(d,1);
+      ctx.globalAlpha=(crest+.27*wake)*(.4+.6*s);ctx.fillStyle='#bae4f4';ctx.fillRect(x+dx*(1+shift),y+dy*(1+shift),1.1+s,1.1+s);
+    }
+    ctx.globalAlpha=1;schedule();
+  }
+}
+function send(u,v){if(!motion.matches){wave={u,v,start:performance.now()};schedule();}}
+function select(i,echo){selected=i;years.forEach((b,j)=>b.setAttribute('aria-pressed',String(j===i)));if(echo)send(...stations[i]);schedule();}
+years.forEach((b,i)=>{b.onclick=()=>select(i,true);b.onpointerenter=e=>{if(e.pointerType!=='touch'&&selected!==i)select(i,true);};});
+tabs.forEach((b,i)=>b.onclick=()=>{
+  mode=i;wave=null;aim=null;tabs.forEach((t,j)=>t.setAttribute('aria-pressed',String(i===j)));
+  pulse.hidden=!i;document.querySelector('.years').hidden=!!i;document.querySelector('.foot p').textContent=i?'Press anywhere on the relief to send a seismic wave.':'Point at a contour or select a survey year.';
+  canvas.setAttribute('aria-label',i?'Raised coastal relief with an interactive seismic wave':'Elevation contours with a dotted survey route');
+  buildBase();schedule();
+});
+function pointer(e){const b=canvas.getBoundingClientRect();return {x:e.clientX-b.left,y:e.clientY-b.top};}
+function stationAt(p){
+  return stations.findIndex(([x,y])=>p.x>=x*w-24&&p.x<=x*w+68&&p.y>=y*h-54&&p.y<=y*h+10);
+}
+canvas.onpointermove=e=>{
+  if(e.pointerType==='touch')return;
+  aim=pointer(e);const index=mode?-1:stationAt(aim);
+  if(index>=0&&index!==selected)select(index,true);
+  schedule();
+};
+canvas.onpointerleave=canvas.onpointercancel=()=>{aim=null;schedule();};
+canvas.onpointerdown=e=>{
+  if(!e.isPrimary||e.button!==0)return;
+  const p=pointer(e);
+  if(mode)send(p.x/w,p.y/h);else{const index=stationAt(p);if(index>=0)select(index,true);}
+};
+pulse.onclick=()=>send(.53,.52);
+motion.onchange=()=>{pulse.disabled=motion.matches;wave=null;schedule();};pulse.disabled=motion.matches;
+new ResizeObserver(()=>{w=canvas.clientWidth;h=canvas.clientHeight;const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);buildBase();schedule();}).observe(canvas);
+new IntersectionObserver(([e])=>{visible=e.isIntersecting;if(!visible){wave=null;aim=null;}schedule();}).observe(canvas);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)wave=null;else schedule();});
+
+</script>
+</body>
+</html>

@@ -1,9 +1,14 @@
 # 3D Rendering Skills
 
-Sixteen reusable skills for atmospheric, detailed 3D scenes, open water, underwater light and interactive walkthroughs. Most of the techniques draw on [Seijaku](https://mengto.github.io/seijaku/); the water comes from Pirate Ship Sunset, and the underwater light from Blue Hour. Each includes implementation guidance, performance considerations and verification steps.
+Reusable skills for atmospheric 3D scenes, real-time architecture, survey scans, construction sequences and interactive walkthroughs. Most of the techniques draw on [Seijaku](https://mengto.github.io/seijaku/); the open-ocean water comes from Pirate Ship Sunset, the harbour water from Shinonome Harbour, and the underwater light from Blue Hour. Each includes implementation guidance, performance considerations and verification steps.
 
 | Skill | Use it for |
 | --- | --- |
+| [Hover Particle Dissolve](hover-particle-dissolve/SKILL.md) | Brush grains off an actual model surface and let them settle back into its silhouette. [Open demo](hover-particle-dissolve/demo/index.html). |
+| [3D Feature Objects](3d-feature-objects/SKILL.md) | Model and light a shelf of instruments that turn independently on hover. [Open demo](3d-feature-objects/demo/index.html). |
+| [Interactive Topography](interactive-topography/SKILL.md) | Draw fine contours for a timeline atlas and a raised relief with a press-triggered seismic wave. [Open demo](interactive-topography/demo/index.html). |
+| [Light a Three.js Workspace](light-a-threejs-workspace/SKILL.md) | A textured desk interior with adjustable blinds, shadows and volumetric window light. |
+| [Model Three.js Control Icons](model-threejs-control-icons/SKILL.md) | Miniature instruments with shaped reflections and a transparent icon atlas. |
 | [3D Ultra-Realistic Water](3d-ultra-realistic-water/SKILL.md) | Open oceans with per-pixel Gerstner waves, sun glitter, lace foam, a Kelvin wake and a seamless horizon, plus a runnable demo. |
 | [3D Underwater God Rays](3d-underwater-god-rays/SKILL.md) | Volumetric light shafts through water that converge on the sun and parallax with the camera, with caustic streaks, a rippling surface and dappled fish, plus a runnable demo. |
 | [3D Virtual Tour](3d-virtual-tour/SKILL.md) | Guided walkthroughs, room and floor-plan navigation, orbit inspection, and smooth return to the tour. |
@@ -16,10 +21,19 @@ Sixteen reusable skills for atmospheric, detailed 3D scenes, open water, underwa
 | [3D Wood Material](3d-wood-material/SKILL.md) | Procedural wood with growth-ring grain, pores, oil and wax finishes, tool marks and end grain that survive macro close-ups. |
 | [3D Cloth Material](3d-cloth-material/SKILL.md) | Woven cloth with thread structure, sheen, folds that don't stretch the weave, stitched hems and frayed edges. |
 | [3D Paper Material](3d-paper-material/SKILL.md) | Washi, rag and kraft paper with fibres, deckled edges, back-lit translucency, curl and creases. |
+| [Relight Painted Surfaces](relight-painted-surfaces/SKILL.md) | Steer one studio light across a 2D illustration using separate depth, normal and roughness maps. [Open demo](relight-painted-surfaces/demo/index.html). |
 | [3D Metal Material](3d-metal-material/SKILL.md) | Physically based steel, brass, gold and copper with structured reflections, brushed streaks, scratches and patina. |
 | [3D Orbit and Inspect Demo](3d-orbit-inspect-demo/SKILL.md) | A 3D object that leans on hover and lifts to a full inspect view on click, with drag, zoom and a clean return. |
 | [3D Wood Lighting Scorecard](3d-wood-lighting-scorecard/SKILL.md) | Warm key light, volumetric shafts and dust, plus a runnable scorecard that rates the render out of 10 against an anchored rubric. |
 | [3D Retina Resolution](3d-retina-resolution/SKILL.md) | Fixed 200% rendering, synchronized render buffers, and correct HiDPI sizing. |
+| [3D Survey Scan](3d-survey-scan/SKILL.md) | Sweep the occupied scene with a cyan pulse that traces its actual mesh edges. [Open demo](3d-survey-scan/demo/index.html). |
+| [3D Construction Sequence](3d-construction-sequence/SKILL.md) | Assemble a structure from its foundations through its roof with synchronized wires and rigid parts. [Open demo](3d-construction-sequence/demo/index.html). |
+| [3D Modular Buildings](3d-modular-buildings/SKILL.md) | Model structural bays, entrances and rooflines that read from the approach and at eye height. [Open demo](3d-modular-buildings/demo/index.html). |
+| [3D Harbour Water](3d-harbour-water/SKILL.md) | Reflect quay lights on rain-dappled water, float a launch on the swell and leave a wake through turns. [Open demo](3d-harbour-water/demo/index.html). |
+| [Kasumidera Ultra-Realism](3d-kasumidera-ultra-realism/SKILL.md) | Build walkable painterly Three.js environments with warm lacquer, modeled joinery, layered clouds and materials reviewed at 200%. [Inspect six game frames](3d-kasumidera-ultra-realism/demo/index.html). |
+| [Woodland Chapter Cameras](woodland-chapter-cameras/SKILL.md) | Stage one live woodland across several scroll chapters. [Open demo](woodland-chapter-cameras/demo/index.html). |
+| [Perching Butterfly](perching-butterfly/SKILL.md) | Animate a butterfly with a grounded perch and a flight loop. [Open demo](perching-butterfly/demo/index.html). |
+| [Forest Floor Specimen](forest-floor-specimen/SKILL.md) | Grow an inspectable fern and moss specimen for a field guide. [Open demo](forest-floor-specimen/demo/index.html). |
 
 ## Use a skill
 

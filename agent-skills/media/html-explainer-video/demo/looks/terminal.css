@@ -1,0 +1,78 @@
+/* terminal: measured from survey-page-terminal-style.html (scripts/read-look.mjs). Check it against the page; set --x-motion by eye. */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=block');
+[data-look='terminal'] {
+  --x-ground: #0a0d0b;
+  --x-ground-image: linear-gradient(transparent, transparent);
+  --x-panel: #0e1310;
+  --x-panel-2: #1a1f1c;
+  --x-ink: #d9f2df;
+  --x-dim: #9cbaa4;
+  --x-line: #d9f2df24;
+  --x-accent: #7dff9e;
+  --x-accent-ink: #111111;
+  --x-ring: #7dff9e;
+  --x-head-font: 'JetBrains Mono', system-ui, sans-serif;
+  --x-head-weight: 700;
+  --x-head-size: 62px;
+  --x-head-line: 1.15;
+  --x-head-track: -0.020em;
+  --x-head-case: none;
+  --x-hero-size: 90px;
+  --x-hero-track: -0.020em;
+  --x-body-font: 'JetBrains Mono', system-ui, sans-serif;
+  --x-label-font: 'JetBrains Mono', system-ui, sans-serif;
+  --x-label-weight: 500;
+  --x-radius: 4px;
+  --x-radius-s: 4px;
+  --x-edge: 1px;
+  --x-shadow: rgb(31, 43, 35) 0px -1px 0px 0px inset;
+  --x-bar: #0e1310;
+  --x-light-1: #9cbaa4;
+  --x-light-2: #9cbaa4;
+  --x-light-3: #9cbaa4;
+  --x-motion: rise;
+  --x-motion-dur: 0.55;
+  --x-cap-font: 'JetBrains Mono', sans-serif;
+  --x-cap-ink: #d9f2df;
+  --x-cap-word: #7dff9e;
+  --x-cap-edge: #0a0d0b;
+  --x-name-face: JetBrains Mono;
+  --x-name-moves: Calm;
+}
+/* Finished by hand after the reading above, as references/looks.md says: the
+   ground, ink, accent and face are as measured; the layout is a terminal's. Panes
+   that fill the frame, a prompt at the foot, ruled lines, pictures in phosphor. */
+[data-look='terminal'] {
+  --x-m: 40;
+  --x-head-at: bottom;
+  --x-head-h: 56px;
+  --x-head-size: 42px;
+  --x-hero-size: 92px;
+  --x-radius: 0px;
+  --x-radius-s: 0px;
+  --x-shadow: none;
+  --x-edge-color: #2f4136;
+  --x-bar: transparent;
+  --x-bar-ink: #7dff9e;
+  --x-lights: none;
+  --x-pic-filter: grayscale(1) contrast(1.2) brightness(1.1);
+  --x-pic-blend: multiply;
+  --x-pic-ground: #7dff9e;
+  --x-pic-ink: #0c0c0c;
+  --x-motion: snap;
+  --x-motion-dur: 0.1;
+  --x-name-moves: Instant;
+}
+[data-look='terminal'] .x-head::before {
+  content: '$ ';
+  color: #7dff9e;
+}
+[data-look='terminal'] .x-head .x-lead {
+  color: #7dff9e;
+}
+[data-look='terminal'] .x-bar {
+  height: 38px;
+  padding: 0 14px;
+  border-bottom: 1px dashed #2f4136;
+  font-size: 19px;
+}

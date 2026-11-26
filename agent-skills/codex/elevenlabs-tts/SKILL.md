@@ -55,6 +55,8 @@ Fields like `emails`, owners, aliases, and notes are for local routing/context o
 1. Choose the profile from `--profile`, `ELEVENLABS_TTS_PROFILE`, or `default_profile`.
 2. Prefer the helper script:
    `python3 <skill-root>/scripts/generate_voice.py --text-file script.txt --profile default --output output.mp3`
+   Generating spends the account's characters: run it with `--dry-run` first (free), tell the user how many characters
+   it will use, and generate only on their typed yes.
 3. If the profile has `voice_id`, use it. If it has `voice_id_env`, read that env var. Otherwise search ElevenLabs by `voice_name`.
 4. Use profile `model_id`, `output_format`, and `voice_settings` unless the user overrides them for this generation.
 5. Put generated audio in the requested destination. If no destination is given, use the profile `output_dir`, then `outputs/voiceovers/`.

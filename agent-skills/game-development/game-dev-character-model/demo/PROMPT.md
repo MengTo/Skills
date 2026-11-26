@@ -29,6 +29,10 @@ Use $game-dev-character-model to make an original sci-fi heroine and a small pro
 - Responsive from 390px to 1440px, with reduced-motion handling (no auto-advance).
 - The whole demo folder stays under a few megabytes.
 
+## Close-up follow-up
+
+Use $game-dev-character-model step 7 on the heroine: real eyeballs behind cut-out lids with lid rims, lashes and an upper-lid shadow, a faithful ×2 upscale of the eye/brow atlas crop, walk and run clips on a steppable clock with the arm and foot fixes, and finger bones with relax and fist poses. Show each as a before/after pair, including the profile and the palm side of the fist.
+
 ## Remix prompt
 
 Use $game-dev-character-model to make a different original character (a desert scout, an orbital mechanic, a forest ranger) with the same pipeline, then rebuild this demo page around them with the new concept, the A-pose before/after and the four check views.

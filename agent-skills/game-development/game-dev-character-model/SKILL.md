@@ -1,6 +1,6 @@
 ---
 name: game-dev-character-model
-description: Create a realistic, AAA-looking 3D character model for a game or web scene, from a description or a reference video/image, as a textured, rigged GLB standing in a relaxed pose in a lit three.js viewer. Covers designing an original character, the photoreal A-pose concept image, image-to-3D with Meshy or Tripo through Fil, rigging, posing in code, hangar-style lighting, headless capture, and the checks before showing it. Use when the user asks for a character model, a hero/heroine/NPC, "a model as good as X", a realistic human for a game, or to rig or pose a generated character.
+description: Create a realistic, AAA-looking 3D character model for a game or web scene, from a description or a reference video/image, as a textured, rigged GLB standing in a relaxed pose in a lit three.js viewer. Covers designing an original character, the photoreal A-pose concept image, image-to-3D with Meshy or Tripo through Fil, rigging, posing in code, hangar-style lighting, headless capture, and the checks before showing it, plus close-up eyes and skin, walk/run clips, finger bones and 4K stills. Use when the user asks for a character model, a hero/heroine/NPC, "a model as good as X", a realistic human for a game, or to rig or pose a generated character.
 ---
 
 # game-dev-character-model
@@ -81,11 +81,26 @@ Look at every image before sending. Check for:
 
 Send the A-pose and posed shots as a before/after pair, and say which view is weakest.
 
+### 7. Close-ups, motion and hands (optional, all in code, about 12 credits)
+Reference build: `HTML Pages/heroine/` (`face.js`, `motion.js`, `hands.js`, each one import plus one call in `index.html`, each with a URL switch to turn it off for before/after pairs).
+
+**Eyes.** Painted eyes never read as real. Find each eye in Head-bone space (raycast the iris and both corners; the armature is at 0.01, so head space is cm), then in the face shader `discard` the painted opening between two lid curves (upper height, lower depth, corner height, half width, exponents below 1 for pointed corners) fitted with a debug overlay. Cut 2.2 cm deep, or the sculpted socket floor shows as a brown slab in profile. Behind it put one sphere per eye on the Head bone, slightly wider than tall, centred on the corner chord: procedural iris recessed under a clearcoat cornea bulge, dark limbal ring, warm veined sclera, lid occlusion painted into its albedo. Then add a lid-rim ribbon per lid that runs from the skin over the cut edge back into the globe (lid thickness, contact line, wet lower waterline, closed socket), procedural upper lash cards (lower lash cards read as pale spikes edge-on; keep the painted ones), and an upper-lid shadow band on the globe. Fit both openings to the same aperture or the face looks lopsided. Check: the eye close-up, front, three-quarter and **profile**, where a dark gap behind the lid means the socket is open.
+
+**Skin.** Swap to `MeshPhysicalMaterial` with the same maps, masked to the head by a capsule in head space and to skin by colour: wrapped red-tinted diffuse, sheen, pore bump faded by screen footprint, and weld/smooth the face normals (Meshy splits them at UV seams). Fade it all out with camera distance so the full view is unchanged.
+
+**Face texture (12 credits).** Crop the eye/brow islands from the 4096 base-colour atlas (here 1024×512 at px 1884,2355), run Fil `magnific-upscale-faithful` ×2 with a "keep every shape, colour and position; sharpen pores, brow hairs, lashes" prompt, save as JPEG, and sample it in the shader inside that UV rect with a soft edge, limited to the head region (the crop also holds jacket texels).
+
+**Motion.** Play the rig's `walk` and `run` clips over the posed idle by sampling their interpolants each frame and slerping by crossfade weight (`?clip=idle|walk|run`). Drive everything from a clock you own: `?t=` or `?phase=` pauses there, keys `.` and `,` step 1/30 s, and `window.__motion.{seek,step,look}` lets a capture film identical frames. Two fixes the Meshy clips needed: the swing drives the forearms into the hip gear, so turn the upper arms 7° (walk) and 9° (run) outward about the forward axis and clamp forearm/hand twist against the bind pose to 55°/45°; and the feet float or sink, so sample the lowest foot vertices over 24 steps of each cycle and offset the hips so the cycle's lowest point touches the floor.
+
+**Fingers on a rig that has none.** Add three bones per finger and thumb under each Hand bone at load, with new skin weights computed offline from the GLB: each fingertip owns its geodesic region of the welded hand surface (soft borders where fingers are fused), blending Hand → knuckle → middle → tip. Store bones plus weight overrides in a small JSON (89 KB here), rebuild the `Skeleton` and `bind` it. Poses are degrees added to the sculpted curl per joint (`?hand=relax|fist|off`, `?grip=0..1`); solve the fist with a check that measures how far middle/tip vertices sink into the palm (worst ≤ 0.8 mm here). Then look at close crops of every finger from back, palm, thumb, pinky and tip sides, before/relax/half/fist side by side.
+
+**4K stills.** Capture at 3840×2160 with a 1920×1080 viewport and `deviceScaleFactor: 2` (the viewer caps pixel ratio at 2): `CAP_4K=1 node capture.mjs ...`.
+
 ## Known limits, say them plainly
 
-- **Face up close.** Skin is flat and eyes look painted in a tight close-up. Fine from half body outward. A close-up hero needs a MetaHuman base instead, which takes many hours.
+- **Face up close.** Skin is flat and eyes look painted without step 7. With it, the eyes read as real, but the sclera is still too white and flat, the upper-lid shadow subtle, and the skin slightly pale and cool. A hero close-up still needs a MetaHuman base, which takes many hours.
 - **One fused mesh.** Hair, clothes, gear and body are a single surface; nothing can be swapped or simulated without splitting it.
-- **No fingers.** Gripping a tool or weapon needs grafted rigged hands.
+- **Fingers.** Added bones curl fused fingers together (relax and fist, no pointing), knuckles are faceted in tight crops (about 1,500 vertices per hand), and the full fist from the palm side is rough: a jagged crease where the fingers fold into the palm. Gripping a tool or weapon needs grafted rigged hands.
 
 ## Traps
 
@@ -95,4 +110,5 @@ Send the A-pose and posed shots as a before/after pair, and say which view is we
 - A second `page.goto` on the same page hangs while the model renders. Switch views by clicking the view buttons on one page.
 - `page.screenshot` times out under load. Read the canvas with `toDataURL` (the renderer needs `preserveDrawingBuffer: true`).
 - Set `frustumCulled = false` on the skinned mesh and recompute its bounding box after posing, or the grounding and culling use the bind pose.
+- A face or hand shader whose program key is shared with the body material caches the wrong program; give each patched material its own `customProgramCacheKey`.
 - Check `uptime` first. Captures slow down when other sessions load the machine; at load averages of 100–250 they still finished in a few minutes, so run them in the background and wait rather than debug.

@@ -55,6 +55,13 @@ figcaption b{color:var(--ink);font-weight:600}
 .stats span{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 footer{margin-top:56px;color:var(--muted);font-size:13px}
 footer code{color:var(--ink)}
+.wide{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#000}
+.wide img{display:block;width:100%;height:auto}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.stack{display:grid;gap:18px}
+.char{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:40px;align-items:center}
+@media (max-width:820px){.grid3,.grid2,.char{grid-template-columns:1fr}}
 @media (max-width:820px){
   main{padding:36px 16px 56px}
   .views,.split{grid-template-columns:1fr}
@@ -140,6 +147,35 @@ footer code{color:var(--ink)}
       <div><strong>310k</strong><span>Triangles, textured</span></div>
       <div><strong>150k</strong><span>Triangles, rigged</span></div>
       <div><strong>4</strong><span>Check views</span></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s4">
+    <h2 id="s4">Close-up pass: eyes and skin</h2>
+    <p class="sub">Before and after, same camera. The painted eyes are cut out along fitted lid curves and replaced by real eyeballs with lid rims, lashes and an upper-lid shadow; the eye/brow texels come from a 12-credit faithful ×2 upscale of that atlas crop. Still short: the sclera is too white and flat and the skin a little pale.</p>
+    <div class="stack">
+      <figure><div class="wide"><img src="assets/face-v4-eyes.jpg" alt="Eye close-up before and after: painted eye versus real eyeball with lashes and lid rim" width="1200" height="794" loading="lazy"></div><figcaption><b>Eye</b><span>painted → eyeball behind cut-out lids</span></figcaption></figure>
+      <div class="grid2">
+        <figure><div class="wide"><img src="assets/face-v4-three-quarter.jpg" alt="Three-quarter face before and after" width="1200" height="794" loading="lazy"></div><figcaption><b>Three-quarter</b><span>matched apertures</span></figcaption></figure>
+        <figure><div class="wide"><img src="assets/face-v4-profile.jpg" alt="Profile before and after, with no dark gap behind the lids" width="1200" height="794" loading="lazy"></div><figcaption><b>Profile</b><span>socket closed, no dark gap</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s5">
+    <h2 id="s5">Finger bones on a rig that had none</h2>
+    <p class="sub">Thirty bones and new skin weights added at load on the model's own mesh: before, relaxed, half grip and fist. The back of the hand holds up; the full fist from the palm side is still rough at the crease.</p>
+    <div class="stack">
+      <figure><div class="wide"><img src="assets/hands-back.jpg" alt="Right hand from the back: no finger bones, relaxed, half grip, fist" width="1600" height="456" loading="lazy"></div><figcaption><b>Back of the hand</b><span>before · relax · half · fist</span></figcaption></figure>
+      <figure><div class="wide"><img src="assets/hands-palm.jpg" alt="Right hand from the palm side: no finger bones, relaxed, half grip, fist" width="1600" height="456" loading="lazy"></div><figcaption><b>Palm side</b><span>the weakest view</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="s6">
+    <h2 id="s6">Second character, same pipeline</h2>
+    <div class="char">
+      <figure><div class="frame"><img src="assets/engineer-full.jpg" alt="A broad engineer in an orange work suit with a harness, belt pouches and knee pads" width="640" height="1000" loading="lazy"></div><figcaption><b>Engineer</b><span>from a 3840×2160 still</span></figcaption></figure>
+      <p class="note"><strong>A broad engineer in a bulky work suit with belt gear.</strong> Same concept, image-to-3D, rig and pose steps; the arm fit clears the belt pouches. Stills like this are captured at 3840×2160 from a 1920×1080 viewport at device scale factor 2.</p>
     </div>
   </section>
 

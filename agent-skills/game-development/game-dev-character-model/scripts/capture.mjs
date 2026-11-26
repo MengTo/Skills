@@ -1,5 +1,6 @@
 // Capture the viewer's four views from one page by reading the canvas.
 // Usage: node capture.mjs <page-url> <out-dir> [views, default full,tq,back,face,half] [chrome-executable]
+// CAP_4K=1 captures 3840x2160 (a 1920x1080 viewport at deviceScaleFactor 2) instead of 900x1200.
 // Run it from a folder where `npm i playwright-core` was done (resolved from the working directory,
 // not from this script's folder). The viewer must set window.__ready and have [data-v] view buttons.
 import fs from 'fs';
@@ -18,7 +19,7 @@ fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch({ executablePath: exe, headless: true, args: ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] });
 let code = 0;
 try {
-  const p = await b.newPage({ viewport: { width: 900, height: 1200 } });
+  const p = await b.newPage(process.env.CAP_4K ? { viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 2 } : { viewport: { width: 900, height: 1200 } });
   let errs = 0;
   p.on('pageerror', e => { errs++; console.log('PAGEERR', e.message); });
   p.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') { if (m.type() === 'error') errs++; console.log(m.type().toUpperCase(), m.text()); } });

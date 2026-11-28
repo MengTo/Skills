@@ -206,6 +206,8 @@ agent-skills/
       references/
       scripts/
       assets/
+    short-release/
+      SKILL.md
   ui/
     design-first-ui-prompting/
       SKILL.md
@@ -372,6 +374,7 @@ Image sourcing, video and likeness skills:
 - `landing-page-to-tutorial` - the whole chain for a 15 to 25 minute YouTube tutorial that starts by designing and building landing pages with a coding model: fourteen setup questions first, then the plan, page prompts in a fixed order, builds with a logged trail, real demos at 4K60, a script from checked facts, a film that is a demo and not a presentation, export checks, the free pack, release, the short and the posts, handing each stage to the skill that owns it.
 - `long-video-to-short` - a 60-second 9:16 short (Reels, Shorts, TikTok) from a finished long video: the script in your cloned voice, captions timed to the sound by phrases, the long video's own footage behind, you on camera as your HeyGen Avatar 6 twin (a Higgsfield Genjutsu re-skin only where a scene needs it), two cuts under 30 MB, checks on the rendered file, independent judges, posts saved paused.
 - `room-short-9x16` - a 60-second 9:16 short set in your own 3D room: it asks first how the stills, storyboard, Blender scenes, script, cover and posting should be set up, then a black-and-white storyboard, scene stills in one look, the demo on your real devices rendered in Blender on a rented GPU, you on camera from Seedance 2.5 (drafts, then 1080p finals of the picked takes), words set in the scene, music from a measured reference, the cover as the first frame, two cuts, checks and a judge, with every prompt.
+- `short-release` - release a finished 9:16 short on Instagram, YouTube Shorts and TikTok and close it out: one post with a variant per platform, the comment-keyword Auto-DM set ahead, the Short's Related video, TikTok through TikTok Studio, the after-post and next-day checks, the free pack, a ledger line for every public action, and a list of what is still open.
 - `making-of-film` - a 4–5 minute "how I made X" YouTube film from a finished project: script in your voice, the project's own look and captures, every cut on a word, a digital twin at key places, 4K60, blind judges.
 
 ### UI (7)

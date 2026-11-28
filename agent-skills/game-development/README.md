@@ -8,6 +8,9 @@ Start with the narrowest matching skill. Combine skills only when the task cross
 
 | Need | Start with |
 | --- | --- |
+| Turn an approved character image into a Tripo master, rig and grounded idle | [image-to-3d-character](image-to-3d-character/SKILL.md) |
+| Model a procedural Three.js fleet from measured body sections | [model-procedural-3d-cars](model-procedural-3d-cars/SKILL.md) |
+| Build a retrofuturistic port or city around a playable driving route | [build-retrofuturistic-3d-worlds](build-retrofuturistic-3d-worlds/SKILL.md) |
 | Build a complete playable vertical slice | [`build-isometric-arpg`](build-isometric-arpg/SKILL.md) |
 | Match a photoreal first-person interior to reference and verify the look during play | [`build-ultra-realistic-game-interiors`](build-ultra-realistic-game-interiors/SKILL.md) |
 | Author readable flat-world routes and motivated lighting | [`author-game-levels`](author-game-levels/SKILL.md) |

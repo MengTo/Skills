@@ -1,0 +1,4 @@
+interface:
+  display_name: "Retro 3D Worlds"
+  short_description: "Build and verify a retrofuturistic district from the driver’s seat"
+  default_prompt: "Use $build-retrofuturistic-3d-worlds. Build a drivable retrofuturistic district from a reference and verify its silhouette, wet surfaces and lighting in gameplay."

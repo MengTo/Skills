@@ -1,0 +1,4 @@
+interface:
+  display_name: "Image to 3D Character"
+  short_description: "Turn a character reference into a grounded, rigged game asset"
+  default_prompt: "Use $image-to-3d-character. Turn my approved reference into a textured character with a verified idle in the playable game."

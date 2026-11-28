@@ -434,6 +434,8 @@ Combat animation and combat skills that read and look like Diablo IV, measured a
 
 Playable Three.js and browser-game workflows. See the [game-development guide](agent-skills/game-development/README.md) for the skill-selection table and system boundaries.
 
+From the Tideworks driving game: [Image to 3D Character](agent-skills/game-development/image-to-3d-character/SKILL.md), [Procedural 3D Cars](agent-skills/game-development/model-procedural-3d-cars/SKILL.md), [Retro 3D Worlds](agent-skills/game-development/build-retrofuturistic-3d-worlds/SKILL.md).
+
 Foundation and world:
 - [`build-ultra-realistic-game-interiors`](agent-skills/game-development/build-ultra-realistic-game-interiors/SKILL.md), `build-isometric-arpg`, `author-game-levels`, `build-game-map-editor`, `build-game-camera-controls`, `build-mobile-threejs-games`
 

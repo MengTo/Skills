@@ -1,0 +1,4 @@
+interface:
+  display_name: "Procedural 3D Cars"
+  short_description: "Build a measured Three.js fleet with fitted wheels and lamps"
+  default_prompt: "Use $model-procedural-3d-cars. Build a procedural Three.js vehicle from front, side and rear references and verify its fit in motion."

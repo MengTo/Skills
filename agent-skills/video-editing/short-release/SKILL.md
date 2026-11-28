@@ -5,7 +5,7 @@ description: Release a finished 9:16 short on Instagram, YouTube Shorts and TikT
 
 # Short release: post everywhere, then close it out
 
-The run this comes from: the Linen short (a 58 s short of a sponsored 22-minute tutorial), posted Thu 26 Nov 2026
+The run this comes from: a 58 s short of a sponsored 22-minute tutorial, posted Thu 26 Nov 2026
 on Instagram, YouTube Shorts and TikTok and closed out over the next two days. Making the short is another skill.
 This one starts when the files are final and ends when nothing public is wrong and the owner knows what is left.
 
@@ -123,15 +123,15 @@ End with one short list, each line a yes or no for the owner:
 
 Turn off any after-post check task once its work is done, and say if one sits on another account.
 
-## What went wrong on the Linen run
+## What went wrong on the first run
 
 - Fil listed the TikTok as posted with no link. TikTok Studio had no post since August. It was posted by hand
   the same afternoon.
 - The Short's Related video could not be set at post time because the pane was signed out of Google. It was
   set after the owner signed in, then saved, reloaded and read back.
-- The check task booked for after the post sat on a different Claude account from the one the app was on.
+- The check task booked for after the post sat on a different account from the one the app was on.
   The Auto-DM set ahead on the schedule made the task unnecessary.
 - The pack's README matched the job folder's copy, but the pages were only in the folder the ZIP was built
-  from. One page embedded a lake recording from a personal site, credited only in an HTML comment.
+  from. One page embedded a sound recording from someone else's site, credited only in an HTML comment.
 - The pane was signed out of TikTok a day later, so the view count could not be read. The public page showed
   the video playing with its likes and the AI-generated label.
